@@ -63,24 +63,69 @@ export const VAT_LABELS: Record<VatBasis, string> = {
 };
 
 // ─── Post-border UK costs (GBP) ──────────────────────────────────────────────
-// Incurred AFTER the customs border, so outside the customs value but inside the
-// true landed cost. The line items and the figures are the desk's own — they are
-// taken from the "JPY Imports Calculator" workbook, which is the operational
-// source of truth for what a car actually costs to land and register here.
+// What the car costs once it reaches the UK — at the border and after it. These
+// sit outside the customs value but inside the true landed cost.
+//
+// The line items and the figures are the desk's own, transcribed from the
+// "Import IVA and Clearance Costs" workbook, revision 15 September 2026. That
+// workbook prices the IVA and registration blocks twice, once per supplier (an
+// SMC column and a Calibre column); these defaults follow SMC, because SMC is
+// the column the workbook's own summary totals pull from. Every line is
+// editable per run. See sourcing-analyzer-methodology.md §2.6.
 //
 // Two groups. The base costs land on every car; the IVA costs land only on a car
 // that has to sit the Individual Vehicle Approval test.
+
+// Customs clearance and port unloading are quoted per CONTAINER, not per car,
+// and the workbook divides them across a three-car container. That divisor is a
+// standing assumption about how the desk ships, not a fact about any given
+// shipment — a car shipped alone bears the whole £1,430, not a third of it.
+export const CARS_PER_CONTAINER = 3;
+
+export const CONTAINER_SHARED_ITEMS = {
+  customsClearance: 200, // per container
+  unloadingHandlingDocs: 1230, // per container
+} as const;
+
+// Money is denominated in pence, so a per-car share is rounded to the penny
+// rather than carried as a repeating decimal. £200 ÷ 3 is £66.67 here against
+// the workbook's 66.666…, which leaves the base total a third of a penny over
+// the workbook cell and identical to it once either is shown in whole pounds.
+const perCarShare = (perContainer: number) =>
+  Math.round((perContainer / CARS_PER_CONTAINER) * 100) / 100;
+
 export const POST_BORDER_BASE_ITEMS = {
-  clearanceAdmin: 600, // clearing agent + import admin
-  ukInlandTransport: 300, // port → premises
+  // Clearance block.
+  customsClearance: perCarShare(CONTAINER_SHARED_ITEMS.customsClearance), // 66.67
+  unloadingHandlingDocs: perCarShare(
+    CONTAINER_SHARED_ITEMS.unloadingHandlingDocs,
+  ), // 410
+  calibreAdminFee: 45, // the clearing agent's own admin fee
+  transportFee: 200, // port → premises
+  // Registration block (SMC column).
   dvlaRegistration: 55, // DVLA first registration
-  roadTax: 205, // first-year VED
-  miscellaneous: 200, // plates, valet, sundries
+  // The workbook labels this six months' road tax. It is NOT the first-year
+  // CO2-banded VED the old line carried, and the half-year reading is the
+  // supplier's label rather than a figure checked against DVLA — see
+  // sourcing-analyzer-methodology.md §8.14.
+  roadTax6Months: 206.25,
+  mot: 75, // agent-arranged; DVSA's cap on the test itself is £54.85
+  dvlaFirstRegApplication: 0, // the workbook reads "TBC" — unpriced, not free
+  adminFee: 275,
+  numberPlates: 50,
+  // General block. Retail preparation, inside the landed cost from the
+  // 15 September 2026 workbook onward — see sourcing-analyzer-methodology.md §8,
+  // where this reverses a standing assumption and is logged as pending.
+  refurb: 200,
+  cleaning: 50,
+  warranty: 100, // warranty provision
 } as const;
 
 export const POST_BORDER_IVA_ITEMS = {
-  ivaInspection: 900, // the IVA test itself
-  ivaTransport: 300, // transport to and from the test centre
+  speedoConversion: 175,
+  rearFogLight: 195,
+  ivaTestFee: 199, // DVSA statutory fee, normal IVA in working hours
+  ivaTestPresentation: 150, // delivering the car to the test centre and presenting it
 } as const;
 
 export type PostBorderBaseKey = keyof typeof POST_BORDER_BASE_ITEMS;
@@ -89,7 +134,7 @@ export type PostBorderIvaKey = keyof typeof POST_BORDER_IVA_ITEMS;
 const sumItems = (o: Record<string, number>) =>
   Object.values(o).reduce((a, b) => a + b, 0);
 
-// £1,360 base; +£1,200 when the IVA test applies → £2,560 all-in.
+// £1,732.92 base; +£719 when the IVA test applies → £2,451.92 all-in.
 export const POST_BORDER_BASE = sumItems(POST_BORDER_BASE_ITEMS);
 export const POST_BORDER_IVA = sumItems(POST_BORDER_IVA_ITEMS);
 
@@ -97,16 +142,42 @@ export const POST_BORDER_LABELS: Record<
   PostBorderBaseKey | PostBorderIvaKey,
   string
 > = {
-  clearanceAdmin: "Clearance / admin",
-  ukInlandTransport: "UK inland transport",
-  dvlaRegistration: "DVLA registration",
-  roadTax: "Road tax (first-year VED)",
-  miscellaneous: "Miscellaneous",
-  ivaInspection: "IVA inspection",
-  ivaTransport: "IVA transport",
+  customsClearance: "Customs clearance (per-car share)",
+  unloadingHandlingDocs: "Unloading, handling & docs (per-car share)",
+  calibreAdminFee: "Calibre admin fee",
+  transportFee: "Transport (port → premises)",
+  dvlaRegistration: "DVLA registration fee",
+  roadTax6Months: "Road tax (6 months)",
+  mot: "MOT (agent-arranged)",
+  dvlaFirstRegApplication: "DVLA first-reg application (TBC)",
+  adminFee: "Admin fee",
+  numberPlates: "Number plates",
+  refurb: "Refurb",
+  cleaning: "Cleaning",
+  warranty: "Warranty provision",
+  speedoConversion: "Speedo conversion",
+  rearFogLight: "Rear fog light installation",
+  ivaTestFee: "IVA test fee",
+  ivaTestPresentation: "IVA test presentation",
 };
 
-// A vehicle 10 years or older is outside the IVA scheme — an MOT does instead.
+// Notes shown under the field, for the lines whose figure would otherwise be
+// read as something it is not: a per-car share read as a per-car price, an
+// unpriced line read as a free one, a supplier's price read as a statutory fee.
+export const POST_BORDER_HINTS: Partial<
+  Record<PostBorderBaseKey | PostBorderIvaKey, string>
+> = {
+  customsClearance: `£${CONTAINER_SHARED_ITEMS.customsClearance} per container ÷ ${CARS_PER_CONTAINER} cars`,
+  unloadingHandlingDocs: `£${CONTAINER_SHARED_ITEMS.unloadingHandlingDocs.toLocaleString("en-GB")} per container ÷ ${CARS_PER_CONTAINER} cars`,
+  mot: "Supplier price. DVSA caps the test itself at £54.85",
+  dvlaFirstRegApplication:
+    "Not yet priced — the alternate supplier quotes £790",
+  ivaTestFee: "DVSA statutory fee, normal IVA in working hours",
+};
+
+// A vehicle 10 years or older is outside the IVA scheme, so the approval block
+// falls away. Nothing is substituted for it: the MOT is a base line charged on
+// every car either way.
 export const IVA_EXEMPT_AGE = 10;
 
 // A car bought at 9-and-a-bit years usually clears customs and is registered
@@ -134,9 +205,11 @@ export function ivaRequiredForAge(ageYears: number | null): boolean {
 // was reverted — this constant stays as the single knob if it ever returns.)
 export const CUSTOMS_VALUE_FRACTION = 1;
 
-// Default ocean freight for one car, in JPY (business directive). Editable per
-// shipment in the calculator.
-export const DEFAULT_OCEAN_FREIGHT_JPY = 400_000;
+// Default ocean freight for one car, in JPY (business directive, 15 September
+// 2026 — a rate the desk sets, not a figure from the costs workbook). This one
+// is genuinely per car: unlike the two clearance lines above, it is not a
+// container charge divided down. Editable per shipment in the calculator.
+export const DEFAULT_OCEAN_FREIGHT_JPY = 350_000;
 
 // Auction house + export agent fees, as a fraction of the hammer price. The
 // calculator auto-fills this and lets the operator override it per lot.

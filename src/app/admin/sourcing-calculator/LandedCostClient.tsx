@@ -54,6 +54,7 @@ import {
   ORIGIN_STATEMENT_COUNTRIES,
   type OriginCountry,
   POST_BORDER_BASE_ITEMS,
+  POST_BORDER_HINTS,
   POST_BORDER_IVA_ITEMS,
   POST_BORDER_LABELS,
   type PostBorderBaseKey,
@@ -357,7 +358,8 @@ export default function LandedCostClient({
     }
   }, [hammerPrice, feeManual]);
   const [inlandTransportOrigin, setInlandTransportOrigin] = useState("");
-  // Default freight: 400,000 JPY per car (editable per shipment).
+  // Default freight comes from DEFAULT_OCEAN_FREIGHT_JPY, per car and editable
+  // per shipment — kept as a reference so the two can never drift apart.
   const [oceanFreight, setOceanFreight] = useState(
     String(DEFAULT_OCEAN_FREIGHT_JPY),
   );
@@ -655,6 +657,7 @@ export default function LandedCostClient({
           duty: result.duty,
           dutyLabel: `Customs duty (${fmtPct(result.dutyRate)})`,
           postBorder: result.postBorderTotal,
+          iva: ivaRequired ? ivaCostTotal : 0,
           totalLanded: result.totalLanded,
         },
         market: {
@@ -1312,6 +1315,7 @@ export default function LandedCostClient({
                   <Field
                     key={k}
                     label={POST_BORDER_LABELS[k]}
+                    hint={POST_BORDER_HINTS[k]}
                     value={baseCosts[k]}
                     onChange={(v) =>
                       setBaseCosts((prev) => ({ ...prev, [k]: v }))
@@ -1342,7 +1346,7 @@ export default function LandedCostClient({
                       {vehicleAgeYears == null
                         ? "No year entered, so the IVA cost is assumed to apply."
                         : vehicleAgeYears >= 10
-                          ? `${vehicleAgeYears} yrs old — outside the IVA scheme, an MOT does instead.`
+                          ? `${vehicleAgeYears} yrs old — outside the IVA scheme, so the whole approval block falls away, including the speedo and fog-lamp conversions. The MOT is a base line either way. If the car still needs those conversions to be road-legal, tick this back on and zero the two test lines.`
                           : `${vehicleAgeYears} yrs old — inside the IVA scheme.`}
                     </span>
                   </span>
@@ -1352,8 +1356,12 @@ export default function LandedCostClient({
                   <p className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-[11px] text-sky-800">
                     This car turns 10 before it is likely to clear. Shipping and
                     clearance usually take long enough that registration falls
-                    after the 10-year mark, where an MOT replaces the IVA test —
-                    untick above if the timeline supports it. Your call.
+                    after the 10-year mark, where the IVA approval requirement
+                    falls away — untick above if the timeline supports it. Your
+                    call. Note that unticking drops the speedo and fog-lamp
+                    conversions too, which the car may still need to be
+                    road-legal; if so, leave this ticked and zero the two test
+                    lines instead.
                   </p>
                 ) : null}
 
@@ -1363,6 +1371,7 @@ export default function LandedCostClient({
                       <Field
                         key={k}
                         label={POST_BORDER_LABELS[k]}
+                        hint={POST_BORDER_HINTS[k]}
                         value={ivaCosts[k]}
                         onChange={(v) =>
                           setIvaCosts((prev) => ({ ...prev, [k]: v }))
@@ -1414,8 +1423,8 @@ export default function LandedCostClient({
                 value={fmtGBP(result.postBorderTotal)}
                 sub={
                   ivaRequired
-                    ? `Clearance, transport, DVLA, VED, misc + ${fmtGBP(ivaCostTotal)} IVA`
-                    : "Clearance, transport, DVLA, VED, misc · no IVA"
+                    ? `Clearance, transport, registration, prep + ${fmtGBP(ivaCostTotal)} IVA`
+                    : "Clearance, transport, registration, prep · no IVA"
                 }
               />
             </div>

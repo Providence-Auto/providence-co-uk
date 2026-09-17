@@ -44,7 +44,7 @@ CIF_GBP = CIF_currency × FX rate
 Two defaults fill themselves in:
 
 - **Auction & export agent fees — 7% of the hammer price** (`AUCTION_FEE_RATE`). The field auto-recalculates as the hammer price changes, until the operator types over it; from that point it stays fixed and a "Reset to 7%" link appears.
-- **Ocean freight — ¥400,000 per car** (`DEFAULT_OCEAN_FREIGHT_JPY`). A per-car figure, not a container split. Editable per shipment.
+- **Ocean freight — ¥350,000 per car** (`DEFAULT_OCEAN_FREIGHT_JPY`, business directive of 15 September 2026, down from ¥400,000). This one is genuinely per car, not a container charge divided down — unlike two of the post-border clearance lines in §2.6, which are. Editable per shipment.
 
 Freight and insurance sit *inside* the customs value. That is the point of the CIF basis and it is why duty is not charged on the hammer price alone.
 
@@ -96,27 +96,54 @@ The VAT machinery still exists in `uk-landed-cost.ts` (`VatBasis`, 20% standard 
 
 ### 2.6 Post-border UK costs
 
-Costs incurred *after* the customs border. Outside the customs value, inside the true landed cost.
+What the car costs once it reaches the UK — at the border and after it. Outside the customs value, inside the true landed cost.
 
-The figures are the desk's own, taken from the **"JPY Imports Calculator" workbook**, which is the operational source of truth for what a car costs to land and register. They are two groups: base costs that land on every car, and IVA costs that land only when the car has to sit the approval test.
+The figures are the desk's own, transcribed from the **"Import IVA and Clearance Costs" workbook, revision 15 September 2026**, which is the operational source of truth for what a car costs to land and register. They are two groups: base costs that land on every car, and IVA costs that land only when the car has to sit the approval test.
+
+That workbook prices the IVA and registration blocks **twice, once per supplier** — an SMC column and a Calibre column. The defaults follow **SMC**, because SMC is the column the workbook's own summary totals pull from. The two columns differ by £728 per car in total (IVA £719 vs £922, registration £661.25 vs £1,186.25), and neither is complete on its own: SMC leaves the DVLA first-registration application fee unpriced ("TBC") where Calibre quotes £790, and Calibre books the admin fee at an explicit £0 where SMC charges £275.
 
 ```
-POST_BORDER_BASE_ITEMS          POST_BORDER_IVA_ITEMS
-  Clearance / admin      £600     IVA inspection      £900
-  UK inland transport    £300     IVA transport       £300
-  DVLA registration       £55                       ──────
-  Road tax (1st-yr VED)  £205     POST_BORDER_IVA   £1,200
-  Miscellaneous          £200
-                       ──────
-  POST_BORDER_BASE     £1,360
+POST_BORDER_BASE_ITEMS                          POST_BORDER_IVA_ITEMS
+  Clearance                                       Speedo conversion     £175
+    Customs clearance (share)      £66.67         Rear fog light        £195
+    Unloading, handling & docs     £410.00        IVA test fee          £199
+    Calibre admin fee               £45.00        IVA test presentation £150
+    Transport (port → premises)    £200.00                            ───────
+                                 ─────────        POST_BORDER_IVA       £719
+                                  £721.67
+  Registration (SMC)
+    DVLA registration fee           £55.00
+    Road tax (6 months)            £206.25
+    MOT (agent-arranged)            £75.00
+    DVLA first-reg app. (TBC)        £0.00
+    Admin fee                      £275.00
+    Number plates                   £50.00
+                                 ─────────
+                                  £661.25
+  General
+    Refurb                         £200.00
+    Cleaning                        £50.00
+    Warranty provision             £100.00
+                                 ─────────
+                                  £350.00
+                                 ═════════
+  POST_BORDER_BASE               £1,732.92
 ```
 
 | IVA required | Post-border total |
 |---|---|
-| Yes | **£2,560** (£1,360 + £1,200) |
-| No | **£1,360** — outside the IVA scheme, an MOT does instead |
+| Yes | **£2,451.92** (£1,732.92 + £719) |
+| No | **£1,732.92** — outside the IVA scheme, so only the approval block falls away. Nothing is substituted for it: the MOT is a base line charged either way. |
 
-**Every line is editable per run**, and the totals are derived from the item maps rather than hard-coded, so changing a figure in `uk-landed-cost.ts` moves the default, the tests and the docs' arithmetic together.
+Note the direction of travel: the base rose by £373 while the all-in IVA figure *fell* by £108, so this revision is not a uniform uplift and no summary of it as "costs went up" is true for the whole fleet.
+
+**Customs clearance and unloading are quoted per container, not per car.** The workbook divides £200 and £1,230 across a three-car container (`CARS_PER_CONTAINER`, `CONTAINER_SHARED_ITEMS`). That divisor is a standing assumption about how the desk ships (§8.12), not a fact about a given shipment — a car shipped alone bears the whole £1,430. Both fields carry the derivation as an on-screen hint so the number is not read as a per-car price.
+
+The shares are rounded to the penny, so `POST_BORDER_BASE` is £1,732.92 against the workbook cell's £1,732.9166…. The third of a penny is the whole of the difference, and it disappears the moment either figure is shown in pounds.
+
+**Three lines carry a note under the field**, because the figure alone would be read as something it is not: the two container shares, the MOT (£75 is the supplier's price; DVSA caps the test itself at £54.85), and the DVLA first-registration application (£0 means *unpriced*, not free — see §8.13).
+
+**Every line is editable per run.** The two *totals* are derived from the item maps rather than hard-coded, so the app and the engine can never disagree about them — but the figures quoted in this section, and the ones pinned in `uk-landed-cost.test.ts` and `LandedCostClient.test.tsx`, are transcriptions. A workbook revision has to be carried into all three by hand.
 
 **Whether IVA applies** defaults from age — under 10, or an unknown Year, means yes (`ivaRequiredForAge`); 10 or over means no. It is a **checkbox the operator owns**: the moment they touch it, their answer sticks and the age no longer overrides it. That matters because the real determinant is the clearance timeline, not the car's birthday.
 
@@ -240,7 +267,7 @@ ROI %         = profit ÷ total landed cost
 
 Both halves of the subtraction are now net figures. **Never compare the raw median against the landed cost** — that is the single easiest way to make an unprofitable car look like a buy. Where the operator has overridden the median (§4), that figure takes its place here and everywhere below, on the same VAT-inclusive basis.
 
-The percentage is measured **against landed cost**, not against the sale price. £5,000 on a £20,000 landed car is 25%, not 20%. Both the money figure and the percentage are displayed, colour-coded against the target, with an explicit "clears / below the target" badge, and the on-screen line shows the arithmetic ("net resale £8,792 (median £10,550 ÷ 1.2) − landed £6,649").
+The percentage is measured **against landed cost**, not against the sale price. £5,000 on a £20,000 landed car is 25%, not 20%. Both the money figure and the percentage are displayed, colour-coded against the target, with an explicit "clears / below the target" badge, and the on-screen line shows the arithmetic ("net resale £8,792 (median £10,550 ÷ 1.2) − landed £6,768").
 
 The dark summary panel carries the whole P&L in one column — CIF, duty, VAT (excluded), UK costs, total landed, net resale, profit and ROI, then the ceiling bid — so the decision does not require scrolling.
 
@@ -273,7 +300,7 @@ max hammer         = (max CIF (currency) − other CIF costs) ÷ (1 + auction fe
 
 The result is shown in the auction currency (the number you bid), its GBP equivalent, the landed cost it implies, and — once a hammer price is entered — **the headroom left or the amount over the ceiling**.
 
-**A note on the workbook's version of this formula.** The spreadsheet holds duty fixed at the *actual* car's duty while solving for a lower bid, so its ceiling overshoots by roughly 0.3% and lands just under target. The solver here re-derives duty from the bid being solved for, which is why the round-trip is exact. Where the two disagree, the tool is right; `workbook parity` in `uk-landed-cost.test.ts` pins both.
+**A note on solving this in a spreadsheet.** A sheet that holds duty fixed at the *actual* car's duty while solving for a lower bid overshoots, because duty should fall with the bid — so its ceiling lands just under target. The solver here re-derives duty from the bid being solved for, which is why the round-trip is exact. Where the two disagree, the tool is right. `workbook parity` in `uk-landed-cost.test.ts` asserts the round-trip lands on the target to ten decimal places; it no longer cross-checks a ceiling-bid cell, because the 15 September 2026 workbook is a clearance-cost sheet and carries no freight, duty or bid columns to check against.
 
 If fixed costs alone exceed the landed budget, the tool says the target is **unreachable at any bid** rather than printing a negative or a zero. Tests round-trip the solver back through `computeLandedCost` and assert the margin lands exactly on target, with and without VAT.
 
@@ -304,7 +331,7 @@ The stored `Verdict` therefore always carries `grossMargin`, `marginPct`, `targe
 |---|---|
 | **source** | Clears 30% with reasonable confidence in the comparables |
 | **marginal** | Short of 30% but close, or at/above it with thin supply, low confidence or a widened match |
-| **avoid** | Far short of 30%, or negative once reconditioning, selling time and negotiation are allowed for |
+| **avoid** | Far short of 30%, or negative once selling time and negotiation are allowed for. **Not** reconditioning — refurb, cleaning and the warranty provision are inside the landed cost from the 15 September 2026 revision (§2.6), so deducting them again would double-count, and the verdict prompt says so explicitly. |
 
 ---
 
@@ -327,18 +354,21 @@ Model fallback: `gemini-2.5-flash` → `gemini-2.5-flash-lite` → `gemini-flash
 
 Every one of these is a stated assumption, not a fact about a specific car. They are listed here so a reviewer can attack them directly.
 
-1. **The market median is the achievable resale price.** In practice a dealer rarely gets the full median — there is haggling, prep and time-to-sell. The verdict prompt is told to allow headroom for this; the margin figure itself is not discounted for it. Where the operator has overridden the median (§4), the assumption becomes their own: the tool believes the figure it was given, and every downstream number inherits whatever judgement went into it.
+1. **The market median is the achievable resale price.** In practice a dealer rarely gets the full median — there is haggling and time-to-sell. (Prep is no longer in this list: refurb and cleaning are costed inside the landed figure from the 15 September 2026 revision.) The verdict prompt is told to allow headroom for this; the margin figure itself is not discounted for it. Where the operator has overridden the median (§4), the assumption becomes their own: the tool believes the figure it was given, and every downstream number inherits whatever judgement went into it.
    - **The car resells at the standard 20% VAT rate.** The net resale figure is a flat median ÷ 1.2. A margin-scheme sale (VAT on the profit only, not the full price) would earn more than the tool credits, so the figure is conservative rather than wrong.
-2. **Reconditioning is not in the landed cost.** No paint, no tyres, no service, no warranty provision. A car needing work is worse than the number says.
-3. **Selling costs are not in the landed cost.** No advertising, no forecourt time, no finance commission clawback.
+2. **A fixed retail-prep allowance *is* in the landed cost — reconditioning to the extent of that allowance, and no further.** From the 15 September 2026 revision the base carries refurb £200, cleaning £50 and a warranty provision £100 (§2.6). This **reverses** the assumption that stood here until that date ("no paint, no tyres, no service, no warranty provision"), and it changes what the 30% ROI target measures, because the denominator now includes prep. The consequence everywhere downstream is that reconditioning must not be deducted a second time — the verdict prompt is told so in as many words. A car needing more than £350 of work is still worse than the number says. **This reversal follows the desk's workbook rather than a ratified policy decision, and is logged as pending in `brand-position.md` §11.3.**
+3. **Selling costs are not in the landed cost.** No advertising, no forecourt time, no finance commission clawback. The warranty provision in §8.2 sits on the line between prep and selling cost; it is counted as prep here.
 4. **The importer is VAT-registered and reclaims import VAT.** If that is ever untrue, the landed figure is understated by roughly 20% of (CIF + duty) and the tool must be reconfigured.
 5. **The FX rate is a spot indication.** HMRC's monthly rate governs the actual declaration.
 6. **Duty rate is the desk's conservative reading, not a tariff lookup.** Confirm against the live UK Trade Tariff at the 10-digit commodity code before committing.
-7. **Post-border figures are business estimates**, not quotes from a clearing agent.
+7. **Post-border figures are a mix of supplier quotes and desk estimates.** The clearance and unloading charges are the agent's; the IVA test fee is DVSA's published statutory fee; refurb, cleaning and the warranty provision are desk allowances. None is a binding quote for a specific car. Where the workbook prices a line twice, the SMC column is used (§2.6).
 8. **Vehicle age is calendar-year arithmetic** — current year minus the Year field. It does not know the registration month, which is exactly why the IVA decision near the 10-year mark is a human one.
 9. **Scraped listings are asking prices, not sold prices.** Asking prices run above transaction prices, and AutoTrader exposes no ad-posted date, so time-on-market cannot be measured. Listing count is the only liquidity signal available.
 10. **The comparable set is a snapshot.** Re-running tomorrow can legitimately give a different answer.
 11. **Partial AutoTrader results are accepted by design** (see §3.1). The sample is not the whole pool.
+12. **Every car ships three to a container.** `CARS_PER_CONTAINER = 3` divides the £200 customs-clearance and £1,230 unloading charges down to a per-car share (§2.6). The engine has no way to know what a given shipment actually holds, so a car shipped alone is under-costed by £953 unless the operator retypes both fields. The fields carry the divisor as a hint; there is no control for the count.
+13. **The DVLA first-registration application fee is carried at £0 because it is unpriced, not because it is free.** The workbook's SMC column reads "TBC" and Excel's `SUM` silently skips the text, so the workbook's own £1,732.92 is a subtotal with a declared hole. The alternate supplier quotes £790 for the same line — roughly 11% of a £7,000 landed cost, and the one figure here most likely to move a verdict. It is carried as a visible, labelled £0 line rather than omitted, so the gap is on screen rather than buried. **Logged as pending in `brand-position.md` §11.3.**
+14. **"Road tax (6 months)" carries the workbook's own label, not a checked revenue figure.** It replaces a first-year CO2-banded VED charge with £206.25, which is a different tax event rather than a repricing — and the half-year reading is the supplier's wording, not something confirmed against DVLA: six months at the £195 standard rate would be £107.25, while £206.25 sits close to an uplifted *annual* standard rate. So the line is either mislabelled or a second half-year is missing, and for a high-emitting import the first-year charge can run well past either. **Logged as pending in `brand-position.md` §11.3.**
 
 ---
 

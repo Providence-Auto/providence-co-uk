@@ -34,7 +34,9 @@ vi.mock("sonner", () => ({
 const LandedCostClient = (await import("../LandedCostClient")).default;
 
 // The workbook's own scenario: a 2015 BMW 1 Series, 600,000 JPY hammer at
-// 216.72, 400,000 freight, sold against a 10,550 UK median.
+// 216.72, sold against a 10,550 UK median. The freight field is never set by
+// this test — it inherits DEFAULT_OCEAN_FREIGHT_JPY (¥350,000), so every figure
+// below moves with that constant.
 const LISTING = (price: number) => ({
   source: "autotrader",
   make: "BMW",
@@ -135,11 +137,24 @@ describe("Sourcing panel, end to end", () => {
       setInput("Auction hammer / purchase price", "600000");
     });
 
-    // 2015 is 11 years old in 2026 → IVA falls away, UK costs = £1,360.
+    // 2015 is 11 years old in 2026 → IVA falls away, UK costs = £1,733.
     expect(text()).toContain("Total UK costs (no IVA)");
-    expect(text()).toContain("£1,360");
-    // CIF 1,042,000 JPY → £4,808 + £481 duty + £1,360 = £6,649.
-    expect(text()).toContain("£6,649");
+    expect(text()).toContain("£1,733");
+    // Dropping the block also drops the speedo and fog-lamp conversions, which
+    // the car may still need. The note has to say so rather than imply an MOT
+    // simply substitutes for the whole block.
+    expect(text()).toContain("speedo and fog-lamp conversions");
+    expect(text()).not.toContain("an MOT does instead");
+    // The two container-shared lines show their derivation, so £66.67 is not
+    // read as the price of clearing one car.
+    expect(text()).toContain("£200 per container ÷ 3 cars");
+    expect(text()).toContain("£1,230 per container ÷ 3 cars");
+    // £0 must read as unpriced, not free.
+    expect(text()).toContain(
+      "Not yet priced — the alternate supplier quotes £790",
+    );
+    // CIF 992,000 JPY → £4,577 + £458 duty + £1,733 = £6,768.
+    expect(text()).toContain("£6,768");
 
     await act(async () => clickByText("rawl market listings"));
 
@@ -148,14 +163,14 @@ describe("Sourcing panel, end to end", () => {
     // ÷ 1.2 = £8,791 net resale (the true median is £10,549.50).
     expect(text()).toContain("Median resale (ex VAT)");
     expect(text()).toContain("£8,791");
-    // Profit = 8,791 − 6,649 = £2,142 at 32.2% ROI.
+    // Profit = 8,791 − 6,768 = £2,023 at 29.9% ROI — under the 30% minimum.
     expect(text()).toContain("Profit after all costs");
-    expect(text()).toContain("£2,142");
-    expect(text()).toContain("32.2% ROI");
+    expect(text()).toContain("£2,023");
+    expect(text()).toContain("29.9% ROI");
     // Ceiling bid at the default 30%.
     expect(text()).toContain("Max auction bid for 30% ROI");
-    expect(text()).toContain("620,926");
-    expect(text()).toContain("Clears the 30% minimum ROI");
+    expect(text()).toContain("598,989");
+    expect(text()).toContain("Below the 30% minimum ROI");
   });
 
   it("totals the cost lines into one figure on the summary card", async () => {
@@ -170,8 +185,8 @@ describe("Sourcing panel, end to end", () => {
     const card = container.textContent ?? "";
     expect(card).toContain("Total cost");
     expect(card).toContain("CIF + duty + UK costs, all in");
-    // £4,808 CIF + £481 duty + £1,360 UK = £6,649, stated as its own line.
-    expect(card.match(/£6,649/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
+    // £4,577 CIF + £458 duty + £1,733 UK = £6,768, stated as its own line.
+    expect(card.match(/£6,768/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
   });
 
   it("drives every figure from a manually overridden median", async () => {
@@ -191,12 +206,12 @@ describe("Sourcing panel, end to end", () => {
     expect(text()).toContain("£12,000");
     expect(text()).toContain("Median (manual)");
     expect(text()).toContain("scraped £10,550");
-    // Profit = 12,000 − 6,649 = £5,351 at 80.5% ROI, so the car now clears 30%.
-    expect(text()).toContain("£5,351");
-    expect(text()).toContain("80.5% ROI");
+    // Profit = 12,000 − 6,768 = £5,232 at 77.3% ROI, so the car now clears 30%.
+    expect(text()).toContain("£5,232");
+    expect(text()).toContain("77.3% ROI");
     expect(text()).toContain("Clears the 30% minimum ROI");
     // The ceiling bid re-solves off the manual number, so the old one is gone.
-    expect(text()).not.toContain("620,926");
+    expect(text()).not.toContain("598,989");
   });
 
   it("re-solves everything when the minimum ROI is raised to 35%", async () => {
@@ -211,7 +226,7 @@ describe("Sourcing panel, end to end", () => {
 
     expect(text()).toContain("Max auction bid for 35% ROI");
     // A higher bar means a lower ceiling bid and a car that no longer clears.
-    expect(text()).not.toContain("620,926");
+    expect(text()).not.toContain("598,989");
     expect(text()).toContain("Below the 35% minimum ROI");
     expect(text()).toContain("below the 35% target");
   });
@@ -223,7 +238,7 @@ describe("Sourcing panel, end to end", () => {
       setInput("Year", "2022");
     });
     expect(text()).toContain("Total UK costs (incl. IVA)");
-    expect(text()).toContain("£2,560");
-    expect(text()).toContain("IVA test required — adds £1,200");
+    expect(text()).toContain("£2,452");
+    expect(text()).toContain("IVA test required — adds £719");
   });
 });
