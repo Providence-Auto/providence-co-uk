@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   AUCTION_FEE_RATE,
+  CARS_PER_CONTAINER,
+  CONTAINER_SHARED_ITEMS,
   clampTargetMargin,
   computeLandedCost,
+  DEFAULT_OCEAN_FREIGHT_JPY,
   DUTY_RATES,
   isNearIvaExemption,
   ivaRequiredForAge,
@@ -12,13 +15,17 @@ import {
   POST_BORDER_BASE_ITEMS,
   POST_BORDER_IVA,
   POST_BORDER_IVA_ITEMS,
+  POST_BORDER_LABELS,
   resaleExVat,
   resolveTaxTreatment,
   TARGET_MARGIN_PCT,
 } from "@/lib/uk-landed-cost";
 
 // A round JPY purchase with an FX rate of exactly 0.005 GBP/JPY, so every
-// expected figure below can be checked by hand.
+// expected figure below can be checked by hand. Deliberately synthetic: the
+// freight and post-border figures here are chosen to be arithmetically tidy and
+// are NOT the shipping defaults, so this fixture does not move when a rate does.
+// The scenario pinned to the real defaults is "workbook parity" further down.
 const BASE: LandedCostInput = {
   currency: "JPY",
   hammerPrice: 2_000_000,
@@ -139,18 +146,74 @@ describe("resolveTaxTreatment", () => {
   });
 });
 
+// Pinned to the "Import IVA and Clearance Costs" workbook, revision 15 September
+// 2026, SMC column. Each block is asserted separately so a future revision shows
+// up as one failing block rather than one failing total.
 describe("post-border cost items", () => {
+  it("reproduces each of the workbook's blocks", () => {
+    const {
+      customsClearance,
+      unloadingHandlingDocs,
+      calibreAdminFee,
+      transportFee,
+    } = POST_BORDER_BASE_ITEMS;
+    // Clearance: £200 and £1,230 per container over three cars, + 45 + 200.
+    expect(
+      customsClearance + unloadingHandlingDocs + calibreAdminFee + transportFee,
+    ).toBeCloseTo(721.67, 2);
+    // Registration (SMC): 55 + 206.25 + 75 + 0 (TBC) + 275 + 50.
+    expect(
+      POST_BORDER_BASE_ITEMS.dvlaRegistration +
+        POST_BORDER_BASE_ITEMS.roadTax6Months +
+        POST_BORDER_BASE_ITEMS.mot +
+        POST_BORDER_BASE_ITEMS.dvlaFirstRegApplication +
+        POST_BORDER_BASE_ITEMS.adminFee +
+        POST_BORDER_BASE_ITEMS.numberPlates,
+    ).toBe(661.25);
+    // General: refurb + cleaning + warranty.
+    expect(
+      POST_BORDER_BASE_ITEMS.refurb +
+        POST_BORDER_BASE_ITEMS.cleaning +
+        POST_BORDER_BASE_ITEMS.warranty,
+    ).toBe(350);
+  });
+
   it("totals the desk's own line items, not a rounded allowance", () => {
-    expect(POST_BORDER_BASE).toBe(1_360); // 600 + 300 + 55 + 205 + 200
-    expect(POST_BORDER_IVA).toBe(1_200); // 900 + 300
-    expect(POST_BORDER_BASE + POST_BORDER_IVA).toBe(2_560);
+    // The workbook's own cells are 1732.9166… and 2451.9166…; the per-car
+    // container shares are rounded to the penny here, which is the whole of the
+    // difference and vanishes at the resolution money is quoted in.
+    expect(POST_BORDER_BASE).toBeCloseTo(1_732.92, 2);
+    expect(POST_BORDER_IVA).toBe(719); // 175 + 195 + 199 + 150
+    expect(POST_BORDER_BASE + POST_BORDER_IVA).toBeCloseTo(2_451.92, 2);
+  });
+
+  it("splits the per-container clearance charges across the container", () => {
+    expect(POST_BORDER_BASE_ITEMS.customsClearance).toBeCloseTo(
+      CONTAINER_SHARED_ITEMS.customsClearance / CARS_PER_CONTAINER,
+      2,
+    );
+    expect(POST_BORDER_BASE_ITEMS.unloadingHandlingDocs).toBeCloseTo(
+      CONTAINER_SHARED_ITEMS.unloadingHandlingDocs / CARS_PER_CONTAINER,
+      2,
+    );
   });
 
   it("keeps the constants in step with the item maps", () => {
     const total = (o: Record<string, number>) =>
       Object.values(o).reduce((a, b) => a + b, 0);
-    expect(total(POST_BORDER_BASE_ITEMS)).toBe(POST_BORDER_BASE);
-    expect(total(POST_BORDER_IVA_ITEMS)).toBe(POST_BORDER_IVA);
+    expect(total(POST_BORDER_BASE_ITEMS)).toBeCloseTo(POST_BORDER_BASE, 6);
+    expect(total(POST_BORDER_IVA_ITEMS)).toBeCloseTo(POST_BORDER_IVA, 6);
+  });
+
+  it("labels every line the operator can edit", () => {
+    for (const k of Object.keys({
+      ...POST_BORDER_BASE_ITEMS,
+      ...POST_BORDER_IVA_ITEMS,
+    })) {
+      expect(
+        POST_BORDER_LABELS[k as keyof typeof POST_BORDER_LABELS],
+      ).toBeTruthy();
+    }
   });
 });
 
@@ -187,10 +250,18 @@ describe("clampTargetMargin", () => {
   });
 });
 
-// The desk's "JPY Imports Calculator" workbook is the operational source of
-// truth for these figures. This pins the engine to it end to end: a 600,000 JPY
-// hammer at 216.72 JPY/GBP, 400,000 freight, 10% duty, non-IVA UK costs, sold
-// against a 10,550 UK median.
+// The desk's costs workbook is the operational source of truth for these
+// figures. This pins the engine to it end to end, on the shipping defaults
+// rather than on literals: a 600,000 JPY hammer at 216.72 JPY/GBP, freight at
+// DEFAULT_OCEAN_FREIGHT_JPY, 10% duty, non-IVA UK costs, sold against a 10,550
+// UK median.
+//
+// Under the 15 September 2026 costs (freight ¥350,000, base UK costs £1,732.92)
+// this car returns 29.9% — a tenth of a point UNDER the 30% desk minimum, where
+// it used to return 32.2%. The freight cut saves ~£231 of CIF and the new UK
+// cost base adds ~£373, so the reference car is now a no-buy on the desk's own
+// policy. That is the arithmetic; whether it is the intended business answer is
+// logged as a pending question in brand-position.md §11.3.
 describe("workbook parity", () => {
   const FX_PER_GBP = 216.72;
   const fxRate = 1 / FX_PER_GBP;
@@ -202,7 +273,7 @@ describe("workbook parity", () => {
     hammerPrice: hammer,
     auctionExportFees: hammer * AUCTION_FEE_RATE,
     inlandTransportOrigin: 0,
-    oceanFreight: 400_000,
+    oceanFreight: DEFAULT_OCEAN_FREIGHT_JPY,
     marineInsurance: 0,
     fxRate,
     dutyBasis: "mfn",
@@ -212,19 +283,24 @@ describe("workbook parity", () => {
   });
 
   it("reproduces the workbook's CIF, duty and total UK cost", () => {
-    expect(landed.cifOriginal).toBe(1_042_000); // 600,000 + 42,000 + 400,000
-    expect(Math.round(landed.cifGbp)).toBe(4_808);
-    expect(Math.round(landed.duty)).toBe(481);
+    expect(landed.cifOriginal).toBe(992_000); // 600,000 + 42,000 + 350,000
+    expect(Math.round(landed.cifGbp)).toBe(4_577);
+    expect(Math.round(landed.duty)).toBe(458);
     expect(landed.vat).toBe(0); // reclaimed by the importer
-    expect(Math.round(landed.totalLanded)).toBe(6_649);
+    expect(Math.round(landed.totalLanded)).toBe(6_768);
   });
 
   it("reproduces the workbook's PNL and ROI, net of VAT", () => {
     const netResale = resaleExVat(10_550);
     expect(Math.round(netResale)).toBe(8_792);
     const pnl = netResale - landed.totalLanded;
-    expect(Math.round(pnl)).toBe(2_143);
-    expect(pnl / landed.totalLanded).toBeCloseTo(0.322, 3);
+    expect(Math.round(pnl)).toBe(2_024);
+    expect(pnl / landed.totalLanded).toBeCloseTo(0.299, 3);
+  });
+
+  it("puts the reference car just under the desk's minimum ROI", () => {
+    const pnl = resaleExVat(10_550) - landed.totalLanded;
+    expect(pnl / landed.totalLanded).toBeLessThan(TARGET_MARGIN_PCT);
   });
 
   it("back-solves a ceiling bid that lands exactly on the target ROI", () => {
@@ -235,22 +311,25 @@ describe("workbook parity", () => {
       dutyRate: 0.1,
       vatEffectiveRate: 0,
       fxRate,
-      otherCifCosts: 400_000,
+      otherCifCosts: DEFAULT_OCEAN_FREIGHT_JPY,
       auctionFeeRate: AUCTION_FEE_RATE,
     });
     expect(r.achievable).toBe(true);
-    expect(Math.round(r.maxHammer)).toBe(620_985);
+    expect(Math.round(r.maxHammer)).toBe(599_048);
+    // The ceiling now sits below the 600,000 the same car is bought at, which is
+    // the same finding as the 29.9% above, stated as a bid.
+    expect(r.maxHammer).toBeLessThan(hammer);
 
-    // The workbook's own 623,083 holds duty fixed at the actual car's duty
-    // instead of letting it fall with the bid, so it overshoots by ~0.3% and
-    // lands just under 30%. The solver here re-derives duty from the bid, so
-    // the round-trip is exact.
+    // A spreadsheet that holds duty fixed at the actual car's duty while solving
+    // for a lower bid overshoots by ~0.3% and lands just under target. The
+    // solver here re-derives duty from the bid it is solving for, so the
+    // round-trip below is exact.
     const back = computeLandedCost({
       currency: "JPY",
       hammerPrice: r.maxHammer,
       auctionExportFees: r.maxHammer * AUCTION_FEE_RATE,
       inlandTransportOrigin: 0,
-      oceanFreight: 400_000,
+      oceanFreight: DEFAULT_OCEAN_FREIGHT_JPY,
       marineInsurance: 0,
       fxRate,
       dutyBasis: "mfn",

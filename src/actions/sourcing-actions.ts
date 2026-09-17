@@ -619,7 +619,7 @@ export async function getVerdict(input: VerdictInput): Promise<VerdictResult> {
 
   const facts = [
     `Vehicle: ${input.vehicle.year} ${input.vehicle.make} ${input.vehicle.model} ${input.vehicle.edition}, ${input.vehicle.mileage} miles.`,
-    `Total UK landed cost (includes duty, shipping, fees and UK-side clearance; import VAT is excluded because the importer reclaims it): £${Math.round(landedCostGbp).toLocaleString()}.`,
+    `Total UK landed cost (includes duty, shipping, fees, UK-side clearance and registration, and the desk's retail-prep allowance for refurb, cleaning and a warranty provision; import VAT is excluded because the importer reclaims it): £${Math.round(landedCostGbp).toLocaleString()}.`,
     `Live UK market for comparable cars (${stats.count} listings${input.widened ? `, match auto-widened to "${input.matchUsed}" — fewer exact comparables, so lower confidence` : ""}):`,
     `  median £${Math.round(stats.median).toLocaleString()}, mean £${Math.round(stats.mean).toLocaleString()}, range £${Math.round(stats.min).toLocaleString()}–£${Math.round(stats.max).toLocaleString()}, interquartile £${Math.round(stats.p25).toLocaleString()}–£${Math.round(stats.p75).toLocaleString()}.`,
     input.medianOverridden
@@ -645,8 +645,8 @@ Guidance:
 - The desk's policy is a minimum ${targetLabel} gross margin on landed cost. A car below ${targetLabel} can NEVER be "source", however attractive it looks otherwise.
 - "source" = clears ${targetLabel} with reasonable confidence in the comparables.
 - "marginal" = short of ${targetLabel} but close, or at/above it with thin supply, low confidence or a widened match — proceed with caution.
-- "avoid" = margin far short of ${targetLabel}, or negative once you account for reconditioning, selling time and price negotiation.
-- Be realistic: dealers rarely achieve the full median; allow headroom for haggling and prep.
+- "avoid" = margin far short of ${targetLabel}, or negative once you account for selling time and price negotiation. Do NOT deduct anything further for reconditioning or prep — refurb, cleaning and a warranty provision are already inside the landed cost above, so subtracting them again would double-count.
+- Be realistic: dealers rarely achieve the full median; allow headroom for haggling.
 - Keep "headline" under 12 words. Keep "reasoning" to 2-4 sentences, concrete and numbers-led. State the margin percentage against the ${targetLabel} target, and if a ceiling bid is given, say what the buyer must not exceed. Do not restate every figure.`;
 
   try {
