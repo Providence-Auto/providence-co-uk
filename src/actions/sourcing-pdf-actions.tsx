@@ -31,6 +31,10 @@ export interface SourcingPdfData {
     duty: number;
     dutyLabel: string;
     postBorder: number;
+    // The IVA approval block inside postBorder, or 0 when the car is outside the
+    // scheme. Carried separately so the row can say what the figure contains —
+    // the report prints one aggregate UK-cost number.
+    iva?: number;
     totalLanded: number;
   };
   market: {
@@ -325,7 +329,9 @@ const ReportPDF = ({
             value="Excluded — reclaimed by the importer"
           />
           <Row
-            label="Post-border fees"
+            label={`UK costs (clearance, registration, prep${
+              data.landed.iva ? `, IVA ${fmtGBP(data.landed.iva)}` : ""
+            })`}
             value={fmtGBP(data.landed.postBorder)}
           />
           <Row
