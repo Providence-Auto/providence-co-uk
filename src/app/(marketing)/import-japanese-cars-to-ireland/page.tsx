@@ -34,7 +34,7 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
       items: [
         {
           q: "What taxes do I pay when importing a car to Ireland?",
-          a: "Three charges apply: (1) Customs Duty — 0% for Japan-built cars under the EU–Japan EPA since February 2026. (2) VAT at 23%, charged once on the car's landed value. (3) VRT (Vehicle Registration Tax) — 7% to 14% for low-CO2 hybrids and efficient petrols. We calculate all three before you commit and prepare and file the declarations, but they are charged to you as the registered owner — Revenue collects VRT from the person the car is registered to, so the payment is made in your name.",
+          a: "Three charges apply: (1) Customs Duty — 0% for Japan-built cars under the EU–Japan EPA since February 2026. (2) VAT at 23%, charged once on the car's landed value. (3) VRT (Vehicle Registration Tax) — 7% to 14% for low-CO2 hybrids and efficient petrols. We calculate all three before you commit and prepare the declarations for you, but they are charged to you as the registered owner — Revenue collects from the person the car is registered to, so the entry and the payment are made in your name, not ours.",
         },
         {
           q: "What is VRT and how is it calculated?",
@@ -46,7 +46,7 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
         },
         {
           q: "Will I pay VAT twice — once in Japan and again on arrival?",
-          a: "No. Japanese export sales are VAT-free at source. Irish VAT at 23% is charged once, at the Irish port of entry, on the car's landed value. There is no double-taxation. We manage this declaration as part of your full clearance package.",
+          a: "No. Japanese export sales are VAT-free at source. Irish VAT at 23% is charged once, at the Irish port of entry, on the car's landed value. There is no double-taxation. We prepare that declaration and the landed values behind it, and it is filed in your name, because you are the importer of record.",
         },
         {
           q: "Is there a VRT relief available for electric vehicle imports?",
@@ -59,23 +59,23 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
       items: [
         {
           q: "How long does the full import take?",
-          a: "Typically 8–12 weeks from inquiry to delivery at your door. We spend 1–2 weeks sourcing and confirming your vehicle at Japanese auction, then 6–10 weeks for RoRo shipping to Ireland, followed by customs clearance, VRT registration at NCTS, and local delivery. We send live milestone updates throughout.",
+          a: "Typically 8–12 weeks from inquiry to the car landing at an Irish port. We spend 1–2 weeks sourcing and confirming your vehicle at Japanese auction, then 6–10 weeks for RoRo shipping to Ireland. Customs clearance, the NCTS appointment, VRT registration and collection from the port follow on arrival — those steps are completed in your name, with every document prepared and every figure calculated for you first. We send live milestone updates throughout.",
         },
         {
           q: "What is NCTS and do I need to do anything for it?",
-          a: "The National Car Testing Service (NCTS) is where imported vehicles are registered in Ireland and VRT is assessed. Every imported vehicle must be registered within 30 days of arrival, with an NCTS appointment booked within the first 7 days. We book the appointment and prepare every document it needs, and we tell you the VRT figure long before you get there. The registration and the VRT payment are made in your name, because Revenue charges the registered owner — we take you through it rather than leaving you to work it out.",
+          a: "The National Car Testing Service (NCTS) is where imported vehicles are registered in Ireland and VRT is assessed. Every imported vehicle must be registered within 30 days of arrival, with an NCTS appointment booked within the first 7 days. We prepare every document it needs, tell you the VRT figure long before you get there, and help you get the appointment booked inside the window. The registration and the VRT payment are made in your name, because Revenue charges the registered owner — we take you through it rather than leaving you to work it out, but the booking and the payment stay yours.",
         },
         {
           q: "Do I need to be present for any part of the process?",
-          a: "Almost none. We source, ship and clear the car and prepare every document, and you receive updates throughout. The one part that has to be yours is registration: the car is registered in your name and VRT is charged to you as the owner, so the NCTS appointment and the payment happen under your name. We book it, hand you the completed file and walk you through it.",
+          a: "Not for the sourcing or the shipping — we do those, and you receive updates throughout. From the Irish port onwards the car is yours: the customs entry, the NCTS appointment, the VRT payment and collection from the port are all made in your name, because Revenue and the terminal deal with the registered owner. We prepare every document, calculate every figure and stay on the phone with you throughout. What we don't do is sign it for you or take responsibility for the clearance itself.",
         },
         {
           q: "What documentation will I receive with my car?",
-          a: "You receive the original Japanese auction sheet with independent condition grading, full vehicle history, Certificate of Conformity with WLTP CO2 and NOx data, Bill of Lading and customs clearance certificates — everything the NCTS appointment and your registration require, prepared and checked before you need it.",
+          a: "You receive the original Japanese auction sheet with independent condition grading, full vehicle history, Certificate of Conformity with WLTP CO2 and NOx data, and the Bill of Lading — everything your customs entry, the NCTS appointment and your registration require, prepared and checked before you need it.",
         },
         {
           q: "Can I track my car during shipping?",
-          a: "Yes. Once your car is loaded onto the vessel, you receive a live tracking link showing its real-time position from Japan to an Irish port. Our team also sends milestone notifications: sourced, inspected, loaded, in transit, cleared, and out for delivery.",
+          a: "Yes. Once your car is loaded onto the vessel, you receive a live tracking link showing its real-time position from Japan to an Irish port. Our team also sends milestone notifications: sourced, inspected, loaded, in transit, and arrived at the Irish port.",
         },
       ],
     },
@@ -92,11 +92,11 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
         },
         {
           q: "How do I know my money is safe?",
-          a: "We have 15+ years of trading history supplying the dealerships Irish buyers already trust. Payment is held securely until your vehicle is confirmed and cleared for shipment. Every car is covered by comprehensive marine insurance door-to-door, and we provide a full paper trail from purchase through to delivery.",
+          a: "We have 15+ years of trading history supplying the dealerships Irish buyers already trust. Payment is held securely until your vehicle is confirmed and cleared for shipment. Every car is covered by comprehensive marine insurance for the voyage, to the Irish port of arrival, and we provide a full paper trail from purchase through to landing.",
         },
         {
           q: "What if the car doesn't arrive in the condition described?",
-          a: "Every vehicle undergoes a full independent pre-export inspection before leaving Japan. You receive the condition report, photographs, and auction grade before we authorise shipping. If anything doesn't match the agreed specification, we don't ship it — full stop. Our reputation is built on 15 years of verified deliveries.",
+          a: "Every vehicle undergoes a full independent pre-export inspection before leaving Japan. You receive the condition report, photographs, and auction grade before we authorise shipping. If anything doesn't match the agreed specification, we don't ship it — full stop. Our reputation is built on 15 years of verified shipments.",
         },
       ],
     },
@@ -123,7 +123,7 @@ const JAPAN_ADVANTAGES = [
   {
     icon: Compass,
     title: "RHD & Hybrid Range",
-    subtitle: "Road-Legal from Day One",
+    subtitle: "No Conversion Needed",
     desc: "Japan drives on the left — every car is right-hand drive and compliant for Irish roads with no conversion. Toyota Aqua, Prius, Corolla, Honda Jazz: hybrids with 7–14% VRT rates that simply aren't available this cheaply anywhere else.",
     glowColor: "group-hover:bg-amber-500/15",
     accentColor: "text-amber-500",
@@ -141,19 +141,19 @@ const PROCESS_STEPS = [
     number: "02",
     icon: Ship,
     title: "Ship",
-    desc: "Your car is loaded onto a RoRo vessel and shipped directly to an Irish port. Fully insured with marine cover, live-tracked from the moment it leaves Japan.",
+    desc: "Your car is loaded onto a RoRo vessel and shipped to an Irish port, under marine cover and live-tracked from the moment it leaves Japan. Our quote covers the car and the freight to that port.",
   },
   {
     number: "03",
     icon: Landmark,
     title: "Clear",
-    desc: "We make the customs declaration, prepare the full NCTS pack and book the appointment. VRT and registration are charged to you as the owner, so that part is signed in your name — with every form filled in and checked before you sign it.",
+    desc: "We prepare the customs declaration, calculate the VRT and put together the full NCTS pack. The entry and the registration are made in your name, because Revenue charges the registered owner — so you clear and register the car, with every form filled in and checked before you sign it.",
   },
   {
     number: "04",
     icon: MapPin,
-    title: "Deliver",
-    desc: "Your car is delivered to you in Ireland, registered and road-legal, with the complete document pack — auction sheet, inspection, clearance and registration — handed over with the keys.",
+    title: "Collect",
+    desc: "You collect the car at the Irish port, or arrange your own transport onward from there. The complete document pack — auction sheet, inspection, bill of lading and the clearance file — is in your hands before the vessel docks.",
   },
 ];
 
@@ -287,8 +287,33 @@ const TRUST_BADGES = [
   "15+ Years Trading",
   "0% Customs Duty (Japan)",
   "VRT Calculated Up Front",
-  "Marine Insurance Included",
-  "Door-to-Door Delivery",
+  "Marine Insurance to Port",
+  "Clearance Support at the Port",
+];
+
+// Providence quotes and ships CNF to an Irish port; duty, VAT and VRT are
+// charged to the registered owner at the border. The two groups exist so the
+// card can never be read as though Providence pays the tax side.
+const COST_GROUPS = [
+  {
+    heading: "In your Providence quote",
+    rows: [
+      { label: "Car price (Japan auction)", value: "~€11,000", green: false },
+      {
+        label: "Shipping to an Irish port (RoRo, insured)",
+        value: "~€1,500",
+        green: false,
+      },
+    ],
+  },
+  {
+    heading: "Paid by you at the border",
+    rows: [
+      { label: "Customs Duty — 0% (Japan EPA)", value: "€0", green: true },
+      { label: "VAT at 23% on landed value", value: "~€2,875", green: false },
+      { label: "VRT at ~12% (hybrid)", value: "~€2,400", green: false },
+    ],
+  },
 ];
 
 // ── PAGE ────────────────────────────────────────────────────────────────────
@@ -387,7 +412,7 @@ export default function ImportJapaneseCarsIreland() {
             duration={0.8}
             className="text-sm font-bold tracking-[0.4em] text-zinc-500 uppercase mb-8"
           >
-            Japan → Ireland · End-to-End Import Service
+            Japan → Ireland · Auction Floor to Irish Port
           </Reveal>
 
           <Reveal
@@ -412,10 +437,11 @@ export default function ImportJapaneseCarsIreland() {
             duration={0.8}
             className="text-xl md:text-2xl text-zinc-600 font-medium tracking-tight mb-10 max-w-2xl drop-shadow-[0_0_10px_rgba(255,255,255,1)]"
           >
-            You choose the car from Japan's auction floor. Ireland is the one
-            market where we take it the whole way —
-            <br className="hidden md:block" /> sourced, shipped, customs
-            cleared, VRT calculated and the car delivered to your door.
+            You choose the car from Japan's auction floor. We source it, inspect
+            it and ship it to an Irish port —
+            <br className="hidden md:block" /> then hand you the declarations,
+            the VRT figure and the document pack to clear and register it
+            yourself.
           </Reveal>
 
           <Reveal
@@ -480,8 +506,8 @@ export default function ImportJapaneseCarsIreland() {
             <span className="text-black drop-shadow-sm">
               offering every Irish buyer the same wholesale sourcing network
             </span>
-            , plus full customs clearance and doorstep delivery, for the first
-            time.
+            , the same auction sheets and the same clearance paperwork the trade
+            has always had, for the first time.
           </Reveal>
         </div>
       </section>
@@ -559,14 +585,17 @@ export default function ImportJapaneseCarsIreland() {
         <div className="max-w-6xl mx-auto">
           <Reveal y={40} duration={0.8} className="text-center mb-20">
             <p className="text-sm font-bold tracking-[0.3em] text-zinc-400 uppercase mb-4">
-              How It Works
+              8–12 Weeks · Japan to Irish Port
             </p>
             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-6">
-              Source. Ship. Clear. Deliver.
+              We get it to an Irish port.
+              <br />
+              You clear it from there.
             </h2>
             <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-light">
-              Ireland is the one market where we make the customs declaration
-              and handle VRT ourselves.
+              Every declaration, form and figure is prepared and checked before
+              the vessel docks — then signed in your name, because Revenue
+              charges the registered owner.
             </p>
           </Reveal>
 
@@ -608,9 +637,10 @@ export default function ImportJapaneseCarsIreland() {
               Three costs. Fully transparent.
             </h2>
             <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-light">
-              Every Irish import carries the same three charges. Here's what
-              they look like on a typical Japanese hybrid — and how they compare
-              to buying the same car in Ireland.
+              Every Irish import carries the same three charges, and Revenue
+              charges all three to you as the registered owner. We calculate
+              them before you commit, so the number you see is the number you
+              pay.
             </p>
           </Reveal>
 
@@ -633,48 +663,38 @@ export default function ImportJapaneseCarsIreland() {
                 </p>
               </div>
               <div className="px-8 py-6 space-y-0">
-                {[
-                  {
-                    label: "Car price (Japan auction)",
-                    value: "~€11,000",
-                    green: false,
-                  },
-                  {
-                    label: "Shipping (RoRo, insured)",
-                    value: "~€1,500",
-                    green: false,
-                  },
-                  {
-                    label: "Customs Duty — 0% (Japan EPA)",
-                    value: "€0",
-                    green: true,
-                  },
-                  {
-                    label: "VAT at 23% on landed value",
-                    value: "~€2,875",
-                    green: false,
-                  },
-                  {
-                    label: "VRT at ~12% (hybrid)",
-                    value: "~€2,400",
-                    green: false,
-                  },
-                ].map((row, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between items-center py-4 border-b border-black/5 last:border-0"
-                  >
-                    <span className="text-zinc-600 text-sm">{row.label}</span>
-                    <span
-                      className={`text-sm font-bold ${row.green ? "text-emerald-600" : "text-black"}`}
+                {COST_GROUPS.map((group, groupIndex) => (
+                  <div key={group.heading}>
+                    <p
+                      className={`text-[11px] font-bold tracking-[0.18em] text-zinc-400 uppercase pb-1 ${groupIndex === 0 ? "pt-0" : "pt-6"}`}
                     >
-                      {row.value}
-                    </span>
+                      {group.heading}
+                    </p>
+                    {group.rows.map((row, rowIndex) => {
+                      const isLastRow =
+                        groupIndex === COST_GROUPS.length - 1 &&
+                        rowIndex === group.rows.length - 1;
+                      return (
+                        <div
+                          key={row.label}
+                          className={`flex justify-between items-center py-4 ${isLastRow ? "" : "border-b border-black/5"}`}
+                        >
+                          <span className="text-zinc-600 text-sm">
+                            {row.label}
+                          </span>
+                          <span
+                            className={`text-sm font-bold ${row.green ? "text-emerald-600" : "text-black"}`}
+                          >
+                            {row.value}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 ))}
                 <div className="flex justify-between items-center pt-5 border-t-2 border-black mt-2">
                   <span className="font-bold text-black">
-                    Total Landed in Ireland
+                    Your total cost, landed in Ireland
                   </span>
                   <span className="font-bold text-2xl text-black">
                     ~€17,775
@@ -708,15 +728,15 @@ export default function ImportJapaneseCarsIreland() {
                 </p>
                 <p className="text-4xl font-bold mb-2">€4,000 – €8,000+</p>
                 <p className="text-white/75 text-sm font-light">
-                  Even after customs, VAT, VRT, and shipping are all paid in
-                  full. We give you exact numbers before you commit to anything.
+                  Even after duty, VAT, VRT and shipping are all paid in full.
+                  You see every figure before you commit to anything.
                 </p>
               </div>
 
               <p className="text-xs text-zinc-400 font-light px-2 leading-relaxed">
                 Figures are indicative. Actual VRT is charged on Revenue's OMSP
-                and varies by model, year, and mileage. We provide a full
-                landed-cost breakdown before authorising any purchase. Learn
+                and varies by model, year, and mileage. You get a full
+                landed-cost breakdown before you authorise the purchase. Learn
                 more about{" "}
                 <a
                   href="/blog/cost-of-importing-a-car-to-ireland"
@@ -911,10 +931,11 @@ export default function ImportJapaneseCarsIreland() {
           <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
             We'll come back with a{" "}
             <span className="text-black font-medium">
-              full landed-cost quote
+              full landed-cost breakdown
             </span>{" "}
-            — car price, shipping, VRT, and customs included — before you commit
-            to a single euro.
+            — our price for the car and the freight to an Irish port, plus the
+            duty, VAT and VRT you'll pay at the border, itemised — before you
+            commit to a single euro.
           </p>
         </Reveal>
 
