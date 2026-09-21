@@ -1,0 +1,23 @@
+-- The destination markets one car is offered into.
+--
+-- specdossier.destinations  an ORDERED list of destination slugs from
+--                           src/config/destinations.ts. The order is the
+--                           admin's ranking: the first five eligible entries
+--                           become the buttons on the car page, the rest
+--                           become text links. Shape and parsing rules:
+--                           src/lib/vehicle-destinations.ts.
+--
+-- No matching column on `request` — the destination a customer picked is
+-- already captured by request.countryOfImport, which the destination page
+-- prefills, so a second column would be the same fact stored twice and free to
+-- disagree with itself.
+--
+-- ADD COLUMN IF NOT EXISTS, defaulting to empty, so this is safe to apply
+-- twice and safe to apply ahead of the deploy: every existing dossier reads as
+-- "no destinations offered" and its page renders exactly as it does today.
+--
+-- Apply with scripts/apply-destination-column.mjs rather than
+-- scripts/migrate.mjs: the drizzle migrator is unusable while migration 0001
+-- is listed in drizzle/meta/_journal.json without its .sql file (see
+-- 0002_loving_sprite.sql).
+ALTER TABLE "specdossier" ADD COLUMN IF NOT EXISTS "destinations" text[] DEFAULT '{}'::text[] NOT NULL;

@@ -95,6 +95,7 @@ A brief is a JSON file. A one-off can live in a scratch directory. A page that i
   "infotainment": "8-inch Toyota Smart Connect",
   "features": ["GR-Four AWD", "Torsen limited-slip differentials"],
   "searchTags": ["gr-yaris", "hot-hatch", "japan"],
+  "destinations": ["united-kingdom", "ireland", "new-zealand", "kenya", "australia"],
   "exteriorColors": [{ "name": "Platinum White Pearl", "hex": "#f2f2f0" }],
   "interiorColors": [{ "name": "Black Suede", "hex": "#1c1c1c" }],
   "grades": [
@@ -160,6 +161,27 @@ value, which defaults to RHD.
 
 Don't publish the same model twice to cover both hands — that is the same
 duplicate-page problem as grades.
+
+### Destinations
+
+`destinations` lists the markets this car can be imported to, **in ranked
+order**, using slugs from `src/config/destinations.ts`. The order is what the
+page renders: the first five eligible entries become buttons, the rest become
+small text links under them.
+
+Each one also gets its own URL —
+`/b2c/gallery/<slug>/import-to-<destination>` — which opens on that market with
+its rules on screen, its reading list attached and the inquiry form's country
+already set. That is the link to hand a buyer in a specific country. `--dry-run`
+prints every URL the brief would create.
+
+Pick the markets the car actually suits rather than listing everything: a
+Kenya-bound buyer needs a car under eight years old, and a Seychelles-bound one
+realistically needs a new one. An unknown slug stops the run rather than
+publishing a page into no markets, so a typo is loud.
+
+Leaving `destinations` out is fine and is what every pre-existing page does —
+the car page then shows no country selector at all.
 
 ### Upcoming cars
 

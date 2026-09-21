@@ -27,6 +27,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { generateDossierPdfAction } from "@/actions/pdf-actions";
 // Actions & Components
 import { getSpecDossierById, saveSpecDossier } from "@/actions/spec-actions";
+import { DestinationEditor } from "@/components/DestinationEditor";
 import { GradeEditor, SteeringOptionsEditor } from "@/components/GradeEditor";
 import { SpecSection } from "@/components/SpecSection";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +43,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FEATURED_DESTINATION_LIMIT } from "@/config/destinations";
 import { getPresignedUrls } from "@/lib/file-actions";
 import { CAR_MAKES, getLogoFilename } from "@/lib/logo-utils";
 import {
@@ -56,6 +58,10 @@ import {
   swatchStyle,
   type VehicleColor,
 } from "@/lib/vehicle-colors";
+import {
+  cleanDestinationsForSave,
+  parseDestinationSlugs,
+} from "@/lib/vehicle-destinations";
 import {
   cleanGradesForSave,
   emptyGrade,
@@ -597,6 +603,10 @@ function SpecBuilderContent() {
   const [grades, setGrades] = useState<VehicleGrade[]>([]);
   const [steeringOptions, setSteeringOptions] = useState<string[]>(["RHD"]);
 
+  // Destination markets this car is offered into. An ORDERED list of slugs —
+  // the order is the ranking the car page renders, so it is never sorted here.
+  const [destinations, setDestinations] = useState<string[]>([]);
+
   // Image Management State
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -650,6 +660,10 @@ function SpecBuilderContent() {
             setSteeringOptions(
               parseSteeringOptions(res.data.steeringOptions, res.data.steering),
             );
+            // Empty for every dossier authored before this column existed,
+            // which renders as no country selector at all rather than as a
+            // default set of markets nobody chose.
+            setDestinations(parseDestinationSlugs(res.data.destinations));
           } else {
             alert("Dossier not found or error fetching.");
           }
@@ -946,6 +960,7 @@ function SpecBuilderContent() {
         exteriorColors: namedColors(exteriorColors),
         interiorColors: namedColors(interiorColors),
         grades: cleanGradesForSave(grades, finalImageUrls.length),
+        destinations: cleanDestinationsForSave(destinations),
         steeringOptions,
         // The legacy single-value column stays the primary hand, so the PDF
         // and anything else reading `steering` keeps working unchanged.
@@ -1662,6 +1677,33 @@ function SpecBuilderContent() {
               onAdd={addGrade}
               onRemove={removeGrade}
               onMove={moveGrade}
+            />
+          </div>
+
+          {/* Destination Markets Section */}
+          <div className="bg-white border border-black/5 rounded-[3rem] p-10 shadow-sm">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="bg-sky-50 text-sky-600 p-4 rounded-2xl">
+                <Globe size={28} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold">Destination Markets</h3>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Where this car can be imported to. The top{" "}
+                  {FEATURED_DESTINATION_LIMIT} become buttons on the car page
+                  and the rest become text links; every one of them gets its own
+                  shareable URL that opens on that country, with the market
+                  rules on screen and the inquiry form already set to it.
+                </p>
+              </div>
+            </div>
+
+            <DestinationEditor
+              value={destinations}
+              onChange={(next) => {
+                setIsDirty(true);
+                setDestinations(next);
+              }}
             />
           </div>
 

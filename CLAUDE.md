@@ -82,6 +82,8 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 - `scripts/create-car-page.mjs` — upserts a spec dossier (a public car page) from a JSON brief, uploading any local images to R2. Supports `--dry-run`, `--publish` and `--env dev|staging|production`; upserts by slug so re-running an edited brief updates the same page. Driven by the `car-landing-page` skill (`/car-landing-page`). Briefs for pages that are meant to exist in every environment are kept in `scripts/briefs/` so the same page can be recreated on staging and production — **a car page is a database row, so a code deploy never carries one between environments; re-run the brief with `--env` against each.**
 - `scripts/optimize-car-images.mjs` — re-encodes a folder of car photographs to WebP at a display width. Car images under `public/` are served as plain `<img>` tags, so nothing resizes them at request time; run this before committing manufacturer JPEGs.
 - `scripts/apply-grade-columns.mjs` — adds the grade/steering columns (`drizzle/0004_grade_columns.sql`) to one environment. Read-only until `--apply`.
+- `scripts/apply-destination-column.mjs` — adds `specdossier.destinations` (`drizzle/0006_destination_column.sql`) to one environment. Read-only until `--apply`. Like every column change here, it has to be run against dev, staging and production separately.
+- `scripts/backfill-dossier-destinations.mjs` — offers every existing car page into the core five markets (Ireland, UK, Kenya, Tanzania, Sri Lanka). Read-only until `--apply`, idempotent, and **merges** rather than replacing, so a car that already has destinations keeps its ranking. Skips the markets flagged `rhdOnly` for a dossier that can only be sourced LHD, and says so rather than silently listing a car the buyer could not register.
 
 ### Sourcing & Profit Analyzer
 
@@ -97,7 +99,7 @@ The rules that most often trip people up:
 - **30% ROI on landed cost** (`TARGET_MARGIN_PCT`) is the desk minimum and the default, editable per run from the *Minimum ROI* field. Whatever it is set to is enforced in code after the model answers — a car below target can never come back as "source".
 - **Resale is compared net of VAT.** Scraped listings are VAT-inclusive; the landed cost is not. The market median is divided by 1.2 (`resaleExVat`) before any profit, ROI or ceiling-bid figure is derived. Never subtract a landed cost from a raw median.
 
-### Vehicles: grades, steering, colours and upcoming models
+### Vehicles: grades, steering, colours, destinations and upcoming models
 
 Car pages are **database rows, not files** — they can't be added by committing code. Create them in `/admin/specs` or via `scripts/create-car-page.mjs`.
 
@@ -105,6 +107,17 @@ Car pages are **database rows, not files** — they can't be added by committing
 - **Upcoming cars** — `isUpcoming` on a dossier is orthogonal to `status`: the car is still Active with a real public page, it just sells a pre-order. It adds a Coming Soon badge, reframes the inquiry section, lists the car in the upcoming rail on `/latest-news`, and flags every lead off the page with `isUpcomingVehicle` (shown as an *Upcoming Car* badge in the admin leads table).
 - **Grades** — `grades` on a dossier is the model's ladder (Ti, Ti+, Ti-L, Ti-L Reserve) rather than four near-duplicate pages competing for one keyword. **A grade stores only what it changes**: every spec field is optional and blank means "inherit from the dossier", so authoring a ladder is four short lists of differences. Helpers live in `src/lib/vehicle-grades.ts` (`parseGrades`, `gradeSpec`, `gradeFeatures`, `gradePricing`, `cleanGradesForSave`) — use them rather than reading the jsonb. Selecting a grade on the car page re-resolves the spec table, feature list, pricing and gallery photo, prefills the inquiry form's Grade field, and writes the grade onto the lead beside the make and model. The admin editor is `src/components/GradeEditor.tsx`.
 - **Steering** — `steeringOptions` on a dossier lists every hand the model can be sourced in; the legacy single `steering` column stays as the primary and as the fallback for every dossier written before the list existed. Always read it through `parseSteeringOptions` (`src/lib/vehicle.ts`), which never returns an empty list. Offering both puts a Steering selector on the car page and an RHD/LHD field on the inquiry form, and the choice lands on the lead — where it now drives the admin table's LHD badge and the dashboard's LHD filter in preference to inferring the hand from the landing page the lead arrived through.
+- **Destinations** — `destinations` on a dossier is an **ordered** list of destination slugs from `src/config/destinations.ts`: the markets that car may be imported to. The order is the ranking — the first five eligible entries render as buttons on the car page and the rest as small text links — so never sort it. Read it through `parseDestinations` / `parseDestinationSlugs` (`src/lib/vehicle-destinations.ts`), save it through `cleanDestinationsForSave`. Empty, which is every dossier written before the column existed, means no country selector at all. The admin editor is `src/components/DestinationEditor.tsx`.
+
+  Selecting a destination rewrites the URL to `/b2c/gallery/<car>/import-to-<destination>`, a real route (`src/app/(static)/b2c/gallery/[id]/[destination]/page.tsx`) that opens on that market with the inquiry form's country pre-set. **Three rules govern that registry, and all three are load-bearing:**
+  - **`formCountry` must be the exact `n` string from `COUNTRIES` in `src/lib/countries.ts`.** The form matches on `===`; a near miss still passes validation, selects nothing in the dropdown and resolves no currency. `src/config/__tests__/destinations.test.ts` fails the build on a mismatch.
+  - **No invented figures.** Every tax, duty, age-limit and levy claim in the registry is one that is already live and reviewed on `/import-japanese-cars` or `/indian-manufactured-cars`. A market we hold no reviewed claim for is `depth: "listed"` — its page still exists and still prefills the form, but it makes no market-specific claim, is `noindex, follow` and stays out of the sitemap rather than adding thin content to the index. Only `depth: "full"` markets are indexed and listed.
+  - **Origin changes the rule.** A duty that applies to a Japan-built car does not necessarily apply to an India-built one, so origin-specific claims live in `byOrigin`, keyed on the dossier's `countryOfOrigin`, and are merged over the base copy by `destinationCopy`.
+
+  The registry also carries **`rhdOnly`** — true only where we publish a right-hand-drive requirement, traceable to the live campaign-page copy. It is not an adjudication of LHD legality worldwide: false means "we state no blanket requirement", which is why Ireland, the UK and New Zealand are false and the `listed` markets make no hand claim at all. A car that can only be sourced in one hand must not be offered into a market that cannot register it.
+
+  The registry also carries `focusList`. `false` means the market ranks and links normally but never takes one of the five button slots — `splitDestinations` enforces it in code so the rule holds for a page built by `scripts/create-car-page.mjs` too. It is a channel-policy decision (`business-context.md` §14.2) and **never appears in public copy**.
+
 - **Car ↔ news linking** is two-way and either side can author it: a dossier's `newsSlug`, or an article's `linkedVehicleSlugs` in `src/config/news.ts`. `getCarsForNewsArticle` unions both and only returns Active dossiers, so unresolved slugs are skipped rather than breaking the article.
 
 ### CI/CD
@@ -212,6 +225,8 @@ This is additive to, not a replacement for, the per-content-type rules above —
 /                          Public marketing home
 /(static)/b2b|b2c|saas    Marketing landing pages
 /(static)/b2c/gallery      Vehicle gallery + [id] detail
+/(static)/b2c/gallery/[id]/import-to-[destination]
+                           One car, into one market — shareable per-country URL
 /campaigns/[slug]          Dynamic campaign pages
 /auth/*                    Sign-in, sign-up, password reset
 /request                   Customer car request form

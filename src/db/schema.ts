@@ -217,6 +217,13 @@ export const specDossiers = pgTable("specdossier", {
   // cheap to author and the page can show the reader the real differences.
   // Shape and inheritance rules live in src/lib/vehicle-grades.ts.
   grades: jsonb("grades").notNull().default([]),
+  // Destination markets this car is offered into, as an ORDERED list of slugs
+  // from src/config/destinations.ts. The order is the admin's ranking: the
+  // first five eligible entries become the buttons on the car page and the
+  // rest become text links. Empty — which is every dossier written before this
+  // column existed — means the page shows no destination selector at all.
+  // Read it through parseDestinations (src/lib/vehicle-destinations.ts).
+  destinations: text("destinations").array().notNull().default([]),
   upholstery: text("upholstery").default("").notNull(),
   infotainment: text("infotainment").default("").notNull(),
   features: text("features").array().notNull().default([]),
