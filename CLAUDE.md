@@ -83,6 +83,7 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 - `scripts/optimize-car-images.mjs` — re-encodes a folder of car photographs to WebP at a display width. Car images under `public/` are served as plain `<img>` tags, so nothing resizes them at request time; run this before committing manufacturer JPEGs.
 - `scripts/apply-grade-columns.mjs` — adds the grade/steering columns (`drizzle/0004_grade_columns.sql`) to one environment. Read-only until `--apply`.
 - `scripts/apply-destination-column.mjs` — adds `specdossier.destinations` (`drizzle/0006_destination_column.sql`) to one environment. Read-only until `--apply`. Like every column change here, it has to be run against dev, staging and production separately.
+- `scripts/backfill-dossier-destinations.mjs` — offers every existing car page into the core five markets (Ireland, UK, Kenya, Tanzania, Sri Lanka). Read-only until `--apply`, idempotent, and **merges** rather than replacing, so a car that already has destinations keeps its ranking. Skips the markets flagged `rhdOnly` for a dossier that can only be sourced LHD, and says so rather than silently listing a car the buyer could not register.
 
 ### Sourcing & Profit Analyzer
 
@@ -112,6 +113,8 @@ Car pages are **database rows, not files** — they can't be added by committing
   - **`formCountry` must be the exact `n` string from `COUNTRIES` in `src/lib/countries.ts`.** The form matches on `===`; a near miss still passes validation, selects nothing in the dropdown and resolves no currency. `src/config/__tests__/destinations.test.ts` fails the build on a mismatch.
   - **No invented figures.** Every tax, duty, age-limit and levy claim in the registry is one that is already live and reviewed on `/import-japanese-cars` or `/indian-manufactured-cars`. A market we hold no reviewed claim for is `depth: "listed"` — its page still exists and still prefills the form, but it makes no market-specific claim, is `noindex, follow` and stays out of the sitemap rather than adding thin content to the index. Only `depth: "full"` markets are indexed and listed.
   - **Origin changes the rule.** A duty that applies to a Japan-built car does not necessarily apply to an India-built one, so origin-specific claims live in `byOrigin`, keyed on the dossier's `countryOfOrigin`, and are merged over the base copy by `destinationCopy`.
+
+  The registry also carries **`rhdOnly`** — true only where we publish a right-hand-drive requirement, traceable to the live campaign-page copy. It is not an adjudication of LHD legality worldwide: false means "we state no blanket requirement", which is why Ireland, the UK and New Zealand are false and the `listed` markets make no hand claim at all. A car that can only be sourced in one hand must not be offered into a market that cannot register it.
 
   The registry also carries `focusList`. `false` means the market ranks and links normally but never takes one of the five button slots — `splitDestinations` enforces it in code so the rule holds for a page built by `scripts/create-car-page.mjs` too. It is a channel-policy decision (`business-context.md` §14.2) and **never appears in public copy**.
 

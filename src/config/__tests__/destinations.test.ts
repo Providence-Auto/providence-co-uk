@@ -308,16 +308,42 @@ describe("originGuideSlugs", () => {
   });
 });
 
-// scripts/create-car-page.mjs runs under plain node and cannot resolve the "@"
-// alias, so it redeclares the slug list. This is what stops that copy drifting.
-describe("scripts/create-car-page.mjs", () => {
-  it("knows exactly the destinations the registry knows", () => {
-    const script = readFileSync(
-      path.resolve(__dirname, "../../../scripts/create-car-page.mjs"),
-      "utf8",
-    );
+describe("rhdOnly", () => {
+  // The flag has to mean what the copy says, or it is a second source of truth
+  // for the same fact. Every market whose facts carry the right-hand-drive
+  // requirement is flagged, and no market without it is.
+  it("is set on exactly the markets whose copy states the requirement", () => {
+    for (const destination of DESTINATIONS) {
+      const statesIt = destination.base.facts.some((fact) =>
+        fact.label.toLowerCase().includes("right-hand drive required"),
+      );
+      expect(
+        destination.rhdOnly === true,
+        `${destination.slug}: rhdOnly=${destination.rhdOnly}, copy says ${statesIt}`,
+      ).toBe(statesIt);
+    }
+  });
 
-    const block = script.match(
+  // It is a published claim, not an inference from which side the traffic
+  // takes — the `listed` markets deliberately make no hand claim at all.
+  it("is never set on a market we publish no rule for", () => {
+    for (const destination of DESTINATIONS) {
+      if (destination.depth === "listed") {
+        expect(destination.rhdOnly, destination.slug).not.toBe(true);
+      }
+    }
+  });
+});
+
+// These two scripts run under plain node and cannot resolve the "@" alias, so
+// they redeclare what they need from the registry. This is what stops those
+// copies drifting.
+describe("plain-node scripts", () => {
+  const readScript = (name: string) =>
+    readFileSync(path.resolve(__dirname, "../../../scripts", name), "utf8");
+
+  it("create-car-page.mjs knows exactly the destinations the registry knows", () => {
+    const block = readScript("create-car-page.mjs").match(
       /const DESTINATION_SLUGS = \[([\s\S]*?)\];/,
     )?.[1];
     expect(block, "DESTINATION_SLUGS not found in the script").toBeTruthy();
@@ -327,5 +353,25 @@ describe("scripts/create-car-page.mjs", () => {
     );
 
     expect(new Set(inScript)).toEqual(new Set(DESTINATIONS.map((d) => d.slug)));
+  });
+
+  it("backfill-dossier-destinations.mjs agrees with the registry on rhdOnly", () => {
+    const block = readScript("backfill-dossier-destinations.mjs").match(
+      /const MARKETS = \[([\s\S]*?)\];/,
+    )?.[1];
+    expect(block, "MARKETS not found in the script").toBeTruthy();
+
+    const entries = [
+      ...(block ?? "").matchAll(
+        /\{\s*slug:\s*"([a-z0-9-]+)"\s*,\s*rhdOnly:\s*(true|false)\s*\}/g,
+      ),
+    ];
+    expect(entries.length, "no MARKETS entries parsed").toBeGreaterThan(0);
+
+    for (const [, slug, rhdOnly] of entries) {
+      const destination = getDestination(slug);
+      expect(destination, `${slug} is not in the registry`).toBeTruthy();
+      expect(destination?.rhdOnly === true, `${slug}`).toBe(rhdOnly === "true");
+    }
   });
 });

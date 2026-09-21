@@ -16,6 +16,9 @@
   "fuelSystem": "Diesel",
   "steeringOptions": ["RHD"],
 
+  "_destinationsComment": "The core five, matching scripts/backfill-dossier-destinations.mjs — listed here so re-running this brief does not wipe what that script filled in. Right-hand drive only, which all five accept.",
+  "destinations": ["ireland", "united-kingdom", "kenya", "tanzania", "sri-lanka"],
+
   "upholstery": "Camel interior theme, contrasted with black; soft-touch material with stitching inspired by Kimekomi",
   "infotainment": "Monolithic display integrating two 14.3-inch screens (12.3-inch on select specifications), with Smartphone-link Display Audio and MITSUBISHI CONNECT",
 

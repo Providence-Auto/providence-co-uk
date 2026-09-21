@@ -118,6 +118,20 @@ export type DestinationConfig = {
    * breached by ordering a dossier's list differently.
    */
   focusList: boolean;
+  /**
+   * True where we carry a **published** claim that this market admits
+   * right-hand-drive vehicles only — every one of these traces to the live
+   * campaign-page copy, same as the tax and age claims.
+   *
+   * It is not a worldwide adjudication of left-hand-drive legality. False means
+   * "we state no blanket requirement", not "LHD is welcome": Ireland, the UK
+   * and New Zealand all admit LHD imports under their own conditions, and the
+   * `listed` markets make no hand claim at all by design.
+   *
+   * Used to keep a car that can only be sourced in one hand out of markets
+   * that cannot register it — see scripts/backfill-dossier-destinations.mjs.
+   */
+  rhdOnly?: boolean;
   base: DestinationCopy;
   byOrigin?: Record<string, DestinationOriginOverride>;
   /** Blog slugs specific to importing *into* this market. */
@@ -243,6 +257,7 @@ const kenya: DestinationConfig = {
   region: "Africa",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
@@ -265,6 +280,7 @@ const tanzania: DestinationConfig = {
   region: "Africa",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline:
       "Tanzania has no age limit, but older cars carry extra excise duty.",
@@ -309,6 +325,7 @@ const mauritius: DestinationConfig = {
   region: "Africa",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline:
       "Mauritius taxes by engine size, so the smaller engine lands in the cheaper band.",
@@ -334,6 +351,7 @@ const seychelles: DestinationConfig = {
   region: "Africa",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline:
       "Seychelles admits second-hand imports only under narrow concessions.",
@@ -356,6 +374,7 @@ const trinidadAndTobago: DestinationConfig = {
   region: "Caribbean",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline: "Trinidad widened its used-car age limit to eight years.",
     body: "A 2025 revision of the Foreign Used Car Policy raised the permissible age of imported private cars from three years to eight, and light diesel commercials to ten, which puts most of the stock we source comfortably inside the rule. Used right-hand-drive vehicles still need an import licence, and quota rules govern dealer volume — so the licence and the age rule in force are confirmed at the time we buy, and the car is landed at Port of Spain with tariff, VAT and charges inside the quote you already approved.",
@@ -377,6 +396,7 @@ const jamaica: DestinationConfig = {
   region: "Caribbean",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline:
       "Jamaica caps motor cars at six years, and wants the licence first.",
@@ -399,6 +419,7 @@ const grenada: DestinationConfig = {
   region: "Caribbean",
   depth: "full",
   focusList: true,
+  rhdOnly: true,
   base: {
     headline:
       "In Grenada the environmental levy climbs with age, so the newer car is the cheaper car.",
@@ -451,6 +472,7 @@ const sriLanka: DestinationConfig = {
   // Stays fully selectable, fully linked and fully indexed — it just never
   // takes one of the five hero slots. `business-context.md` §14.2.
   focusList: false,
+  rhdOnly: true,
   base: {
     headline:
       "Sri Lanka's vehicle taxes move, so they are confirmed for your exact car at the time we buy.",
