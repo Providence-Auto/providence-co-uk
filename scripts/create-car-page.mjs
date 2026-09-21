@@ -54,6 +54,7 @@ const specDossiers = pgTable("specdossier", {
   exteriorColors: jsonb("exteriorColors").notNull().default([]),
   interiorColors: jsonb("interiorColors").notNull().default([]),
   grades: jsonb("grades").notNull().default([]),
+  destinations: text("destinations").array().notNull().default([]),
   upholstery: text("upholstery").default("").notNull(),
   infotainment: text("infotainment").default("").notNull(),
   features: text("features").array().notNull().default([]),
@@ -198,6 +199,76 @@ function normalizeSteeringOptions(value, fallback) {
     .trim()
     .toUpperCase();
   return [single === "LHD" ? "LHD" : "RHD"];
+}
+
+/**
+ * Every destination slug the registry knows.
+ *
+ * Redeclared here for the same reason the table above is: this script runs
+ * under plain node, which cannot resolve the `@/` alias into
+ * src/config/destinations.ts. Keep in sync with DESTINATIONS in that file —
+ * src/config/__tests__/destinations.test.ts fails the build if the two lists
+ * disagree, so this cannot drift silently.
+ */
+const DESTINATION_SLUGS = [
+  "united-kingdom",
+  "ireland",
+  "germany",
+  "malta",
+  "cyprus",
+  "jersey",
+  "kenya",
+  "uganda",
+  "tanzania",
+  "mauritius",
+  "seychelles",
+  "zimbabwe",
+  "botswana",
+  "jamaica",
+  "trinidad-and-tobago",
+  "grenada",
+  "barbados",
+  "guyana",
+  "bahamas",
+  "new-zealand",
+  "sri-lanka",
+  "australia",
+  "hong-kong",
+  "malaysia",
+  "singapore",
+  "indonesia",
+  "thailand",
+  "pakistan",
+  "bangladesh",
+  "nepal",
+];
+
+/**
+ * The destination markets this car is offered into, in the brief's own order —
+ * the order IS the ranking, so it is never sorted. An unknown slug is a typo
+ * in the brief, and a typo that silently published a car into no markets would
+ * be worse than a loud failure, so it stops the run.
+ */
+function normalizeDestinations(value) {
+  const raw = Array.isArray(value) ? value : [];
+  const seen = new Set();
+  const slugs = [];
+
+  for (const entry of raw) {
+    const slug = String(entry || "")
+      .trim()
+      .toLowerCase();
+    if (!slug || seen.has(slug)) continue;
+    if (!DESTINATION_SLUGS.includes(slug)) {
+      fail(
+        `Unknown destination "${slug}". Valid slugs: ${DESTINATION_SLUGS.join(", ")}`,
+      );
+    }
+    seen.add(slug);
+    slugs.push(slug);
+  }
+
+  return slugs;
 }
 
 /**
@@ -482,6 +553,7 @@ async function run() {
     exteriorColors: normalizeColors(brief.exteriorColors, "exteriorColors"),
     interiorColors: normalizeColors(brief.interiorColors, "interiorColors"),
     grades: normalizeGrades(brief.grades, images.length),
+    destinations: normalizeDestinations(brief.destinations),
     upholstery: String(brief.upholstery ?? ""),
     infotainment: String(brief.infotainment ?? ""),
     features: Array.isArray(brief.features) ? brief.features.map(String) : [],
@@ -515,6 +587,11 @@ async function run() {
     console.log("\n--dry-run — nothing written. Resolved record:\n");
     console.log(JSON.stringify(record, null, 2));
     console.log(`\nPublic URL would be: /b2c/gallery/${slug}`);
+    for (const destination of record.destinations) {
+      console.log(
+        `                     /b2c/gallery/${slug}/import-to-${destination}`,
+      );
+    }
     return;
   }
 

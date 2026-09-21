@@ -746,6 +746,7 @@ export default function RequestForm({
   selectedGrade,
   steeringOptions = [],
   selectedSteering,
+  selectedDestination,
 }: {
   prefill?: Partial<typeof initialFormState>;
   defaultPhoneCountry?: string;
@@ -769,6 +770,14 @@ export default function RequestForm({
    */
   selectedGrade?: string;
   selectedSteering?: string;
+  /**
+   * The destination the car page is currently showing, spelled exactly as
+   * COUNTRIES spells it. Same reasoning as the two above — it is a selector the
+   * customer can change mid-inquiry, so it must not travel through `prefill`.
+   * Unlike those two it also carries the dial code and the budget currency, so
+   * the effect below mirrors what picking the country in the dropdown does.
+   */
+  selectedDestination?: string;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -903,6 +912,46 @@ export default function RequestForm({
         : { ...prev, steering: selectedSteering },
     );
   }, [selectedSteering]);
+
+  // The car page's destination chips. Same one-field-at-a-time treatment as the
+  // two above, but the destination also decides the dial code and the budget
+  // currency — so this reproduces the dropdown's own side effects rather than
+  // writing the country alone and leaving a phone prefix from the last one.
+  // The currency still yields to a customer who has chosen their own: someone
+  // importing to Kenya may well be paying in GBP, and re-deciding that for them
+  // every time they compare destinations would be wrong.
+  //
+  // Both refs are load-bearing. The effect must fire only when the *chip*
+  // changes, so it compares against the last destination it applied rather than
+  // against live form state — comparing against state meant a customer who
+  // changed the country by hand had it silently reverted the next time this ran.
+  // And `budgetCurrencyTouched` is read through a ref so that flipping it is not
+  // one of those re-runs.
+  const appliedDestinationRef = useRef<string | undefined>(undefined);
+  const budgetCurrencyTouchedRef = useRef(false);
+  budgetCurrencyTouchedRef.current = budgetCurrencyTouched;
+
+  useEffect(() => {
+    if (!selectedDestination) return;
+    if (appliedDestinationRef.current === selectedDestination) return;
+    appliedDestinationRef.current = selectedDestination;
+
+    const match = COUNTRIES.find((c) => c.n === selectedDestination);
+    const destinationCurrency = currencyForCountry(selectedDestination);
+
+    setFormData((prev) => {
+      if (prev.countryOfImport === selectedDestination) return prev;
+      return {
+        ...prev,
+        countryOfImport: selectedDestination,
+        countryCode: match ? match.c : prev.countryCode,
+        budgetCurrency:
+          budgetCurrencyTouchedRef.current || !destinationCurrency
+            ? prev.budgetCurrency
+            : destinationCurrency,
+      };
+    });
+  }, [selectedDestination]);
 
   useEffect(() => {
     if (!formData.make) {

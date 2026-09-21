@@ -17,12 +17,27 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { generateDossierPdfAction } from "@/actions/pdf-actions";
+import {
+  DestinationBrief,
+  DestinationChips,
+  DestinationGuides,
+} from "@/components/CarDestinations";
 import FAQSection from "@/components/faqSection";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 import RequestForm, { mileageToPrefillRange } from "@/components/requestForm";
+import {
+  countryKey,
+  type DestinationConfig,
+  destinationCopy,
+  destinationFromSegment,
+  destinationPath,
+  splitDestinations,
+} from "@/config/destinations";
+import type { GuideLink } from "@/lib/destination-guides";
 import { getLogoFilename } from "@/lib/logo-utils";
 import { parseSteeringOptions, steeringLabel } from "@/lib/vehicle";
 import {
@@ -31,6 +46,7 @@ import {
   swatchStyle,
   type VehicleColor,
 } from "@/lib/vehicle-colors";
+import { parseDestinations } from "@/lib/vehicle-destinations";
 import {
   findGrade,
   gradeFeatures,
@@ -99,6 +115,13 @@ type Dossier = {
   grades?: unknown;
   // Every hand this model can be sourced in; empty falls back to `steering`
   steeringOptions?: string[];
+  // Destination-market slugs, in the admin's ranking. Strings, not resolved
+  // registry entries: the entries carry Lucide icon *components*, which cannot
+  // cross the server/client boundary — so the slugs travel and this component
+  // resolves them against the registry itself.
+  destinations?: string[];
+  // The car's public slug, so a destination selection can rewrite the URL.
+  slug?: string;
 };
 
 const FALLBACK_IMAGE =
@@ -145,7 +168,25 @@ function MoreButton({
   );
 }
 
-export default function GalleryDetailClient({ car }: { car: Dossier }) {
+export default function GalleryDetailClient({
+  car,
+  initialDestination = null,
+  destinationGuides = {},
+}: {
+  car: Dossier;
+  /**
+   * The destination the URL named, when the reader arrived on
+   * /b2c/gallery/<car>/import-to-<destination> rather than the base page.
+   */
+  initialDestination?: string | null;
+  /**
+   * Guides for every destination this car is offered into, resolved on the
+   * server. Keyed by destination slug. Passed in rather than looked up here so
+   * the blog registry — several thousand lines of post metadata — stays out of
+   * this page's JavaScript bundle.
+   */
+  destinationGuides?: Record<string, GuideLink[]>;
+}) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const inquiryRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -182,6 +223,88 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
   // findGrade falls back to the dossier's default rather than to nothing, so
   // this is undefined only for a model with no grades at all.
   const selectedGrade = findGrade(grades, selectedGradeId);
+
+  // --- Destination, the choice that decides the landed price --------------
+  const destinations = useMemo(
+    () => parseDestinations(car.destinations),
+    [car.destinations],
+  );
+  const { featured, more } = useMemo(
+    () => splitDestinations(destinations),
+    [destinations],
+  );
+  const [selectedDestinationSlug, setSelectedDestinationSlug] = useState<
+    string | null
+  >(initialDestination);
+  const selectedDestination: DestinationConfig | null =
+    destinations.find((d) => d.slug === selectedDestinationSlug) ?? null;
+
+  // Keep the selection honest against the address bar.
+  //
+  // Clicking a chip rewrites the URL without a navigation (see pickDestination),
+  // which leaves Next's history entry holding this route's tree under the
+  // destination's URL. Going back to such an entry restores the page with the
+  // selection cleared while the URL still names a country — the two would
+  // disagree, and `usePathname()` feeds the lead's `source`. Re-deriving the
+  // selection whenever the path changes settles it in whichever direction the
+  // router actually moved.
+  const pathname = usePathname();
+  useEffect(() => {
+    const segment = (pathname || "").split("/").filter(Boolean).pop() ?? "";
+    const fromUrl = destinationFromSegment(segment);
+    setSelectedDestinationSlug(fromUrl ? fromUrl.slug : null);
+  }, [pathname]);
+
+  // The registry's copy for this destination, with the source country's
+  // overrides applied — a duty that applies to a Japan-built car does not
+  // necessarily apply to an India-built one.
+  const destinationBrief = useMemo(
+    () =>
+      selectedDestination
+        ? destinationCopy(selectedDestination, car.countryOfOrigin)
+        : null,
+    [selectedDestination, car.countryOfOrigin],
+  );
+
+  /**
+   * Picking a destination rewrites the address bar so the reader can copy a
+   * link that opens on the same country — which is the whole point of the
+   * per-destination URL.
+   *
+   * `replaceState` rather than a router navigation, and rather than
+   * `pushState`: a navigation would re-render this page from the server and
+   * discard anything already typed into the inquiry form below, and a history
+   * entry per chip would turn the back button into a tour of the countries the
+   * reader clicked through on the way to the one they wanted.
+   */
+  const pickDestination = (destination: DestinationConfig) => {
+    setSelectedDestinationSlug(destination.slug);
+    setScrollToBrief(true);
+
+    if (typeof window !== "undefined" && car.slug) {
+      window.history.replaceState(
+        null,
+        "",
+        destinationPath(car.slug, destination.slug),
+      );
+    }
+  };
+
+  // Scrolling has to wait for the panel to exist. On the base car page nothing
+  // is selected, so the panel is not mounted, and doing this inside the click
+  // handler meant the *first* chip click found nothing to scroll to and looked
+  // like a dead button — every click after it worked, which is worse than never
+  // working. The flag keeps it to a deliberate pick rather than firing on the
+  // selection a shared link arrives with, where the reader has not asked to be
+  // moved anywhere.
+  const [scrollToBrief, setScrollToBrief] = useState(false);
+  useEffect(() => {
+    if (!scrollToBrief || !selectedDestinationSlug) return;
+    setScrollToBrief(false);
+    document
+      .getElementById("destination")
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [scrollToBrief, selectedDestinationSlug]);
 
   const steeringOptions = useMemo(
     () => parseSteeringOptions(car.steeringOptions, car.steering),
@@ -412,9 +535,21 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
               </div>
             )}
 
+            {/* On a destination variant the H1 carries the market, so the page
+                answers "can I import this to Kenya?" above the fold instead of
+                300 lines down — and so the two URLs are not competing in search
+                with byte-identical headings. */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[0.95] mb-3 uppercase">
               {car.make} <span className="text-zinc-400">{car.model}</span>{" "}
               <span className="text-zinc-300">{car.year}</span>
+              {selectedDestination && (
+                <>
+                  <br />
+                  <span className="text-2xl md:text-3xl lg:text-4xl text-[#4da8da]">
+                    Imported to {selectedDestination.name}
+                  </span>
+                </>
+              )}
             </h1>
 
             {/* Pre-order framing: state plainly that this car isn't here yet,
@@ -486,10 +621,32 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
               </div>
             )}
 
-            {/* Grade and steering — the two choices that change what gets
-                quoted, so they sit above the CTA rather than below it. */}
-            {(grades.length > 0 || steeringOptions.length > 1) && (
+            {/* Destination, grade and steering — the three choices that change
+                what gets quoted, so they sit above the CTA rather than below
+                it. Destination leads: it decides the duty, the age rule and
+                therefore the price, which the other two only adjust. */}
+            {(destinations.length > 0 ||
+              grades.length > 0 ||
+              steeringOptions.length > 1) && (
               <div className="mt-6 rounded-2xl border border-black/5 bg-white p-5 shadow-[0_12px_28px_rgba(0,0,0,0.03)]">
+                {destinations.length > 0 && (
+                  <div
+                    className={
+                      grades.length > 0 || steeringOptions.length > 1
+                        ? "pb-5 mb-5 border-b border-black/5"
+                        : ""
+                    }
+                  >
+                    <DestinationChips
+                      featured={featured}
+                      more={more}
+                      selected={selectedDestination}
+                      onSelect={pickDestination}
+                      carSlug={car.slug}
+                    />
+                  </div>
+                )}
+
                 {grades.length > 0 && (
                   <div>
                     <div className="flex items-center gap-2 mb-3">
@@ -696,6 +853,16 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
         </div>
       </section>
 
+      {/* What changes once the car has a destination. Rendered only when one is
+          chosen — a placeholder card announcing that nothing has been chosen
+          yet would be filler, and the chips above already ask the question. */}
+      {selectedDestination && destinationBrief && (
+        <DestinationBrief
+          destination={selectedDestination}
+          copy={destinationBrief}
+        />
+      )}
+
       {/* Details */}
       <section className="mt-16 lg:mt-24 px-6 max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -712,27 +879,47 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
                   )}
                 </h3>
                 <div className="space-y-2.5">
-                  {pricing.map((p, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-center p-3.5 bg-white rounded-xl border border-black/5 shadow-sm"
-                    >
-                      <div>
-                        <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">
-                          {p.country}
-                        </p>
-                        <p className="text-xs font-bold text-zinc-500 uppercase">
-                          {p.type}
+                  {pricing.map((p, i) => {
+                    // The row for the country the reader picked, if the matrix
+                    // carries one. Matched on the normalised name rather than
+                    // the raw string because the matrix is typed by hand into a
+                    // free-text field ("UK", "united kingdom") while the
+                    // registry is canonical.
+                    const isDestinationRow =
+                      !!selectedDestination &&
+                      countryKey(p.country) ===
+                        countryKey(selectedDestination.formCountry);
+                    return (
+                      <div
+                        key={i}
+                        className={`flex justify-between items-center p-3.5 rounded-xl shadow-sm transition-colors ${
+                          isDestinationRow
+                            ? "bg-sky-50 border border-sky-300"
+                            : "bg-white border border-black/5"
+                        }`}
+                      >
+                        <div>
+                          <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">
+                            {p.country}
+                            {isDestinationRow && (
+                              <span className="ml-2 text-sky-600">
+                                Your destination
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-xs font-bold text-zinc-500 uppercase">
+                            {p.type}
+                          </p>
+                        </div>
+                        <p className="text-lg font-bold text-black tracking-tight">
+                          <span className="text-sm font-medium mr-1 text-[#4da8da]">
+                            {p.currency}
+                          </span>
+                          {p.amount.toLocaleString()}
                         </p>
                       </div>
-                      <p className="text-lg font-bold text-black tracking-tight">
-                        <span className="text-sm font-medium mr-1 text-[#4da8da]">
-                          {p.currency}
-                        </span>
-                        {p.amount.toLocaleString()}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <p className="text-[10px] text-zinc-400 italic px-1 pt-1">
                     * Estimates include logistics and estimated duties. Final
                     quote provided upon inquiry.
@@ -831,10 +1018,15 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
         )}
       </section>
 
-      {/* Inquiry Section */}
+      {/* Inquiry Section.
+          `id` is load-bearing, not decoration: the destination panel's primary
+          CTA is an `#inquiry` anchor, and without a matching id the browser
+          appends the fragment to the address bar and scrolls nowhere. Every
+          other page in the repo that links to #inquiry ships this id. */}
       <section
+        id="inquiry"
         ref={inquiryRef}
-        className="mt-16 lg:mt-24 px-6 py-16 bg-zinc-50 border-y border-black/5"
+        className="mt-16 lg:mt-24 px-6 py-16 bg-zinc-50 border-y border-black/5 scroll-mt-24"
       >
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-4">
@@ -854,7 +1046,9 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
             <p className="text-zinc-500 text-base font-light leading-relaxed">
               {car.isUpcoming
                 ? `We'll hold your specification for this ${car.model} and come back with a landed cost for your country as soon as it's confirmed for release.`
-                : `Our team will verify the availability of this ${car.model} and provide a landed cost estimate for your destination country.`}
+                : selectedDestination
+                  ? `Our team will verify the availability of this ${car.model} and come back with a landed cost into ${selectedDestination.name}, itemised, before you commit to anything.`
+                  : `Our team will verify the availability of this ${car.model} and provide a landed cost estimate for your destination country.`}
             </p>
           </div>
           <div className="lg:col-span-8">
@@ -866,10 +1060,22 @@ export default function GalleryDetailClient({ car }: { car: Dossier }) {
               selectedGrade={selectedGrade?.name ?? ""}
               steeringOptions={steeringOptions}
               selectedSteering={activeSteering}
+              selectedDestination={selectedDestination?.formCountry}
             />
           </div>
         </div>
       </section>
+
+      {/* The page's one secondary CTA, and it sits here — below the inquiry
+          form — on purpose. CLAUDE.md: nothing competes with the primary CTA,
+          and a panel of links placed between the reader and the form reads as
+          body copy and costs the form its traffic. */}
+      {selectedDestination && (
+        <DestinationGuides
+          destination={selectedDestination}
+          guides={destinationGuides[selectedDestination.slug] ?? []}
+        />
+      )}
 
       <FAQSection />
     </main>
