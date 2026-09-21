@@ -4,12 +4,14 @@ import { listPublishedProfileSlugs } from "@/actions/sales-profile-actions";
 import { getAllSpecDossiers } from "@/actions/spec-actions";
 import { BLOG_BASE_PATH, BLOG_POSTS } from "@/config/blog";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
+import { destinationPath } from "@/config/destinations";
 import {
   getPopulatedCategories,
   NEWS_ARTICLES,
   NEWS_BASE_PATH,
   NEWS_CATEGORY_BASE_PATH,
 } from "@/config/news";
+import { parseDestinations } from "@/lib/vehicle-destinations";
 
 /**
  * The sitemap is DB-backed, so it must never be prerendered.
@@ -116,14 +118,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // failing the request instead leaves the last good copy in place.
     throw new Error("[sitemap] Failed to load spec dossiers");
   }
+  //
+  // Each live car also emits one URL per destination market it is offered
+  // into — /b2c/gallery/<car>/import-to-<destination> — because each answers a
+  // different query ("import a Land Cruiser to Kenya" is not "Land Cruiser")
+  // with a different rule set and a different reading list.
+  //
+  // Only `full` destinations are listed. A `listed` one is a market we ship to
+  // with nothing market-specific published for it yet, so its page is close to
+  // a copy of the car page; it is served with `noindex, follow` and kept out of
+  // here rather than handed to Google as thin content. See
+  // src/config/destinations.ts for what separates the two.
   const carRoutes = dossierResult.data
     .filter((car: any) => LIVE_DOSSIER_STATUSES.has(car.status))
-    .map((car: any) => ({
-      url: `${baseUrl}/b2c/gallery/${car.slug || car._id}`,
-      lastModified: car.updatedAt ? new Date(car.updatedAt) : new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
+    .flatMap((car: any) => {
+      const key = car.slug || car._id;
+      const lastModified = car.updatedAt ? new Date(car.updatedAt) : new Date();
+
+      return [
+        {
+          url: `${baseUrl}/b2c/gallery/${key}`,
+          lastModified,
+          changeFrequency: "weekly" as const,
+          priority: 0.8,
+        },
+        ...parseDestinations(car.destinations)
+          .filter((destination) => destination.depth === "full")
+          .map((destination) => ({
+            url: `${baseUrl}${destinationPath(key, destination.slug)}`,
+            lastModified,
+            changeFrequency: "weekly" as const,
+            // A rung below the car page itself: it is the more specific page,
+            // but the car page is the one that should rank for the model name.
+            priority: 0.7,
+          })),
+      ];
+    });
 
   // 3. Sales-member profile pages (/team/[slug]) — published only.
   const profiles = await listPublishedProfileSlugs();

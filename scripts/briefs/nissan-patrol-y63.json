@@ -17,6 +17,18 @@
   "fuelSystem": "Petrol",
   "steeringOptions": ["RHD"],
 
+  "_destinationsComment": "Right-hand-drive markets only, since the Y63 is sourced in Australian spec. Ranked: the first five render as buttons on the car page, the rest as text links, and each gets its own /import-to- URL.",
+  "destinations": [
+    "united-kingdom",
+    "ireland",
+    "kenya",
+    "new-zealand",
+    "jamaica",
+    "sri-lanka",
+    "malaysia",
+    "tanzania"
+  ],
+
   "upholstery": "Synthetic leather on Ti, Ti+ and Ti-L; genuine leather on Ti-L+ and Ti-L Reserve",
   "infotainment": "Dual 12.3-inch displays on Ti and Ti+, dual 14.3-inch from Ti-L up, NissanConnect with Google built-in",
 

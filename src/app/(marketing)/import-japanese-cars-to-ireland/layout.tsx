@@ -16,7 +16,7 @@ import type { Metadata } from "next";
 const PATH = "/import-japanese-cars-to-ireland";
 const TITLE = "Import a Japanese Car to Ireland (2026) — Cost, VRT & Shipping";
 const DESCRIPTION =
-  "How to buy a car at Japanese auction and land it in Ireland: 0% duty with a CEPA statement of origin, 23% VAT, VRT on OMSP, and the shipping and paperwork in between.";
+  "Buy at Japanese auction and land it at an Irish port: 0% duty under the EU–Japan EPA, 23% VAT, VRT on OMSP, clearance file prepared. Get your quote.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

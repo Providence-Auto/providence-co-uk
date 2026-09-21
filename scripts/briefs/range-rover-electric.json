@@ -17,6 +17,9 @@
   "emissions": "Zero tailpipe emissions",
   "steeringOptions": ["RHD", "LHD"],
 
+  "_destinationsComment": "The core five, matching scripts/backfill-dossier-destinations.mjs — listed here so re-running this brief does not wipe what that script filled in. Sourced in both hands, so the right-hand-drive markets are open to it.",
+  "destinations": ["ireland", "united-kingdom", "kenya", "tanzania", "sri-lanka"],
+
   "upholstery": "Light Cloud Ultrafabrics PU with Kvadrat textile on the First Edition; JLR has not published the material range for the other specifications",
   "infotainment": "Software-over-the-air updates, with the Range Rover App for charge scheduling, cabin purification, lock status, live location and predicted range",
 
