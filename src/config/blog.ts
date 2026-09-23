@@ -122,9 +122,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 12,
-    heroImage:
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Car keys handed over — importing a car to Ireland",
+    heroImage: "/source-cars/blog/importing-cars-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/importing-cars-to-ireland.jpg",
+    heroAlt: "A Toyota Corolla hybrid hatchback",
     related: [
       "cheapest-cars-to-import-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -182,9 +182,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1523394397008-7c076b65a890?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Compact hatchback — a cheap car to import to Ireland",
+    heroImage: "/source-cars/blog/cheapest-cars-to-import-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/cheapest-cars-to-import-to-ireland.jpg",
+    heroAlt: "A Toyota Yaris hybrid",
     related: [
       "cheapest-way-to-import-a-car-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -238,9 +238,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 11,
-    heroImage:
-      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Calculating the cheapest way to import a car to Ireland",
+    heroImage: "/source-cars/blog/cheapest-way-to-import-a-car-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/cheapest-way-to-import-a-car-to-ireland.jpg",
+    heroAlt: "A Honda Jazz",
     related: [
       "cheapest-cars-to-import-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -297,9 +297,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 9,
-    heroImage:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Working out the cost of importing a car to Ireland",
+    heroImage: "/source-cars/blog/cost-of-importing-a-car-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/cost-of-importing-a-car-to-ireland.jpg",
+    heroAlt: "A Toyota C-HR hybrid",
     related: [
       "vrt-explained-ireland",
       "cheapest-cars-to-import-to-ireland",
@@ -354,9 +354,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 9,
-    heroImage:
-      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Paperwork for Vehicle Registration Tax in Ireland",
+    heroImage: "/source-cars/blog/vrt-explained-ireland.webp",
+    ogImage: "/source-cars/blog/og/vrt-explained-ireland.jpg",
+    heroAlt: "A Toyota Prius hybrid",
     related: [
       "cost-of-importing-a-car-to-ireland",
       "cheapest-way-to-import-a-car-to-ireland",
@@ -413,9 +413,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Choosing between importing a car from Japan or the UK to Ireland",
+    heroImage: "/source-cars/blog/import-car-from-japan-or-uk-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/import-car-from-japan-or-uk-to-ireland.jpg",
+    heroAlt: "A Mazda MX-5 roadster",
     related: [
       "cheapest-cars-to-import-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -476,8 +476,10 @@ const IRELAND_POSTS: BlogPost[] = [
     updatedDate: "2026-07-03",
     readingTimeMins: 9,
     heroImage:
-      "https://images.unsplash.com/photo-1685019718640-6e562edc365e?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Modern Indian-manufactured car",
+      "/source-cars/blog/why-are-indian-manufactured-cars-cheaper.webp",
+    ogImage:
+      "/source-cars/blog/og/why-are-indian-manufactured-cars-cheaper.jpg",
+    heroAlt: "A Suzuki Baleno, built in India",
     related: [],
     toc: [
       { id: "short-answer", label: "The short answer" },
@@ -540,8 +542,9 @@ const MODEL_POSTS: BlogPost[] = [
     publishDate: "2026-08-28",
     updatedDate: "2026-08-28",
     readingTimeMins: 11,
-    heroImage: "/cars/nissan-patrol-y63/black-front.webp",
-    heroAlt: "Nissan Patrol Y63 photographed front three-quarter",
+    heroImage: "/source-cars/blog/how-to-import-a-nissan-patrol.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-nissan-patrol.jpg",
+    heroAlt: "A Nissan Patrol (Y63)",
     related: [
       "nissan-patrol-y63-grades-explained",
       "importing-a-ute-or-4x4-from-australia",
@@ -607,8 +610,9 @@ const MODEL_POSTS: BlogPost[] = [
     publishDate: "2026-08-28",
     updatedDate: "2026-08-28",
     readingTimeMins: 9,
-    heroImage: "/cars/nissan-patrol-y63/interior-dashboard.webp",
-    heroAlt: "Nissan Patrol Y63 dashboard with dual widescreen displays",
+    heroImage: "/source-cars/blog/nissan-patrol-y63-grades-explained.webp",
+    ogImage: "/source-cars/blog/og/nissan-patrol-y63-grades-explained.jpg",
+    heroAlt: "The dashboard of a Nissan Patrol (Y63)",
     related: [
       "how-to-import-a-nissan-patrol",
       "best-cars-to-import-from-australia",
@@ -680,11 +684,9 @@ const UK_IVA_POSTS: BlogPost[] = [
     publishDate: "2026-09-01",
     updatedDate: "2026-09-01",
     readingTimeMins: 12,
-    heroImage:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2400&auto=format&fit=crop",
-    ogImage:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&h=630&fit=crop&auto=format",
-    heroAlt: "Imported car awaiting UK individual vehicle approval",
+    heroImage: "/source-cars/blog/iva-test-explained.webp",
+    ogImage: "/source-cars/blog/og/iva-test-explained.jpg",
+    heroAlt: "A Nissan Skyline GT-R (R34)",
     // Not flagged `isPillar` on purpose: the blog index filters pillar posts out
     // of their cluster group and features only the hardcoded Ireland hub, so the
     // flag would hide this post from the index entirely.
@@ -751,11 +753,9 @@ const UK_IVA_POSTS: BlogPost[] = [
     publishDate: "2026-09-01",
     updatedDate: "2026-09-01",
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1523394397008-7c076b65a890?q=80&w=2400&auto=format&fit=crop",
-    ogImage:
-      "https://images.unsplash.com/photo-1523394397008-7c076b65a890?q=80&w=1200&h=630&fit=crop&auto=format",
-    heroAlt: "Older imported car of the kind exempt from vehicle approval",
+    heroImage: "/source-cars/blog/do-i-need-an-iva-test.webp",
+    ogImage: "/source-cars/blog/og/do-i-need-an-iva-test.jpg",
+    heroAlt: "A Toyota Supra (A80)",
     ctaHref: "/request",
     related: [
       "iva-test-explained",
@@ -820,11 +820,9 @@ const UK_IVA_POSTS: BlogPost[] = [
     publishDate: "2026-09-01",
     updatedDate: "2026-09-01",
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2400&auto=format&fit=crop",
-    ogImage:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1200&h=630&fit=crop&auto=format",
-    heroAlt: "Working out the cost of an IVA test and UK registration",
+    heroImage: "/source-cars/blog/iva-test-cost.webp",
+    ogImage: "/source-cars/blog/og/iva-test-cost.jpg",
+    heroAlt: "A Mitsubishi Delica D:5",
     ctaHref: "/request",
     related: [
       "iva-test-explained",
@@ -888,11 +886,9 @@ const UK_IVA_POSTS: BlogPost[] = [
     publishDate: "2026-09-01",
     updatedDate: "2026-09-01",
     readingTimeMins: 11,
-    heroImage:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2400&auto=format&fit=crop",
-    ogImage:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1200&h=630&fit=crop&auto=format",
-    heroAlt: "Car headlamp detail — the most common IVA failure point",
+    heroImage: "/source-cars/blog/iva-test-requirements.webp",
+    ogImage: "/source-cars/blog/og/iva-test-requirements.jpg",
+    heroAlt: "A Mazda RX-7 (FD)",
     ctaHref: "/request",
     related: [
       "iva-test-explained",
@@ -957,11 +953,9 @@ const UK_IVA_POSTS: BlogPost[] = [
     publishDate: "2026-09-01",
     updatedDate: "2026-09-01",
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1612057473117-3e16246121e6?q=80&w=2400&auto=format&fit=crop",
-    ogImage:
-      "https://images.unsplash.com/photo-1612057473117-3e16246121e6?q=80&w=1200&h=630&fit=crop&auto=format",
-    heroAlt: "Vehicle testing workshop of the kind used for IVA inspections",
+    heroImage: "/source-cars/blog/iva-test-centres-uk.webp",
+    ogImage: "/source-cars/blog/og/iva-test-centres-uk.jpg",
+    heroAlt: "A Suzuki Jimny",
     ctaHref: "/request",
     related: [
       "iva-test-explained",
@@ -1025,11 +1019,9 @@ const UK_IVA_POSTS: BlogPost[] = [
     publishDate: "2026-09-01",
     updatedDate: "2026-09-01",
     readingTimeMins: 12,
-    heroImage:
-      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
-    ogImage:
-      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1200&h=630&fit=crop&auto=format",
-    heroAlt: "Registration paperwork for a car imported into the UK",
+    heroImage: "/source-cars/blog/registering-an-imported-car-in-the-uk.webp",
+    ogImage: "/source-cars/blog/og/registering-an-imported-car-in-the-uk.jpg",
+    heroAlt: "A Toyota Vellfire",
     ctaHref: "/request",
     related: [
       "iva-test-explained",

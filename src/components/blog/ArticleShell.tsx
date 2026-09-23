@@ -6,6 +6,7 @@ import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
 import type { BlogPost } from "@/config/blog";
 import { BLOG_BASE_PATH } from "@/config/blog";
+import { creditForImage } from "@/config/car-photo-credits";
 import BlogCTA from "./BlogCTA";
 import Breadcrumbs from "./Breadcrumbs";
 import RelatedPosts from "./RelatedPosts";
@@ -28,6 +29,8 @@ export default function ArticleShell({
   post: BlogPost;
   children: ReactNode;
 }) {
+  const heroCredit = creditForImage(post.heroImage);
+
   return (
     <main className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
       <MinimalHeader />
@@ -85,13 +88,33 @@ export default function ArticleShell({
       </header>
 
       {/* ── HERO IMAGE ─────────────────────────────────── */}
-      <Reveal y={24} duration={0.7} className="px-6 max-w-5xl mx-auto mb-12">
-        {/* biome-ignore lint/performance/noImgElement: remote hero image, intentional <img> per site convention */}
+      <Reveal
+        as="figure"
+        y={24}
+        duration={0.7}
+        className="px-6 max-w-5xl mx-auto mb-12"
+      >
+        {/* biome-ignore lint/performance/noImgElement: self-hosted hero image, intentional <img> per site convention */}
         <img
           src={post.heroImage}
           alt={post.heroAlt}
           className="w-full aspect-[16/9] object-cover rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.12)]"
         />
+        {/* Commons photographs are CC-licensed; most require attribution. */}
+        {heroCredit && (
+          <figcaption className="mt-3 px-2 text-xs text-zinc-400">
+            Photo:{" "}
+            <a
+              href={heroCredit.source}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
+            >
+              {heroCredit.author}
+            </a>
+            , {heroCredit.licence}, via Wikimedia Commons
+          </figcaption>
+        )}
       </Reveal>
 
       {/* ── BODY ───────────────────────────────────────── */}

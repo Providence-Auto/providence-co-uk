@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Source-country blog clusters — five posts per country where Providence Auto
-// operates a physical office, answering the questions dealers and direct buyers
+// Source-country blog clusters — five posts per source country, plus the Sri
+// Lanka destination cluster, answering the questions dealers and direct buyers
 // actually ask before committing to an import.
 //
 // Metadata only. Post BODIES live in src/content/blog/<slug>.tsx and are mapped
@@ -20,10 +20,6 @@ import type { BlogPost } from "./blog";
 const AUTHOR = "Providence Auto";
 const PUBLISHED = "2026-08-10";
 const UPDATED = "2026-08-10";
-
-const LOCAL = (name: string) => `/import-cars/${name}.jpg`;
-const UNSPLASH = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?q=80&w=2400&auto=format&fit=crop`;
 
 /** Fills in the fields that are identical on every country post. */
 function post(
@@ -60,9 +56,9 @@ const japanPosts: BlogPost[] = [
       "japanese car auction agent",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1612704065655-fa070fe6c254"),
-    heroAlt:
-      "Cars on a Tokyo street, where the auction network feeds the market",
+    heroImage: "/source-cars/blog/how-to-buy-a-car-at-japanese-auction.webp",
+    ogImage: "/source-cars/blog/og/how-to-buy-a-car-at-japanese-auction.jpg",
+    heroAlt: "A Toyota Land Cruiser 300",
     related: [
       "japanese-auction-grades-explained",
       "cost-to-import-a-car-from-japan",
@@ -113,9 +109,9 @@ const japanPosts: BlogPost[] = [
       "japan car auction inspection",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1450101499163-c8848c66ca85"),
-    heroAlt:
-      "Vehicle inspection paperwork of the kind used at Japanese auctions",
+    heroImage: "/source-cars/blog/japanese-auction-grades-explained.webp",
+    ogImage: "/source-cars/blog/og/japanese-auction-grades-explained.jpg",
+    heroAlt: "A Toyota Harrier",
     related: [
       "how-to-buy-a-car-at-japanese-auction",
       "best-cars-to-import-from-japan",
@@ -165,8 +161,9 @@ const japanPosts: BlogPost[] = [
       "japanese hybrid import",
     ],
     readingTimeMins: 12,
-    heroImage: UNSPLASH("1689594016155-3f912af12e59"),
-    heroAlt: "Toyota AE86 Trueno at a Japanese car meet",
+    heroImage: "/source-cars/blog/best-cars-to-import-from-japan.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-from-japan.jpg",
+    heroAlt: "A Nissan GT-R (R35)",
     related: [
       "cost-to-import-a-car-from-japan",
       "how-to-buy-a-car-at-japanese-auction",
@@ -217,8 +214,9 @@ const japanPosts: BlogPost[] = [
       "japan car shipping cost",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1554224155-6726b3ff858f"),
-    heroAlt: "Working out the landed cost of importing a car from Japan",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-japan.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-japan.jpg",
+    heroAlt: "A Toyota Sienta",
     related: [
       "best-cars-to-import-from-japan",
       "how-to-buy-a-car-at-japanese-auction",
@@ -269,8 +267,9 @@ const japanPosts: BlogPost[] = [
       "jevic inspection certificate",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1502877338535-766e1452684a"),
-    heroAlt: "Handover of keys and documents for an imported Japanese car",
+    heroImage: "/source-cars/blog/japan-car-export-documents-explained.webp",
+    ogImage: "/source-cars/blog/og/japan-car-export-documents-explained.jpg",
+    heroAlt: "A Toyota Noah",
     related: [
       "how-to-buy-a-car-at-japanese-auction",
       "japanese-auction-grades-explained",
@@ -325,8 +324,9 @@ const ukPosts: BlogPost[] = [
       "permanent export uk car",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1494976388531-d1058494cdd8"),
-    heroAlt: "British-built car of the kind exported from the UK",
+    heroImage: "/source-cars/blog/how-to-import-a-car-from-the-uk.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-car-from-the-uk.jpg",
+    heroAlt: "A Range Rover Sport",
     related: [
       "uk-car-history-checks-explained",
       "cost-to-import-a-car-from-the-uk",
@@ -376,8 +376,9 @@ const ukPosts: BlogPost[] = [
       "uk built car origin",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1549632891-a0bea6d0355b"),
-    heroAlt: "Range Rover on a forest track — a British-built export",
+    heroImage: "/source-cars/blog/best-cars-to-import-from-the-uk.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-from-the-uk.jpg",
+    heroAlt: "A Bentley Bentayga",
     related: [
       "how-to-import-a-car-from-the-uk",
       "cost-to-import-a-car-from-the-uk",
@@ -427,8 +428,9 @@ const ukPosts: BlogPost[] = [
       "uk write off categories",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1450101499163-c8848c66ca85"),
-    heroAlt: "Vehicle history documents for a UK used car",
+    heroImage: "/source-cars/blog/uk-car-history-checks-explained.webp",
+    ogImage: "/source-cars/blog/og/uk-car-history-checks-explained.jpg",
+    heroAlt: "A Land Rover Discovery",
     related: [
       "how-to-import-a-car-from-the-uk",
       "best-cars-to-import-from-the-uk",
@@ -478,8 +480,9 @@ const ukPosts: BlogPost[] = [
       "uk car export vat",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1605559424843-9e4c228bf1c2"),
-    heroAlt: "Calculating the cost of importing a car from the UK",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-the-uk.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-the-uk.jpg",
+    heroAlt: "An Aston Martin DB11",
     related: [
       "how-to-import-a-car-from-the-uk",
       "best-cars-to-import-from-the-uk",
@@ -530,8 +533,9 @@ const ukPosts: BlogPost[] = [
       "uk customs export declaration car",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1542362567-b07e54358753"),
-    heroAlt: "Export documentation for a car leaving the United Kingdom",
+    heroImage: "/source-cars/blog/uk-car-export-documents-explained.webp",
+    ogImage: "/source-cars/blog/og/uk-car-export-documents-explained.jpg",
+    heroAlt: "A Bentley Continental GT",
     related: [
       "how-to-import-a-car-from-the-uk",
       "cost-to-import-a-car-from-the-uk",
@@ -586,8 +590,9 @@ const uaePosts: BlogPost[] = [
       "buy a car in dubai for export",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1571607388263-1044f9ea01dd"),
-    heroAlt: "Supercar on a Dubai desert road at sunset",
+    heroImage: "/source-cars/blog/how-to-import-a-car-from-the-uae.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-car-from-the-uae.jpg",
+    heroAlt: "A Lamborghini Urus",
     related: [
       "gcc-spec-cars-explained",
       "best-cars-to-import-from-dubai",
@@ -637,8 +642,9 @@ const uaePosts: BlogPost[] = [
       "supercar import from uae",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1638835373951-3a67da7aaf8d"),
-    heroAlt: "Land Cruisers driving the dunes outside Dubai",
+    heroImage: "/source-cars/blog/best-cars-to-import-from-dubai.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-from-dubai.jpg",
+    heroAlt: "A Lexus LX 600",
     related: [
       "how-to-import-a-car-from-the-uae",
       "gcc-spec-cars-explained",
@@ -688,9 +694,9 @@ const uaePosts: BlogPost[] = [
       "gcc vs japanese spec",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1552519507-da3b142c6e3d"),
-    heroAlt:
-      "Car in desert country — the conditions GCC specification is built for",
+    heroImage: "/source-cars/blog/gcc-spec-cars-explained.webp",
+    ogImage: "/source-cars/blog/og/gcc-spec-cars-explained.jpg",
+    heroAlt: "A Nissan Patrol (Y62)",
     related: [
       "how-to-import-a-car-from-the-uae",
       "best-cars-to-import-from-dubai",
@@ -740,8 +746,9 @@ const uaePosts: BlogPost[] = [
       "uae import landed cost",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1554224155-6726b3ff858f"),
-    heroAlt: "Calculating the landed cost of a car imported from the UAE",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-the-uae.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-the-uae.jpg",
+    heroAlt: "A Mercedes-Benz G-Class",
     related: [
       "how-to-import-a-car-from-the-uae",
       "best-cars-to-import-from-dubai",
@@ -792,8 +799,9 @@ const uaePosts: BlogPost[] = [
       "car import documents from dubai",
     ],
     readingTimeMins: 8,
-    heroImage: UNSPLASH("1502877338535-766e1452684a"),
-    heroAlt: "Documentation handed over with a car exported from the UAE",
+    heroImage: "/source-cars/blog/uae-car-export-documents-explained.webp",
+    ogImage: "/source-cars/blog/og/uae-car-export-documents-explained.jpg",
+    heroAlt: "A BMW X7",
     related: [
       "how-to-import-a-car-from-the-uae",
       "cost-to-import-a-car-from-the-uae",
@@ -848,8 +856,9 @@ const indiaPosts: BlogPost[] = [
       "import india built car",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1709620435533-56483034bdd4"),
-    heroAlt: "SUV on the Indian coast — India-built stock heading for export",
+    heroImage: "/source-cars/blog/how-to-import-a-car-from-india.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-car-from-india.jpg",
+    heroAlt: "A Mahindra Scorpio",
     related: [
       "best-cars-to-import-from-india",
       "cost-to-import-a-car-from-india",
@@ -899,8 +908,9 @@ const indiaPosts: BlogPost[] = [
       "india built fortuner",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1685019718640-6e562edc365e"),
-    heroAlt: "Modern India-built SUV",
+    heroImage: "/source-cars/blog/best-cars-to-import-from-india.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-from-india.jpg",
+    heroAlt: "A Hyundai Creta",
     related: [
       "how-to-import-a-car-from-india",
       "cost-to-import-a-car-from-india",
@@ -950,8 +960,9 @@ const indiaPosts: BlogPost[] = [
       "india car import margin",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1552519507-da3b142c6e3d"),
-    heroAlt: "Dealer forecourt stock of the kind supplied from India",
+    heroImage: "/source-cars/blog/importing-cars-from-india-for-dealers.webp",
+    ogImage: "/source-cars/blog/og/importing-cars-from-india-for-dealers.jpg",
+    heroAlt: "A Hyundai Venue",
     related: [
       "best-cars-to-import-from-india",
       "cost-to-import-a-car-from-india",
@@ -1001,8 +1012,9 @@ const indiaPosts: BlogPost[] = [
       "india car export freight",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1605559424843-9e4c228bf1c2"),
-    heroAlt: "Calculating the landed cost of a car imported from India",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-india.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-india.jpg",
+    heroAlt: "A Tata Nexon",
     related: [
       "how-to-import-a-car-from-india",
       "best-cars-to-import-from-india",
@@ -1053,8 +1065,9 @@ const indiaPosts: BlogPost[] = [
       "import documents from india",
     ],
     readingTimeMins: 8,
-    heroImage: UNSPLASH("1542362567-b07e54358753"),
-    heroAlt: "Export documentation for a vehicle leaving India",
+    heroImage: "/source-cars/blog/india-car-export-documents-explained.webp",
+    ogImage: "/source-cars/blog/og/india-car-export-documents-explained.jpg",
+    heroAlt: "A Kia Seltos",
     related: [
       "how-to-import-a-car-from-india",
       "cost-to-import-a-car-from-india",
@@ -1109,8 +1122,9 @@ const thailandPosts: BlogPost[] = [
       "thailand vehicle exporter",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1610647929723-a8922852cd44"),
-    heroAlt: "Double-cab pickup of the kind built in Thailand",
+    heroImage: "/source-cars/blog/how-to-import-a-car-from-thailand.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-car-from-thailand.jpg",
+    heroAlt: "An Isuzu D-Max",
     related: [
       "best-pickups-to-import-from-thailand",
       "cost-to-import-a-car-from-thailand",
@@ -1160,8 +1174,9 @@ const thailandPosts: BlogPost[] = [
       "fortuner import",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1612057473117-3e16246121e6"),
-    heroAlt: "Double-cab pickup working off-road",
+    heroImage: "/source-cars/blog/best-pickups-to-import-from-thailand.webp",
+    ogImage: "/source-cars/blog/og/best-pickups-to-import-from-thailand.jpg",
+    heroAlt: "A Nissan Navara",
     related: [
       "how-to-import-a-car-from-thailand",
       "thailand-vs-japan-for-pickup-imports",
@@ -1213,8 +1228,9 @@ const thailandPosts: BlogPost[] = [
       "used vs new pickup import",
     ],
     readingTimeMins: 10,
-    heroImage: LOCAL("hero-land-cruiser"),
-    heroAlt: "Comparing Thai-built and Japanese-market 4x4 imports",
+    heroImage: "/source-cars/blog/thailand-vs-japan-for-pickup-imports.webp",
+    ogImage: "/source-cars/blog/og/thailand-vs-japan-for-pickup-imports.jpg",
+    heroAlt: "A Mazda BT-50",
     related: [
       "best-pickups-to-import-from-thailand",
       "how-to-import-a-car-from-thailand",
@@ -1265,8 +1281,9 @@ const thailandPosts: BlogPost[] = [
       "thailand import landed cost",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1554224155-6726b3ff858f"),
-    heroAlt: "Calculating the landed cost of a vehicle imported from Thailand",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-thailand.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-thailand.jpg",
+    heroAlt: "A Mitsubishi Pajero Sport",
     related: [
       "how-to-import-a-car-from-thailand",
       "best-pickups-to-import-from-thailand",
@@ -1320,8 +1337,9 @@ const thailandPosts: BlogPost[] = [
       "thailand car deregistration export",
     ],
     readingTimeMins: 8,
-    heroImage: UNSPLASH("1502877338535-766e1452684a"),
-    heroAlt: "Documentation for a vehicle exported from Thailand",
+    heroImage: "/source-cars/blog/thailand-car-export-documents-explained.webp",
+    ogImage: "/source-cars/blog/og/thailand-car-export-documents-explained.jpg",
+    heroAlt: "A BYD Atto 3",
     related: [
       "how-to-import-a-car-from-thailand",
       "cost-to-import-a-car-from-thailand",
@@ -1376,8 +1394,9 @@ const australiaPosts: BlogPost[] = [
       "australia vehicle deregistration export",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1686715018049-f73970aa97d3"),
-    heroAlt: "Dual-cab 4x4 in outback desert country",
+    heroImage: "/source-cars/blog/how-to-import-a-car-from-australia.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-car-from-australia.jpg",
+    heroAlt: "A Toyota Land Cruiser 79 dual-cab",
     related: [
       "importing-a-ute-or-4x4-from-australia",
       "best-cars-to-import-from-australia",
@@ -1427,9 +1446,9 @@ const australiaPosts: BlogPost[] = [
       "australian 4x4 import",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1717046633197-dc628db1dd4a"),
-    heroAlt:
-      "Touring-specification Land Cruiser of the kind sourced from Australia",
+    heroImage: "/source-cars/blog/best-cars-to-import-from-australia.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-from-australia.jpg",
+    heroAlt: "A Toyota Land Cruiser 200",
     related: [
       "how-to-import-a-car-from-australia",
       "importing-a-ute-or-4x4-from-australia",
@@ -1479,8 +1498,9 @@ const australiaPosts: BlogPost[] = [
       "landcruiser 79 export",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1559416523-140ddc3d238c"),
-    heroAlt: "Australian dual-cab ute with touring equipment fitted",
+    heroImage: "/source-cars/blog/importing-a-ute-or-4x4-from-australia.webp",
+    ogImage: "/source-cars/blog/og/importing-a-ute-or-4x4-from-australia.jpg",
+    heroAlt: "A Ford Ranger Raptor",
     related: [
       "best-cars-to-import-from-australia",
       "how-to-import-a-car-from-australia",
@@ -1530,8 +1550,9 @@ const australiaPosts: BlogPost[] = [
       "car shipping from sydney",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1605559424843-9e4c228bf1c2"),
-    heroAlt: "Calculating the landed cost of a car imported from Australia",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-australia.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-australia.jpg",
+    heroAlt: "A Toyota Land Cruiser Prado",
     related: [
       "how-to-import-a-car-from-australia",
       "best-cars-to-import-from-australia",
@@ -1582,8 +1603,11 @@ const australiaPosts: BlogPost[] = [
       "import documents from australia",
     ],
     readingTimeMins: 8,
-    heroImage: UNSPLASH("1450101499163-c8848c66ca85"),
-    heroAlt: "Export documentation for a vehicle leaving Australia",
+    heroImage:
+      "/source-cars/blog/australia-car-export-documents-explained.webp",
+    ogImage:
+      "/source-cars/blog/og/australia-car-export-documents-explained.jpg",
+    heroAlt: "A Ford Falcon (FG)",
     related: [
       "how-to-import-a-car-from-australia",
       "cost-to-import-a-car-from-australia",
@@ -1639,8 +1663,9 @@ const newZealandPosts: BlogPost[] = [
       "buy a car in new zealand from abroad",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1503376780353-7e6692767b70"),
-    heroAlt: "Imported car on the road after entry certification",
+    heroImage: "/source-cars/blog/how-to-import-a-car-from-new-zealand.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-car-from-new-zealand.jpg",
+    heroAlt: "A Mitsubishi Outlander",
     related: [
       "new-zealand-vs-japan-for-used-imports",
       "best-cars-to-import-from-new-zealand",
@@ -1690,8 +1715,9 @@ const newZealandPosts: BlogPost[] = [
       "nz new ute export",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1770319942638-a5989632f2ad"),
-    heroAlt: "Rows of used cars at a vehicle marshalling yard",
+    heroImage: "/source-cars/blog/best-cars-to-import-from-new-zealand.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-from-new-zealand.jpg",
+    heroAlt: "A Mazda CX-5",
     related: [
       "how-to-import-a-car-from-new-zealand",
       "importing-a-used-ev-from-new-zealand",
@@ -1742,9 +1768,9 @@ const newZealandPosts: BlogPost[] = [
       "japan auction vs nz dealer",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1746014029717-37e5d3d51c48"),
-    heroAlt:
-      "Cars on a Japanese coastal street — the origin of most New Zealand stock",
+    heroImage: "/source-cars/blog/new-zealand-vs-japan-for-used-imports.webp",
+    ogImage: "/source-cars/blog/og/new-zealand-vs-japan-for-used-imports.jpg",
+    heroAlt: "A Honda Fit",
     related: [
       "how-to-import-a-car-from-new-zealand",
       "best-cars-to-import-from-new-zealand",
@@ -1796,8 +1822,9 @@ const newZealandPosts: BlogPost[] = [
       "nz import landed cost",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1554224155-6726b3ff858f"),
-    heroAlt: "Calculating the landed cost of a car imported from New Zealand",
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-new-zealand.webp",
+    ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-new-zealand.jpg",
+    heroAlt: "A Nissan Note e-Power",
     related: [
       "how-to-import-a-car-from-new-zealand",
       "new-zealand-vs-japan-for-used-imports",
@@ -1848,8 +1875,9 @@ const newZealandPosts: BlogPost[] = [
       "chademo vs ccs import",
     ],
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1639302610362-4c86747e8680"),
-    heroAlt: "Used electric car plugged in to charge",
+    heroImage: "/source-cars/blog/importing-a-used-ev-from-new-zealand.webp",
+    ogImage: "/source-cars/blog/og/importing-a-used-ev-from-new-zealand.jpg",
+    heroAlt: "A first-generation Nissan Leaf",
     related: [
       "best-cars-to-import-from-new-zealand",
       "how-to-import-a-car-from-new-zealand",
@@ -1904,8 +1932,9 @@ const sriLankaPosts: BlogPost[] = [
       "sri lanka car import 2026",
     ],
     readingTimeMins: 12,
-    heroImage: UNSPLASH("1709620435533-56483034bdd4"),
-    heroAlt: "SUV on a South Asian coastal road",
+    heroImage: "/source-cars/blog/importing-a-car-to-sri-lanka.webp",
+    ogImage: "/source-cars/blog/og/importing-a-car-to-sri-lanka.jpg",
+    heroAlt: "A Toyota Premio",
     related: [
       "sri-lanka-vehicle-import-taxes-explained",
       "best-cars-to-import-to-sri-lanka",
@@ -1956,8 +1985,11 @@ const sriLankaPosts: BlogPost[] = [
       "sri lanka car tax calculation",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1450101499163-c8848c66ca85"),
-    heroAlt: "Customs and duty paperwork for a vehicle imported to Sri Lanka",
+    heroImage:
+      "/source-cars/blog/sri-lanka-vehicle-import-taxes-explained.webp",
+    ogImage:
+      "/source-cars/blog/og/sri-lanka-vehicle-import-taxes-explained.jpg",
+    heroAlt: "A Toyota Raize",
     related: [
       "importing-a-car-to-sri-lanka",
       "best-cars-to-import-to-sri-lanka",
@@ -2007,8 +2039,9 @@ const sriLankaPosts: BlogPost[] = [
       "sri lanka suv import",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1692305610636-f5157dbe6008"),
-    heroAlt: "Compact hatchback of the kind widely imported to Sri Lanka",
+    heroImage: "/source-cars/blog/best-cars-to-import-to-sri-lanka.webp",
+    ogImage: "/source-cars/blog/og/best-cars-to-import-to-sri-lanka.jpg",
+    heroAlt: "A Suzuki Wagon R",
     related: [
       "importing-a-car-to-sri-lanka",
       "sri-lanka-vehicle-import-taxes-explained",
@@ -2059,8 +2092,11 @@ const sriLankaPosts: BlogPost[] = [
       "bill of lading sri lanka car",
     ],
     readingTimeMins: 9,
-    heroImage: UNSPLASH("1542362567-b07e54358753"),
-    heroAlt: "Import clearance documentation for a vehicle arriving in Colombo",
+    heroImage:
+      "/source-cars/blog/sri-lanka-car-import-documents-explained.webp",
+    ogImage:
+      "/source-cars/blog/og/sri-lanka-car-import-documents-explained.jpg",
+    heroAlt: "A Honda Vezel",
     related: [
       "importing-a-car-to-sri-lanka",
       "sri-lanka-vehicle-import-taxes-explained",
@@ -2111,8 +2147,9 @@ const sriLankaPosts: BlogPost[] = [
       "sri lanka hybrid duty",
     ],
     readingTimeMins: 10,
-    heroImage: UNSPLASH("1671785253964-bdb43087ed99"),
-    heroAlt: "Electric car charging at a wall box",
+    heroImage: "/source-cars/blog/importing-hybrids-and-evs-to-sri-lanka.webp",
+    ogImage: "/source-cars/blog/og/importing-hybrids-and-evs-to-sri-lanka.jpg",
+    heroAlt: "A BYD Dolphin",
     related: [
       "best-cars-to-import-to-sri-lanka",
       "sri-lanka-vehicle-import-taxes-explained",
@@ -2169,9 +2206,11 @@ const sriLankaPosts: BlogPost[] = [
     publishDate: "2026-08-18",
     updatedDate: "2026-08-18",
     readingTimeMins: 11,
-    heroImage: UNSPLASH("1554224155-6726b3ff858f"),
-    heroAlt:
-      "Working through the landed cost and holding cost of vehicles imported into Sri Lanka",
+    heroImage:
+      "/source-cars/blog/sri-lanka-vehicle-import-rules-for-dealers.webp",
+    ogImage:
+      "/source-cars/blog/og/sri-lanka-vehicle-import-rules-for-dealers.jpg",
+    heroAlt: "A Toyota Fortuner",
     related: [
       "importing-a-car-to-sri-lanka",
       "sri-lanka-vehicle-import-taxes-explained",
