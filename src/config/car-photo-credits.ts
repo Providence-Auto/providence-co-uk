@@ -22,27 +22,6 @@ export type PhotoCredit = {
 };
 
 export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
-  "488": {
-    title: "Ferrari 488 GTB 1X7A7211.jpg",
-    author: "Alexander-93",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:Ferrari_488_GTB_1X7A7211.jpg",
-  },
-  "720s": {
-    title: "Mclaren 720S PA280973-PSD.jpg",
-    author: "Ermell",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:Mclaren_720S_PA280973-PSD.jpg",
-  },
-  "911": {
-    title: "Porsche 992 Carrera S coupe IMG 5838.jpg",
-    author: "Alexander Migl",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:Porsche_992_Carrera_S_coupe_IMG_5838.jpg",
-  },
   alphard: {
     title: "2023 Toyota Alphard Hybrid (AH40) 1.jpg",
     author: "Benespit",
@@ -77,13 +56,6 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     source:
       "https://commons.wikimedia.org/wiki/File:Honda_City_(sixth_generation)_front.JPG",
   },
-  "continental-gt": {
-    title: "BENTLEY CONTINENTAL GT THIRD GENERATION China.jpg",
-    author: "Dinkun Chen",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:BENTLEY_CONTINENTAL_GT_THIRD_GENERATION_China.jpg",
-  },
   creta: {
     title: "HYUNDAI CRETA , iX25 (SU2) China (5).jpg",
     author: "Dinkun Chen",
@@ -91,39 +63,12 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     source:
       "https://commons.wikimedia.org/wiki/File:HYUNDAI_CRETA_,_iX25_(SU2)_China_(5).jpg",
   },
-  cullinan: {
-    title: "Rolls-Royce Cullinan 001.jpg",
-    author: "Jengtingchen",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:Rolls-Royce_Cullinan_001.jpg",
-  },
-  db11: {
-    title: "Aston Martin DB11 AMR 1X7A0202.jpg",
-    author: "Alexander Migl",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:Aston_Martin_DB11_AMR_1X7A0202.jpg",
-  },
-  defender: {
-    title: "2020 Land Rover Defender P400SE AWD front.jpg",
-    author: "LuvsMG481",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:2020_Land_Rover_Defender_P400SE_AWD_front.jpg",
-  },
   dmax: {
     title: "2020 Isuzu D-Max LS-U front.jpg",
     author: "LuvsMG481",
     licence: "CC BY-SA 4.0",
     source:
       "https://commons.wikimedia.org/wiki/File:2020_Isuzu_D-Max_LS-U_front.jpg",
-  },
-  emira: {
-    title: "Lotus Emira IMG 8023.jpg",
-    author: "Alexander-93",
-    licence: "CC BY-SA 4.0",
-    source: "https://commons.wikimedia.org/wiki/File:Lotus_Emira_IMG_8023.jpg",
   },
   falcon: {
     title: "2015 Ford Falcon (FG X) G6E Turbo sedan (2016-01-29) 01.jpg",
@@ -145,13 +90,6 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     licence: "CC BY-SA 4.0",
     source:
       "https://commons.wikimedia.org/wiki/File:TOYOTA_FORTUNER_(AN150,AN160)_China_(7).jpg",
-  },
-  "g-class": {
-    title: "MERCEDES-BENZ G-CLASS (W463) China (4).jpg",
-    author: "Dinkun Chen",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:MERCEDES-BENZ_G-CLASS_(W463)_China_(4).jpg",
   },
   gtr: {
     title: "Nissan GT-R (R35) Washington DC Metro Area, USA.jpg",
@@ -217,13 +155,6 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     source:
       "https://commons.wikimedia.org/wiki/File:PIMS_2024_-_Nissan_Magnite_Premium_preview.jpg",
   },
-  "mini-cooper": {
-    title: "Алматы, Mini John Cooper Works F56 на Ауэзова-Тимирязева.jpg",
-    author: "Nikolai Bulykin",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:%D0%90%D0%BB%D0%BC%D0%B0%D1%82%D1%8B,_Mini_John_Cooper_Works_F56_%D0%BD%D0%B0_%D0%90%D1%83%D1%8D%D0%B7%D0%BE%D0%B2%D0%B0-%D0%A2%D0%B8%D0%BC%D0%B8%D1%80%D1%8F%D0%B7%D0%B5%D0%B2%D0%B0.jpg",
-  },
   nexon: {
     title: "2018 Tata Nexon XM.jpg",
     author: "Vauxford",
@@ -280,13 +211,6 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     source:
       "https://commons.wikimedia.org/wiki/File:Toyota_Prius_(XW60)_Plug-in_Hybrid_IMG_9905.jpg",
   },
-  "range-rover": {
-    title: "LAND ROVER RANGE ROVER (L460) China.jpg",
-    author: "Dinkun Chen",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:LAND_ROVER_RANGE_ROVER_(L460)_China.jpg",
-  },
   ranger: {
     title: "Ford Ranger 4x2 Wildtrak 2022 (4).jpg",
     author: "Captainmorlypogi1959",
@@ -342,12 +266,6 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     licence: "CC BY-SA 4.0",
     source:
       "https://commons.wikimedia.org/wiki/File:HONDA_VEZEL_(RV)_China.jpg",
-  },
-  x7: {
-    title: "BMW G07 1X7A1696.jpg",
-    author: "Alexander-93",
-    licence: "CC BY-SA 4.0",
-    source: "https://commons.wikimedia.org/wiki/File:BMW_G07_1X7A1696.jpg",
   },
   // ── Blog post heroes (/source-cars/blog/<slug>.webp) ──
   "blog/australia-car-export-documents-explained": {
@@ -471,18 +389,18 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
       "https://commons.wikimedia.org/wiki/File:Mitsubishi_Pajero_Sport_III_facelift_Sanming_01_2022-07-22.jpg",
   },
   "blog/cost-to-import-a-car-from-the-uae": {
-    title: "MERCEDES-BENZ G-CLASS (W463) China (3).jpg",
-    author: "Dinkun Chen",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:MERCEDES-BENZ_G-CLASS_(W463)_China_(3).jpg",
-  },
-  "blog/cost-to-import-a-car-from-the-uk": {
-    title: "2018 Aston Martin DB11 AMR Auto.jpg",
-    author: "Calreyn88",
+    title: "24 Lexus GX 550 Luxury.jpg",
+    author: "HJUdall",
     licence: "CC0",
     source:
-      "https://commons.wikimedia.org/wiki/File:2018_Aston_Martin_DB11_AMR_Auto.jpg",
+      "https://commons.wikimedia.org/wiki/File:24_Lexus_GX_550_Luxury.jpg",
+  },
+  "blog/cost-to-import-a-car-from-the-uk": {
+    title: "0 Lexus RX 450h+ (AALH16) 2.jpg",
+    author: "Benespit",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:0_Lexus_RX_450h%2B_(AALH16)_2.jpg",
   },
   "blog/do-i-need-an-iva-test": {
     title: "1996 Toyota Supra A80 (front).jpg",
@@ -534,18 +452,18 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
       "https://commons.wikimedia.org/wiki/File:Isuzu_D-Max_4x4_LSE_2020.jpg",
   },
   "blog/how-to-import-a-car-from-the-uae": {
-    title: "Lamborghini Urus 19.09.20 JM (2).jpg",
-    author: "Johannes Maximilian",
+    title: "INFINITI QX80 (Z62) China (7).jpg",
+    author: "Dinkun Chen",
     licence: "CC BY-SA 4.0",
     source:
-      "https://commons.wikimedia.org/wiki/File:Lamborghini_Urus_19.09.20_JM_(2).jpg",
+      "https://commons.wikimedia.org/wiki/File:INFINITI_QX80_(Z62)_China_(7).jpg",
   },
   "blog/how-to-import-a-car-from-the-uk": {
-    title: "Land Rover Range Rover Sport L461 Varesine Blue (11).jpg",
-    author: "Damian B Oh",
-    licence: "CC BY-SA 4.0",
+    title: "Nissan Qashqai (III) – f 25042024.jpg",
+    author: "© M 93",
+    licence: "CC BY-SA 3.0 de",
     source:
-      "https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_Sport_L461_Varesine_Blue_(11).jpg",
+      "https://commons.wikimedia.org/wiki/File:Nissan_Qashqai_(III)_%E2%80%93_f_25042024.jpg",
   },
   "blog/how-to-import-a-nissan-patrol": {
     title: "Nissan Patrol 2025.jpg",
@@ -705,25 +623,24 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
       "https://commons.wikimedia.org/wiki/File:Mazda_BT-50_TF_FL_3.0L_4x2_Sailing_Blue_Metallic.jpg",
   },
   "blog/uae-car-export-documents-explained": {
-    title: "BMW G07 X7 M60i DSC 8564.jpg",
-    author: "Alexander Migl",
-    licence: "CC BY-SA 4.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:BMW_G07_X7_M60i_DSC_8564.jpg",
-  },
-  "blog/uk-car-export-documents-explained": {
-    title: "Bentley Continental GT W12 (2018) (53323043009).jpg",
-    author: "Charles from Port Chester, New York",
-    licence: "CC BY 2.0",
-    source:
-      "https://commons.wikimedia.org/wiki/File:Bentley_Continental_GT_W12_(2018)_(53323043009).jpg",
-  },
-  "blog/uk-car-history-checks-explained": {
-    title: "LAND ROVER DISCOVERY (L462) China (4).jpg",
+    title: "MITSUBISHI PAJERO (V80-, NS, NT, NW, NX) China (28).jpg",
     author: "Dinkun Chen",
     licence: "CC BY-SA 4.0",
     source:
-      "https://commons.wikimedia.org/wiki/File:LAND_ROVER_DISCOVERY_(L462)_China_(4).jpg",
+      "https://commons.wikimedia.org/wiki/File:MITSUBISHI_PAJERO_(V80-,_NS,_NT,_NW,_NX)_China_(28).jpg",
+  },
+  "blog/uk-car-export-documents-explained": {
+    title: "2023 Toyota Corolla Hybrid (E210) hatchback IMG 8513.jpg",
+    author: "Alexander-93",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:2023_Toyota_Corolla_Hybrid_(E210)_hatchback_IMG_8513.jpg",
+  },
+  "blog/uk-car-history-checks-explained": {
+    title: "2021 Toyota RAV4 PHV.jpg",
+    author: "TTTNIS",
+    licence: "CC0",
+    source: "https://commons.wikimedia.org/wiki/File:2021_Toyota_RAV4_PHV.jpg",
   },
   "blog/vrt-explained-ireland": {
     title: "2015-2018 Toyota Prius S.jpg",
@@ -738,6 +655,83 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     licence: "CC BY 3.0",
     source:
       "https://commons.wikimedia.org/wiki/File:2022_Maruti_Suzuki_Baleno_Alpha_(India)_front_view.jpg",
+  },
+  corolla: {
+    title: "2023 Toyota Corolla Hybrid (E210) hatchback IMG 9884.jpg",
+    author: "Alexander-93",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:2023_Toyota_Corolla_Hybrid_(E210)_hatchback_IMG_9884.jpg",
+  },
+  qashqai: {
+    title: "Nissan Qashqai (J12) Automesse Ludwigsburg 2022 1X7A5875.jpg",
+    author: "Alexander Migl",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Nissan_Qashqai_(J12)_Automesse_Ludwigsburg_2022_1X7A5875.jpg",
+  },
+  juke: {
+    title: "Nissan Juke F16 Arctic White (2).jpg",
+    author: "Damian B Oh",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Nissan_Juke_F16_Arctic_White_(2).jpg",
+  },
+  "leaf-uk": {
+    title: "2018 Nissan Leaf Tekna Front.jpg",
+    author: "Vauxford",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:2018_Nissan_Leaf_Tekna_Front.jpg",
+  },
+  rav4: {
+    title: "Toyota RAV4 Hybrid (XA50) DSC 2709.jpg",
+    author: "Alexander Migl",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Toyota_RAV4_Hybrid_(XA50)_DSC_2709.jpg",
+  },
+  "lexus-rx": {
+    title: "Lexus RX 450h+ (AALH16) 1X7A7080.jpg",
+    author: "Alexander-93",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Lexus_RX_450h%2B_(AALH16)_1X7A7080.jpg",
+  },
+  "civic-type-r": {
+    title: "Honda Civic Type R FK8 Rallye Red 01.jpg",
+    author: "Ethan Llamas",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Honda_Civic_Type_R_FK8_Rallye_Red_01.jpg",
+  },
+  mx5: {
+    title: "Mazda MX-5 (ND) 1X7A7471.jpg",
+    author: "Alexander-93",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Mazda_MX-5_(ND)_1X7A7471.jpg",
+  },
+  "lexus-gx": {
+    title: "Lexus GX 550 VJA252 Overtrail Tactical Beige.jpg",
+    author: "Ethan Llamas",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Lexus_GX_550_VJA252_Overtrail_Tactical_Beige.jpg",
+  },
+  qx80: {
+    title: "Infiniti QX80 IV P4250837.jpg",
+    author: "Alexander Migl",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Infiniti_QX80_IV_P4250837.jpg",
+  },
+  pajero: {
+    title: "MITSUBISHI PAJERO (V80-, NS, NT, NW, NX) China (41).jpg",
+    author: "Dinkun Chen",
+    licence: "CC BY-SA 4.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:MITSUBISHI_PAJERO_(V80-,_NS,_NT,_NW,_NX)_China_(41).jpg",
   },
 };
 

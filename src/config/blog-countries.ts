@@ -326,7 +326,7 @@ const ukPosts: BlogPost[] = [
     readingTimeMins: 11,
     heroImage: "/source-cars/blog/how-to-import-a-car-from-the-uk.webp",
     ogImage: "/source-cars/blog/og/how-to-import-a-car-from-the-uk.jpg",
-    heroAlt: "A Range Rover Sport",
+    heroAlt: "A Nissan Qashqai",
     related: [
       "uk-car-history-checks-explained",
       "cost-to-import-a-car-from-the-uk",
@@ -430,7 +430,7 @@ const ukPosts: BlogPost[] = [
     readingTimeMins: 10,
     heroImage: "/source-cars/blog/uk-car-history-checks-explained.webp",
     ogImage: "/source-cars/blog/og/uk-car-history-checks-explained.jpg",
-    heroAlt: "A Land Rover Discovery",
+    heroAlt: "A Toyota RAV4 plug-in hybrid",
     related: [
       "how-to-import-a-car-from-the-uk",
       "best-cars-to-import-from-the-uk",
@@ -482,7 +482,7 @@ const ukPosts: BlogPost[] = [
     readingTimeMins: 9,
     heroImage: "/source-cars/blog/cost-to-import-a-car-from-the-uk.webp",
     ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-the-uk.jpg",
-    heroAlt: "An Aston Martin DB11",
+    heroAlt: "A Lexus RX",
     related: [
       "how-to-import-a-car-from-the-uk",
       "best-cars-to-import-from-the-uk",
@@ -535,7 +535,7 @@ const ukPosts: BlogPost[] = [
     readingTimeMins: 9,
     heroImage: "/source-cars/blog/uk-car-export-documents-explained.webp",
     ogImage: "/source-cars/blog/og/uk-car-export-documents-explained.jpg",
-    heroAlt: "A Bentley Continental GT",
+    heroAlt: "A Toyota Corolla hybrid",
     related: [
       "how-to-import-a-car-from-the-uk",
       "cost-to-import-a-car-from-the-uk",
@@ -592,7 +592,7 @@ const uaePosts: BlogPost[] = [
     readingTimeMins: 11,
     heroImage: "/source-cars/blog/how-to-import-a-car-from-the-uae.webp",
     ogImage: "/source-cars/blog/og/how-to-import-a-car-from-the-uae.jpg",
-    heroAlt: "A Lamborghini Urus",
+    heroAlt: "An Infiniti QX80",
     related: [
       "gcc-spec-cars-explained",
       "best-cars-to-import-from-dubai",
@@ -748,7 +748,7 @@ const uaePosts: BlogPost[] = [
     readingTimeMins: 9,
     heroImage: "/source-cars/blog/cost-to-import-a-car-from-the-uae.webp",
     ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-the-uae.jpg",
-    heroAlt: "A Mercedes-Benz G-Class",
+    heroAlt: "A Lexus GX",
     related: [
       "how-to-import-a-car-from-the-uae",
       "best-cars-to-import-from-dubai",
@@ -801,7 +801,7 @@ const uaePosts: BlogPost[] = [
     readingTimeMins: 8,
     heroImage: "/source-cars/blog/uae-car-export-documents-explained.webp",
     ogImage: "/source-cars/blog/og/uae-car-export-documents-explained.jpg",
-    heroAlt: "A BMW X7",
+    heroAlt: "A Mitsubishi Pajero",
     related: [
       "how-to-import-a-car-from-the-uae",
       "cost-to-import-a-car-from-the-uae",

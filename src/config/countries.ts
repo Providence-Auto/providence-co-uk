@@ -349,115 +349,112 @@ const unitedKingdom: CountryPageConfig = {
   shortName: "United Kingdom",
   region: "Western Europe",
   cardBlurb:
-    "Our founding office, and the source for British-built luxury, 4x4s and the deepest service-history records anywhere.",
+    "Our founding office, and a deep, fully documented market in Japanese cars — including the Toyotas and Nissans built in Britain.",
   meta: {
-    title:
-      "Source Cars From the UK — British-Built & Fully Documented | Providence Auto",
+    title: "Source Japanese Cars From the UK | Providence Auto",
     description:
-      "Providence Auto's UK office sources British-built cars — Range Rover, Defender, Bentley, Aston Martin, McLaren, Mini — plus the widest documented used stock in Europe. HPI-checked, MOT history verified, shipped worldwide.",
+      "Buy Japanese cars in the UK — Toyota, Lexus, Nissan, Honda, Mazda, including the UK-built Corolla and Qashqai. MOT history checked, shipped worldwide.",
     keywords: [
+      "japanese cars from the uk",
+      "export japanese cars from the uk",
+      "uk built toyota corolla export",
       "source cars from the uk",
       "uk car exporter",
-      "import cars from the uk",
-      "british built cars export",
-      "uk car buying agent",
     ],
   },
   hero: {
     tagline: "Providence Auto · United Kingdom",
-    title: "The United Kingdom.\nWhere the paper trail is complete.",
+    title: "The United Kingdom.\nJapanese cars, with the paper trail.",
     subtitle:
-      "Britain builds the world's most desirable 4x4s and luxury saloons, and records the life of every car on the road in a public database. Our UK office buys against that record — not against a description.",
-    backgroundImage: HERO("range-rover"),
-    imageAlt: "A Range Rover (L460) on the road",
-    ogImage: OG("range-rover"),
+      "Britain has one of Europe's deepest right-hand-drive markets for Japanese cars, builds some of them itself at Burnaston and Sunderland, and records the life of every car on the road in a public database. You buy against that record, not against a description.",
+    backgroundImage: HERO("qashqai"),
+    imageAlt: "A Nissan Qashqai (J12)",
+    ogImage: OG("qashqai"),
   },
   stats: [
     { value: "15+", label: "Years trading from our London base" },
     { value: "100%", label: "Cars provenance-checked before purchase" },
-    { value: "4", label: "Export ports we load from" },
+    { value: "2", label: "Export ports we load from" },
   ],
   intro: {
-    highlight:
-      "Nothing about a British car's history has to be taken on trust.",
-    text: "Every MOT test, every advisory, every recorded mileage reading and every finance interest on a UK car is written down and checkable. We check all of it before we buy, on every single car. Nothing about a British car's history has to be taken on trust.",
+    highlight: "Nothing about a UK car's history has to be taken on trust.",
+    text: "Every MOT test, every advisory, every recorded mileage reading and every finance interest on a UK car is written down and checkable. We check all of it before we buy, on every single car. Nothing about a UK car's history has to be taken on trust.",
   },
   specialty: {
-    title:
-      "Luxury, off-road capability, and things built in very small numbers.",
+    title: "Britain sells Japanese cars in depth, and builds some of them.",
     blurb:
-      "British manufacturing did not disappear — it moved upmarket. The country still builds the definitive luxury 4x4, three of the world's great limousine marques, and a supercar industry clustered within an hour of a single motorway.",
+      "Toyota, Lexus, Nissan, Honda and Mazda are among the best-selling brands on British roads, so the used market runs deep in exactly the models most buyers ask for — right-hand drive as standard, with a main-dealer service record behind them.",
     items: [
       {
-        icon: Mountain,
-        title: "The luxury 4x4, invented here",
-        desc: "Range Rover, Range Rover Sport, Velar, Discovery and the reborn Defender are built in Solihull and Halewood. No other country makes a credible substitute, which is why they hold value in every market we ship to.",
-      },
-      {
-        icon: Sparkles,
-        title: "Three great luxury marques",
-        desc: "Bentley in Crewe, Rolls-Royce at Goodwood and Aston Martin at Gaydon and St Athan. Hand-built, individually specified, and easiest to buy where they are made — with the build records to prove the specification.",
+        icon: Boxes,
+        title: "Built in Britain, badged Japanese",
+        desc: "Toyota builds the Corolla at Burnaston in Derbyshire, and Nissan builds the Qashqai, Juke and Leaf at Sunderland. A UK-built car can qualify for preferential tariff treatment in markets such as the EU — provided the origin paperwork is right.",
       },
       {
         icon: Gauge,
-        title: "A supercar cluster",
-        desc: "McLaren in Woking and Lotus at Hethel, alongside the motorsport valley that supplies most of the grid. Low-volume cars with documented histories and, from the UK, a straightforward export route.",
+        title: "Hybrids in right-hand drive",
+        desc: "Toyota and Lexus hybrids — Yaris, Corolla, C-HR, RAV4, NX and RX — are some of the commonest cars in the country, which makes the used supply deep and the choice of trim and colour real.",
       },
       {
-        icon: Boxes,
-        title: "Volume production too",
-        desc: "Nissan in Sunderland and Toyota at Burnaston build some of Europe's highest-volume models, and Mini in Oxford builds the only small car with genuine global brand pull. UK-built origin also matters for tariffs in several markets.",
+        icon: Mountain,
+        title: "4x4s and enthusiast cars",
+        desc: "RAV4 and Land Cruiser for towing and rough roads; Civic Type R, GR Yaris, MX-5 and GT-R for drivers. British owners tend to keep enthusiast cars serviced and garaged, and the MOT record shows it.",
+      },
+      {
+        icon: BadgeCheck,
+        title: "A service record, not a promise",
+        desc: "Cars sold new in Britain usually come with a stamped main-dealer service book and a public MOT history, which is what a buyer — or a finance house — at the other end wants to see.",
       },
     ],
   },
   signature: [
     {
-      make: "Land Rover",
-      model: "Range Rover",
-      note: "Solihull-built",
-      image: CAR("range-rover"),
+      make: "Toyota",
+      model: "Corolla",
+      note: "Burnaston-built hybrid",
+      image: CAR("corolla"),
     },
     {
-      make: "Land Rover",
-      model: "Defender",
-      note: "The modern icon",
-      image: CAR("defender"),
+      make: "Nissan",
+      model: "Qashqai",
+      note: "Sunderland-built",
+      image: CAR("qashqai"),
     },
     {
-      make: "Bentley",
-      model: "Continental GT",
-      note: "Hand-built in Crewe",
-      image: CAR("continental-gt"),
+      make: "Nissan",
+      model: "Juke",
+      note: "Sunderland-built",
+      image: CAR("juke"),
     },
     {
-      make: "Aston Martin",
-      model: "DB11",
-      note: "Gaydon-built",
-      image: CAR("db11"),
+      make: "Nissan",
+      model: "Leaf",
+      note: "Sunderland-built EV",
+      image: CAR("leaf-uk"),
     },
     {
-      make: "Mini",
-      model: "Cooper",
-      note: "Oxford-built",
-      image: CAR("mini-cooper"),
+      make: "Toyota",
+      model: "RAV4",
+      note: "Hybrid and plug-in",
+      image: CAR("rav4"),
     },
     {
-      make: "McLaren",
-      model: "720S",
-      note: "Woking-built",
-      image: CAR("720s"),
+      make: "Lexus",
+      model: "RX",
+      note: "Hybrid luxury SUV",
+      image: CAR("lexus-rx"),
     },
     {
-      make: "Rolls-Royce",
-      model: "Cullinan",
-      note: "Goodwood-built",
-      image: CAR("cullinan"),
+      make: "Honda",
+      model: "Civic Type R",
+      note: "FK8, Swindon-built",
+      image: CAR("civic-type-r"),
     },
     {
-      make: "Lotus",
-      model: "Emira",
-      note: "Hethel-built",
-      image: CAR("emira"),
+      make: "Mazda",
+      model: "MX-5",
+      note: "Right-hand-drive roadster",
+      image: CAR("mx5"),
     },
   ],
   advantages: [
@@ -469,7 +466,7 @@ const unitedKingdom: CountryPageConfig = {
     {
       icon: Landmark,
       title: "Origin that can cut your duty",
-      desc: "A car actually manufactured in the UK can qualify for preferential tariff treatment in several markets, including the EU, where an EU-built car bought in Britain would not. We supply the origin documentation, because without it the preference is worthless.",
+      desc: "A car actually manufactured in the UK — a Burnaston Corolla, a Sunderland Qashqai — can qualify for preferential tariff treatment in several markets, including the EU. We supply the origin documentation, because without it the preference is worthless.",
     },
     {
       icon: Ship,
@@ -477,9 +474,9 @@ const unitedKingdom: CountryPageConfig = {
       desc: "Ireland and mainland Europe are days away, not weeks. For buyers on that side of the world the UK is simply the fastest source country we operate in, and the cheapest to freight from.",
     },
     {
-      icon: BadgeCheck,
+      icon: Sparkles,
       title: "Specification you can actually order",
-      desc: "British stock runs deep enough that you can hold out for the exact trim, colour and option pack rather than settling for what happens to be available. On low-volume cars we can also work directly with the marque's own approved network.",
+      desc: "British stock of Japanese cars runs deep enough that you can hold out for the exact trim, colour and option pack rather than settling for what happens to be available. On newer cars we can also work with the brand's own approved-used network.",
     },
   ],
   process: [
@@ -496,7 +493,7 @@ const unitedKingdom: CountryPageConfig = {
     },
     {
       title: "We load and track it",
-      desc: "Container or RoRo from Southampton, Tilbury, Liverpool or Grimsby, roll-on ferry for Ireland, marine insurance to your port, and clearance and registration support at the other end.",
+      desc: "Container or RoRo from Southampton or Tilbury, roll-on ferry for Ireland, marine insurance to your port, and clearance and registration support at the other end.",
     },
   ],
   office: {
@@ -518,23 +515,27 @@ const unitedKingdom: CountryPageConfig = {
     ],
   },
   logistics: {
-    ports: ["Southampton", "Tilbury", "Liverpool", "Grimsby"],
+    ports: ["Southampton", "Tilbury"],
     shipsTo:
       "Ireland and mainland Europe by short-sea ferry; Africa, the Middle East, South Asia and the Caribbean by container or RoRo",
     transit: "Days to Ireland and Europe, roughly 3–6 weeks further afield",
   },
   faqs: [
     {
-      q: "What makes the UK a good country to buy a used car from?",
-      a: "Record-keeping. Every MOT test, advisory note and mileage reading is published on a public government database, and a commercial provenance check adds outstanding finance, write-off history and theft markers. Combined with a large, competitive market and a service-history culture, it means a UK car's past is verifiable rather than described.",
+      q: "Why buy a Japanese car in the UK rather than in Japan?",
+      a: "Speed, history and origin. A UK car reaches Ireland and mainland Europe in days rather than weeks, arrives with a public MOT and mileage record, and — if it was built at Burnaston or Sunderland — can carry UK origin for tariff purposes. Japan still wins on sheer auction volume and on Japan-market models; we compare both for the specification you want.",
+    },
+    {
+      q: "Which Japanese cars are built in the UK?",
+      a: "Toyota builds the Corolla hatchback and Touring Sports at Burnaston in Derbyshire, and Nissan builds the Qashqai, Juke and Leaf at Sunderland. Honda built the Civic, including the FK8 Type R, at Swindon until 2021. Build origin is shown on the car's documentation, and we confirm it before you commit.",
     },
     {
       q: "Does a car bought in Britain always count as British for customs?",
-      a: "No, and this catches out a lot of buyers. Customs preference depends on where the car was manufactured, not where it was purchased. A German-built saloon bought in London is an EU-origin car and can attract full duty on import to some markets, while a Solihull-built Range Rover may enter at a preferential rate. We confirm the build origin and supply the paperwork before you commit.",
+      a: "No, and this catches out a lot of buyers. Customs preference depends on where the car was manufactured, not where it was purchased. A Japan-built Toyota bought in London is a Japan-origin car, while a Burnaston-built Corolla is UK-origin, and the two can be treated differently on import. We confirm the build origin and supply the paperwork before you commit.",
     },
     {
-      q: "Can you buy a specific specification rather than whatever is in stock?",
-      a: "Yes — that is the main reason to use the UK. The market is deep enough that holding out for a specific trim, colour, drivetrain or option pack is realistic rather than aspirational. Tell us the specification you want and we will wait for the right car rather than sell you the near-miss.",
+      q: "What makes the UK a good country to buy a used car from?",
+      a: "Record-keeping. Every MOT test, advisory note and mileage reading is published on a public government database, and a commercial provenance check adds outstanding finance, write-off history and theft markers. Combined with a large, competitive market and a service-history culture, it means a UK car's past is verifiable rather than described.",
     },
     {
       q: "How is VAT treated on a UK export sale?",
@@ -542,12 +543,12 @@ const unitedKingdom: CountryPageConfig = {
     },
     {
       q: "How quickly can a UK car reach Ireland or Europe?",
-      a: "Far faster than anywhere else we operate. Roll-on ferry crossings to Ireland run daily and short-sea routes to mainland Europe take days, so the constraint is usually the paperwork rather than the sailing. Longer-haul destinations run on standard container or RoRo schedules.",
+      a: "Far faster than anywhere else we operate. Roll-on ferry crossings to Ireland run daily and short-sea routes to mainland Europe take days, so the constraint is usually the paperwork rather than the sailing. Longer-haul destinations run on standard container or RoRo schedules from Southampton or Tilbury.",
     },
   ],
   blogSlugs: [
     "how-to-import-a-car-from-the-uk",
-    "best-cars-to-import-from-the-uk",
+    "import-car-from-japan-or-uk-to-ireland",
     "uk-car-history-checks-explained",
     "cost-to-import-a-car-from-the-uk",
     "uk-car-export-documents-explained",
@@ -975,17 +976,16 @@ const uae: CountryPageConfig = {
   shortName: "UAE",
   region: "Middle East",
   cardBlurb:
-    "The world's largest used-car re-export hub — low-mileage GCC-spec luxury, and a free-zone route to three continents.",
+    "The world's largest used-car re-export hub — low-mileage, GCC-spec Japanese 4x4s, and a free-zone route to three continents.",
   meta: {
-    title:
-      "Source Cars From the UAE — GCC-Spec Luxury & Free-Zone Export | Providence Auto",
+    title: "Source Japanese 4x4s From the UAE | Providence Auto",
     description:
-      "Providence Auto's UAE team sources low-mileage GCC-spec luxury SUVs and supercars — G-Class, LX, Land Cruiser, Patrol, Range Rover — and re-exports through Jebel Ali to Africa, Asia and the CIS. Inspected before shipment.",
+      "Buy low-mileage GCC-spec Japanese 4x4s in the UAE — Land Cruiser, Lexus LX and GX, Nissan Patrol — re-exported through Jebel Ali and inspected first.",
     keywords: [
-      "source cars from dubai",
+      "japanese cars from dubai",
+      "gcc spec land cruiser export",
+      "source cars from the uae",
       "uae car exporter",
-      "import a car from the uae",
-      "gcc spec cars export",
       "dubai used car export",
     ],
   },
@@ -993,15 +993,15 @@ const uae: CountryPageConfig = {
     tagline: "Providence Auto · UAE",
     title: "The UAE.\nThe world's re-export crossroads.",
     subtitle:
-      "Dubai turns over more used vehicles for export than any city on earth, and does it at the intersection of Africa, Asia and Europe. Our UAE team buys the low-mileage luxury stock the market is famous for, and moves it through the free zone without friction.",
-    backgroundImage: HERO("g-class"),
-    imageAlt: "A Mercedes-Benz G-Class",
-    ogImage: OG("g-class"),
+      "Dubai turns over more used vehicles for export than any city on earth, at the intersection of Africa, Asia and Europe — and much of that stock is Japanese: Land Cruisers, Lexus and Patrols, one to three years old. Our UAE team buys it and moves it through the free zone.",
+    backgroundImage: HERO("lc300"),
+    imageAlt: "A Toyota Land Cruiser 300",
+    ogImage: OG("lc300"),
   },
   stats: [
     { value: "LHD", label: "Left-hand drive, GCC specification" },
     { value: "3", label: "Continents inside a short sailing" },
-    { value: "1–3 yr", label: "Typical age of the luxury stock we buy" },
+    { value: "1–3 yr", label: "Typical age of the stock we buy" },
   ],
   intro: {
     highlight: "Cars here are replaced, not worn out.",
@@ -1009,19 +1009,19 @@ const uae: CountryPageConfig = {
   },
   specialty: {
     title:
-      "Nearly new luxury, in the specification the region actually orders.",
+      "The Gulf runs on Japanese 4x4s, nearly new and in full specification.",
     blurb:
-      "High incomes, no vehicle purchase tax and short ownership cycles produce a used market weighted heavily toward large SUVs, luxury saloons and performance cars — usually one to three years old, usually high-specification, and almost always low-mileage.",
+      "High incomes, no vehicle purchase tax and short ownership cycles produce a used market deep in Toyota, Lexus and Nissan 4x4s — usually one to three years old, usually high-specification, and almost always low-mileage.",
     items: [
       {
         icon: Sparkles,
-        title: "Luxury SUVs in depth",
-        desc: "Mercedes G-Class, Lexus LX and GX, Land Cruiser 300, Nissan Patrol and Range Rover are ordinary sights here, which means genuine choice of colour, trim and specification rather than taking what exists.",
+        title: "Japanese flagships in depth",
+        desc: "Land Cruiser 300, Lexus LX and GX, Nissan Patrol and Infiniti QX80 are ordinary sights here, which means genuine choice of colour, trim and specification rather than taking what exists.",
       },
       {
-        icon: Gauge,
-        title: "Supercar turnover",
-        desc: "Ferrari, Lamborghini, McLaren, Porsche and Rolls-Royce change hands quickly in the Emirates. Low mileage, main-dealer service and an established export route make it one of the most practical places in the world to buy one.",
+        icon: Wrench,
+        title: "Workhorses as well as flagships",
+        desc: "Land Cruiser 70 Series pickups and wagons, Hilux, Prado and the Mitsubishi Pajero come through the Gulf's fleet and contractor market in volume, with maintenance records to match.",
       },
       {
         icon: Snowflake,
@@ -1031,16 +1031,16 @@ const uae: CountryPageConfig = {
       {
         icon: Globe2,
         title: "Left-hand drive at scale",
-        desc: "For LHD markets across Africa, the CIS, Central Asia, the Middle East and Latin America, the UAE is the single largest accessible pool of nearly new left-hand-drive stock anywhere.",
+        desc: "For LHD markets across Africa, the CIS, Central Asia, the Middle East and Latin America, the UAE is the single largest accessible pool of nearly new left-hand-drive Japanese stock anywhere.",
       },
     ],
   },
   signature: [
     {
-      make: "Mercedes-Benz",
-      model: "G-Class",
-      note: "The definitive Gulf SUV",
-      image: CAR("g-class"),
+      make: "Toyota",
+      model: "Land Cruiser 300",
+      note: "GCC heavy-duty spec",
+      image: CAR("lc300"),
     },
     {
       make: "Lexus",
@@ -1049,40 +1049,40 @@ const uae: CountryPageConfig = {
       image: CAR("lx600"),
     },
     {
-      make: "Toyota",
-      model: "Land Cruiser 300",
-      note: "GCC heavy-duty spec",
-      image: CAR("lc300"),
-    },
-    {
       make: "Nissan",
       model: "Patrol",
       note: "Y62 in volume",
       image: CAR("patrol"),
     },
     {
-      make: "Land Rover",
-      model: "Range Rover",
-      note: "High-spec, low miles",
-      image: CAR("range-rover"),
+      make: "Lexus",
+      model: "GX",
+      note: "The GX 550, new generation",
+      image: CAR("lexus-gx"),
     },
     {
-      make: "Porsche",
-      model: "911",
-      note: "Fast-turnover performance",
-      image: CAR("911"),
+      make: "Infiniti",
+      model: "QX80",
+      note: "Patrol-based luxury",
+      image: CAR("qx80"),
     },
     {
-      make: "Ferrari",
-      model: "488",
+      make: "Toyota",
+      model: "Land Cruiser 70",
+      note: "Pickups and wagons",
+      image: CAR("lc79"),
+    },
+    {
+      make: "Nissan",
+      model: "GT-R",
       note: "Main-dealer serviced",
-      image: CAR("488"),
+      image: CAR("gtr"),
     },
     {
-      make: "BMW",
-      model: "X7",
-      note: "Full-option Gulf trim",
-      image: CAR("x7"),
+      make: "Mitsubishi",
+      model: "Pajero",
+      note: "Proven GCC workhorse",
+      image: CAR("pajero"),
     },
   ],
   advantages: [
@@ -1110,13 +1110,13 @@ const uae: CountryPageConfig = {
   process: [
     {
       title: "We find it across dealers and auctions",
-      desc: "Our UAE team works main-dealer trade-ins, the Dubai export yards and the trade auctions. For supercars and limited-run models we also work the specialist retailers directly.",
+      desc: "Our UAE team works main-dealer trade-ins, the Dubai export yards and the trade auctions. For rare specifications we also work the specialist retailers directly.",
     },
     inspectionStep(
       "Registration and inspection history are checked first for accident and flood-damage markers, and the cooling system and air conditioning are tested as standard.",
     ),
     {
-      title: "We handle export clearance",
+      title: "We clear it for export",
       desc: "Export certificate, customs clearance through the free zone, chassis and engine verification, and confirmation of whether GCC specification will satisfy your destination's emissions and lighting requirements before the car sails.",
     },
     {
@@ -1151,6 +1151,10 @@ const uae: CountryPageConfig = {
       a: "No. The UAE is not a vehicle manufacturing country — it is the largest used-vehicle re-export hub in the world. Its value to a buyer is the depth and youth of the stock passing through it, and the speed with which the free-zone customs regime can move a car onward.",
     },
     {
+      q: "Why buy a Japanese 4x4 in the UAE rather than in Japan?",
+      a: "Specification and hand of drive. GCC-spec Land Cruisers, Lexus and Patrols are built left-hand drive with uprated cooling for heat, which is what LHD markets in Africa, Central Asia and the Middle East need. Japan-market cars are right-hand drive and suit RHD destinations. We compare both for your destination before we buy.",
+    },
+    {
       q: "What is GCC specification, and does it matter?",
       a: "GCC-spec cars are built for Gulf conditions: larger radiators, uprated air conditioning, heat-resistant interior materials and, on some models, different emissions and lighting equipment. In hot climates that is a genuine advantage. In cold or emissions-strict markets it can require checking — some GCC models omit equipment that European or Japanese-spec cars carry as standard. We confirm compatibility with your destination before purchase, not after.",
     },
@@ -1161,10 +1165,6 @@ const uae: CountryPageConfig = {
     {
       q: "Is the low mileage on UAE cars real?",
       a: "Usually, and for a structural reason: high incomes, no purchase tax and short ownership cycles mean cars are replaced rather than run into the ground. That said, we verify against main-dealer service records rather than reading the odometer and hoping. A mileage claim without a service record behind it is not a mileage claim we pass on.",
-    },
-    {
-      q: "Can you export supercars and limited-run models?",
-      a: "Yes, and the UAE is one of the better places in the world to do it. Turnover is fast, main-dealer servicing is the norm, and the free-zone export route is well established. High-value cars ship in containers rather than RoRo, under full marine cover, with air freight available where the timeline justifies the cost.",
     },
   ],
   blogSlugs: [

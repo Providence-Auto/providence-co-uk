@@ -191,8 +191,8 @@ export default function Body() {
         For Ireland, roll-on ferry crossings run daily and the paperwork is the
         constraint rather than the sailing. For mainland Europe, short-sea
         routes are similarly quick. Beyond Europe, container or RoRo sails from
-        Southampton, Tilbury, Liverpool or Grimsby, and the sailing frequency
-        for your route matters more than the port name.
+        Southampton or Tilbury, and the sailing frequency for your route matters
+        more than the port name.
       </P>
       <P>
         Marine insurance should cover the vehicle door to port at replacement
