@@ -307,17 +307,18 @@ const japanPosts: BlogPost[] = [
 const ukPosts: BlogPost[] = [
   post({
     slug: "how-to-import-a-car-from-the-uk",
-    title: "How to Import a Car From the UK",
-    h1: "How to Import a Car From the UK: The Complete Process",
-    seoTitle: "How to Import a Car From the UK (Step-by-Step Process, 2026)",
+    title: "How to Import a Japanese Car From the UK",
+    h1: "How to Import a Japanese Car From the UK: The Complete Process",
+    seoTitle: "How to Import a Japanese Car From the UK (2026 Guide)",
     description:
-      "How to buy and export a car from the United Kingdom — where the stock is, how to verify a car's history, what permanent export notification involves, and how the origin rules decide your duty bill.",
+      "How to buy and export a Japanese car from the UK — where the stock is, how to verify its history, what permanent export involves, and how build origin decides your duty.",
     excerpt:
       "Britain has the most checkable used cars in the world and one of the easiest export routes. Here is the process in order.",
     cluster: "United Kingdom",
     primaryKeyword: "how to import a car from the uk",
     keywords: [
       "how to import a car from the uk",
+      "import a japanese car from the uk",
       "export a car from the uk",
       "buy a car in the uk from abroad",
       "uk car export process",
@@ -359,26 +360,26 @@ const ukPosts: BlogPost[] = [
   }),
   post({
     slug: "best-cars-to-import-from-the-uk",
-    title: "The Best Cars to Import From the UK",
-    h1: "The Best Cars to Import From the UK (And Why Origin Matters)",
-    seoTitle: "The Best Cars to Import From the UK in 2026",
+    title: "The Best Japanese Cars to Import From the UK",
+    h1: "The Best Japanese Cars to Import From the UK (And Why Origin Matters)",
+    seoTitle: "The Best Japanese Cars to Import From the UK in 2026",
     description:
-      "The models that make the most sense to buy in Britain — British-built 4x4s and luxury cars that can qualify for tariff preference, the depth of the used premium market, and the cars that are a trap.",
+      "Which Japanese cars to buy in Britain — the UK-built Corolla, Qashqai, Juke and Leaf, the hybrids and enthusiast cars — and why build origin changes duty.",
     excerpt:
-      "Some cars are cheaper to import from Britain because of what they are. Others are only cheaper because of where they were built.",
+      "Some Japanese cars are worth buying in Britain because they were built there. Others because Britain keeps them so well.",
     cluster: "United Kingdom",
     primaryKeyword: "best cars to import from the uk",
     keywords: [
       "best cars to import from the uk",
-      "british built cars to import",
-      "uk cars worth importing",
-      "range rover import",
+      "japanese cars built in the uk",
+      "uk built toyota corolla",
+      "nissan qashqai sunderland export",
       "uk built car origin",
     ],
     readingTimeMins: 10,
     heroImage: "/source-cars/blog/best-cars-to-import-from-the-uk.webp",
     ogImage: "/source-cars/blog/og/best-cars-to-import-from-the-uk.jpg",
-    heroAlt: "A Bentley Bentayga",
+    heroAlt: "A Honda Jazz hybrid",
     related: [
       "how-to-import-a-car-from-the-uk",
       "cost-to-import-a-car-from-the-uk",
@@ -386,25 +387,25 @@ const ukPosts: BlogPost[] = [
       "uk-car-export-documents-explained",
     ],
     toc: [
-      { id: "two-reasons", label: "Two different reasons to buy British" },
-      { id: "british-built", label: "The genuinely British-built cars" },
-      { id: "luxury", label: "Luxury and low-volume marques" },
-      { id: "used-depth", label: "Where the used market wins" },
+      { id: "two-reasons", label: "Two different reasons to buy in Britain" },
+      { id: "uk-built", label: "The Japanese cars built in Britain" },
+      { id: "hybrids", label: "Toyota and Lexus hybrids" },
+      { id: "enthusiast", label: "Enthusiast cars and 4x4s" },
       { id: "traps", label: "The origin trap" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
       {
-        q: "Which cars are actually built in the UK?",
-        a: "Land Rover and Range Rover models at Solihull and Halewood, Mini at Oxford, Bentley at Crewe, Rolls-Royce at Goodwood, Aston Martin at Gaydon and St Athan, McLaren at Woking, Lotus at Hethel, and high-volume models at Nissan Sunderland and Toyota Burnaston. A great many other brands are sold in Britain but built elsewhere, and the distinction can change your duty bill.",
+        q: "Which Japanese cars are built in the UK?",
+        a: "Toyota builds the Corolla hatchback and Touring Sports at Burnaston in Derbyshire, and Nissan builds the Qashqai, Juke and Leaf at Sunderland. Honda built the Civic, including the FK8 Type R, at Swindon until 2021. Most other Japanese models sold in Britain are built in Japan or elsewhere in Europe, and the distinction can change your duty bill.",
       },
       {
-        q: "Is a German car cheaper if I buy it in the UK?",
-        a: "Often less than buyers expect. A BMW, Mercedes, Audi or Volkswagen sold in Britain was almost certainly built in the EU, so it does not qualify as UK-origin for tariff purposes and can attract full duty on import to markets that grant UK-built cars preference. The used price may still be competitive, but the duty assumption is where people lose money.",
+        q: "Is a Japanese car bought in the UK treated as British for customs?",
+        a: "Only if it was built in Britain. Customs origin follows the factory, not the sale: a Burnaston-built Corolla is UK-origin, a Japan-built RAV4 bought in London is Japan-origin, and a Yaris built in France is EU-origin. We confirm the build origin from the car's own documentation before you commit, because the duty assumption is where people lose money.",
       },
       {
         q: "Are UK cars right-hand drive only?",
-        a: "The domestic market is right-hand drive, which suits RHD destinations perfectly and rules the UK out as a source for left-hand-drive markets in most cases. If you need LHD, the UAE and Japan are the two source countries in our network with genuine depth of native left-hand-drive stock.",
+        a: "The domestic market is right-hand drive, which suits RHD destinations perfectly and rules the UK out as a source for left-hand-drive markets in most cases. If you need LHD, the UAE and Japan are the two source countries in our network with genuine depth of native left-hand-drive Japanese stock.",
       },
     ],
   }),
@@ -415,7 +416,7 @@ const ukPosts: BlogPost[] = [
     seoTitle:
       "UK Car History Checks Explained: MOT History, Provenance and Mileage",
     description:
-      "How to verify a British used car before buying it from abroad — the public MOT and mileage record, provenance checks for finance, write-offs and theft, and what none of it can tell you.",
+      "How to verify a used Japanese car in Britain before buying it from abroad — the public MOT and mileage record, provenance checks for finance, write-offs and theft.",
     excerpt:
       "Britain publishes more about its used cars than any market on earth. Here is how to read all of it — and what still needs human eyes.",
     cluster: "United Kingdom",
@@ -464,7 +465,7 @@ const ukPosts: BlogPost[] = [
   post({
     slug: "cost-to-import-a-car-from-the-uk",
     title: "What It Costs to Import a Car From the UK",
-    h1: "What It Costs to Import a Car From the UK (Every Line)",
+    h1: "What It Costs to Import a Japanese Car From the UK (Every Line)",
     seoTitle: "The Real Cost of Importing a Car From the UK: Full Breakdown",
     description:
       "The full cost of a UK car export — purchase price, VAT treatment, inland transport, freight by ferry or container, marine insurance, and the destination duty that origin rules can halve or double.",
@@ -501,7 +502,7 @@ const ukPosts: BlogPost[] = [
     faqs: [
       {
         q: "Is it cheaper to import a car from the UK than from Japan?",
-        a: "For buyers in Ireland and mainland Europe, frequently yes, because the freight leg is measured in days rather than weeks. For buyers further afield the freight advantage disappears and the decision comes down to the car: the UK wins on British-built models and premium used depth, Japan wins on low-mileage hybrids and 4x4s at auction prices.",
+        a: "For buyers in Ireland and mainland Europe, frequently yes, because the freight leg is measured in days rather than weeks. For buyers further afield the freight advantage disappears and the decision comes down to the car: the UK wins on UK-built models such as the Corolla and Qashqai and on cars with a checkable history, Japan wins on low-mileage hybrids and 4x4s at auction prices.",
       },
       {
         q: "How much does it cost to ship a car from the UK?",
@@ -573,9 +574,9 @@ const ukPosts: BlogPost[] = [
 const uaePosts: BlogPost[] = [
   post({
     slug: "how-to-import-a-car-from-the-uae",
-    title: "How to Import a Car From the UAE",
-    h1: "How to Import a Car From the UAE: The Complete Process",
-    seoTitle: "How to Import a Car From the UAE (Dubai Export Process, 2026)",
+    title: "How to Import a Japanese Car From the UAE",
+    h1: "How to Import a Japanese Car From the UAE: The Complete Process",
+    seoTitle: "How to Import a Japanese Car From Dubai (2026 Guide)",
     description:
       "How the Dubai re-export machine works — where the stock comes from, how to screen for accident and flood damage, what free-zone export clearance involves, and how GCC specification affects registration at your end.",
     excerpt:
@@ -584,6 +585,7 @@ const uaePosts: BlogPost[] = [
     primaryKeyword: "how to import a car from the uae",
     keywords: [
       "how to import a car from the uae",
+      "import a land cruiser from dubai",
       "import a car from dubai",
       "dubai car export process",
       "uae export certificate car",
@@ -625,21 +627,21 @@ const uaePosts: BlogPost[] = [
   }),
   post({
     slug: "best-cars-to-import-from-dubai",
-    title: "The Best Cars to Import From Dubai",
-    h1: "The Best Cars to Import From Dubai (And What to Leave There)",
-    seoTitle: "The Best Cars to Import From Dubai in 2026",
+    title: "The Best Japanese Cars to Import From Dubai",
+    h1: "The Best Japanese Cars to Import From Dubai (And What to Leave There)",
+    seoTitle: "The Best Japanese Cars to Import From Dubai in 2026",
     description:
-      "What the UAE market is genuinely best at supplying — nearly new luxury SUVs, high-specification saloons, supercars with main-dealer history — and the categories where Dubai is the wrong source country.",
+      "The Japanese cars Dubai supplies best — Land Cruiser, Lexus LX and GX, Nissan Patrol, the 70 Series and Hilux workhorses — and when Dubai is the wrong source.",
     excerpt:
-      "Dubai is unbeatable on nearly new luxury SUVs and a poor choice for several other things. Knowing which is which is the whole skill.",
+      "Dubai is unbeatable on nearly new Japanese 4x4s and a poor choice for several other things. Knowing which is which is the whole skill.",
     cluster: "UAE",
     primaryKeyword: "best cars to import from dubai",
     keywords: [
       "best cars to import from dubai",
-      "dubai used luxury cars export",
-      "import g wagon from dubai",
+      "japanese cars from dubai",
       "land cruiser from dubai",
-      "supercar import from uae",
+      "lexus lx export dubai",
+      "nissan patrol export uae",
     ],
     readingTimeMins: 10,
     heroImage: "/source-cars/blog/best-cars-to-import-from-dubai.webp",
@@ -653,17 +655,17 @@ const uaePosts: BlogPost[] = [
     ],
     toc: [
       { id: "what-uae-wins", label: "What the UAE wins on" },
-      { id: "suvs", label: "The luxury SUVs" },
-      { id: "saloons", label: "High-specification saloons" },
-      { id: "supercars", label: "Supercars and limited runs" },
+      { id: "flagships", label: "The Japanese flagships" },
+      { id: "workhorses", label: "The workhorses" },
+      { id: "saloons", label: "Lexus saloons and performance cars" },
       { id: "lhd", label: "Left-hand drive at scale" },
       { id: "avoid", label: "What to leave in Dubai" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
       {
-        q: "What is the most exported car from Dubai?",
-        a: "Large SUVs dominate — the Toyota Land Cruiser, Nissan Patrol, Lexus LX and GX, Mercedes G-Class and Range Rover. They are the vehicles the market buys in the greatest numbers, replaces the fastest, and specifies most heavily, which makes them the deepest and most competitively priced pool available for export.",
+        q: "Which Japanese cars does Dubai supply best?",
+        a: "Large 4x4s — the Toyota Land Cruiser, Nissan Patrol, Lexus LX and GX and Infiniti QX80 — plus the Land Cruiser 70 Series, Hilux and Prado workhorses. They are the vehicles the market buys in the greatest numbers, replaces the fastest, and specifies most heavily, which makes them the deepest and most competitively priced pool available for export.",
       },
       {
         q: "Is a Land Cruiser from Dubai better than one from Japan?",
@@ -730,7 +732,7 @@ const uaePosts: BlogPost[] = [
   post({
     slug: "cost-to-import-a-car-from-the-uae",
     title: "What It Costs to Import a Car From the UAE",
-    h1: "What It Costs to Import a Car From the UAE (Every Line)",
+    h1: "What It Costs to Import a Japanese Car From the UAE (Every Line)",
     seoTitle: "The Real Cost of Importing a Car From the UAE: Full Breakdown",
     description:
       "Every cost in a UAE vehicle export — purchase price, export certificate and free-zone clearance, inland transport, container or RoRo freight from Jebel Ali, insurance, and destination duty on a high-value car.",
@@ -767,7 +769,7 @@ const uaePosts: BlogPost[] = [
     faqs: [
       {
         q: "How much does it cost to ship a car from Dubai?",
-        a: "Less than most people expect for short routes and more than they expect for high-value cars. Sailings from Jebel Ali to South Asia and East Africa are short and frequent, which keeps freight low; but a nearly new luxury SUV usually travels in a container rather than by RoRo and carries higher insurance, both of which add cost that a cheap RoRo quote would not include.",
+        a: "Less than most people expect for short routes and more than they expect for high-value cars. Sailings from Jebel Ali to South Asia and East Africa are short and frequent, which keeps freight low; but a nearly new Land Cruiser or Lexus usually travels in a container rather than by RoRo and carries higher insurance, both of which add cost that a cheap RoRo quote would not include.",
       },
       {
         q: "Is there VAT to pay on a car exported from the UAE?",
@@ -775,7 +777,7 @@ const uaePosts: BlogPost[] = [
       },
       {
         q: "Why is destination duty the biggest line on a UAE import?",
-        a: "Because duty is normally assessed on the vehicle's value, and UAE cars tend to be newer and worth more than stock from other source countries. A nearly new luxury SUV can attract more duty and tax than the entire purchase price of an older car from Japan. It is why we model the total landed figure by country before recommending a source.",
+        a: "Because duty is normally assessed on the vehicle's value, and UAE cars tend to be newer and worth more than stock from other source countries. A nearly new Land Cruiser can attract more duty and tax than the entire purchase price of an older car from Japan. It is why we model the total landed figure by country before recommending a source.",
       },
     ],
   }),

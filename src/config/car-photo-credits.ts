@@ -311,11 +311,11 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
       "https://commons.wikimedia.org/wiki/File:MAZDA_CX-5_(KF)_China_(10).jpg",
   },
   "blog/best-cars-to-import-from-the-uk": {
-    title: "Bentley Bentayga 2015 - front.jpg",
-    author: "DeFacto",
-    licence: "CC BY-SA 4.0",
+    title: "Honda Jazz e HEV (2022) (53322700161).jpg",
+    author: "Charles from Port Chester, New York",
+    licence: "CC BY 2.0",
     source:
-      "https://commons.wikimedia.org/wiki/File:Bentley_Bentayga_2015_-_front.jpg",
+      "https://commons.wikimedia.org/wiki/File:Honda_Jazz_e_HEV_(2022)_(53322700161).jpg",
   },
   "blog/best-cars-to-import-to-sri-lanka": {
     title: "2017-2022 Suzuki Wagon R Hybrid FX.jpg",

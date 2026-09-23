@@ -18,10 +18,10 @@ export default function Body() {
       <Lead>
         UAE imports have a different cost shape from everything else in our
         network, and the reason is that the cars are worth more. When the
-        vehicle is a two-year-old luxury SUV rather than a ten-year-old
-        hatchback, the percentage-based lines — duty, tax, insurance — get much
-        larger, and freight gets relatively smaller. That changes which
-        decisions actually matter.
+        vehicle is a two-year-old Land Cruiser or Lexus rather than a
+        ten-year-old hatchback, the percentage-based lines — duty, tax,
+        insurance — get much larger, and freight gets relatively smaller. That
+        changes which decisions actually matter.
       </Lead>
 
       <KeyTakeaways
@@ -111,9 +111,9 @@ export default function Body() {
       </P>
       <P>
         <Strong>Container</Strong> costs more and is the right answer for most
-        of what the UAE is good at. A nearly new luxury car or a supercar should
-        not be driven by port staff or exposed on a deck, and a container also
-        allows bracing and sealing. Two cars in one container improves the
+        of what the UAE is good at. A nearly new Land Cruiser, Lexus or GT-R
+        should not be driven by port staff or exposed on a deck, and a container
+        also allows bracing and sealing. Two cars in one container improves the
         per-unit figure considerably.
       </P>
       <P>
@@ -142,7 +142,7 @@ export default function Body() {
       </P>
       <P>
         So on an expensive car, the destination tax block grows in absolute
-        terms while freight stays roughly flat. A nearly new luxury SUV from
+        terms while freight stays roughly flat. A nearly new Land Cruiser from
         Dubai can attract more duty and tax than the entire purchase price of an
         older vehicle from Japan. That does not make it a worse decision — you
         are getting a much better car — but it does mean the comparison has to
@@ -182,11 +182,11 @@ export default function Body() {
 
       <H2 id="example">A worked example</H2>
       <P>
-        Illustrative structure for a nearly new luxury SUV, containerised, to a
-        mid-distance destination. Proportions, not a quote:
+        Illustrative structure for a nearly new Japanese 4x4, containerised, to
+        a mid-distance destination. Proportions, not a quote:
       </P>
       <CostTable
-        title="Nearly new luxury SUV from Dubai, containerised"
+        title="Nearly new Japanese 4x4 from Dubai, containerised"
         subtitle="Illustrative structure — proportions, not a quote"
         rows={[
           { label: "Purchase price", value: "≈ 60% of total" },

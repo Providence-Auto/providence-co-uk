@@ -548,7 +548,7 @@ const unitedKingdom: CountryPageConfig = {
   ],
   blogSlugs: [
     "how-to-import-a-car-from-the-uk",
-    "import-car-from-japan-or-uk-to-ireland",
+    "best-cars-to-import-from-the-uk",
     "uk-car-history-checks-explained",
     "cost-to-import-a-car-from-the-uk",
     "uk-car-export-documents-explained",

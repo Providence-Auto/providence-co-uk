@@ -17,12 +17,13 @@ export default function Body() {
   return (
     <>
       <Lead>
-        Britain is the easiest country in the world to research a used car in
-        and one of the easiest to export from. It also contains a trap that
-        costs careless buyers roughly a tenth of the vehicle&rsquo;s value: the
-        difference between a car <em>bought</em> in the UK and a car{" "}
-        <Strong>built</Strong> in the UK. Here is the process in order, and
-        where that distinction bites.
+        Britain is the easiest country in the world to research a used car in,
+        one of the easiest to export from, and one of the deepest
+        right-hand-drive markets for Japanese cars outside Japan. It also
+        contains a trap that costs careless buyers roughly a tenth of the
+        vehicle&rsquo;s value: the difference between a car <em>bought</em> in
+        the UK and a car <Strong>built</Strong> in the UK. Here is the process
+        in order, and where that distinction bites.
       </Lead>
 
       <KeyTakeaways
@@ -50,11 +51,12 @@ export default function Body() {
         Three reasons, and they are quite different from each other. First,{" "}
         <Strong>record-keeping</Strong>: no other market lets you reconstruct a
         used car&rsquo;s life this thoroughly before you commit. Second,{" "}
-        <Strong>what Britain actually builds</Strong> — the definitive luxury
-        4x4s, three great limousine marques and a supercar industry, all easiest
-        to buy where they are made. Third, <Strong>market depth</Strong>: the
-        used premium market is large enough that you can hold out for an exact
-        specification rather than accept the near-miss.
+        <Strong>what Britain actually builds</Strong> — the Toyota Corolla at
+        Burnaston and the Nissan Qashqai, Juke and Leaf at Sunderland, which can
+        carry UK origin for tariff purposes. Third,{" "}
+        <Strong>market depth</Strong>: Toyota, Lexus, Nissan, Honda and Mazda
+        sell in such numbers that you can hold out for an exact specification
+        rather than accept the near-miss.
       </P>
       <P>
         The fourth reason applies only if you are in Ireland or mainland Europe:
@@ -73,13 +75,13 @@ export default function Body() {
         <CheckLI>
           <Strong>Main dealers and approved-used programmes.</Strong> More
           expensive, better prepared, with full service histories and often
-          remaining manufacturer warranty. The sensible route for premium and
-          low-volume cars.
+          remaining manufacturer warranty. The sensible route for a nearly new
+          Lexus or Toyota hybrid.
         </CheckLI>
         <CheckLI>
           <Strong>Independent specialists.</Strong> The best place to find a
-          well-kept example of something specific — a particular Range Rover
-          derivative, a manual-gearbox variant, an unusual colour.
+          well-kept example of something specific — a Civic Type R, a particular
+          MX-5 generation, a Lexus in an unusual colour.
         </CheckLI>
         <CheckLI>
           <Strong>Private vendors.</Strong> Cheapest headline prices, most
@@ -131,10 +133,11 @@ export default function Body() {
       <P>
         Here is the trap. Customs preference in most trade arrangements attaches
         to <Strong>where a vehicle was manufactured</Strong>, not where it was
-        sold. A Solihull-built Range Rover may qualify for preferential
-        treatment in markets that grant it to UK-origin goods. A German-built
-        saloon bought in London is an EU-origin car and can attract full duty in
-        exactly the same market.
+        sold. A Burnaston-built Toyota Corolla may qualify for preferential
+        treatment in markets that grant it to UK-origin goods. A Japan-built
+        RAV4 bought in London is a Japan-origin car, and a Yaris built in France
+        is an EU-origin one — neither is British for customs, however long it
+        lived there.
       </P>
       <Callout title="Preference without paperwork is worthless" tone="amber">
         <p>

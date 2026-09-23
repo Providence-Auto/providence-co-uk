@@ -17,25 +17,24 @@ export default function Body() {
       <Lead>
         Dubai is close to unbeatable at one thing and a poor choice at several
         others. Knowing which is which is the entire skill of buying here. The
-        market is weighted heavily toward large SUVs, luxury saloons and
-        performance cars, one to three years old, left-hand drive and
-        high-specification — and if that describes what you want, nowhere else
-        comes close.
+        market runs deep in Japanese 4x4s — Land Cruisers, Lexus, Patrols — one
+        to three years old, left-hand drive and high-specification, and if that
+        describes what you want, nowhere else comes close.
       </Lead>
 
       <KeyTakeaways
         items={[
           <>
-            <Strong>The core strength:</Strong> nearly new luxury SUVs in
-            genuine choice of specification.
+            <Strong>The core strength:</Strong> nearly new Toyota, Lexus and
+            Nissan 4x4s in genuine choice of specification.
           </>,
           <>
-            <Strong>The unusual strength:</Strong> supercars with main-dealer
-            history and an established export route.
+            <Strong>The practical strength:</Strong> the workhorses — 70 Series,
+            Hilux, Prado, Pajero — with fleet maintenance records.
           </>,
           <>
             <Strong>The structural strength:</Strong> the world&rsquo;s deepest
-            pool of nearly new left-hand drive.
+            pool of nearly new left-hand-drive Japanese stock.
           </>,
           <>
             <Strong>Leave behind:</Strong> right-hand drive, and anything headed
@@ -54,30 +53,29 @@ export default function Body() {
       <P>
         So the UAE wins on <Strong>age</Strong> — two-year-old cars in volume;{" "}
         <Strong>specification</Strong> — the region orders high trims, so choice
-        is real; and <Strong>segment</Strong> — large SUVs and performance cars
-        in numbers that distort the whole model range.
+        is real; and <Strong>segment</Strong> — large Japanese 4x4s in numbers
+        that distort the whole model range.
       </P>
 
-      <H2 id="suvs">The luxury SUVs</H2>
+      <H2 id="flagships">The Japanese flagships</H2>
       <P>
         This is the heart of the market and the reason most buyers come here.
       </P>
       <UL>
         <CheckLI>
-          <Strong>Mercedes-Benz G-Class.</Strong> The definitive Gulf vehicle.
-          Sold in numbers here that no other market approaches, which means
-          genuine choice of specification, colour and age rather than taking
-          whatever exists.
-        </CheckLI>
-        <CheckLI>
-          <Strong>Lexus LX and GX.</Strong> Land Cruiser engineering with a
-          better cabin and dealer network. Heavy-duty GCC cooling as standard,
-          which travels well to hot destinations.
-        </CheckLI>
-        <CheckLI>
-          <Strong>Toyota Land Cruiser 300.</Strong> GCC-built for heat and dust,
+          <Strong>Toyota Land Cruiser 300.</Strong> Built for heat and dust,
           left-hand drive, and available far younger here than at Japanese
           auction.
+        </CheckLI>
+        <CheckLI>
+          <Strong>Lexus LX 600.</Strong> Land Cruiser engineering with a better
+          cabin. Heavy-duty GCC cooling as standard, which travels well to hot
+          destinations.
+        </CheckLI>
+        <CheckLI>
+          <Strong>Lexus GX.</Strong> Smaller than the LX, body-on-frame, and now
+          in a new generation — the GX 550 — alongside plenty of the previous
+          model.
         </CheckLI>
         <CheckLI>
           <Strong>Nissan Patrol.</Strong> The regional alternative to the Land
@@ -85,43 +83,46 @@ export default function Body() {
           used market.
         </CheckLI>
         <CheckLI>
-          <Strong>Range Rover and Range Rover Sport.</Strong> High-specification
-          and low-mileage. Verify the service record carefully — these reward
-          maintenance and punish its absence.
+          <Strong>Infiniti QX80.</Strong> Nissan&rsquo;s luxury take on the
+          Patrol platform, usually cheaper than an LX of the same age.
         </CheckLI>
       </UL>
 
-      <H2 id="saloons">High-specification saloons</H2>
+      <H2 id="workhorses">The workhorses</H2>
       <P>
-        Less headline-grabbing and often better value. Mercedes S-Class and
-        E-Class, BMW 7 and 5 Series, Audi A8 and A6, and the Lexus LS all
-        circulate in full-option Gulf trim at two to three years old. Because
-        the region buys high trims, a used Gulf car frequently carries an
-        options list that would be a costly extra elsewhere.
+        Less headline-grabbing and often better value. The Gulf&rsquo;s fleet,
+        contractor and government buyers run Japanese 4x4s hard and replace them
+        on schedule, and the maintenance records usually go with the car.
       </P>
-      <Callout title="Where the depreciation goes" tone="sky">
+      <UL>
+        <CheckLI>
+          <Strong>Toyota Land Cruiser 70 Series.</Strong> Pickups and wagons,
+          built for exactly the conditions many destination markets have.
+        </CheckLI>
+        <CheckLI>
+          <Strong>Toyota Hilux and Land Cruiser Prado.</Strong> Common, easy to
+          service anywhere, and strong on resale.
+        </CheckLI>
+        <CheckLI>
+          <Strong>Mitsubishi Pajero.</Strong> The previous generation ended
+          production in 2021 and is plentiful used — a proven Gulf workhorse.
+        </CheckLI>
+      </UL>
+      <Callout title="Fleet history is an asset" tone="sky">
         <p>
-          Large luxury saloons depreciate hardest everywhere, and the
-          Gulf&rsquo;s fast replacement cycle accelerates it. For a buyer who
-          wants the most car for the money and does not need the newest
-          registration, this is the softest market in the segment.
+          A fleet vehicle serviced to a contract schedule is often a safer buy
+          than a private car with a thin record. We ask for the maintenance log
+          and check it against the odometer before recommending one.
         </p>
       </Callout>
 
-      <H2 id="supercars">Supercars and limited runs</H2>
+      <H2 id="saloons">Lexus saloons and Japanese performance cars</H2>
       <P>
-        The UAE is one of the most practical places in the world to buy one.
-        Ferrari, Lamborghini, McLaren, Porsche and Rolls-Royce turn over
-        quickly, main-dealer servicing is the norm rather than the exception,
-        and the free-zone export route is well established for high-value
-        vehicles.
-      </P>
-      <P>
-        Three conditions, though. These ship in <Strong>containers</Strong>, not
-        on RoRo decks. They carry <Strong>higher insurance</Strong>, correctly.
-        And the service record and specification verification matter more than
-        on any other category — on a car like this, provenance <em>is</em> the
-        value.
+        The Lexus LS and ES circulate in full-option Gulf trim at two to three
+        years old, and because the region buys high trims, a used car frequently
+        carries equipment that would be a costly extra elsewhere. The Nissan
+        GT-R and the Lexus LC turn up too, usually with main-dealer servicing —
+        ship those in a container, not on a RoRo deck.
       </P>
 
       <H2 id="lhd">Left-hand drive at scale</H2>
@@ -129,7 +130,7 @@ export default function Body() {
         Worth stating separately because it is a structural advantage rather
         than a preference. For markets across Africa, the CIS, Central Asia, the
         wider Middle East and Latin America, the UAE is simply the largest
-        accessible pool of nearly new left-hand-drive stock anywhere in the
+        accessible pool of nearly new left-hand-drive Japanese 4x4s in the
         world.
       </P>
       <P>
