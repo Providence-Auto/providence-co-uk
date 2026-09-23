@@ -144,11 +144,11 @@ const DESTINATIONS: Destination[] = [
     formCountry: "United Kingdom",
     headline:
       "India builds right-hand drive as standard, so nothing needs converting.",
-    body: "India drives on the left, which means an India-built car arrives in the specification the DVLA already expects — no conversion, no engineering sign-off, no hit to resale. There is no age limit on UK imports. We source the exact model and trim through our Indian dealer network, notify NOVA within 14 days of arrival, and handle registration, with duty, VAT and freight all inside the single landed price you approve before we buy.",
+    body: "India drives on the left, which means an India-built car arrives in the specification the DVLA already expects — no conversion, no engineering sign-off, no hit to resale. There is no age limit on UK imports. We source the exact model and trim through our Indian dealer network, notify NOVA within 14 days of arrival and prepare your DVLA registration pack, with duty, VAT and freight all inside the single landed price you approve before we buy.",
     facts: [
       { icon: Gauge, label: "No import age limit" },
       { icon: Wrench, label: "Factory right-hand drive" },
-      { icon: ShieldCheck, label: "NOVA + DVLA registration handled" },
+      { icon: ShieldCheck, label: "NOVA filed, DVLA pack prepared" },
       { icon: Anchor, label: "Container or RoRo to UK ports" },
     ],
     popular:

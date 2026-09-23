@@ -522,7 +522,7 @@ const TOOLS: {
   {
     href: "/import-japanese-cars-to-ireland",
     title: "Japan → Ireland import service",
-    body: "The Japan-specific route in detail — auction grading, the models that land cheapest, and the end-to-end service from bid to Irish plates.",
+    body: "The Japan-specific route in detail — auction grading, the models that land cheapest, and the route from bid to an Irish port, with the VRT and NCTS paperwork prepared.",
     icon: Ship,
   },
   {

@@ -113,7 +113,7 @@ export default function TeamProfileClient({
                 className="inline-flex items-center gap-2 text-zinc-500 font-bold tracking-[0.18em] uppercase text-xs mb-5"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-                Providence Auto · Personal Sourcing Consultant
+                Providence Auto · Sales Consultant
               </Reveal>
               <Reveal
                 immediate
@@ -210,7 +210,7 @@ export default function TeamProfileClient({
                   // biome-ignore lint/performance/noImgElement: R2-hosted portrait, no next/image loader configured
                   <img
                     src={profile.photoUrl}
-                    alt={profile.displayName || "Sourcing consultant"}
+                    alt={profile.displayName || "Sales consultant"}
                     className="w-full h-full object-cover"
                   />
                 ) : (

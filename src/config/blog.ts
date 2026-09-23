@@ -268,7 +268,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "Is it cheaper to import a car yourself or use an import service?",
-        a: "Doing it yourself saves a service fee but exposes you to the expensive mistakes — paying 10% duty for want of an origin document, mis-judging the VRT band, or buying a car that fails the NCT. A good importer prices the full landed cost up front and handles customs, VRT and registration, which usually protects more than it costs.",
+        a: "Doing it yourself saves a service fee but exposes you to the expensive mistakes — paying 10% duty for want of an origin document, mis-judging the VRT band, or buying a car that fails the NCT. A good importer prices the full landed cost up front and prepares the customs, VRT and registration paperwork, which usually protects more than it costs.",
       },
     ],
   },

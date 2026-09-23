@@ -18,22 +18,21 @@ export async function generateMetadata({
   if (!res.success || !res.data) {
     return {
       title: "Consultant Not Found | Providence Auto",
-      description:
-        "The requested sourcing consultant page could not be located.",
+      description: "The requested sales consultant page could not be located.",
     };
   }
 
   const p = res.data.profile;
-  const name = p.displayName || "Sourcing Consultant";
+  const name = p.displayName || "Sales Consultant";
   const countries = (p.sourcingCountries || [])
     .map((c: any) => c.country)
     .filter(Boolean);
-  const title = `${name} — Personal Car Sourcing Consultant | Providence Auto`;
+  const title = `${name} — Sales Consultant | Providence Auto`;
   const description =
     p.tagline ||
-    `Work directly with ${name}, a Providence Auto sourcing consultant${
+    `Work directly with ${name}, a Providence Auto sales consultant${
       countries.length ? ` for ${countries.join(", ")}` : ""
-    }. Grade-verified cars, one honest landed price, one person handling your import end to end.`;
+    }. Inspected cars, one honest landed price, one person from your first message to your port.`;
   const url = `${SITE}/team/${p.slug}`;
 
   return {
@@ -74,8 +73,8 @@ export default async function TeamProfilePage({
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: profile.displayName || "Sourcing Consultant",
-    jobTitle: "Personal Car Sourcing Consultant",
+    name: profile.displayName || "Sales Consultant",
+    jobTitle: "Sales Consultant",
     worksFor: {
       "@type": "Organization",
       name: "Providence Auto",

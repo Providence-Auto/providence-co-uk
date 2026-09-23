@@ -31,7 +31,7 @@ Some markets carry commercial policy that shapes what we promote there without c
 
 **Source markets — where we buy.** We buy in **seven** countries — Japan, the United Kingdom, the UAE, India, Thailand, Australia and New Zealand — with reach into 40+ (retail) / 100+ (dealer) markets. Our structural advantage is that when one source market closes, we can price the same car out of another. That advantage should be visible in the copy.
 
-**Presence is a different list from sourcing, and the two must not be swapped.** We have our own people in **eight** countries — the seven above plus **Sri Lanka**, which is a South Asia operations base and a destination market, not somewhere we buy cars. Say "our own teams in eight countries" for presence and "we buy in seven countries" for sourcing. Note also that presence is *not* a claim to a visitable office: only London is that. See `business-context.md` §3.
+**Presence is the same seven.** We have our own people in the seven countries we buy in — "our own teams in seven countries". Sri Lanka is a destination market only: since 2026-09-23 we claim no office, team or operations base there, so never write "our Colombo team" or "we operate in Sri Lanka". Note also that presence is *not* a claim to a visitable office: only London is that. See `business-context.md` §3.
 
 ### 1.2 The two readers
 
@@ -246,7 +246,7 @@ Always net timing against **real lead time**. A relief expiring on 31 December i
 
 > "If this source closes, which one opens?"
 
-Our eight offices exist so that a rule change in one market is a routing problem, not a dead end. When a story restricts or reprices one source, name the alternatives and what changes about them: spec differences, grade conventions, documentation, freight time, RHD availability.
+Our own teams in seven source countries exist so that a rule change in one market is a routing problem, not a dead end. When a story restricts or reprices one source, name the alternatives and what changes about them: spec differences, grade conventions, documentation, freight time, RHD availability.
 
 This is the lens most competitors cannot write. Use it often.
 

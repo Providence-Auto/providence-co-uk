@@ -269,10 +269,10 @@ const DESTINATIONS: Destination[] = [
     label: "United Kingdom",
     formCountry: "United Kingdom",
     headline: "The United Kingdom sets no age limit on imported cars.",
-    body: "No age limit, no steering conversion, and a DVLA process we've run hundreds of times. From a daily-driver Aqua to a GR Yaris or an Alphard the family will fight over, your car is NOVA-notified within 14 days of arrival and registered for you — with duty and VAT locked into your quote before you commit.",
+    body: "No age limit, no steering conversion, and a DVLA process we've run hundreds of times. From a daily-driver Aqua to a GR Yaris or an Alphard the family will fight over, we file the NOVA notification within 14 days of arrival and prepare your DVLA registration pack — with duty and VAT locked into your quote before you commit.",
     facts: [
       { icon: Gauge, label: "No import age limit" },
-      { icon: ShieldCheck, label: "NOVA + DVLA registration handled" },
+      { icon: ShieldCheck, label: "NOVA filed, DVLA pack prepared" },
       { icon: CalendarClock, label: "Typically 8–12 weeks auction to arrival" },
       { icon: Anchor, label: "RoRo or container to UK ports" },
     ],

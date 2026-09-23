@@ -8,7 +8,7 @@ import { OFFICE_COUNTRIES_SENTENCE } from "@/config/countries";
 
 const SITE = "https://www.providenceauto.co.uk";
 const TITLE = "Our Sales Team — The People Behind Your Car | Providence Auto";
-const DESCRIPTION = `Meet the Providence Auto sales team. Every import is owned end to end by one named person with people on the ground in ${OFFICE_COUNTRIES_SENTENCE} — not a shared inbox.`;
+const DESCRIPTION = `Meet the Providence Auto sales team. Every import is owned by one named person, from first message to your port, with people on the ground in ${OFFICE_COUNTRIES_SENTENCE} — not a shared inbox.`;
 
 // A profile can be published or unpublished at any time, so this index is
 // rebuilt on the same cadence as the profile pages themselves.
@@ -116,9 +116,9 @@ export default async function TeamIndexPage() {
             duration={0.6}
             className="text-xl md:text-2xl text-zinc-500 font-light max-w-3xl mx-auto"
           >
-            Every Providence import is owned end to end by a named consultant —
-            the same person from the first message to the day the car reaches
-            your port and through its clearance. Ours are on the ground in{" "}
+            Every Providence import is owned by one named consultant — the same
+            person from the first message to the day the car reaches your port
+            and through its clearance. Ours are on the ground in{" "}
             <span className="text-black font-medium">
               {OFFICE_COUNTRIES_SENTENCE}
             </span>
