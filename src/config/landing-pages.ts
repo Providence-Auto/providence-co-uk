@@ -187,7 +187,7 @@ export const lhdCampaignConfig: LandingPageConfig = {
           },
           {
             q: "How long does the whole process take?",
-            a: "Typically 8–12 weeks from confirmed inquiry to delivery: 1–2 weeks to source and win the car at auction, 4–8 weeks shipping depending on destination, then customs clearance and local registration. You get live milestone updates the whole way.",
+            a: "Typically 8–12 weeks from confirmed inquiry to arrival at your port: 1–2 weeks to source and win the car at auction, then 4–8 weeks shipping depending on destination. Customs clearance and local registration follow, with our documents and support. You get live milestone updates the whole way.",
           },
           {
             q: "Is my payment protected?",
@@ -280,7 +280,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
       {
         name: "Ciarán D.",
         date: "1 month ago",
-        title: "Hybrid import to Ireland — VRT handled end to end",
+        title: "Hybrid import to Ireland — VRT worked out before I committed",
         desc: "Zero customs duty on a Japan-built hybrid, VRT calculated before I committed, NCTS appointment booked for me. It still came in thousands under the forecourt price for the same car here.",
         rating: 5,
       },
@@ -509,7 +509,7 @@ export const indianCampaignConfig: LandingPageConfig = {
           },
           {
             q: "How long does delivery take, and is my payment protected?",
-            a: "Typically 6–10 weeks from confirmed order to delivery, depending on destination — sourcing and inspection first, then shipping, customs clearance and registration, with live milestone updates throughout. Funds are held securely until your car is confirmed, inspected and cleared to ship, and every car is covered by marine insurance for the voyage.",
+            a: "Typically 6–10 weeks from confirmed order to arrival at your port, depending on destination — sourcing and inspection first, then shipping, with live milestone updates throughout. Customs clearance and registration follow, with our documents and support. Funds are held securely until your car is confirmed, inspected and cleared to ship, and every car is covered by marine insurance for the voyage.",
           },
         ],
       },

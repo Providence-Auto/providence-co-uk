@@ -42,7 +42,7 @@ export default function Footer() {
             </div>
           </Link>
           <p className="mt-4 text-sm font-light text-zinc-400 max-w-[22ch]">
-            A global vehicle sourcing group with our own people in eight
+            A global vehicle sourcing group with our own people in seven
             countries.
           </p>
         </div>

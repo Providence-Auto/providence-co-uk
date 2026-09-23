@@ -165,8 +165,8 @@ export const CalculatorBreakdownEmail = ({
             {data.generatedAt}.
           </Text>
           <Text style={footerTextStyle}>
-            © {new Date().getFullYear()} Providence Auto. We handle customs,
-            VRT, NCTS and delivery end-to-end.
+            © {new Date().getFullYear()} Providence Auto. Shipped to an Irish
+            port, with the customs, VRT and NCTS paperwork prepared for you.
           </Text>
         </Container>
       </Body>

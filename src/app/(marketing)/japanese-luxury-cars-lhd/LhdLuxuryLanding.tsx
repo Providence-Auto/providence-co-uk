@@ -269,7 +269,7 @@ export default function LhdLuxuryLanding() {
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
             title="Japanese Luxury LHD Cars"
-            subtitle="Genuine factory left-hand drive luxury cars sourced from Japan and ready to commission — each landed to your exact specification."
+            subtitle="Genuine factory left-hand drive luxury cars sourced from Japan and ready to commission — each sourced to your exact specification."
           />
         </div>
       </div>

@@ -33,17 +33,17 @@ rule is about **who the outcome belongs to**. We act; you buy.
 
 The old copy sold relief: *handled, managed, taken care of, so you don't have
 to*. We now sell **capability and access**. The distinction matters because
-relief is a promise we can't fully keep (we ship CNF to port; we clear
-customs directly in Ireland only) and capability is one we can.
+relief is a promise we can't fully keep (we ship CNF to port, and we support
+customs clearance rather than performing it) and capability is one we can.
 
 | Banned | Why | Use instead |
 |---|---|---|
 | "so you don't have to" | Sells ignorance as a benefit; inverts the position exactly. | "so you can", "so you know exactly what you're buying" |
-| "we handle everything" / "we take care of it all" | Untrue at the destination port outside Ireland. | "we prepare the file, and support you through clearance" |
+| "we handle everything" / "we take care of it all" | Untrue at the destination port, in every market. | "we prepare the file, and support you through clearance" |
 | "leave it to us" / "sit back" | Passenger framing. | "you decide, on real numbers" |
 | "hassle-free" / "zero paperwork for you" | The paperwork exists. Denying it reads as a sales line and loses trust the first time a form appears. | "the paperwork, prepared and explained" |
-| "door-to-door" (as a blanket claim) | We quote CNF to the destination port. See `business-context.md` §4.2. | "to your port, with clearance support" — or name the specific service where it is real (Ireland NCTS, UK NOVA/DVLA) |
-| "we clear customs for you" (outside Ireland) | True in Ireland only. | "clearance support at [port]" |
+| "door-to-door" (as a blanket claim) | We quote CNF to the destination port. See `business-context.md` §4.2. | "to your port, with clearance support" — or name the specific paperwork we prepare (the Ireland NCTS pack, the UK NOVA/DVLA forms) |
+| "we clear customs for you" | Untrue anywhere: we support clearance, we don't perform it. | "clearance support at [port]" |
 | "full service" / "white glove" / "concierge" | The retired proposition. | "direct access, with the tools to use it" |
 
 ## 3. The words that carry the position
@@ -101,10 +101,10 @@ Do not sand the edges off things that are already true and specific.
   in Japanese, stand in the hall when the car is bid on, physically inspect
   it afterwards." That is the people-on-the-ground pillar and it is exactly
   the kind of sentence this position wants.
-- **The named, real services stay named.** Ireland's NCTS registration and
-  the UK's NOVA/DVLA handling are genuine done-for-you services. Say so
-  plainly. The rule bans *blanket* concierge claims, not accurate specific
-  ones.
+- **The named, real services stay named.** The Ireland NCTS pack and the UK
+  NOVA/DVLA forms are real paperwork we prepare. Say so plainly — as prepared
+  documents, not as registration done for the buyer. The rule bans *blanket*
+  concierge claims, not accurate specific ones.
 - **Numbers stay.** One landed price, the grade, the age rule, the ROI
   target. Precision is the brand.
 
@@ -139,7 +139,7 @@ Five questions for any customer-facing page:
    to\|handle everything\|door-to-door\|hassle-free"`)
 3. **Pillar coverage.** Are all four pillars from `brand-position.md` §4
    present — access, tools, documentation, people?
-4. **Scope honesty.** Does any claim promise clearance outside Ireland,
+4. **Scope honesty.** Does any claim promise that we perform clearance anywhere,
    delivery past the destination port, or that we pay a tax that is charged to
    the registered owner? (`business-context.md` §4)
 5. **Opening line.** Do B2B and B2C open on the same proposition, with the

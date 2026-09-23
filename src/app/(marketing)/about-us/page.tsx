@@ -16,15 +16,16 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import DotGlobe, { GLOBE_PALETTE_LIGHT } from "@/components/DotGlobe";
 import GradientMesh from "@/components/GradientMesh";
-import LandedCostBar from "@/components/LandedCostBar";
 import MinimalHeader from "@/components/MinimalHeader";
 import OdometerCounter from "@/components/OdometerCounter";
 import RadialBurst from "@/components/RadialBurst";
 import { Reveal } from "@/components/Reveal";
+import SectionRule from "@/components/SectionRule";
 import VoyageTrack, { type VoyageStage } from "@/components/VoyageTrack";
 import {
   COUNTRY_BASE_PATH,
   OFFICE_COUNTRIES_SENTENCE,
+  OFFICE_COUNTRY_NAMES,
   SOURCE_COUNTRY_PAGES,
 } from "@/config/countries";
 
@@ -33,7 +34,7 @@ const PATH = "/about-us";
 const URL = `${SITE}${PATH}`;
 const TITLE = "About Providence Auto | Global Vehicle Sourcing Group";
 const DESCRIPTION =
-  "A global vehicle sourcing group with our own people on the ground in eight countries. See how we source, verify and land cars worldwide.";
+  "A global vehicle sourcing group with our own people on the ground in seven countries and 200+ dealership clients. See how we source, verify and ship cars.";
 // Cropped to the 1200×630 size link-preview crawlers (Facebook, LinkedIn,
 // X, Slack…) expect. Self-hosted so the preview can't break when a
 // third-party CDN rewrites a URL.
@@ -74,16 +75,6 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
 };
-
-// ── Stats — real figures, shared by the hero row and the full grid below. ──
-const STATS = [
-  { value: 15, suffix: "+", label: "Years trading history" },
-  { value: 8, label: "Countries with our own presence" },
-  { value: 40, suffix: "+", label: "Retail sourcing markets" },
-  { value: 29, label: "Destination markets served" },
-  { value: 100, suffix: "+", label: "Dealer sourcing markets" },
-  { value: 24, suffix: " hrs", label: "To your first sourcing quote" },
-];
 
 // ── The six values, dealt as a deck. `rot`/`y` are the card's angle and lift
 // in the fan, handed to the .pa-fan rules in globals.css as custom
@@ -181,7 +172,7 @@ const VALUES = [
 const PILLARS = [
   {
     icon: Building2,
-    title: "Eight countries, not eight agents",
+    title: "Seven countries, not seven agents",
     desc: "Nothing is subcontracted to an exporter you never speak to.",
   },
   {
@@ -233,7 +224,7 @@ const AUDIENCES = [
   {
     icon: Handshake,
     title: "Dealer platform",
-    desc: "Embed our stock on your site. It sources and ships itself — you keep the commission.",
+    desc: "Embed our stock on your own site. Free to join by application, with the price agreed per car.",
     href: "/saas",
     cta: "The dealer platform",
   },
@@ -296,22 +287,22 @@ const DESTINATION_REGIONS = [
   },
 ];
 
-/**
- * Short gradient hairline that sits where the eyebrow label used to. Section
- * headings now carry their own label inside the sentence (see CLAUDE.md,
- * "Heading language"), so this rule is what re-establishes the visual step
- * down from one section to the next.
- */
-function SectionRule({ align = "center" }: { align?: "center" | "left" }) {
-  return (
-    <span
-      aria-hidden
-      className={`mb-6 block h-px w-12 bg-gradient-to-r from-sky-500 to-violet-500 ${
-        align === "center" ? "mx-auto" : ""
-      }`}
-    />
-  );
-}
+// ── Stats — real figures, shared by the hero row and the full grid below. ──
+// The presence and destination counts are derived from their lists, so a
+// country added to either can't leave a stale number on the page.
+const DESTINATION_COUNT = DESTINATION_REGIONS.reduce(
+  (n, r) => n + r.countries.length,
+  0,
+);
+
+const STATS = [
+  { value: 15, suffix: "+", label: "Years trading history" },
+  { value: OFFICE_COUNTRY_NAMES.length, label: "Countries with our own teams" },
+  { value: 200, suffix: "+", label: "Dealership clients globally" },
+  { value: DESTINATION_COUNT, label: "Destination markets served" },
+  { value: 100, suffix: "+", label: "Dealer sourcing markets" },
+  { value: 24, suffix: " hrs", label: "To your first sourcing quote" },
+];
 
 export default function AboutUsPage() {
   const breadcrumbSchema = {
@@ -334,8 +325,7 @@ export default function AboutUsPage() {
       alternateName: "Providence Trading Limited",
       url: `${SITE}/`,
       logo: { "@type": "ImageObject", url: `${SITE}/logo.png` },
-      description:
-        "Providence Auto is a global vehicle sourcing and export group that buys, inspects and ships cars through its own teams on the ground in eight countries, shipping to 21+ destination markets worldwide.",
+      description: `Providence Auto is a global vehicle sourcing and export group that buys, inspects and ships cars through its own teams on the ground in ${OFFICE_COUNTRY_NAMES.length} countries, to ${DESTINATION_COUNT} destination markets and 200+ dealership clients worldwide.`,
       foundingLocation: "London, United Kingdom",
       areaServed: "Worldwide",
       sameAs: ["https://www.instagram.com/providenceautouk/"],
@@ -408,8 +398,8 @@ export default function AboutUsPage() {
                 <span className="text-black font-medium">
                   {OFFICE_COUNTRIES_SENTENCE}
                 </span>
-                . We buy, inspect and ship your car ourselves — no brokers, no
-                borders.
+                . You choose the car; we buy it, inspect it and ship it to your
+                port, then support your clearance with the full document pack.
               </Reveal>
 
               <Reveal
@@ -578,11 +568,11 @@ export default function AboutUsPage() {
                 What is Providence Auto?
               </p>
               <p className="text-lg text-zinc-700 font-light leading-relaxed">
-                Providence Auto is a global vehicle sourcing and export group.
-                We buy, inspect and ship cars through our own teams on the
-                ground in eight countries — Japan, the UK, the UAE, India,
-                Thailand, Australia, New Zealand and Sri Lanka — to 21+
-                right-hand-drive and luxury left-hand-drive markets worldwide.
+                Providence Auto is a global vehicle sourcing and export group
+                serving 200+ dealership clients. Our own teams in{" "}
+                {OFFICE_COUNTRIES_SENTENCE} buy, inspect and ship cars to{" "}
+                {DESTINATION_COUNT} destination markets, and support each buyer
+                through clearance at their port.
               </p>
             </Reveal>
           </section>
@@ -700,7 +690,8 @@ export default function AboutUsPage() {
                 <p className="text-lg text-zinc-500 font-light">
                   Tell us the exact car — a full sourcing quote comes back in 24
                   hours. We buy it through our own team in the source country,
-                  verify it, and get it moving. Every import tracks the same
+                  verify it and ship it to your port, where we support your
+                  clearance with the documents. Every import tracks the same
                   way:
                 </p>
               </Reveal>
@@ -791,13 +782,13 @@ export default function AboutUsPage() {
               >
                 <SectionRule />
                 <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-                  Our network is eight bases, forty-plus sourcing markets and
-                  twenty-nine destinations.
+                  Our network is seven countries on the ground and{" "}
+                  {DESTINATION_COUNT} destination markets.
                 </h2>
                 <p className="text-lg text-zinc-500 font-light">
-                  Our own teams sit in eight countries and buy in many more.
-                  Every route below is a real shipping lane, not a claim — drag
-                  to spin it.
+                  Our own teams buy in seven countries and source from many
+                  more. Every route below is a real shipping lane — drag to spin
+                  it.
                 </p>
               </Reveal>
 
@@ -890,65 +881,27 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          {/* ── THE MATH THAT MATTERS ────────────────── */}
-          <section className="py-20 md:py-28 px-6">
-            <div className="max-w-3xl mx-auto">
-              <Reveal y={24} duration={0.6} className="text-center mb-10">
-                <SectionRule />
-                <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-                  The math that matters is one landed number, before you commit.
-                </h2>
-                <p className="text-lg text-zinc-500 font-light">
-                  Duty, VAT, freight and registration differ on every lane. We
-                  work out the full landed cost first — not after you've paid.
-                  Here's a real one:
-                </p>
-              </Reveal>
-
-              <Reveal
-                y={20}
-                duration={0.6}
-                className="rounded-[2rem] border border-black/5 bg-[#FAFAFA] p-8"
-              >
-                <LandedCostBar />
-              </Reveal>
-
-              <div className="text-center mt-8">
-                <Link
-                  href="/ireland-cost-calculator"
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-black hover:text-sky-600 transition-colors group"
-                >
-                  Try the landed-cost calculator
-                  <ArrowRight
-                    size={14}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </Link>
-              </div>
-            </div>
-          </section>
-
           {/* ── PROTECTING YOUR MONEY ─────────────────── */}
           <section className="py-20 md:py-28 px-6 bg-[#FAFAFA] border-y border-black/5">
             <div className="max-w-3xl mx-auto">
               <Reveal y={24} duration={0.6} className="text-center mb-10">
                 <SectionRule />
                 <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black">
-                  We protect your money by showing you the car before we spend
-                  it.
+                  We protect your money by showing you the car before it is
+                  released.
                 </h2>
               </Reveal>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {[
                   {
                     icon: ShieldCheck,
-                    title: "Independent inspection first",
-                    desc: "If a car doesn't match its grade, it doesn't ship. You aren't charged.",
+                    title: "Inspected before you pay",
+                    desc: "The same multi-point inspection in every source country. If the car doesn't match what you approved, it doesn't ship.",
                   },
                   {
                     icon: FileCheck2,
                     title: "Payment held until verified",
-                    desc: "Funds are secured, not released, until the car checks out.",
+                    desc: "Your funds are released only once the car is inspected and cleared for export.",
                   },
                   {
                     icon: Anchor,
@@ -957,8 +910,8 @@ export default function AboutUsPage() {
                   },
                   {
                     icon: Users,
-                    title: "One named consultant",
-                    desc: "The same person, from your first message to arrival.",
+                    title: "Documents for your clearance",
+                    desc: "A complete document pack, and our support through clearance at your port.",
                   },
                 ].map((item, i) => (
                   <Reveal
@@ -986,7 +939,7 @@ export default function AboutUsPage() {
                   href="/team"
                   className="inline-flex items-center gap-1.5 text-sm font-bold text-black hover:text-sky-600 transition-colors group"
                 >
-                  Meet the sourcing team
+                  Meet the sales team
                   <ArrowRight
                     size={14}
                     className="group-hover:translate-x-1 transition-transform"

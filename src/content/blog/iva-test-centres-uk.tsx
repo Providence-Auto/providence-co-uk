@@ -331,10 +331,10 @@ export default function Body() {
         The approval route and the testable-location question belong in the
         decision before you buy, not after the vessel discharges. We confirm
         which route a specific car falls into and what it implies, and for
-        UK-bound cars we file the NOVA declaration and prepare and submit the
-        DVLA registration pack. The choice of port and the choice of test centre
-        are worth making together, and you can make them on real numbers rather
-        than after the fact.
+        UK-bound cars we file the NOVA declaration and prepare the DVLA
+        registration pack. The choice of port and the choice of test centre are
+        worth making together, and you can make them on real numbers rather than
+        after the fact.
       </P>
 
       <Disclaimer>

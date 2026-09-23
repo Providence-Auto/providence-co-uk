@@ -372,12 +372,12 @@ export default function Body() {
 
       <H2 id="where-we-fit">Where we fit in this</H2>
       <P>
-        For cars we land in the United Kingdom, we file the NOVA declaration and
-        prepare and submit the DVLA registration pack, and you get the full
-        scanned document set when the vessel departs. Before that — before you
-        commit to a car at all — we tell you which approval route it falls into
-        and what that route costs, because it belongs in the landed number
-        rather than in a discovery at the port.
+        For cars we ship to the United Kingdom, we file the NOVA declaration and
+        prepare the DVLA registration pack, and you get the full scanned
+        document set when the vessel departs. Before that — before you commit to
+        a car at all — we tell you which approval route it falls into and what
+        that route costs, because it belongs in the landed number rather than in
+        a discovery at the port.
       </P>
       <P>
         The parts of this you keep are the parts that are yours by law: the

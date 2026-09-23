@@ -71,9 +71,8 @@ export default function Body() {
           This treatment has been revised more than once, in both directions.
           What was favourable three years ago may not be favourable now, and
           something that was unattractive may have become the smart choice. This
-          is one of the specific things our Colombo team confirms with Sri Lanka
-          Customs before sourcing — never from a published table, including
-          ours.
+          is one of the specific things we confirm with Sri Lanka Customs before
+          sourcing — never from a published table, including ours.
         </p>
       </Callout>
       <P>
@@ -193,7 +192,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        Our <InlineLink href="/team">Colombo team</InlineLink> confirms the
+        Our <InlineLink href="/team">sales team</InlineLink> confirms the
         current position before sourcing and compares the landed figure across
         our Japan, Thailand, India and UK teams for the specification you want.
       </P>

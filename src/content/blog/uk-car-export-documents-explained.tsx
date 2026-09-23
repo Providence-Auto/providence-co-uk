@@ -35,7 +35,7 @@ export default function Body() {
           </>,
           <>
             A <Strong>statement of origin</Strong> is the difference between
-            paying duty and not, on a British-built car.
+            paying duty and not, on a UK-built Corolla, Qashqai, Juke or Leaf.
           </>,
           <>
             The <Strong>Bill of Lading</Strong> is title to the shipment. Check
@@ -155,10 +155,10 @@ export default function Body() {
       <P>
         So build origin is established at shortlist stage, and the documentation
         is obtained at purchase. Doing it in the other order is how people
-        discover a four-figure duty bill at their own port. Which marques are
-        actually built in Britain is set out in{" "}
+        discover a four-figure duty bill at their own port. Which Japanese cars
+        are actually built in Britain is set out in{" "}
         <InlineLink href="/blog/best-cars-to-import-from-the-uk">
-          the best cars to import from the UK
+          the best Japanese cars to import from the UK
         </InlineLink>
         .
       </P>

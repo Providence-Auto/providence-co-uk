@@ -251,18 +251,17 @@ export default function HomeClient() {
                   reached it, which is what put LCP at 20.2s. */}
               <Reveal immediate className="max-w-4xl mx-auto px-4 text-center">
                 <p className="text-xl sm:text-2xl md:text-3xl font-light tracking-tight leading-relaxed text-zinc-700">
-                  Welcome to Providence Auto. We are building the world’s
-                  largest borderless showroom. Whether you are a car enthusiast
-                  looking for your dream car or a dealership wanting to scale
-                  up, we provide the exact vehicle you desire. We source
-                  vehicles from the most tax-efficient markets on earth — with
-                  our own people and operations teams in{" "}
+                  Welcome to Providence Auto, the world’s largest borderless
+                  showroom. Whether you are a car enthusiast looking for your
+                  dream car or a dealership wanting to scale up, you can now buy
+                  the exact vehicle you want, direct from the most tax-efficient
+                  markets on earth — through our own teams in{" "}
                   <span className="text-black font-medium">
-                    the UK, Japan, the UAE, India, Thailand, Australia, New
-                    Zealand and Sri Lanka
-                  </span>{" "}
-                  — and deliver them right to your country with zero logistical
-                  friction.
+                    the UK, Japan, the UAE, India, Thailand, Australia and New
+                    Zealand
+                  </span>
+                  . We ship it to your port and support your clearance with the
+                  full document pack.
                 </p>
                 <Link
                   href="/source-cars-from"
@@ -332,7 +331,7 @@ export default function HomeClient() {
                 className="mb-12 md:mb-20 text-center"
               >
                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tighter text-black">
-                  How it works
+                  Here’s how it works — request, source, ship.
                 </h2>
               </Reveal>
 
@@ -374,7 +373,7 @@ export default function HomeClient() {
                     icon: (
                       <Ship className="text-sky-500 h-7 w-7 md:h-8 md:w-8 group-hover:text-white transition-colors duration-500" />
                     ),
-                    desc: "Your car is purchased, quality checked, fully documented and shipped, with real-time updates at every stage. It arrives with the complete document pack and our team behind you through clearance and registration.",
+                    desc: "Your car is purchased, inspected, documented and shipped to your destination port, with real-time updates at every stage. It arrives with the complete document pack, and our team supports you through clearance and registration.",
                   },
                 ].map((item, index) => (
                   <Reveal
@@ -437,10 +436,9 @@ export default function HomeClient() {
                       For Direct Buyers
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
-                      For the past 15 years, we have supplied the top car
-                      dealers in your country. For the first time, we are
-                      offering our service directly to consumers. Cut out the
-                      middleman and save a ton when you directly import with us.
+                      For 15 years we have supplied 200+ dealerships worldwide.
+                      Now you can buy direct from the same markets they buy from
+                      — and keep the margin a forecourt would have added.
                     </p>
                   </div>
 
@@ -470,10 +468,9 @@ export default function HomeClient() {
                       For Dealerships
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
-                      Scale your lot without the overhead. Access 100+ global
-                      markets to find the exact trims and specifications your
-                      customers are looking for. Transform your inventory power
-                      overnight.
+                      Source stock direct from 100+ global markets, in the exact
+                      trims and specifications your customers ask for — and sell
+                      it without floor-planning it first.
                     </p>
                   </div>
 

@@ -391,7 +391,7 @@ export default function Body() {
 
       <Callout title="Working the Sri Lankan corridor" tone="emerald">
         <p>
-          We operate in Sri Lanka and buy at auction in Japan, the UK, the UAE,
+          We ship into Sri Lanka and buy at auction in Japan, the UK, the UAE,
           India, Thailand, Australia and New Zealand, so when one source market
           reprices we can quote the same specification out of another. If you
           want the duty, excise and registration-clock position modelled against

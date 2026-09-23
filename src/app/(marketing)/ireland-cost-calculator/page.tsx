@@ -1418,10 +1418,9 @@ export default function IrelandCostCalculator() {
                   <div className="flex items-start gap-2.5 pt-1">
                     <Info className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0 mt-0.5" />
                     <p className="text-xs text-zinc-500 leading-relaxed">
-                      This figure covers taxes and shipping only. Our customs
-                      clearance handling, and optional door delivery from the
-                      port if you'd like the car brought to you, are charged
-                      separately —{" "}
+                      This figure covers taxes and shipping to an Irish port
+                      only. Our clearance support, and any onward transport from
+                      the port you choose to arrange, are quoted separately —{" "}
                       <span className="text-zinc-700 font-medium">
                         ask us for a fixed quote
                       </span>
@@ -1520,7 +1519,8 @@ export default function IrelandCostCalculator() {
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <p className="text-center text-xs text-zinc-400">
-                We handle customs, VRT, NCTS and delivery end-to-end
+                Shipped to an Irish port, with the customs, VRT and NCTS
+                paperwork prepared for you
               </p>
             </Reveal>
           </div>

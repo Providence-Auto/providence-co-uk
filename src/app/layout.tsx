@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Providence Auto",
   },
   description:
-    "Source any car from 40+ global markets with Providence Auto. Our own operations teams in the UK, Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka — tax-efficient vehicles delivered with zero logistical friction.",
+    "Source any car from 40+ global markets with Providence Auto. Our own teams in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand — shipped to your port, with clearance support and the full document pack.",
   keywords: [
     "Global car sourcing",
     "direct car import service",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: "World’s Largest Borderless Showroom | Global Car Sourcing",
     description:
-      "Eight countries, our own people in every one. Save on luxury SUVs, sedans, and performance cars by cutting out the middleman. Direct delivery to your port.",
+      "Seven countries, our own people in every one. Save on luxury SUVs, sedans and performance cars by buying direct. Shipped to your port, with clearance support.",
     // 1200x630 is the card size every scraper crops to. This used to be
     // /logo.png at 1007x967 — a near-square logo, which Slack, LinkedIn, X and
     // iMessage all letterbox or centre-crop into something that reads as a
@@ -105,11 +105,10 @@ export default function RootLayout({
   // country config pulls in lucide icon references it does not need here. Keep
   // the two in sync when an office is added or its country changes.
   //
-  // `slug` is null for an office with no page under /source-cars-from. Sri
-  // Lanka has a team and belongs in the eight-office claim, but we do not buy
-  // cars there, so it has no sourcing page — and emitting a URL for one would
-  // put a redirect in our own structured data.
-  const offices = [
+  // `slug` is null for an office with no page under /source-cars-from, so a
+  // presence-only country never emits a URL that redirects. There are none
+  // today: since 2026-09-23 the presence list is the same seven we buy in.
+  const offices: { name: string; region: string; slug: string | null }[] = [
     { name: "United Kingdom", region: "Europe", slug: "united-kingdom" },
     { name: "Japan", region: "East Asia", slug: "japan" },
     { name: "United Arab Emirates", region: "Middle East", slug: "uae" },
@@ -117,7 +116,6 @@ export default function RootLayout({
     { name: "Thailand", region: "South-East Asia", slug: "thailand" },
     { name: "Australia", region: "Oceania", slug: "australia" },
     { name: "New Zealand", region: "Oceania", slug: "new-zealand" },
-    { name: "Sri Lanka", region: "South Asia", slug: null },
   ];
 
   const organizationSchema = {
@@ -127,7 +125,7 @@ export default function RootLayout({
     url: "https://www.providenceauto.co.uk/",
     logo: "https://www.providenceauto.co.uk/logo.png",
     description:
-      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka, sourcing premium vehicles from 40+ markets.",
+      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand, sourcing premium vehicles from 40+ markets.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "468 Church Lane, Kingsbury",

@@ -136,6 +136,7 @@ const CAR_MAKES = [
   "Honda",
   "Hyundai",
   "Infiniti",
+  "Isuzu",
   "Jaguar",
   "Jeep",
   "Kia",

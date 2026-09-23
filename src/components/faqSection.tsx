@@ -15,7 +15,7 @@ const FAQ_DATA = [
     items: [
       {
         q: "How do I know my money is safe?",
-        a: "Your payment is held in a secure escrow arrangement until the vehicle is confirmed, inspected, and ready for shipment. We've been operating for 15+ years and have long-standing relationships supplying the dealerships you already trust.",
+        a: "Your payment is held securely and released only once the vehicle is confirmed, inspected and cleared for shipment. We've been operating for 15+ years and have long-standing relationships supplying the dealerships you already trust.",
       },
       {
         q: "What if the car isn't what was described?",
@@ -31,7 +31,7 @@ const FAQ_DATA = [
       },
       {
         q: "Can I speak to someone in person?",
-        a: "Absolutely. Our head office is in London and you're welcome to arrange a visit, and we have our own operations teams in Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka — with more markets added as our volumes grow. Wherever your car is coming from, we can jump on a video call so you can put a face to the name. We're real people, not a faceless website.",
+        a: "Absolutely. Our head office is in London and you're welcome to arrange a visit, and we have our own teams in Japan, the UAE, India, Thailand, Australia and New Zealand — with more markets added as our volumes grow. Wherever your car is coming from, we can jump on a video call so you can put a face to the name. We're real people, not a faceless website.",
       },
       {
         q: "Which countries do you source vehicles from?",
@@ -44,7 +44,7 @@ const FAQ_DATA = [
     items: [
       {
         q: "How do you verify the condition of the car?",
-        a: "Every vehicle is independently inspected by a qualified third-party assessor. This covers mechanical condition, bodywork, interior, service history, and mileage verification. You receive the full report before anything moves.",
+        a: "Every vehicle gets the same multi-point physical inspection from our own team, whichever country it is bought in — mechanical condition, bodywork, underbody, electronics, interior, service history and mileage. You receive the full report and photographs before your payment is released.",
       },
       {
         q: "Can I request additional photos or a video walkaround?",
@@ -73,7 +73,7 @@ const FAQ_DATA = [
       },
       {
         q: "Do I need to handle any paperwork or customs forms?",
-        a: "Very little, and never on your own. We prepare and file the export side ourselves — Bill of Lading, export compliance, HS codes and whatever pre-shipment inspection your country requires — and send you the completed file rather than a list of things to go and find. At your end, Ireland is the one market where we also make the customs declaration and handle VRT. Everywhere else the import entry is made in your name, and we prepare the documents, tell you exactly what happens at the port, and stay on it with you.",
+        a: "Very little, and never on your own. We prepare and file the export side ourselves — Bill of Lading, export compliance, HS codes and whatever pre-shipment inspection your country requires — and send you the completed file rather than a list of things to go and find. At your end, we ship to your destination port rather than to your door: the import entry is made in your name, and we prepare the documents, tell you exactly what happens at the port, and support you through clearance.",
       },
       {
         q: "Will the car be legal to drive in my country?",
