@@ -79,7 +79,7 @@ export default function B2BLanding() {
             </span>{" "}
             — with{" "}
             <span className="text-black drop-shadow-sm">
-              our own teams in eight of them
+              our own teams in seven of them
             </span>{" "}
             — to find the exact trims your customers are begging for.
           </Reveal>

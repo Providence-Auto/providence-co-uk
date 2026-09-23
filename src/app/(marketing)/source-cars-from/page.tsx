@@ -4,6 +4,7 @@ import Link from "next/link";
 import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
+import SectionRule from "@/components/SectionRule";
 import {
   COUNTRY_BASE_PATH,
   SOURCE_COUNTRIES_SENTENCE,
@@ -13,6 +14,8 @@ import {
 const SITE = "https://www.providenceauto.co.uk";
 const TITLE =
   "Our Global Network — Seven Countries, One Landed Price | Providence Auto";
+// 1200×630, self-hosted, so link previews never depend on a third-party CDN.
+const OG_IMAGE = `${SITE}/source-cars/og/network.jpg`;
 const DESCRIPTION = `Providence Auto buys directly in ${SOURCE_COUNTRIES_SENTENCE}, and sources vehicles from many more. Our own teams find, inspect and ship every car — see what each country does best.`;
 
 export const metadata: Metadata = {
@@ -33,11 +36,20 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "A Toyota Land Cruiser — one of the cars Providence Auto sources worldwide",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
   robots: { index: true, follow: true },
 };
@@ -87,7 +99,7 @@ export default function GlobalNetworkPage() {
     url: `${SITE}/`,
     logo: `${SITE}/logo.png`,
     description:
-      "Global vehicle sourcing and export group with physical offices across Europe, Asia, the Middle East and Oceania.",
+      "Global vehicle sourcing and export group with its own teams in seven source countries across Europe, Asia, the Middle East and Oceania.",
     areaServed: "Worldwide",
     subOrganization: SOURCE_COUNTRY_PAGES.map((c) => ({
       "@type": "LocalBusiness",
@@ -132,15 +144,6 @@ export default function GlobalNetworkPage() {
 
         {/* ── HERO ─────────────────────────────────── */}
         <section className="px-6 pt-36 md:pt-40 pb-16 max-w-5xl mx-auto text-center">
-          <Reveal
-            as="p"
-            immediate
-            y={16}
-            duration={0.6}
-            className="text-sm font-bold tracking-[0.3em] text-zinc-400 uppercase mb-5"
-          >
-            The Global Network
-          </Reveal>
           <Reveal
             as="h1"
             immediate
@@ -187,7 +190,7 @@ export default function GlobalNetworkPage() {
                     {/* biome-ignore lint/performance/noImgElement: remote/static hero image, intentional <img> per site convention */}
                     <img
                       src={c.hero.backgroundImage}
-                      alt={`Vehicles Providence Auto sources from ${c.country}`}
+                      alt={c.hero.imageAlt}
                       loading="lazy"
                       className="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
                     />
@@ -200,13 +203,6 @@ export default function GlobalNetworkPage() {
                         {c.shortName}
                       </h2>
                     </div>
-                    <span className="absolute top-4 right-4 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-white">
-                      {c.role === "hub"
-                        ? "Operations hub"
-                        : c.role === "both"
-                          ? "Source & hub"
-                          : "Source market"}
-                    </span>
                   </div>
                   <div className="flex flex-1 flex-col p-6">
                     <p className="text-base text-zinc-500 font-light leading-relaxed flex-1">
@@ -234,9 +230,7 @@ export default function GlobalNetworkPage() {
               duration={0.7}
               className="text-center mb-14 max-w-3xl mx-auto"
             >
-              <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-                Why it is built this way
-              </p>
+              <SectionRule />
               <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
                 People on the ground beat an inbox.
               </h2>
@@ -274,6 +268,7 @@ export default function GlobalNetworkPage() {
         {/* ── CTA ──────────────────────────────────── */}
         <section className="py-24 md:py-32 px-6 text-center max-w-3xl mx-auto">
           <Reveal y={24} duration={0.7}>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
               Not sure which country is cheapest?
             </h2>

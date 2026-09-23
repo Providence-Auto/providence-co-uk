@@ -271,8 +271,8 @@ export default function Body() {
           payment at the NCTS.
         </CheckLI>
         <CheckLI>
-          <Strong>Register &amp; deliver</Strong> — Irish plates, road-legal,
-          delivered to your door.
+          <Strong>Register</Strong> — Irish plates, road-legal, ready to
+          collect.
         </CheckLI>
       </UL>
       <P>

@@ -590,7 +590,7 @@ const serviceSchema = {
   name: "Car Import Service to Ireland",
   serviceType: "Vehicle sourcing, import and registration",
   description:
-    "End-to-end car importing into Ireland from any source market — sourcing, inspection, shipping, customs clearance, VRT and Irish registration.",
+    "Car importing into Ireland from any source market — sourcing, inspection and shipping to an Irish port, with support through customs clearance, VRT and Irish registration.",
   url: URL,
   areaServed: { "@type": "Country", name: "Ireland" },
   provider: {
@@ -1765,13 +1765,16 @@ export default function ImportCarsToIrelandPage() {
             </div>
 
             <Takeaway
-              cta="Hand this to us"
+              cta="Get the paperwork ready"
               point={
                 <>
                   Both deadlines start the day the car lands, not the day you
-                  buy it. We handle the customs declaration, the NCTS booking,
-                  VRT and Irish registration end to end, so{" "}
-                  <strong>the 30-day clock is our problem, not yours</strong>.
+                  buy it. We prepare the customs declaration, calculate your VRT
+                  and assemble the NCTS pack before the car arrives, so{" "}
+                  <strong>
+                    the 30-day clock starts with your paperwork already done
+                  </strong>
+                  .
                 </>
               }
             />
@@ -1937,7 +1940,7 @@ export default function ImportCarsToIrelandPage() {
                 Give us the make, model and rough specification you are after
                 and we will come back with the full landed cost — purchase
                 price, shipping, duty, VAT, VRT and NOx — sourced from whichever
-                of our eight markets lands it cheapest. No cost, and no
+                of our seven source countries lands it cheapest. No cost, and no
                 obligation to proceed.
               </p>
             </div>

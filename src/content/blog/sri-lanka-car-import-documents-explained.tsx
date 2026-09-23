@@ -201,15 +201,14 @@ export default function Body() {
         and then the vehicle is plated.
       </P>
       <P>
-        Our Colombo team handles this in person and walks you through the
-        assessment line by line rather than presenting a total — which on a
-        market where the tax structure dominates the outcome is the difference
-        between understanding your bill and simply paying it. The wider process
-        is in{" "}
+        We support you through it and walk you through the assessment line by
+        line rather than presenting a total — which on a market where the tax
+        structure dominates the outcome is the difference between understanding
+        your bill and simply paying it. The wider process is in{" "}
         <InlineLink href="/blog/importing-a-car-to-sri-lanka">
           importing a car to Sri Lanka
         </InlineLink>
-        , handled by our <InlineLink href="/team">Colombo team</InlineLink>.
+        , or talk to our <InlineLink href="/team">sales team</InlineLink>.
       </P>
 
       <Disclaimer>

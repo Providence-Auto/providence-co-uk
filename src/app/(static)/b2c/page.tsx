@@ -12,7 +12,7 @@ import B2CClient from "./B2CClient";
 const PATH = "/b2c";
 const TITLE = "Buy Your Dream Car from Any Market — Direct Import";
 const DESCRIPTION =
-  "Buy direct from the markets the trade buys from. You choose the car; our teams in eight countries give you the access, the documentation and the shipping to bring it home.";
+  "Buy direct from the markets the trade buys from. You choose the car; our teams in seven countries give you the access, the documentation and the shipping to your port.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

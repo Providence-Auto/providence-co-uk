@@ -285,12 +285,12 @@ const DESTINATIONS: Destination[] = [
     label: "Ireland",
     formCountry: "Ireland",
     headline: "Japan-built cars enter Ireland at zero customs duty.",
-    body: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan agreement, and efficient Japanese hybrids sit in the lowest VRT bands — which is why they consistently land thousands below Irish forecourt prices even after VAT. We calculate your exact VRT before you commit and handle the NCTS registration entirely.",
+    body: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan agreement, and efficient Japanese hybrids sit in the lowest VRT bands — which is why they consistently land thousands below Irish forecourt prices even after VAT. We calculate your exact VRT before you commit, ship the car to an Irish port, and prepare the declarations and the NCTS pack for your registration.",
     facts: [
       { icon: Gauge, label: "0% duty on Japan-built cars" },
       { icon: ShieldCheck, label: "VRT calculated before you commit" },
-      { icon: CalendarClock, label: "Typically 8–12 weeks door to door" },
-      { icon: Anchor, label: "NCTS registration handled for you" },
+      { icon: CalendarClock, label: "Typically 8–12 weeks to an Irish port" },
+      { icon: Anchor, label: "NCTS pack prepared for you" },
     ],
     popular:
       "Most requested for Ireland: Toyota Prius and Aqua, the Honda Fit Hybrid and Vezel, and the Nissan Note e-POWER.",

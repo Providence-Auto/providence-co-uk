@@ -7,9 +7,8 @@ import { Reveal } from "@/components/Reveal";
 import { OFFICE_COUNTRIES_SENTENCE } from "@/config/countries";
 
 const SITE = "https://www.providenceauto.co.uk";
-const TITLE =
-  "Our Sourcing Team — The People Who Buy Your Car | Providence Auto";
-const DESCRIPTION = `Meet the Providence Auto sourcing consultants. Every import is owned end to end by one named person with people on the ground in ${OFFICE_COUNTRIES_SENTENCE} — not a shared inbox.`;
+const TITLE = "Our Sales Team — The People Behind Your Car | Providence Auto";
+const DESCRIPTION = `Meet the Providence Auto sales team. Every import is owned end to end by one named person with people on the ground in ${OFFICE_COUNTRIES_SENTENCE} — not a shared inbox.`;
 
 // A profile can be published or unpublished at any time, so this index is
 // rebuilt on the same cadence as the profile pages themselves.
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     "providence auto team",
-    "car sourcing consultant",
+    "car sales consultant",
     "vehicle import specialist",
     "personal car sourcing agent",
     "car export consultant",
@@ -62,7 +61,7 @@ export default async function TeamIndexPage() {
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Providence Auto sourcing consultants",
+    name: "Providence Auto sales team",
     itemListElement: members.map((m, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -98,7 +97,7 @@ export default async function TeamIndexPage() {
             duration={0.6}
             className="text-sm font-bold tracking-[0.3em] text-zinc-400 uppercase mb-5"
           >
-            The Sourcing Team
+            The Sales Team
           </Reveal>
           <Reveal
             as="h1"
@@ -118,8 +117,8 @@ export default async function TeamIndexPage() {
             className="text-xl md:text-2xl text-zinc-500 font-light max-w-3xl mx-auto"
           >
             Every Providence import is owned end to end by a named consultant —
-            the same person from the first message to the day the car clears
-            customs. Ours are on the ground in{" "}
+            the same person from the first message to the day the car reaches
+            your port and through its clearance. Ours are on the ground in{" "}
             <span className="text-black font-medium">
               {OFFICE_COUNTRIES_SENTENCE}
             </span>

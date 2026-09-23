@@ -118,9 +118,9 @@ export default function Body() {
       <P>
         The important caveat is that this treatment has been revised more than
         once. What was favourable three years ago may not be favourable now, and
-        the reverse is equally true. This is one of the specific things our
-        Colombo team confirms before sourcing rather than assuming. More on the
-        practical implications in{" "}
+        the reverse is equally true. This is one of the specific things we
+        confirm before sourcing rather than assuming. More on the practical
+        implications in{" "}
         <InlineLink href="/blog/importing-hybrids-and-evs-to-sri-lanka">
           importing hybrids and EVs to Sri Lanka
         </InlineLink>
@@ -197,8 +197,8 @@ export default function Body() {
         substantially and repeatedly, and continues to change. Nothing in this
         article states current rates, bands or eligibility, and it should not be
         relied on as doing so. Confirm the applicable position with Sri Lanka
-        Customs for your specific vehicle before committing — our Colombo team
-        does this per shipment.
+        Customs for your specific vehicle before committing — we do this per
+        shipment.
       </Disclaimer>
     </>
   );

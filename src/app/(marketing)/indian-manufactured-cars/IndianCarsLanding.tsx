@@ -162,12 +162,12 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Ireland",
     headline:
       "Duty, VAT and VRT priced per car — before you commit to anything.",
-    body: "An India-built car does not enter Ireland on the zero-duty terms a Japan-built one enjoys, so we never work off a rate card: we confirm the tariff that applies to your exact model and country of build, calculate your VRT and VAT alongside it, and give you one landed figure before we buy. The saving is still substantial, because India builds the same cars for a fraction of what European plants do. NCTS registration is handled end to end.",
+    body: "An India-built car does not enter Ireland on the zero-duty terms a Japan-built one enjoys, so we never work off a rate card: we confirm the tariff that applies to your exact model and country of build, calculate your VRT and VAT alongside it, and give you one landed figure before we buy. The saving is still substantial, because India builds the same cars for a fraction of what European plants do. We prepare the declarations and the NCTS pack for your registration.",
     facts: [
       { icon: Gauge, label: "Tariff confirmed for your exact model" },
       { icon: ShieldCheck, label: "VRT calculated before you commit" },
       { icon: Wrench, label: "Factory right-hand drive" },
-      { icon: Anchor, label: "NCTS registration handled for you" },
+      { icon: Anchor, label: "NCTS pack prepared for you" },
     ],
     popular:
       "Most requested for Ireland: India-built superminis and compact SUVs — the models that sit in the lowest VRT bands.",
@@ -573,7 +573,7 @@ export default function IndianCarsLanding() {
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
             title="Indian-Manufactured Cars"
-            subtitle="India-built cars sourced through our dealer network, safety-inspected before export, and ready to land — each delivered to your exact specification."
+            subtitle="India-built cars sourced through our dealer network, safety-inspected before export, and shipped to your port — each sourced to your exact specification."
           />
         </div>
       </div>

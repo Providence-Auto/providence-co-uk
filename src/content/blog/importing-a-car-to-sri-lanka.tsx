@@ -61,11 +61,11 @@ export default function Body() {
       </P>
       <Callout title="Why we verify per shipment" tone="amber">
         <p>
-          Our Colombo team confirms the current position with the authorities
-          before any vehicle is sourced. Not from last year&rsquo;s rate card,
-          and not from a published table — including this article. Anything you
-          read online about Sri Lankan import rules should be treated as
-          background rather than as a basis for committing money.
+          We confirm the current position with Sri Lanka Customs before any
+          vehicle is sourced. Not from last year&rsquo;s rate card, and not from
+          a published table — including this article. Anything you read online
+          about Sri Lankan import rules should be treated as background rather
+          than as a basis for committing money.
         </p>
       </Callout>
 
@@ -166,18 +166,17 @@ export default function Body() {
         </LI>
       </OL>
       <P>
-        Our Colombo team handles this in person and explains the assessment to
-        you line by line rather than presenting a total. On a process this
-        document-heavy, being able to ask somebody why a number is what it is
-        has genuine value.
+        We support you through it and explain the assessment line by line rather
+        than presenting a total. On a process this document-heavy, being able to
+        ask somebody why a number is what it is has genuine value.
       </P>
 
       <H2 id="registration">Registration and handover</H2>
       <P>
         Registration paperwork follows clearance, and then the vehicle is plated
-        and handed over. The local team remains available afterwards for
-        whatever the process throws up — queries on the assessment, registration
-        follow-ups, or anything that surfaces in the first weeks of ownership.
+        and handed over. We remain available afterwards for whatever the process
+        throws up — queries on the assessment, registration follow-ups, or
+        anything that surfaces in the first weeks of ownership.
       </P>
       <P>
         For which vehicles actually make sense on Sri Lankan roads and in Sri
@@ -185,7 +184,7 @@ export default function Body() {
         <InlineLink href="/blog/best-cars-to-import-to-sri-lanka">
           the best cars to import to Sri Lanka
         </InlineLink>
-        , or talk to our <InlineLink href="/team">Colombo team</InlineLink>{" "}
+        , or talk to our <InlineLink href="/team">sales team</InlineLink>{" "}
         directly.
       </P>
 

@@ -39,8 +39,10 @@ export async function generateMetadata({
       description: config.meta.description,
       images: [
         {
-          url: config.hero.backgroundImage,
-          alt: `Vehicles sourced from ${config.country} by Providence Auto`,
+          url: `${SITE}${config.hero.ogImage}`,
+          width: 1200,
+          height: 630,
+          alt: config.hero.imageAlt,
         },
       ],
     },
@@ -48,7 +50,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: config.meta.title,
       description: config.meta.description,
-      images: [config.hero.backgroundImage],
+      images: [`${SITE}${config.hero.ogImage}`],
     },
     robots: {
       index: true,
