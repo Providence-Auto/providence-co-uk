@@ -2,9 +2,10 @@
 // Providence Auto — source-country registry.
 //
 // Single source of truth for the seven countries we buy cars in and publish a
-// page for. NOT the office list: we have people in eight countries and source
-// in seven of them, so the presence claim lives in OFFICE_COUNTRY_NAMES /
-// OFFICE_COUNTRIES_SENTENCE at the foot of this file. Drives:
+// page for. Since 2026-09-23 they are also the only countries the site claims a
+// presence in — Sri Lanka came out of the presence claim that day — so
+// OFFICE_COUNTRY_NAMES / OFFICE_COUNTRIES_SENTENCE at the foot of this file
+// name the same seven. Drives:
 //   • /source-cars-from            (network hub page)
 //   • /source-cars-from/[country]  (per-country landing page)
 //   • the footer office list, the Organization JSON-LD, and the global FAQ
@@ -37,9 +38,6 @@ import {
   Wrench,
 } from "lucide-react";
 
-/** What the country is to us: a place we buy from, a place we operate from, or both. */
-export type CountryRole = "source" | "hub" | "both";
-
 export type CountryOffice = {
   /** City the office sits in. Empty until confirmed — the page falls back to the country name. */
   city: string;
@@ -61,7 +59,6 @@ export type CountryPageConfig = {
   /** Short label for nav, cards and breadcrumbs. */
   shortName: string;
   region: string;
-  role: CountryRole;
   /** One line for the hub-page card. */
   cardBlurb: string;
   meta: { title: string; description: string; keywords: string[] };
@@ -71,13 +68,16 @@ export type CountryPageConfig = {
     title: string;
     subtitle: string;
     backgroundImage: string;
+    /** Describes what is actually in the photograph. */
+    imageAlt: string;
+    /** 1200×630 crop of the hero, for link previews. */
+    ogImage: string;
   };
   /** Scannable proof numbers under the hero. */
   stats: { value: string; label: string }[];
   intro: { highlight: string; text: string };
   /** What this country is genuinely known for building or supplying. */
   specialty: {
-    eyebrow: string;
     title: string;
     blurb: string;
     items: {
@@ -106,9 +106,30 @@ export type CountryPageConfig = {
   relatedCampaign?: { href: string; label: string };
 };
 
-const LOCAL = (name: string) => `/import-cars/${name}.jpg`;
-const UNSPLASH = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?q=80&w=2400&auto=format&fit=crop`;
+// Every car photo on these pages is a real photograph of the exact model the
+// card names, self-hosted under public/source-cars/ at display size (800px
+// cards, 1920px heroes). Sources and licences are in car-photo-credits.ts,
+// which the page renders as its photo credits — add an entry there with any
+// new image. Never point a card at a generic stock shot: a "Range Rover" card
+// showing a Mustang is exactly what this replaced.
+const CAR = (name: string) => `/source-cars/${name}.webp`;
+const HERO = (name: string) => `/source-cars/${name}-hero.webp`;
+const OG = (name: string) => `/source-cars/og/${name}.jpg`;
+
+// ── THE INSPECTION STANDARD ─────────────────────────────────────────────────
+// One inspection, the same in every source country. Each country page adds a
+// single local line for the check that market genuinely adds (the auction sheet
+// in Japan, the PPSR in Australia…) — the standard itself never varies, so the
+// pages cannot drift into seven different promises about the same step.
+const INSPECTION_STANDARD =
+  "Every car gets the same multi-point physical inspection from our own team, whichever country it is bought in — engine, transmission, underbody, electronics, bodywork and interior — photographed and sent to you before your payment is released. If it does not match the description you approved, it does not ship, and you are not charged.";
+
+function inspectionStep(local: string): { title: string; desc: string } {
+  return {
+    title: "We inspect it before you pay",
+    desc: `${INSPECTION_STANDARD} ${local}`,
+  };
+}
 
 // ── JAPAN ────────────────────────────────────────────────────────────────────
 const japan: CountryPageConfig = {
@@ -116,12 +137,11 @@ const japan: CountryPageConfig = {
   country: "Japan",
   shortName: "Japan",
   region: "East Asia",
-  role: "source",
   cardBlurb:
     "The world's deepest graded auction network — 100,000+ independently inspected cars a week.",
   meta: {
     title:
-      "Source Cars From Japan — Auction Floor to Your Door | Providence Auto",
+      "Source Cars From Japan — Auction Floor to Your Port | Providence Auto",
     description:
       "Providence Auto's Japan team buys direct from the graded auction network — Land Cruisers, Alphards, hybrids and JDM performance cars — inspected, deregistered and shipped by our own team. Full landed cost quoted before we bid.",
     keywords: [
@@ -138,6 +158,8 @@ const japan: CountryPageConfig = {
     subtitle:
       "Our Japan team stands on the auction floor every week, reads the original sheet in Japanese, and inspects the car before it is ever loaded. You get the grade, the photographs and one landed price before a single yen moves.",
     backgroundImage: "/import-cars/hero-land-cruiser.webp",
+    imageAlt: "A classic Toyota Land Cruiser in a desert landscape",
+    ogImage: OG("japan"),
   },
   stats: [
     { value: "100k+", label: "Cars graded at auction each week" },
@@ -149,7 +171,6 @@ const japan: CountryPageConfig = {
     text: "Japan's auction network is the most transparent used-car market on earth, but a grade sheet is only as good as the person reading it. Our Japan team bids in the hall, inspects the car in the compound, and signs off the export paperwork in person. We do not buy cars from photographs.",
   },
   specialty: {
-    eyebrow: "What Japan builds best",
     title: "The most over-maintained used cars in the world.",
     blurb:
       "Japan's shaken roadworthiness regime makes keeping an older car expensive, so owners sell early and sell often. The result is a market flooded with low-mileage, dealer-serviced vehicles that simply do not exist anywhere else at the price.",
@@ -181,49 +202,49 @@ const japan: CountryPageConfig = {
       make: "Toyota",
       model: "Land Cruiser",
       note: "70 / 200 / 300 Series",
-      image: LOCAL("lc300"),
+      image: CAR("lc300"),
     },
     {
       make: "Toyota",
       model: "Alphard",
       note: "Luxury hybrid MPV",
-      image: LOCAL("alphard"),
+      image: CAR("alphard"),
     },
     {
       make: "Toyota",
       model: "Harrier",
       note: "Premium hybrid SUV",
-      image: LOCAL("harrier"),
+      image: CAR("harrier"),
     },
     {
       make: "Toyota",
       model: "Aqua",
       note: "The cheapest hybrid to land",
-      image: LOCAL("aqua"),
+      image: CAR("aqua"),
     },
     {
       make: "Nissan",
       model: "GT-R",
       note: "JDM performance",
-      image: LOCAL("gtr"),
+      image: CAR("gtr"),
     },
     {
       make: "Honda",
       model: "Vezel",
       note: "Compact hybrid crossover",
-      image: LOCAL("vezel"),
+      image: CAR("vezel"),
     },
     {
       make: "Nissan",
       model: "Note",
       note: "e-Power series hybrid",
-      image: LOCAL("note"),
+      image: CAR("note"),
     },
     {
       make: "Toyota",
       model: "Noah",
       note: "Eight-seat family MPV",
-      image: LOCAL("noah"),
+      image: CAR("noah"),
     },
   ],
   advantages: [
@@ -253,10 +274,9 @@ const japan: CountryPageConfig = {
       title: "We find it on the floor",
       desc: "Tell us the model, grade, colour and budget. Our Japan team searches the weekly auction catalogues across the major houses, shortlists the cars that match, and sends you the sheets with translations before anything is bid on.",
     },
-    {
-      title: "We inspect it in person",
-      desc: "Once won, the car goes to our compound for a multi-point physical inspection — engine, transmission, underbody, electronics, panel gaps and interior — photographed in daylight. If it does not match its grade, it does not ship, and you are not charged.",
-    },
+    inspectionStep(
+      "The auction sheet is read in Japanese and checked against the car itself, in our own compound.",
+    ),
     {
       title: "We clear it for export",
       desc: "The team handles deregistration, the export certificate with certified mileage, any pre-shipment inspection your country requires (JEVIC, QISJ, KEBS and similar), and the biosecurity steam clean for Australasian and African destinations.",
@@ -328,116 +348,113 @@ const unitedKingdom: CountryPageConfig = {
   country: "the United Kingdom",
   shortName: "United Kingdom",
   region: "Western Europe",
-  role: "both",
   cardBlurb:
-    "Our founding office, and the source for British-built luxury, 4x4s and the deepest service-history records anywhere.",
+    "Our founding office, and a deep, fully documented market in Japanese cars — including the Toyotas and Nissans built in Britain.",
   meta: {
-    title:
-      "Source Cars From the UK — British-Built & Fully Documented | Providence Auto",
+    title: "Source Japanese Cars From the UK | Providence Auto",
     description:
-      "Providence Auto's UK office sources British-built cars — Range Rover, Defender, Bentley, Aston Martin, McLaren, Mini — plus the widest documented used stock in Europe. HPI-checked, MOT history verified, shipped worldwide.",
+      "Buy Japanese cars in the UK — Toyota, Lexus, Nissan, Honda, Mazda, including the UK-built Corolla and Qashqai. MOT history checked, shipped worldwide.",
     keywords: [
+      "japanese cars from the uk",
+      "export japanese cars from the uk",
+      "uk built toyota corolla export",
       "source cars from the uk",
       "uk car exporter",
-      "import cars from the uk",
-      "british built cars export",
-      "uk car buying agent",
     ],
   },
   hero: {
     tagline: "Providence Auto · United Kingdom",
-    title: "The United Kingdom.\nWhere the paper trail is complete.",
+    title: "The United Kingdom.\nJapanese cars, with the paper trail.",
     subtitle:
-      "Britain builds the world's most desirable 4x4s and luxury saloons, and records the life of every car on the road in a public database. Our UK office buys against that record — not against a description.",
-    backgroundImage: UNSPLASH("1637859460045-ac3ae9ced99d"),
+      "Britain has one of Europe's deepest right-hand-drive markets for Japanese cars, builds some of them itself at Burnaston and Sunderland, and records the life of every car on the road in a public database. You buy against that record, not against a description.",
+    backgroundImage: HERO("qashqai"),
+    imageAlt: "A Nissan Qashqai (J12)",
+    ogImage: OG("qashqai"),
   },
   stats: [
     { value: "15+", label: "Years trading from our London base" },
     { value: "100%", label: "Cars provenance-checked before purchase" },
-    { value: "4", label: "Export ports we load from" },
+    { value: "2", label: "Export ports we load from" },
   ],
   intro: {
-    highlight:
-      "Nothing about a British car's history has to be taken on trust.",
-    text: "Every MOT test, every advisory, every recorded mileage reading and every finance interest on a UK car is written down and checkable. We check all of it before we buy, on every single car. Nothing about a British car's history has to be taken on trust.",
+    highlight: "Nothing about a UK car's history has to be taken on trust.",
+    text: "Every MOT test, every advisory, every recorded mileage reading and every finance interest on a UK car is written down and checkable. We check all of it before we buy, on every single car. Nothing about a UK car's history has to be taken on trust.",
   },
   specialty: {
-    eyebrow: "What Britain builds best",
-    title:
-      "Luxury, off-road capability, and things built in very small numbers.",
+    title: "Britain sells Japanese cars in depth, and builds some of them.",
     blurb:
-      "British manufacturing did not disappear — it moved upmarket. The country still builds the definitive luxury 4x4, three of the world's great limousine marques, and a supercar industry clustered within an hour of a single motorway.",
+      "Toyota, Lexus, Nissan, Honda and Mazda are among the best-selling brands on British roads, so the used market runs deep in exactly the models most buyers ask for — right-hand drive as standard, with a main-dealer service record behind them.",
     items: [
       {
-        icon: Mountain,
-        title: "The luxury 4x4, invented here",
-        desc: "Range Rover, Range Rover Sport, Velar, Discovery and the reborn Defender are built in Solihull and Halewood. No other country makes a credible substitute, which is why they hold value in every market we ship to.",
-      },
-      {
-        icon: Sparkles,
-        title: "Three great luxury marques",
-        desc: "Bentley in Crewe, Rolls-Royce at Goodwood and Aston Martin at Gaydon and St Athan. Hand-built, individually specified, and easiest to buy where they are made — with the build records to prove the specification.",
+        icon: Boxes,
+        title: "Built in Britain, badged Japanese",
+        desc: "Toyota builds the Corolla at Burnaston in Derbyshire, and Nissan builds the Qashqai, Juke and Leaf at Sunderland. A UK-built car can qualify for preferential tariff treatment in markets such as the EU — provided the origin paperwork is right.",
       },
       {
         icon: Gauge,
-        title: "A supercar cluster",
-        desc: "McLaren in Woking and Lotus at Hethel, alongside the motorsport valley that supplies most of the grid. Low-volume cars with documented histories and, from the UK, a straightforward export route.",
+        title: "Hybrids in right-hand drive",
+        desc: "Toyota and Lexus hybrids — Yaris, Corolla, C-HR, RAV4, NX and RX — are some of the commonest cars in the country, which makes the used supply deep and the choice of trim and colour real.",
       },
       {
-        icon: Boxes,
-        title: "Volume production too",
-        desc: "Nissan in Sunderland and Toyota at Burnaston build some of Europe's highest-volume models, and Mini in Oxford builds the only small car with genuine global brand pull. UK-built origin also matters for tariffs in several markets.",
+        icon: Mountain,
+        title: "4x4s and enthusiast cars",
+        desc: "RAV4 and Land Cruiser for towing and rough roads; Civic Type R, GR Yaris, MX-5 and GT-R for drivers. British owners tend to keep enthusiast cars serviced and garaged, and the MOT record shows it.",
+      },
+      {
+        icon: BadgeCheck,
+        title: "A service record, not a promise",
+        desc: "Cars sold new in Britain usually come with a stamped main-dealer service book and a public MOT history, which is what a buyer — or a finance house — at the other end wants to see.",
       },
     ],
   },
   signature: [
     {
-      make: "Land Rover",
-      model: "Range Rover",
-      note: "Solihull-built",
-      image: UNSPLASH("1494976388531-d1058494cdd8"),
+      make: "Toyota",
+      model: "Corolla",
+      note: "Burnaston-built hybrid",
+      image: CAR("corolla"),
     },
     {
-      make: "Land Rover",
-      model: "Defender",
-      note: "The modern icon",
-      image: LOCAL("gwagon"),
+      make: "Nissan",
+      model: "Qashqai",
+      note: "Sunderland-built",
+      image: CAR("qashqai"),
     },
     {
-      make: "Bentley",
-      model: "Continental GT",
-      note: "Hand-built in Crewe",
-      image: UNSPLASH("1614162692292-7ac56d7f7f1e"),
+      make: "Nissan",
+      model: "Juke",
+      note: "Sunderland-built",
+      image: CAR("juke"),
     },
     {
-      make: "Aston Martin",
-      model: "DB11",
-      note: "Gaydon-built",
-      image: UNSPLASH("1503376780353-7e6692767b70"),
+      make: "Nissan",
+      model: "Leaf",
+      note: "Sunderland-built EV",
+      image: CAR("leaf-uk"),
     },
     {
-      make: "Mini",
-      model: "Cooper",
-      note: "Oxford-built",
-      image: LOCAL("swift"),
+      make: "Toyota",
+      model: "RAV4",
+      note: "Hybrid and plug-in",
+      image: CAR("rav4"),
     },
     {
-      make: "McLaren",
-      model: "720S",
-      note: "Woking-built",
-      image: UNSPLASH("1552519507-da3b142c6e3d"),
+      make: "Lexus",
+      model: "RX",
+      note: "Hybrid luxury SUV",
+      image: CAR("lexus-rx"),
     },
     {
-      make: "BMW",
-      model: "5 Series",
-      note: "Deep UK used supply",
-      image: LOCAL("bmw"),
+      make: "Honda",
+      model: "Civic Type R",
+      note: "FK8, Swindon-built",
+      image: CAR("civic-type-r"),
     },
     {
-      make: "Mercedes-Benz",
-      model: "E-Class",
-      note: "Full main-dealer history",
-      image: LOCAL("mercedes"),
+      make: "Mazda",
+      model: "MX-5",
+      note: "Right-hand-drive roadster",
+      image: CAR("mx5"),
     },
   ],
   advantages: [
@@ -449,7 +466,7 @@ const unitedKingdom: CountryPageConfig = {
     {
       icon: Landmark,
       title: "Origin that can cut your duty",
-      desc: "A car actually manufactured in the UK can qualify for preferential tariff treatment in several markets, including the EU, where an EU-built car bought in Britain would not. We supply the origin documentation, because without it the preference is worthless.",
+      desc: "A car actually manufactured in the UK — a Burnaston Corolla, a Sunderland Qashqai — can qualify for preferential tariff treatment in several markets, including the EU. We supply the origin documentation, because without it the preference is worthless.",
     },
     {
       icon: Ship,
@@ -457,9 +474,9 @@ const unitedKingdom: CountryPageConfig = {
       desc: "Ireland and mainland Europe are days away, not weeks. For buyers on that side of the world the UK is simply the fastest source country we operate in, and the cheapest to freight from.",
     },
     {
-      icon: BadgeCheck,
+      icon: Sparkles,
       title: "Specification you can actually order",
-      desc: "British stock runs deep enough that you can hold out for the exact trim, colour and option pack rather than settling for what happens to be available. On low-volume cars we can also work directly with the marque's own approved network.",
+      desc: "British stock of Japanese cars runs deep enough that you can hold out for the exact trim, colour and option pack rather than settling for what happens to be available. On newer cars we can also work with the brand's own approved-used network.",
     },
   ],
   process: [
@@ -467,17 +484,16 @@ const unitedKingdom: CountryPageConfig = {
       title: "We find it across the whole market",
       desc: "Trade auctions, main-dealer stock, specialist retailers and private vendors — our UK buyers work all four. You get a shortlist with full provenance already run, not a list of adverts.",
     },
+    inspectionStep(
+      "The MOT, mileage, finance and write-off record is run first, and anything with a discrepancy is rejected outright.",
+    ),
     {
-      title: "We verify before we commit",
-      desc: "Full MOT and mileage history, provenance and finance check, service-book audit and a physical inspection by our own buyer. Anything with a mileage discrepancy, an undisclosed write-off marker or an outstanding finance interest is rejected outright.",
+      title: "We clear it for export",
+      desc: "Notification of permanent export, VAT treatment for qualifying export sales, customs declaration and origin documentation where the destination gives preference to UK-built cars. Every document is prepared by our UK team and shown to you before the car sails.",
     },
     {
-      title: "We handle the export side",
-      desc: "Notification of permanent export, VAT treatment for qualifying export sales, customs declaration and origin documentation where the destination gives preference to UK-built cars. You do none of the paperwork.",
-    },
-    {
-      title: "We ship and clear it",
-      desc: "Container or RoRo from Southampton, Tilbury, Liverpool or Grimsby, roll-on ferry for Ireland, marine insurance throughout, and clearance and registration support at the other end.",
+      title: "We load and track it",
+      desc: "Container or RoRo from Southampton or Tilbury, roll-on ferry for Ireland, marine insurance to your port, and clearance and registration support at the other end.",
     },
   ],
   office: {
@@ -499,31 +515,35 @@ const unitedKingdom: CountryPageConfig = {
     ],
   },
   logistics: {
-    ports: ["Southampton", "Tilbury", "Liverpool", "Grimsby"],
+    ports: ["Southampton", "Tilbury"],
     shipsTo:
       "Ireland and mainland Europe by short-sea ferry; Africa, the Middle East, South Asia and the Caribbean by container or RoRo",
     transit: "Days to Ireland and Europe, roughly 3–6 weeks further afield",
   },
   faqs: [
     {
+      q: "Why buy a Japanese car in the UK rather than in Japan?",
+      a: "Speed, history and origin. A UK car reaches Ireland and mainland Europe in days rather than weeks, arrives with a public MOT and mileage record, and — if it was built at Burnaston or Sunderland — can carry UK origin for tariff purposes. Japan still wins on sheer auction volume and on Japan-market models; we compare both for the specification you want.",
+    },
+    {
+      q: "Which Japanese cars are built in the UK?",
+      a: "Toyota builds the Corolla hatchback and Touring Sports at Burnaston in Derbyshire, and Nissan builds the Qashqai, Juke and Leaf at Sunderland. Honda built the Civic, including the FK8 Type R, at Swindon until 2021. Build origin is shown on the car's documentation, and we confirm it before you commit.",
+    },
+    {
+      q: "Does a car bought in Britain always count as British for customs?",
+      a: "No, and this catches out a lot of buyers. Customs preference depends on where the car was manufactured, not where it was purchased. A Japan-built Toyota bought in London is a Japan-origin car, while a Burnaston-built Corolla is UK-origin, and the two can be treated differently on import. We confirm the build origin and supply the paperwork before you commit.",
+    },
+    {
       q: "What makes the UK a good country to buy a used car from?",
       a: "Record-keeping. Every MOT test, advisory note and mileage reading is published on a public government database, and a commercial provenance check adds outstanding finance, write-off history and theft markers. Combined with a large, competitive market and a service-history culture, it means a UK car's past is verifiable rather than described.",
     },
     {
-      q: "Does a car bought in Britain always count as British for customs?",
-      a: "No, and this catches out a lot of buyers. Customs preference depends on where the car was manufactured, not where it was purchased. A German-built saloon bought in London is an EU-origin car and can attract full duty on import to some markets, while a Solihull-built Range Rover may enter at a preferential rate. We confirm the build origin and supply the paperwork before you commit.",
-    },
-    {
-      q: "Can you buy a specific specification rather than whatever is in stock?",
-      a: "Yes — that is the main reason to use the UK. The market is deep enough that holding out for a specific trim, colour, drivetrain or option pack is realistic rather than aspirational. Tell us the specification you want and we will wait for the right car rather than sell you the near-miss.",
-    },
-    {
-      q: "Do you handle VAT on export sales?",
-      a: "We handle the treatment and the documentation. Whether a sale can be zero-rated depends on the seller, the buyer and the export evidence, and we structure the purchase correctly for your situation. The VAT position is stated explicitly in your landed-cost quote so there is no ambiguity about what you are paying.",
+      q: "How is VAT treated on a UK export sale?",
+      a: "We prepare the treatment and the documentation. Whether a sale can be zero-rated depends on the seller, the buyer and the export evidence, and we structure the purchase correctly for your situation. The VAT position is stated explicitly in your landed-cost quote so there is no ambiguity about what you are paying.",
     },
     {
       q: "How quickly can a UK car reach Ireland or Europe?",
-      a: "Far faster than anywhere else we operate. Roll-on ferry crossings to Ireland run daily and short-sea routes to mainland Europe take days, so the constraint is usually the paperwork rather than the sailing. Longer-haul destinations run on standard container or RoRo schedules.",
+      a: "Far faster than anywhere else we operate. Roll-on ferry crossings to Ireland run daily and short-sea routes to mainland Europe take days, so the constraint is usually the paperwork rather than the sailing. Longer-haul destinations run on standard container or RoRo schedules from Southampton or Tilbury.",
     },
   ],
   blogSlugs: [
@@ -541,7 +561,6 @@ const australia: CountryPageConfig = {
   country: "Australia",
   shortName: "Australia",
   region: "Oceania",
-  role: "source",
   cardBlurb:
     "Utes and 4x4s built for the harshest conditions on earth — plus dry-climate bodies and a homegrown performance heritage.",
   meta: {
@@ -562,7 +581,9 @@ const australia: CountryPageConfig = {
     title: "Australia.\nBuilt for the worst roads on earth.",
     subtitle:
       "Nothing tests a vehicle like the Australian outback, and nothing is specified for it like an Australian-delivery 4x4. Our team buys the utes, wagons and touring rigs that were built to survive it — and checks every one against a national provenance register first.",
-    backgroundImage: UNSPLASH("1610064094665-57e727e29f8b"),
+    backgroundImage: HERO("lc79"),
+    imageAlt: "A Toyota Land Cruiser 79 single-cab",
+    ogImage: OG("lc79"),
   },
   stats: [
     { value: "RHD", label: "Native right-hand drive, English documents" },
@@ -575,7 +596,6 @@ const australia: CountryPageConfig = {
     text: "Local manufacturing ended in 2017, so nothing here is made in Australia any more — and we would rather say that plainly than sell you a story. What Australia still has is the world's toughest 4x4 specification culture, dry inland climates that keep bodies clean, and a national register that makes provenance checkable. Australia stopped building cars. It never stopped specifying them.",
   },
   specialty: {
-    eyebrow: "What Australia supplies best",
     title: "Vehicles set up for real work, by people who actually use them.",
     blurb:
       "The Australian market buys 4x4 dual cabs and touring wagons in volumes that distort the entire model range, and it accessorises them harder than anywhere else. That produces a used pool of genuinely well-specified, heavy-duty vehicles you cannot assemble anywhere else.",
@@ -607,49 +627,49 @@ const australia: CountryPageConfig = {
       make: "Toyota",
       model: "LandCruiser 79",
       note: "Dual-cab workhorse",
-      image: LOCAL("lc70"),
+      image: CAR("lc79"),
     },
     {
       make: "Toyota",
       model: "HiLux",
       note: "The default Australian ute",
-      image: LOCAL("prado"),
+      image: CAR("hilux"),
     },
     {
       make: "Ford",
       model: "Ranger",
       note: "Wildtrak and Raptor",
-      image: LOCAL("lc200"),
+      image: CAR("ranger"),
     },
     {
       make: "Toyota",
       model: "Prado",
       note: "Touring-spec wagon",
-      image: LOCAL("prado"),
+      image: CAR("prado"),
     },
     {
       make: "Nissan",
       model: "Patrol",
       note: "Y62 and Y61 options",
-      image: LOCAL("lc300"),
+      image: CAR("patrol"),
     },
     {
       make: "Mitsubishi",
       model: "Triton",
       note: "Value dual cab",
-      image: LOCAL("harrier"),
+      image: CAR("triton"),
     },
     {
       make: "Ford",
       model: "Falcon",
       note: "XR6 Turbo and FPV",
-      image: UNSPLASH("1552519507-da3b142c6e3d"),
+      image: CAR("falcon"),
     },
     {
       make: "Isuzu",
       model: "D-Max",
       note: "Fleet-maintained stock",
-      image: LOCAL("noah"),
+      image: CAR("dmax"),
     },
   ],
   advantages: [
@@ -679,17 +699,16 @@ const australia: CountryPageConfig = {
       title: "We find it across dealers and trade auctions",
       desc: "Our Australia team works the major trade auction houses, dealer networks, fleet disposals and mining-company sell-downs — the last of which is where the best-maintained heavy-duty 4x4s usually surface.",
     },
-    {
-      title: "We check the register, then the car",
-      desc: "A PPSR check runs first, so a car with finance owing or a written-off marker never reaches you. Cleared vehicles then get a physical multi-point inspection with underbody photographs, which is the whole point of buying from a dry climate.",
-    },
+    inspectionStep(
+      "A PPSR check runs first, so a car with finance owing or a written-off marker never reaches your shortlist.",
+    ),
     {
       title: "We clear it for export",
       desc: "Deregistration and plate surrender in the state of registration, proof of ownership, customs export declaration, and the biosecurity steam clean that Australasian, Pacific and African destinations require on arrival.",
     },
     {
       title: "We load and track it",
-      desc: "RoRo or container from Sydney, Melbourne, Brisbane, Fremantle or Adelaide, marine insurance door to port, and milestone updates from compound to quayside.",
+      desc: "RoRo or container from Sydney, Melbourne, Brisbane, Fremantle or Adelaide, marine insurance to your port, and milestone updates from compound to quayside.",
     },
   ],
   office: {
@@ -749,7 +768,6 @@ const newZealand: CountryPageConfig = {
   country: "New Zealand",
   shortName: "New Zealand",
   region: "Oceania",
-  role: "both",
   cardBlurb:
     "Ex-Japan stock already complied to one of the world's strictest entry standards — and one of our busiest destination markets.",
   meta: {
@@ -770,7 +788,9 @@ const newZealand: CountryPageConfig = {
     title: "New Zealand.\nJapan's best cars, already vetted twice.",
     subtitle:
       "New Zealand imports more used Japanese cars per head than anywhere on earth, and puts every one through entry certification before it can be registered. Buying here means buying a car that has already survived somebody else's inspection regime.",
-    backgroundImage: UNSPLASH("1471444928139-48c5bf5173f8"),
+    backgroundImage: HERO("outlander"),
+    imageAlt: "A Mitsubishi Outlander",
+    ogImage: OG("outlander"),
   },
   stats: [
     { value: "2×", label: "Inspected — in Japan, then at NZ entry" },
@@ -782,7 +802,6 @@ const newZealand: CountryPageConfig = {
     text: "Every used import that enters New Zealand is checked for structural integrity, frontal-impact standards, emissions and odometer accuracy before it can be plated. That record follows the car. When you buy an ex-Japan vehicle out of New Zealand, somebody else already did the hard inspection.",
   },
   specialty: {
-    eyebrow: "What New Zealand supplies best",
     title: "The world's best-curated pool of second-hand Japanese cars.",
     blurb:
       "New Zealand has been importing ex-Japan stock at enormous scale for decades, filtering it through a strict entry standard and maintaining it in a temperate climate. The result is a market that functions as a quality-controlled version of the Japanese auction network.",
@@ -814,49 +833,49 @@ const newZealand: CountryPageConfig = {
       make: "Toyota",
       model: "Aqua",
       note: "Ex-Japan, NZ-complied",
-      image: LOCAL("aqua"),
+      image: CAR("aqua"),
     },
     {
       make: "Nissan",
       model: "Leaf",
       note: "Used EV with battery report",
-      image: LOCAL("note"),
+      image: CAR("leaf"),
     },
     {
       make: "Toyota",
       model: "Prius",
       note: "High-mileage-proof hybrid",
-      image: LOCAL("prius"),
+      image: CAR("prius"),
     },
     {
       make: "Mitsubishi",
       model: "Outlander",
       note: "PHEV in volume",
-      image: LOCAL("harrier"),
+      image: CAR("outlander"),
     },
     {
       make: "Ford",
       model: "Ranger",
       note: "NZ-new, local history",
-      image: LOCAL("lc200"),
+      image: CAR("ranger-t6"),
     },
     {
       make: "Toyota",
       model: "Hiace",
       note: "Fleet-maintained vans",
-      image: LOCAL("noah"),
+      image: CAR("hiace"),
     },
     {
       make: "Suzuki",
       model: "Swift",
       note: "Cheap to land, cheap to run",
-      image: LOCAL("swift"),
+      image: CAR("swift"),
     },
     {
       make: "Honda",
       model: "Fit",
       note: "Ex-Japan supply depth",
-      image: LOCAL("fit"),
+      image: CAR("fit"),
     },
   ],
   advantages: [
@@ -886,10 +905,9 @@ const newZealand: CountryPageConfig = {
       title: "We find it in a filtered market",
       desc: "Our New Zealand team works the main auction houses, dealer stock and fleet disposals, and reads the entry-certification file alongside the advert. Cars whose compliance history looks thin never make your shortlist.",
     },
-    {
-      title: "We inspect and verify",
-      desc: "Physical multi-point inspection with underbody photographs, registration and odometer history check, and a battery state-of-health test on every electric or plug-in hybrid.",
-    },
+    inspectionStep(
+      "Registration and odometer history are checked first, and every electric or plug-in hybrid gets a battery state-of-health test.",
+    ),
     {
       title: "We clear it for export",
       desc: "Deregistration, proof of ownership, customs export documentation and the biosecurity clean that Australia, the Pacific and most African destinations require on arrival.",
@@ -939,7 +957,7 @@ const newZealand: CountryPageConfig = {
     },
     {
       q: "Do you also import cars into New Zealand?",
-      a: "Yes — New Zealand is one of our busiest destination markets as well as a source. We source from Japan, Australia, the UK and elsewhere into New Zealand, arrange the biosecurity clean before departure, and handle entry certification, GST and registration on arrival through the same local team.",
+      a: "Yes — New Zealand is one of our busiest destination markets as well as a source. We source from Japan, Australia, the UK and elsewhere into New Zealand, arrange the biosecurity clean before departure, and our New Zealand team supports you through entry certification, GST and registration on arrival.",
     },
   ],
   blogSlugs: [
@@ -957,19 +975,17 @@ const uae: CountryPageConfig = {
   country: "the United Arab Emirates",
   shortName: "UAE",
   region: "Middle East",
-  role: "both",
   cardBlurb:
-    "The world's largest used-car re-export hub — low-mileage GCC-spec luxury, and a free-zone route to three continents.",
+    "The world's largest used-car re-export hub — low-mileage, GCC-spec Japanese 4x4s, and a free-zone route to three continents.",
   meta: {
-    title:
-      "Source Cars From the UAE — GCC-Spec Luxury & Free-Zone Export | Providence Auto",
+    title: "Source Japanese 4x4s From the UAE | Providence Auto",
     description:
-      "Providence Auto's UAE team sources low-mileage GCC-spec luxury SUVs and supercars — G-Class, LX, Land Cruiser, Patrol, Range Rover — and re-exports through Jebel Ali to Africa, Asia and the CIS. Inspected before shipment.",
+      "Buy low-mileage GCC-spec Japanese 4x4s in the UAE — Land Cruiser, Lexus LX and GX, Nissan Patrol — re-exported through Jebel Ali and inspected first.",
     keywords: [
-      "source cars from dubai",
+      "japanese cars from dubai",
+      "gcc spec land cruiser export",
+      "source cars from the uae",
       "uae car exporter",
-      "import a car from the uae",
-      "gcc spec cars export",
       "dubai used car export",
     ],
   },
@@ -977,34 +993,35 @@ const uae: CountryPageConfig = {
     tagline: "Providence Auto · UAE",
     title: "The UAE.\nThe world's re-export crossroads.",
     subtitle:
-      "Dubai turns over more used vehicles for export than any city on earth, and does it at the intersection of Africa, Asia and Europe. Our UAE team buys the low-mileage luxury stock the market is famous for, and moves it through the free zone without friction.",
-    backgroundImage: UNSPLASH("1634823929885-b12342dfc408"),
+      "Dubai turns over more used vehicles for export than any city on earth, at the intersection of Africa, Asia and Europe — and much of that stock is Japanese: Land Cruisers, Lexus and Patrols, one to three years old. Our UAE team buys it and moves it through the free zone.",
+    backgroundImage: HERO("lc300"),
+    imageAlt: "A Toyota Land Cruiser 300",
+    ogImage: OG("lc300"),
   },
   stats: [
     { value: "LHD", label: "Left-hand drive, GCC specification" },
     { value: "3", label: "Continents inside a short sailing" },
-    { value: "1–3 yr", label: "Typical age of the luxury stock we buy" },
+    { value: "1–3 yr", label: "Typical age of the stock we buy" },
   ],
   intro: {
     highlight: "Cars here are replaced, not worn out.",
     text: "The UAE does not build cars. What it does is buy them in extraordinary volume, keep them for a couple of years, service them at main dealers, and sell them on with mileage figures that look like typing errors. Cars here are replaced, not worn out.",
   },
   specialty: {
-    eyebrow: "What the UAE supplies best",
     title:
-      "Nearly new luxury, in the specification the region actually orders.",
+      "The Gulf runs on Japanese 4x4s, nearly new and in full specification.",
     blurb:
-      "High incomes, no vehicle purchase tax and short ownership cycles produce a used market weighted heavily toward large SUVs, luxury saloons and performance cars — usually one to three years old, usually high-specification, and almost always low-mileage.",
+      "High incomes, no vehicle purchase tax and short ownership cycles produce a used market deep in Toyota, Lexus and Nissan 4x4s — usually one to three years old, usually high-specification, and almost always low-mileage.",
     items: [
       {
         icon: Sparkles,
-        title: "Luxury SUVs in depth",
-        desc: "Mercedes G-Class, Lexus LX and GX, Land Cruiser 300, Nissan Patrol and Range Rover are ordinary sights here, which means genuine choice of colour, trim and specification rather than taking what exists.",
+        title: "Japanese flagships in depth",
+        desc: "Land Cruiser 300, Lexus LX and GX, Nissan Patrol and Infiniti QX80 are ordinary sights here, which means genuine choice of colour, trim and specification rather than taking what exists.",
       },
       {
-        icon: Gauge,
-        title: "Supercar turnover",
-        desc: "Ferrari, Lamborghini, McLaren, Porsche and Rolls-Royce change hands quickly in the Emirates. Low mileage, main-dealer service and an established export route make it one of the most practical places in the world to buy one.",
+        icon: Wrench,
+        title: "Workhorses as well as flagships",
+        desc: "Land Cruiser 70 Series pickups and wagons, Hilux, Prado and the Mitsubishi Pajero come through the Gulf's fleet and contractor market in volume, with maintenance records to match.",
       },
       {
         icon: Snowflake,
@@ -1014,58 +1031,58 @@ const uae: CountryPageConfig = {
       {
         icon: Globe2,
         title: "Left-hand drive at scale",
-        desc: "For LHD markets across Africa, the CIS, Central Asia, the Middle East and Latin America, the UAE is the single largest accessible pool of nearly new left-hand-drive stock anywhere.",
+        desc: "For LHD markets across Africa, the CIS, Central Asia, the Middle East and Latin America, the UAE is the single largest accessible pool of nearly new left-hand-drive Japanese stock anywhere.",
       },
     ],
   },
   signature: [
     {
-      make: "Mercedes-Benz",
-      model: "G-Class",
-      note: "The definitive Gulf SUV",
-      image: LOCAL("gwagon"),
+      make: "Toyota",
+      model: "Land Cruiser 300",
+      note: "GCC heavy-duty spec",
+      image: CAR("lc300"),
     },
     {
       make: "Lexus",
       model: "LX600",
       note: "Low-mileage flagship",
-      image: LOCAL("lx600"),
-    },
-    {
-      make: "Toyota",
-      model: "Land Cruiser 300",
-      note: "GCC heavy-duty spec",
-      image: LOCAL("lc300"),
+      image: CAR("lx600"),
     },
     {
       make: "Nissan",
       model: "Patrol",
       note: "Y62 in volume",
-      image: LOCAL("lc200"),
+      image: CAR("patrol"),
     },
     {
-      make: "Land Rover",
-      model: "Range Rover",
-      note: "High-spec, low miles",
-      image: UNSPLASH("1494976388531-d1058494cdd8"),
+      make: "Lexus",
+      model: "GX",
+      note: "The GX 550, new generation",
+      image: CAR("lexus-gx"),
     },
     {
-      make: "Porsche",
-      model: "911",
-      note: "Fast-turnover performance",
-      image: UNSPLASH("1552519507-da3b142c6e3d"),
+      make: "Infiniti",
+      model: "QX80",
+      note: "Patrol-based luxury",
+      image: CAR("qx80"),
     },
     {
-      make: "Ferrari",
-      model: "488",
+      make: "Toyota",
+      model: "Land Cruiser 70",
+      note: "Pickups and wagons",
+      image: CAR("lc79"),
+    },
+    {
+      make: "Nissan",
+      model: "GT-R",
       note: "Main-dealer serviced",
-      image: UNSPLASH("1614162692292-7ac56d7f7f1e"),
+      image: CAR("gtr"),
     },
     {
-      make: "BMW",
-      model: "X7",
-      note: "Full-option Gulf trim",
-      image: LOCAL("bmw"),
+      make: "Mitsubishi",
+      model: "Pajero",
+      note: "Proven GCC workhorse",
+      image: CAR("pajero"),
     },
   ],
   advantages: [
@@ -1093,14 +1110,13 @@ const uae: CountryPageConfig = {
   process: [
     {
       title: "We find it across dealers and auctions",
-      desc: "Our UAE team works main-dealer trade-ins, the Dubai export yards and the trade auctions. For supercars and limited-run models we also work the specialist retailers directly.",
+      desc: "Our UAE team works main-dealer trade-ins, the Dubai export yards and the trade auctions. For rare specifications we also work the specialist retailers directly.",
     },
+    inspectionStep(
+      "Registration and inspection history are checked first for accident and flood-damage markers, and the cooling system and air conditioning are tested as standard.",
+    ),
     {
-      title: "We check history, then condition",
-      desc: "Registration and inspection history first, to screen for accident and flood-damage markers. Then a physical multi-point inspection covering cooling system, air conditioning, underbody, paint depth and electronics, photographed and sent to you.",
-    },
-    {
-      title: "We handle export clearance",
+      title: "We clear it for export",
       desc: "Export certificate, customs clearance through the free zone, chassis and engine verification, and confirmation of whether GCC specification will satisfy your destination's emissions and lighting requirements before the car sails.",
     },
     {
@@ -1135,6 +1151,10 @@ const uae: CountryPageConfig = {
       a: "No. The UAE is not a vehicle manufacturing country — it is the largest used-vehicle re-export hub in the world. Its value to a buyer is the depth and youth of the stock passing through it, and the speed with which the free-zone customs regime can move a car onward.",
     },
     {
+      q: "Why buy a Japanese 4x4 in the UAE rather than in Japan?",
+      a: "Specification and hand of drive. GCC-spec Land Cruisers, Lexus and Patrols are built left-hand drive with uprated cooling for heat, which is what LHD markets in Africa, Central Asia and the Middle East need. Japan-market cars are right-hand drive and suit RHD destinations. We compare both for your destination before we buy.",
+    },
+    {
       q: "What is GCC specification, and does it matter?",
       a: "GCC-spec cars are built for Gulf conditions: larger radiators, uprated air conditioning, heat-resistant interior materials and, on some models, different emissions and lighting equipment. In hot climates that is a genuine advantage. In cold or emissions-strict markets it can require checking — some GCC models omit equipment that European or Japanese-spec cars carry as standard. We confirm compatibility with your destination before purchase, not after.",
     },
@@ -1145,10 +1165,6 @@ const uae: CountryPageConfig = {
     {
       q: "Is the low mileage on UAE cars real?",
       a: "Usually, and for a structural reason: high incomes, no purchase tax and short ownership cycles mean cars are replaced rather than run into the ground. That said, we verify against main-dealer service records rather than reading the odometer and hoping. A mileage claim without a service record behind it is not a mileage claim we pass on.",
-    },
-    {
-      q: "Can you export supercars and limited-run models?",
-      a: "Yes, and the UAE is one of the better places in the world to do it. Turnover is fast, main-dealer servicing is the norm, and the free-zone export route is well established. High-value cars ship in containers rather than RoRo, under full marine cover, with air freight available where the timeline justifies the cost.",
     },
   ],
   blogSlugs: [
@@ -1166,7 +1182,6 @@ const india: CountryPageConfig = {
   country: "India",
   shortName: "India",
   region: "South Asia",
-  role: "source",
   cardBlurb:
     "The world's third-largest car market, building global models at roughly 30% below the global average price.",
   meta: {
@@ -1187,7 +1202,9 @@ const india: CountryPageConfig = {
     title: "India.\nThe same badge, engineered for less.",
     subtitle:
       "India builds global models on global platforms and exports them to some of the most demanding markets in the world. Our India team buys through direct dealer relationships and inspects every car before it leaves — because a lower price should never mean a lower standard.",
-    backgroundImage: UNSPLASH("1663852408695-f57f4d75a536"),
+    backgroundImage: HERO("thar"),
+    imageAlt: "A Mahindra Thar",
+    ogImage: OG("thar"),
   },
   stats: [
     { value: "~30%", label: "Below the global average vehicle price" },
@@ -1199,7 +1216,6 @@ const india: CountryPageConfig = {
     text: "India's price advantage comes from tax rules that reward compact design, supply chains that are almost entirely domestic, and factories building millions of units a year for the world's third-largest market. None of that is corner-cutting. The saving is engineered in, not cut out.",
   },
   specialty: {
-    eyebrow: "What India builds best",
     title: "Small, tough, efficient — and increasingly, everything else.",
     blurb:
       "India's manufacturing base spans Suzuki, Hyundai, Kia, Toyota, Honda, Volkswagen, Skoda, Nissan, Tata and Mahindra, and now exports India-built cars back to Japan, Europe, Africa and Latin America. What began as a small-car industry has become a full-range one.",
@@ -1231,49 +1247,49 @@ const india: CountryPageConfig = {
       make: "Suzuki",
       model: "Swift",
       note: "The global small car",
-      image: LOCAL("swift"),
+      image: CAR("swift-2024"),
     },
     {
       make: "Toyota",
       model: "Fortuner",
       note: "India-built 4x4",
-      image: LOCAL("prado"),
+      image: CAR("fortuner"),
     },
     {
       make: "Kia",
       model: "Seltos",
       note: "Export-spec crossover",
-      image: UNSPLASH("1685019718640-6e562edc365e"),
+      image: CAR("seltos"),
     },
     {
       make: "Hyundai",
       model: "Creta",
       note: "Best-selling SUV",
-      image: UNSPLASH("1663852408695-f57f4d75a536"),
+      image: CAR("creta"),
     },
     {
       make: "Mahindra",
       model: "Thar",
       note: "Purpose-built off-roader",
-      image: LOCAL("lc70"),
+      image: CAR("thar"),
     },
     {
       make: "Tata",
       model: "Nexon",
       note: "Five-star rated",
-      image: UNSPLASH("1685019718640-6e562edc365e"),
+      image: CAR("nexon"),
     },
     {
       make: "Nissan",
       model: "Magnite",
       note: "Sub-four-metre value",
-      image: LOCAL("note"),
+      image: CAR("magnite"),
     },
     {
       make: "Honda",
       model: "City",
       note: "Long-run export model",
-      image: LOCAL("fit"),
+      image: CAR("city"),
     },
   ],
   advantages: [
@@ -1303,10 +1319,9 @@ const india: CountryPageConfig = {
       title: "We find it through the network",
       desc: "Tell us the model, trim and colour. Our India team works its dealer relationships to locate the exact specification — including export-market variants that are not sold domestically in your country.",
     },
-    {
-      title: "We inspect before anything moves",
-      desc: "An independent multi-point inspection covering structure, brakes, drivetrain, electronics and safety equipment, with full documentation checks and photographs. If it does not pass, it does not ship, and you are not charged.",
-    },
+    inspectionStep(
+      "New cars are also checked line by line against the specification you ordered.",
+    ),
     {
       title: "We clear it for export",
       desc: "Export documentation, chassis verification, customs clearance and any pre-shipment inspection your destination requires, all handled by the local team.",
@@ -1378,7 +1393,6 @@ const thailand: CountryPageConfig = {
   country: "Thailand",
   shortName: "Thailand",
   region: "South-East Asia",
-  role: "source",
   cardBlurb:
     "The Detroit of Asia — the world's pickup capital, and the fastest-growing EV assembly base outside China.",
   meta: {
@@ -1399,7 +1413,9 @@ const thailand: CountryPageConfig = {
     title: "Thailand.\nWhere the world's pickups are built.",
     subtitle:
       "One in every few pickup trucks on earth was assembled in Thailand. Our team buys them where they are made — new export-specification double cabs and low-mileage used stock, both, with the accessory market that grew up around them.",
-    backgroundImage: UNSPLASH("1559416523-140ddc3d238c"),
+    backgroundImage: HERO("hilux"),
+    imageAlt: "A Toyota Hilux double-cab",
+    ogImage: OG("hilux"),
   },
   stats: [
     { value: "Top 5", label: "Vehicle exporting nation worldwide" },
@@ -1411,7 +1427,6 @@ const thailand: CountryPageConfig = {
     text: "Toyota, Isuzu, Ford, Mitsubishi, Mazda and Nissan all build their global one-tonne pickups in Thailand, and export them from there to more than a hundred countries. Every layer of markup between the plant and a foreign showroom is a layer you can remove. Buy the pickup where the pickup is made.",
   },
   specialty: {
-    eyebrow: "What Thailand builds best",
     title: "One-tonne pickups, and the SUVs built on them.",
     blurb:
       "Thailand's automotive industry was built around the pickup truck and the tax structure that favours it. The country is consistently among the world's largest pickup producers, and it exports them in export specification rather than domestic-only trim.",
@@ -1443,49 +1458,49 @@ const thailand: CountryPageConfig = {
       make: "Toyota",
       model: "Hilux",
       note: "Revo, export spec",
-      image: LOCAL("prado"),
+      image: CAR("hilux"),
     },
     {
       make: "Ford",
       model: "Ranger",
       note: "Wildtrak and Raptor",
-      image: LOCAL("lc200"),
+      image: CAR("ranger"),
     },
     {
       make: "Isuzu",
       model: "D-Max",
       note: "Fleet favourite",
-      image: LOCAL("noah"),
+      image: CAR("dmax"),
     },
     {
       make: "Mitsubishi",
       model: "Triton",
       note: "Value double cab",
-      image: LOCAL("harrier"),
+      image: CAR("triton"),
     },
     {
       make: "Toyota",
       model: "Fortuner",
       note: "Seven-seat ladder-frame",
-      image: LOCAL("lc300"),
+      image: CAR("fortuner"),
     },
     {
       make: "Mitsubishi",
       model: "Pajero Sport",
       note: "Pickup-based SUV",
-      image: LOCAL("prado"),
+      image: CAR("pajero-sport"),
     },
     {
       make: "Mazda",
       model: "BT-50",
       note: "D-Max underpinnings",
-      image: LOCAL("voxy"),
+      image: CAR("bt50"),
     },
     {
       make: "BYD",
       model: "Atto 3",
       note: "Thai-assembled EV",
-      image: LOCAL("vezel"),
+      image: CAR("atto3"),
     },
   ],
   advantages: [
@@ -1515,10 +1530,9 @@ const thailand: CountryPageConfig = {
       title: "We find it new or used",
       desc: "For new vehicles, our team orders the exact export specification through the dealer network. For used, we work the Thai auction houses and fleet disposals — a market with unusually good supply of well-maintained commercial 4x4s.",
     },
-    {
-      title: "We inspect and specify",
-      desc: "Multi-point inspection on used stock with underbody and chassis photographs. On new vehicles we confirm the build specification line by line against your order, including any accessory fitment, before it leaves the compound.",
-    },
+    inspectionStep(
+      "New vehicles are also checked line by line against your order, accessory fitment included.",
+    ),
     {
       title: "We clear it for export",
       desc: "Export documentation, chassis and engine number verification, customs clearance and any destination-required pre-shipment inspection, handled locally.",
@@ -1607,10 +1621,13 @@ export const COUNTRY_BASE_PATH = "/source-cars-from";
  * there was no consumer ranking worth protecting. The old URL 301s (see
  * `next.config.ts`).
  *
- * **Presence is a different list.** We have our own people in eight countries
- * and buy cars in seven of them. The eight-office claim lives in
- * OFFICE_COUNTRY_NAMES / OFFICE_COUNTRIES_SENTENCE below and still includes
- * Sri Lanka. Never derive an office count from COUNTRY_PAGES.
+ * **Presence follows the same seven.** Until 2026-09-23 the site claimed our
+ * own people in eight countries, Sri Lanka included. That claim was withdrawn:
+ * Sri Lanka is a market we ship into, not somewhere we have an office or an
+ * operations base, so it appears only in destination lists now. The presence
+ * constants below still exist as separate names so a future presence-only
+ * country can be added without touching every call site — but today they name
+ * exactly the countries in COUNTRY_PAGES.
  *
  * If a presence-only country is ever added, it does **not** go in
  * COUNTRY_PAGES — that would generate a sourcing page for it.
@@ -1625,7 +1642,7 @@ export function getCountrySlugs(): string[] {
   return COUNTRY_PAGES.map((c) => c.slug);
 }
 
-/** Plain-English office list used in copy, e.g. the global FAQ answer. */
+/** Plain-English presence list used in copy, e.g. the global FAQ answer. */
 export const OFFICE_COUNTRY_NAMES = [
   "the United Kingdom",
   "Japan",
@@ -1634,16 +1651,16 @@ export const OFFICE_COUNTRY_NAMES = [
   "Thailand",
   "Australia",
   "New Zealand",
-  "Sri Lanka",
 ];
 
 /**
- * The eight countries we have people in. This is a *presence* claim — it is the
- * right list for "our own teams in…", and the wrong one for "where we buy".
+ * The countries we have our own people in — the right list for "our own teams
+ * in…". Today it is the same seven we buy in; see the note on
+ * SOURCE_COUNTRY_PAGES above.
  */
 export const OFFICE_COUNTRIES_SENTENCE =
-  "the UK, Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka";
+  "the UK, Japan, the UAE, India, Thailand, Australia and New Zealand";
 
-/** The seven we buy in — presence minus Sri Lanka, which we ship to but never source from. */
+/** The seven we buy in. */
 export const SOURCE_COUNTRIES_SENTENCE =
   "the UK, Japan, the UAE, India, Thailand, Australia and New Zealand";

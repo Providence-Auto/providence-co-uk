@@ -20,8 +20,9 @@ export default function Body() {
         tells you. In Britain it is a public record. Every annual roadworthiness
         test, every advisory note and every recorded mileage reading is
         published, and a commercial provenance check adds finance, theft and
-        write-off markers on top. If you are buying a British car from 10,000
-        miles away, this is the reason you can.
+        write-off markers on top. If you are buying a Japanese car in Britain —
+        a Corolla, a RAV4, a Lexus — from 10,000 miles away, this is the reason
+        you can.
       </Lead>
 
       <KeyTakeaways

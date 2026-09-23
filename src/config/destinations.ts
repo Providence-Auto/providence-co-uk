@@ -4,7 +4,7 @@
 // The markets we ship **to**. This is the third of the three geography lists in
 // `business-context.md` §3 — not the source list (7 countries we buy in,
 // `SOURCE_COUNTRY_PAGES` in src/config/countries.ts) and not the presence list
-// (8 countries we have our own people in). A country can sit in more than one.
+// (the same 7 since 2026-09-23). A country can sit in more than one.
 //
 // It drives:
 //   • the destination selector on a car page (src/components/GalleryDetailClient)

@@ -29,6 +29,11 @@ never speaks to.
 
 Registered head office: 468 Church Lane, Kingsbury, London NW9 8UA, UK.
 
+**Scale:** 15+ years trading, our own teams in seven countries, and **200+
+dealership clients globally** (figure supplied by the business on
+2026-09-23; it replaced the "40+ retail sourcing markets" tile on
+`/about-us`, though the 40+ figure itself still stands).
+
 **The position, in one sentence:** Providence Auto gives you direct access to
 the world's car auctions and dealer networks — plus the tools, documentation
 and people on the ground to use that access with confidence. **You buy the
@@ -72,20 +77,22 @@ arrival, rather than a shared inbox or round-robin handoffs.
 ## 3. The geography — three different lists, not one
 
 This is the single most-corrected category of mistake on the site, because
-three genuinely different claims share vocabulary ("eight countries", "we
-buy", "offices"). They must not be used interchangeably.
+three genuinely different claims share vocabulary ("seven countries", "we
+buy", "offices"). They must not be used interchangeably — even now that
+presence and source name the same seven (since 2026-09-23), because a
+presence-only country could be added again.
 
 | List | Count | What it actually means | Canonical source |
 |---|---|---|---|
-| **Presence** | 8 | Countries where Providence has its own people/operations teams. Includes Sri Lanka. | `OFFICE_COUNTRY_NAMES`, `OFFICE_COUNTRIES_SENTENCE` in `src/config/countries.ts`. **Not** `COUNTRY_PAGES` — that is the source list, and holds seven. |
-| **Source** | 7 | Countries Providence actually **buys cars in**. Presence minus Sri Lanka. | `SOURCE_COUNTRIES_SENTENCE`, `COUNTRY_PAGES` / `SOURCE_COUNTRY_PAGES` in `src/config/countries.ts` |
-| **Destination** | 29 (as of 2026-08-25) | Markets Providence ships **to**. Includes Sri Lanka — it is both a destination market and the South-Asia operations base, and a country can be in more than one of these lists (Australia, New Zealand, Thailand and the UK are each in two). | `DESTINATION_REGIONS` in `/about-us` (`src/app/(marketing)/about-us/page.tsx`) |
+| **Presence** | 7 | Countries where Providence has its own people/operations teams. Since 2026-09-23 this is the same seven as the source list — Sri Lanka is no longer claimed as an office, a presence or an operations hub. | `OFFICE_COUNTRY_NAMES`, `OFFICE_COUNTRIES_SENTENCE` in `src/config/countries.ts` — kept as separate names from the source list so a presence-only country could be added later without touching every call site. |
+| **Source** | 7 | Countries Providence actually **buys cars in**. Identical to presence today. | `SOURCE_COUNTRIES_SENTENCE`, `COUNTRY_PAGES` / `SOURCE_COUNTRY_PAGES` in `src/config/countries.ts` |
+| **Destination** | 29 (as of 2026-08-25) | Markets Providence ships **to**. Includes Sri Lanka, which is a destination market only. A country can be in more than one of these lists (Australia, New Zealand, Thailand and the UK are sources and destinations). | `DESTINATION_REGIONS` in `/about-us` (`src/app/(marketing)/about-us/page.tsx`) |
 
-**Sri Lanka specifically:** the Colombo team runs South Asia operations and
-handles Sri Lanka's own (notoriously complex) import process, and we ship into
-the market — but Sri Lanka is not a vehicle-manufacturing country and
-Providence does not buy cars there. It belongs in the **presence** list and the
-**destination** list, never the source list. Added to `DESTINATION_REGIONS` on
+**Sri Lanka specifically:** we ship into the market and support buyers through
+its (notoriously complex) import process — but Sri Lanka is not a
+vehicle-manufacturing country, Providence does not buy cars there, and since
+2026-09-23 the site claims no office, team or operations hub there either. It
+belongs in the **destination** list only. Added to `DESTINATION_REGIONS` on
 2026-08-25, taking the count to 29.
 
 > **Sri Lanka has a market-specific channel policy — see §14.** Read it before
@@ -93,7 +100,7 @@ Providence does not buy cars there. It belongs in the **presence** list and the
 > Sri Lanka. It is a decision input and never becomes public copy.
 
 **"Office" language is a presence claim, not a real-estate claim.** The site
-does not have a walk-in office the public can visit in all eight presence
+does not have a walk-in office the public can visit in all seven presence
 countries — only **London** is a registered, visitable head office. Public
 copy should say "our own people/teams", not "our offices", except for the UK.
 See §5.1.
@@ -110,14 +117,18 @@ stale — see §9.
 Three service claims have been walked back this cycle because they promised
 more than the business actually delivers. This is the standing rule now:
 
-### 4.1 Customs clearance: Ireland only
+### 4.1 Customs clearance: supported, never performed
 
-**Providence directly clears customs in exactly one country: Ireland.**
-Ireland's own pages say so plainly — "Ireland is the one market where we take
-it the whole way" — and that is accurate. Note the boundary in §4.2 though:
-clearing customs is not the same as paying the registration tax.
+**Providence does not clear customs on the import side in any country —
+Ireland included.** Until 2026-09-18 Ireland was carved out as "the one market
+where we take it the whole way"; the business retired that claim on
+2026-09-18, and the documents followed on 2026-09-23. Ireland is CNF to an Irish
+port like every other destination. We support the clearance in full — the
+declarations prepared, the VRT calculated, the NCTS pack assembled — but the
+clearance itself, and anything past the port, is not ours to take
+responsibility for. And per §4.2, the duty, VAT and VRT are the buyer's to pay.
 
-Everywhere else, the correct claim is **clearance support**, not direct
+Everywhere, the correct claim is **clearance support**, not direct
 execution: "clearance support at Mombasa", "we support your car's clearance
 through Dar es Salaam" — never "cleared through X for you" or "we clear at
 X". This was wrong on the Japan and India campaign pages for nine
@@ -129,7 +140,7 @@ page's empty state, all corrected 2026-08-25.
 affected by this rule** — Providence's own office genuinely does clear cars
 for *export* in Japan, the UK, Australia, India and Thailand (§2, step 3).
 The distinction is direction: export clearance in the country we buy from is
-real; import clearance in the country we ship to is Ireland-only.
+real; import clearance in the country we ship to is supported, never performed.
 
 ### 4.2 Registration taxes are the owner's to pay
 
@@ -149,22 +160,24 @@ nothing", "Zero forms for you — not one" and "VRT paid".
 ### 4.3 Delivery: CNF, not door-to-door
 
 Providence quotes and delivers **CNF (Cost and Freight) — to the destination
-port**, not door-to-door. The last-mile handover, local registration
-paperwork and customs clearance in the buyer's own country are the buyer's
-responsibility everywhere except where a page explicitly says otherwise
-(Ireland's NCTS registration handling; the UK's NOVA/DVLA handling — those
-are real, named, in-scope services, not a general "we do the last mile").
+port**, not door-to-door, **in every market, with no exceptions** (since
+2026-09-23). The last-mile handover, customs clearance and registration in the
+buyer's own country are the buyer's responsibility everywhere. What we do at
+that end is documentation and support: we prepare the declarations and the
+registration paperwork — Ireland's NCTS pack, the UK's NOVA and DVLA forms —
+explain each step, and stay on the file with the buyer. Name those as prepared
+documents, never as registration or delivery done for the buyer.
 
-Correct language: "marine cover on the voyage… to the port of arrival", "the
-same person, from your first message to arrival", "At destination port →
-Handover" (not "Delivered"). Avoid "door-to-door" as a blanket claim outside
-the specific pages where it's contractually true.
+Correct language: "shipped to your port, with clearance support and the full
+document pack", "marine cover on the voyage… to the port of arrival", "At
+destination port → Handover" (not "Delivered"). Never "door-to-door", "delivered
+to your door" or "end-to-end delivery".
 
 ### 4.4 Presence vs. visitable office
 
-Don't say "you're welcome to visit any of our eight offices." Say Providence
-has its own people/teams in eight countries, and that **London** specifically
-is visitable. See §5.1 for the corrected FAQ wording.
+Don't say "you're welcome to visit any of our offices." Say Providence has its
+own people/teams in seven countries, and that **London** specifically is
+visitable. See §5.1 for the corrected FAQ wording.
 
 ## 5. Values
 
@@ -185,9 +198,8 @@ concrete rather than aspirational — carry these lines exactly if quoting:
 Current, correct wording (`src/components/faqSection.tsx`):
 
 > "Absolutely. Our head office is in London and you're welcome to arrange a
-> visit, and we have our own operations teams in Japan, the UAE, India,
-> Thailand, Australia, New Zealand and Sri Lanka — with more markets added as
-> our volumes grow. Wherever your car is coming from, we can jump on a video
+> visit, and we have our own teams in Japan, the UAE, India, Thailand,
+> Australia and New Zealand — with more markets added as our volumes grow. Wherever your car is coming from, we can jump on a video
 > call so you can put a face to the name. We're real people, not a faceless
 > website."
 
@@ -208,8 +220,8 @@ outsourcing. Full treatment in `brand-position.md` §5.
 | **Dealer sourcing (B2B)** | `/b2b` | A dealership sourcing inventory it doesn't hold, on request. |
 | **Dealer platform (SaaS)** | `/saas`, `/b2b` | A dealer embeds Providence stock on their own site; Providence sources and ships, the dealer keeps the commission. **Access is by application and internal approval, not self-serve** — see below. |
 | **Source-country campaigns** | `/import-japanese-cars`, `/indian-manufactured-cars`, `/japanese-luxury-cars-lhd` | Destination-picker landing pages, one per major source proposition, config in `src/config/landing-pages.ts`. |
-| **Ireland-specific route** | `/import-cars-to-ireland`, `/import-japanese-cars-to-ireland`, `/ireland-cost-calculator` | Ireland gets dedicated pages because it's the one market with a full clear-customs claim and a live VRT calculator. |
-| **Sales-profile pages** | `/team/[slug]` | A named consultant's personal landing page; leads assigned directly to them, bypassing round-robin. Spec: `sales-profile-spec.md`. |
+| **Ireland-specific route** | `/import-cars-to-ireland`, `/import-japanese-cars-to-ireland`, `/ireland-cost-calculator` | Ireland gets dedicated pages because of its live VRT calculator and the depth of its registration process (VRT, NCTS). It is CNF to an Irish port with clearance support, like every other market — see §4.1. |
+| **Sales-profile pages** | `/team`, `/team/[slug]` | The **sales team** (renamed from "sourcing team" on 2026-09-23); each page is a named sales consultant's personal landing page; leads assigned directly to them, bypassing round-robin. Spec: `sales-profile-spec.md`. |
 | **Sourcing & Profit Analyzer** | `/admin/sourcing-calculator` | Internal tool, not customer-facing: landed cost → UK market comparables → buy/avoid verdict, used by the desk to price auction bids. Methodology: `sourcing-analyzer-methodology.md`. |
 
 ### 6.1 How the dealer platform is sold
@@ -362,6 +374,10 @@ don't just fix the copy silently.
 | 2026-08-25 | The persist-until-answered rule narrowed to **source-of-truth documents only** | As first written it covered any recommendation, which is not what was asked and would have turned every passing suggestion into a standing obligation. Ordinary suggestions are raised once and dropped if not taken up; only a pending change to a documented truth persists. |
 | 2026-09-09 | §14.2's focus-list rule scoped explicitly to **consumer-facing** surfaces; dealer-facing and trade surfaces follow §14.1 | As written, the rule removed Sri Lanka from every limited country list without distinguishing consumer surfaces from trade ones — while §14.1 states plainly that paid B2B acquisition there is *yes*. Building the dealer portal surfaced the contradiction: the portal is precisely the B2B channel §14.1 endorses, so its own country lists were hitting a rule written to protect that channel. Raised as a question rather than edited unilaterally, per `brand-position.md` §11.2, and answered "update it". |
 | 2026-09-09 | The dealer platform recorded as **free, application-gated, with per-vehicle pricing agreed offline**; new §6.1 | §6 described the offer as immediate self-serve with the dealer keeping a commission, which was about to become wrong in two ways at once: an approval gate is being built, and there is no fixed commission — price is agreed per car. `/saas` still carries "Sign up now — Free Forever". The *free* half is accurate and stays; the *sign up now* half is the claim that breaks. Recorded here so the page copy is fixed against a documented fact rather than a recollection. |
+| 2026-09-23 | Sri Lanka withdrawn as an office, presence and operations hub; the presence claim goes from eight countries to **seven**, the same seven we buy in | Business instruction. Sri Lanka stays a destination market (in `DESTINATION_REGIONS`, 29) and §14's channel policy is unchanged. The site, §3, §5.1, §14.1, `brand-position.md`, `news-editorial-playbook.md` and `sales-profile-spec.md` were all updated the same day. |
+| 2026-09-23 | **200+ dealership clients globally** added as a public figure; it replaces the "40+ retail sourcing markets" tile on `/about-us` | Business instruction. Recorded in §1 and the `brand-position.md` §9 proof line so the number has a documented basis. |
+| 2026-09-23 | The sourcing team renamed the **sales team**; consultants are **Sales Consultants** | Business instruction. Applied to `/team`, every profile page and `sales-profile-spec.md`. The profile meta titles lose the "car sourcing consultant" keyword, which was accepted. |
+| 2026-09-23 | The Ireland customs carve-out retired: CNF to port with clearance support in **every** market, and the UK's NOVA/DVLA handling restated as prepared paperwork rather than a done-for-you service | The business stated on 2026-09-18 that Ireland is CNF like everywhere else and that Providence takes no responsibility for the clearance itself or for delivery from the port; on 2026-09-23 it asked for the documents and every page to follow, and for the site to say we assist with clearance and provide documentation rather than delivering door to door. Treating the UK the same way is the consistent reading of that instruction. |
 | 2026-09-01 | The sourcing analyzer's market median can be overridden by the operator; `sourcing-analyzer-methodology.md` §4 documents it | The desk was already moving the median by adding and removing comparables until the number looked right. That edits the evidence to reach a conclusion and leaves no record of it. An explicit override is the same judgement made visible: the comparable set stays as crawled, and every surface says the median is a desk figure. It is an operator input, so "numbers are computed, prose is generated" is untouched — no model produces it. |
 
 ## 12. Known documentation to reconcile
@@ -407,8 +423,9 @@ made against it.
 
 ### 14.1 Sri Lanka is a dealer-channel market
 
-**Public, and already on the site:** we ship into Sri Lanka, our Colombo team
-runs South Asia operations, and we do not source vehicles there.
+**Public, and already on the site:** we ship into Sri Lanka and we do not
+source vehicles there. Since 2026-09-23 the site claims no office, team or
+operations hub there.
 
 **Internal:**
 

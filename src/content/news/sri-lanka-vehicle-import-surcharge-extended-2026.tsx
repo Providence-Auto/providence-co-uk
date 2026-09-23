@@ -419,10 +419,9 @@ export default function SriLankaVehicleImportSurchargeExtended2026() {
 
       <Callout title="Sourcing into Colombo?" tone="emerald">
         <p>
-          We run our own operation in Sri Lanka and buy at auction in Japan, the
-          UK, the UAE, India, Thailand, Australia and New Zealand every week, so
-          when one corridor reprices we can quote the same specification out of
-          another.{" "}
+          We ship into Sri Lanka and buy at auction in Japan, the UK, the UAE,
+          India, Thailand, Australia and New Zealand every week, so when one
+          corridor reprices we can quote the same specification out of another.{" "}
           <InlineLink href="/request">Send us the specification</InlineLink> and
           we will model duty, excise and the registration clock against your
           actual HS code before you open the credit.

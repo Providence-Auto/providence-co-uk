@@ -221,7 +221,7 @@ export default function B2CClient() {
             {
               icon: ShieldCheck,
               title: "15 Years of Heritage",
-              desc: "We aren't a startup guessing how to ship cars. Over a decade of established infrastructure and our own teams in the UK, Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka — with more markets added as we grow.",
+              desc: "We aren't a startup guessing how to ship cars. Over a decade of established infrastructure and our own teams in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand, supplying 200+ dealerships worldwide.",
               glowColor: "group-hover:bg-amber-500/15",
             },
           ].map((feature, index) => (

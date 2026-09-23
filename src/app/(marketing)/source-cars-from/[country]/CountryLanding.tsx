@@ -20,7 +20,9 @@ import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
+import SectionRule from "@/components/SectionRule";
 import { BLOG_BASE_PATH, getPost } from "@/config/blog";
+import { creditsFor } from "@/config/car-photo-credits";
 import {
   COUNTRY_BASE_PATH,
   getCountryPage,
@@ -101,6 +103,11 @@ export default function CountryLanding({ slug }: { slug: string }) {
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
   // The other countries we buy in.
   const others = SOURCE_COUNTRY_PAGES.filter((c) => c.slug !== config.slug);
+  // Attribution for every licensed photograph on the page (hero + cards).
+  const credits = creditsFor([
+    config.hero.backgroundImage,
+    ...config.signature.map((v) => v.image),
+  ]);
 
   return (
     <main className="min-h-screen bg-white text-black selection:bg-black/10 selection:text-black font-sans overflow-x-hidden">
@@ -206,9 +213,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
             duration={0.7}
             className="text-center mb-14 md:mb-20 max-w-3xl mx-auto"
           >
-            <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-              Select a vehicle to begin
-            </p>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
               What {config.country} does better than anywhere else.
             </h2>
@@ -280,7 +285,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
             tags={[config.slug]}
             eyebrow="In Stock"
             title={`Sourced from ${config.shortName}`}
-            subtitle={`Vehicles our ${config.shortName} team has already inspected and cleared, each delivered to your exact specification.`}
+            subtitle={`Vehicles our ${config.shortName} team has already inspected and cleared for export.`}
           />
         </div>
       </div>
@@ -293,9 +298,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
             duration={0.7}
             className="text-center mb-14 md:mb-20 max-w-3xl mx-auto"
           >
-            <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-              {config.specialty.eyebrow}
-            </p>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
               {config.specialty.title}
             </h2>
@@ -351,9 +354,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
             duration={0.7}
             className="text-center mb-14 md:mb-20 max-w-3xl mx-auto"
           >
-            <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-              The advantage
-            </p>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black">
               Why source from {config.country}?
             </h2>
@@ -393,11 +394,9 @@ export default function CountryLanding({ slug }: { slug: string }) {
             duration={0.7}
             className="text-center mb-16 md:mb-20 max-w-3xl mx-auto"
           >
-            <p className="text-xs font-bold tracking-[0.25em] text-white/40 uppercase mb-4">
-              The process
-            </p>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-5">
-              Find it. Inspect it. Ship it.
+              Here&rsquo;s the process — we find it, inspect it and ship it.
             </h2>
             <p className="text-lg text-white/50 font-light">
               Four steps, all of them carried out by Providence staff in{" "}
@@ -441,9 +440,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
             duration={0.7}
             className="text-center mb-14 md:mb-16 max-w-3xl mx-auto"
           >
-            <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-              On the ground
-            </p>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
               Real people, on the ground, in {config.country}.
             </h2>
@@ -649,11 +646,9 @@ export default function CountryLanding({ slug }: { slug: string }) {
               duration={0.7}
               className="text-center mb-12 max-w-3xl mx-auto"
             >
-              <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-                From our guides
-              </p>
+              <SectionRule />
               <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-                {config.shortName}, answered properly.
+                Our guides to sourcing from {config.country}.
               </h2>
               <p className="text-lg text-zinc-500 font-light">
                 The questions dealers and direct buyers ask us most about
@@ -772,12 +767,13 @@ export default function CountryLanding({ slug }: { slug: string }) {
       <section className="py-24 md:py-32 px-6 bg-white border-t border-black/5 relative z-10">
         <div className="max-w-6xl mx-auto">
           <Reveal y={30} duration={0.7} className="text-center mb-12">
-            <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-              The rest of the network
-            </p>
+            <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-              {COUNT_WORDS[others.length] ?? others.length} other countries. One
-              landed price.
+              The rest of the network is{" "}
+              {(
+                COUNT_WORDS[others.length] ?? String(others.length)
+              ).toLowerCase()}{" "}
+              more countries, with one landed price.
             </h2>
             <p className="text-lg text-zinc-500 font-light max-w-2xl mx-auto">
               If {config.country} is not where your car lands cheapest, we will
@@ -837,6 +833,32 @@ export default function CountryLanding({ slug }: { slug: string }) {
       <section className="px-6 pb-20 max-w-4xl mx-auto">
         <PreferredSourceCallout />
       </section>
+
+      {/* ── PHOTO CREDITS ────────────────────────────── */}
+      {credits.length > 0 && (
+        <section className="px-6 pb-16 max-w-4xl mx-auto">
+          <details className="group text-xs text-zinc-400">
+            <summary className="cursor-pointer select-none hover:text-zinc-600 transition-colors">
+              Photo credits
+            </summary>
+            <ul className="mt-3 space-y-1 leading-relaxed">
+              {credits.map((c) => (
+                <li key={c.name}>
+                  <a
+                    href={c.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
+                  >
+                    {c.title}
+                  </a>{" "}
+                  by {c.author}, {c.licence}, via Wikimedia Commons
+                </li>
+              ))}
+            </ul>
+          </details>
+        </section>
+      )}
     </main>
   );
 }

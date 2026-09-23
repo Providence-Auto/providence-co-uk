@@ -20,7 +20,8 @@ export default function Body() {
         buyers and a middling one for everybody else, and the reason is simple
         geography. If you are in Ireland or mainland Europe, the freight leg is
         measured in hours. If you are in East Africa, it is measured in weeks.
-        Here is the whole bill, and where the line falls.
+        Here is the whole bill for a Japanese car bought in Britain, and where
+        the line falls.
       </Lead>
 
       <KeyTakeaways
@@ -165,60 +166,62 @@ export default function Body() {
       </P>
       <P>
         If your destination grants preferential tariff treatment to
-        UK-manufactured goods, a genuinely British-built car with a valid
-        statement of origin can enter at a materially lower rate. Without that
-        document, the same car pays full duty. And a European-built car bought
-        in Britain never qualifies at all, however long it lived there.
+        UK-manufactured goods, a Japanese car genuinely built in Britain — a
+        Burnaston Corolla, a Sunderland Qashqai — can enter at a materially
+        lower rate with a valid statement of origin. Without that document, the
+        same car pays full duty. And a Japanese-badged car built elsewhere never
+        qualifies for UK preference, however long it lived in Britain.
       </P>
       <P>
         On top of duty comes your consumption tax — usually charged on the value{" "}
         <em>plus</em> the duty — and then any registration or excise charge,
-        which may be banded by emissions, capacity or age. Which cars are
-        actually British-built is set out in{" "}
+        which may be banded by emissions, capacity or age. Which Japanese cars
+        are actually built in Britain is set out in{" "}
         <InlineLink href="/blog/best-cars-to-import-from-the-uk">
-          the best cars to import from the UK
+          the best Japanese cars to import from the UK
         </InlineLink>
         .
       </P>
 
       <H2 id="example">A worked comparison</H2>
       <P>
-        Take the same £20,000 used premium SUV, and change only the destination
-        and the build origin. Illustrative structure rather than a quote:
+        Take the same £20,000 used Japanese crossover, and change only the
+        destination and the build origin. Illustrative structure rather than a
+        quote:
       </P>
       <Table
         head={["Scenario", "Freight share", "Duty position", "Net effect"]}
         rows={[
           [
-            "British-built, to Ireland",
+            "UK-built (Corolla, Qashqai), to Ireland",
             "Very low",
             "Preference available with origin proof",
             "The best case. UK is hard to beat here.",
           ],
           [
-            "EU-built, to Ireland",
+            "EU-built Japanese model, to Ireland",
             "Very low",
             "No UK-origin preference",
             "Freight still wins; duty erases part of it.",
           ],
           [
-            "British-built, to East Africa",
+            "UK-built, to East Africa",
             "High",
             "Depends on local tariff schedule",
             "Japan is often cheaper for equivalent stock.",
           ],
           [
-            "Low-volume British marque, anywhere",
+            "Enthusiast car (Civic Type R, GR Yaris), anywhere",
             "High",
             "Secondary consideration",
-            "UK wins on availability and provenance regardless.",
+            "UK wins on condition and a checkable history regardless.",
           ],
         ]}
       />
       <P>
         The pattern: the UK wins on <Strong>proximity</Strong> and on{" "}
-        <Strong>cars only Britain has</Strong>. For ordinary used stock going a
-        long way, compare it honestly against{" "}
+        <Strong>cars Britain builds or keeps well</Strong>. For ordinary used
+        stock going a long way, compare it honestly against{" "}
         <InlineLink href="/blog/cost-to-import-a-car-from-japan">
           the Japanese route
         </InlineLink>{" "}

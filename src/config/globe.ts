@@ -53,9 +53,9 @@ export type GlobeRoute = {
 /**
  * Every marker on the globe.
  *
- * The first eight are the countries in src/config/countries.ts — the places we
- * source from or keep an office in. The rest are the delivery markets shown in
- * the home page flag strip.
+ * The first seven are the countries in src/config/countries.ts — the places we
+ * source from and keep our own teams in. The rest are the delivery markets
+ * shown in the home page flag strip.
  */
 export const GLOBE_PLACES: GlobePlace[] = [
   // ── Source countries and offices ──────────────────────────────────────────
@@ -90,9 +90,15 @@ export const GLOBE_PLACES: GlobePlace[] = [
   },
   { id: "india", name: "India", role: "source", lat: 19.08, lng: 72.88 },
   { id: "thailand", name: "Thailand", role: "source", lat: 13.76, lng: 100.5 },
-  { id: "sri-lanka", name: "Sri Lanka", role: "hub", lat: 6.93, lng: 79.86 },
 
   // ── Delivery markets ──────────────────────────────────────────────────────
+  {
+    id: "sri-lanka",
+    name: "Sri Lanka",
+    role: "destination",
+    lat: 6.93,
+    lng: 79.86,
+  },
   {
     id: "ireland",
     name: "Ireland",
