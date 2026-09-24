@@ -195,8 +195,8 @@ export default function Body() {
         <Strong>Look elsewhere</Strong> if you are in a cold climate. The
         omitted cold-weather equipment is genuinely missed, and the cooling
         advantage buys you nothing.{" "}
-        <InlineLink href="/source-cars-from/japan">Japan</InlineLink> or{" "}
-        <InlineLink href="/source-cars-from/united-kingdom">the UK</InlineLink>{" "}
+        <InlineLink href="/import-cars-from/japan">Japan</InlineLink> or{" "}
+        <InlineLink href="/import-cars-from/united-kingdom">the UK</InlineLink>{" "}
         will serve you better.
       </P>
       <P>

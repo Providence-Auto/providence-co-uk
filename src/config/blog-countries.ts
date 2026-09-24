@@ -21,11 +21,46 @@ const AUTHOR = "Providence Auto";
 const PUBLISHED = "2026-08-10";
 const UPDATED = "2026-08-10";
 
+// ── Search intent: guide → landing page ──────────────────────────────────────
+// These posts are the INFORMATIONAL pages: "how to import a car from
+// Australia", "cost to import a car from Australia". The transactional query —
+// "import cars from Australia", someone ready to buy — belongs to
+// /import-cars-from/<country>. So every post in a source-country cluster ends by
+// handing the reader to that page's inquiry form, with the transactional
+// keyword as the button text, and the landing page links back here with the
+// "how to" phrase. Neither page competes for the other's query. Sri Lanka is a
+// destination cluster with no import-from page, so it keeps the defaults.
+const IMPORT_FROM: Partial<
+  Record<BlogPost["cluster"], { slug: string; name: string; team: string }>
+> = {
+  Japan: { slug: "japan", name: "Japan", team: "Japan" },
+  "United Kingdom": { slug: "united-kingdom", name: "the UK", team: "UK" },
+  UAE: { slug: "uae", name: "the UAE", team: "UAE" },
+  India: { slug: "india", name: "India", team: "India" },
+  Thailand: { slug: "thailand", name: "Thailand", team: "Thailand" },
+  Australia: { slug: "australia", name: "Australia", team: "Australia" },
+  "New Zealand": {
+    slug: "new-zealand",
+    name: "New Zealand",
+    team: "New Zealand",
+  },
+};
+
 /** Fills in the fields that are identical on every country post. */
 function post(
   p: Omit<BlogPost, "author" | "publishDate" | "updatedDate">,
 ): BlogPost {
+  const target = IMPORT_FROM[p.cluster];
   return {
+    ...(target
+      ? {
+          ctaHref: `/import-cars-from/${target.slug}#inquiry`,
+          ctaHeading: `Ready to import a car from ${target.name}? Start with a landed quote.`,
+          ctaBody: `Tell us the make, model and year, and the country it is going to. Our ${target.team} team comes back with one all-in landed price to your port — the car, export costs, freight, insurance and your country's import charges — before you commit.`,
+          ctaLabel: `Import a car from ${target.name}`,
+          ctaCalculator: false,
+        }
+      : {}),
     ...p,
     author: AUTHOR,
     publishDate: PUBLISHED,

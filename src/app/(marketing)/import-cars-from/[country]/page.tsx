@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   COUNTRY_BASE_PATH,
+  countryFaqs,
   getCountryPage,
   getCountrySlugs,
 } from "@/config/countries";
@@ -66,7 +67,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function SourceCountryPage({
+export default async function ImportCountryPage({
   params,
 }: {
   params: Promise<{ country: string }>;
@@ -82,9 +83,9 @@ export default async function SourceCountryPage({
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: `Vehicle Sourcing & Export from ${config.country}`,
-    serviceType: "Vehicle sourcing, inspection and export",
-    description: config.meta.description,
+    name: `Import cars from ${config.country}`,
+    serviceType: "Vehicle import: sourcing, inspection, export and shipping",
+    description: config.hero.answer,
     url,
     areaServed: "Worldwide",
     provider: {
@@ -93,14 +94,14 @@ export default async function SourceCountryPage({
       url: `${SITE}/`,
       logo: { "@type": "ImageObject", url: `${SITE}/logo.png` },
     },
-    brand: [...new Set(config.signature.map((v) => v.make))].map((name) => ({
+    brand: [...new Set(config.popular.map((v) => v.make))].map((name) => ({
       "@type": "Brand",
       name,
     })),
   };
 
-  // The physical office in this country. Address is emitted only once it has
-  // been filled in, so we never publish a placeholder as structured data.
+  // The office in this country. Address is emitted only once it has been
+  // filled in, so we never publish a placeholder as structured data.
   const officeSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -130,28 +131,35 @@ export default async function SourceCountryPage({
       {
         "@type": "ListItem",
         position: 2,
-        name: "Global network",
+        name: "Import cars from",
         item: `${SITE}${COUNTRY_BASE_PATH}`,
       },
-      { "@type": "ListItem", position: 3, name: config.shortName, item: url },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `Import cars from ${config.country}`,
+        item: url,
+      },
     ],
   };
 
   const vehicleListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `Vehicles Providence Auto sources from ${config.country}`,
-    itemListElement: config.signature.map((v, i) => ({
+    name: `Cars people commonly import from ${config.country}`,
+    itemListElement: config.popular.map((v, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: `${v.make} ${v.model}`,
     })),
   };
 
+  // The same list the page renders, so the markup and the visible answers
+  // can never disagree.
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: config.faqs.map((f) => ({
+    mainEntity: countryFaqs(config).map((f) => ({
       "@type": "Question",
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -185,8 +193,6 @@ export default async function SourceCountryPage({
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      {/* Slug, not the config object: the config holds Lucide icon components,
-          which cannot be serialised across the server→client boundary. */}
       <CountryLanding slug={config.slug} />
     </>
   );

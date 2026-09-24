@@ -169,7 +169,7 @@ export default function Body() {
         <CheckLI>
           <Strong>Left-hand-drive vehicles.</Strong> The market is right-hand
           drive. For LHD, look at{" "}
-          <InlineLink href="/source-cars-from/uae">the UAE</InlineLink>.
+          <InlineLink href="/import-cars-from/uae">the UAE</InlineLink>.
         </CheckLI>
         <CheckLI>
           <Strong>Ordinary small passenger cars.</Strong> Japan is cheaper,

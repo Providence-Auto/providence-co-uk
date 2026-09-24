@@ -51,8 +51,12 @@ reasoning, the four pillars and the competitive frame are in
 
 The five-step pipeline, consistent across every source country:
 
-1. **Find it** — the local team searches auction catalogues or dealer networks
-   for the exact model, grade, colour and spec requested.
+1. **Find it** — the local team searches for the exact model, grade, colour and
+   spec requested. **Auction bidding happens in Japan only**, where the team
+   bids at the graded auctions up to the buyer's approved maximum. In the other
+   six countries we buy from dealers and fleet disposals (and, in the UK, from
+   specialist retailers and private sellers) — never "at auction", so no page
+   may claim bidding or auction buying outside Japan.
 2. **Inspect it** — a multi-point physical inspection (engine, transmission,
    underbody, electronics, panel gaps, interior), photographed. If the car
    doesn't match its grade, it doesn't ship, and the customer isn't charged.
@@ -378,6 +382,10 @@ don't just fix the copy silently.
 | 2026-09-23 | **200+ dealership clients globally** added as a public figure; it replaces the "40+ retail sourcing markets" tile on `/about-us` | Business instruction. Recorded in §1 and the `brand-position.md` §9 proof line so the number has a documented basis. |
 | 2026-09-23 | The sourcing team renamed the **sales team**; consultants are **Sales Consultants** | Business instruction. Applied to `/team`, every profile page and `sales-profile-spec.md`. The profile meta titles lose the "car sourcing consultant" keyword, which was accepted. |
 | 2026-09-23 | The Ireland customs carve-out retired: CNF to port with clearance support in **every** market, and the UK's NOVA/DVLA handling restated as prepared paperwork rather than a done-for-you service | The business stated on 2026-09-18 that Ireland is CNF like everywhere else and that Providence takes no responsibility for the clearance itself or for delivery from the port; on 2026-09-23 it asked for the documents and every page to follow, and for the site to say we assist with clearance and provide documentation rather than delivering door to door. Treating the UK the same way is the consistent reading of that instruction. |
+| 2026-09-24 | **Auction bidding is Japan only**, recorded in §2 step 1 | Business instruction. The site had claimed trade-auction buying in the UK, Australia, New Zealand, the UAE and Thailand, and two news callouts said we bid in UK, UAE and Australian auctions. All corrected; a test now fails any non-Japan country page that mentions bidding or auctions. |
+| 2026-09-24 | The `/source-cars-from` pages renamed `/import-cars-from` (old URLs 301) and rewritten onto one simple template: a general import guide plus our office details, no country-feature copy | Business instruction: rank for the phrase buyers search ("import cars from Australia") and give them only what they need to act. The template and its rules are in CLAUDE.md ("Landing pages: one keyword, one simple template"). |
+| 2026-09-24 | Search intent split: the blog "how to import / cost to import" guides are the **informational** pages, the `/import-cars-from` pages the **transactional** ones | Business instruction. The landing pages dropped "how to" and "how much does it cost" headings and research FAQs in favour of pre-purchase ones; every source-country guide now ends with a CTA to its country's landing page, labelled with the transactional keyword, instead of the Japan→Ireland form it used to default to. |
+| 2026-09-24 | Car imagery rules introduced: the model named must exist, the photo must show it, and a number plate must match the page's country or be removed — `car-imagery-checklist.md` | Business instruction. Four country heroes carried a foreign plate or dealer placard (a Colombian plate on the UAE page among them); all were blurred with `scripts/blur-plate.mjs`, and the UK hero was replaced with a right-hand-drive car on a London street. |
 | 2026-09-01 | The sourcing analyzer's market median can be overridden by the operator; `sourcing-analyzer-methodology.md` §4 documents it | The desk was already moving the median by adding and removing comparables until the number looked right. That edits the evidence to reach a conclusion and leaves no record of it. An explicit override is the same judgement made visible: the comparable set stays as crawled, and every surface says the median is a desk figure. It is an operator input, so "numbers are computed, prose is generated" is untouched — no model produces it. |
 
 ## 12. Known documentation to reconcile
@@ -409,6 +417,7 @@ find-and-replace:
 | `news-editorial-playbook.md` | `/latest-news` — market/reader definitions, the relevance gate, the seven landed-cost lenses, "The Landed Desk" voice, SEO/AEO spec, fact-checking protocol, the weekly 20-story slate. |
 | `seo-aeo-optimization-guide.md` | The SEO/AEO process every new page runs through, Phase 1–5, plus the pre-publish checklist. |
 | `sales-profile-spec.md` | `/team/[slug]` sales-profile pages — data model, lead assignment, admin editor. |
+| `car-imagery-checklist.md` | Every car photo on the site: the model must exist, the photo must show it, and a number plate must match the page's country or be removed. Read before adding or replacing any car image. |
 | `indian-manufactured-cars-content-pack.md` | The `/indian-manufactured-cars` campaign page and its companion blog post, as a worked content-pack example. |
 | `~/.claude/.../memory/*.md` (this account's persistent memory) | Narrower, dated operational lessons — deploy verification gotchas, formula sources, feedback on how this user likes to work. Several are linked inline above where directly relevant; browse the index (`MEMORY.md`) for the rest. |
 

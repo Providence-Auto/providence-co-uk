@@ -526,7 +526,7 @@ const TOOLS: {
     icon: Ship,
   },
   {
-    href: "/source-cars-from/japan",
+    href: "/import-cars-from/japan",
     title: "Our source-country network",
     body: "The seven countries where we have our own teams and buy directly. Each page covers what that market is genuinely good for.",
     icon: Globe2,
@@ -1499,7 +1499,7 @@ export default function ImportCarsToIrelandPage() {
               car exists. India, Australia and New Zealand are niche — use them
               only when a specific model is unavailable elsewhere.{" "}
               <Link
-                href="/source-cars-from/japan"
+                href="/import-cars-from/japan"
                 className="font-semibold text-[#4da8da] hover:underline"
               >
                 See our source-country network

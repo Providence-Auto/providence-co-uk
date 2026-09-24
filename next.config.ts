@@ -69,7 +69,20 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/source-cars-from/sri-lanka",
-        destination: "/source-cars-from",
+        destination: "/import-cars-from",
+        permanent: true,
+      },
+      {
+        // The country pages moved from /source-cars-from to the phrase buyers
+        // search, /import-cars-from, on 2026-09-24. One hop each, so the
+        // Sri Lanka rule above must stay first.
+        source: "/source-cars-from",
+        destination: "/import-cars-from",
+        permanent: true,
+      },
+      {
+        source: "/source-cars-from/:country",
+        destination: "/import-cars-from/:country",
         permanent: true,
       },
       {

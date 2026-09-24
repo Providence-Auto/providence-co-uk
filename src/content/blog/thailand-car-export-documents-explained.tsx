@@ -200,7 +200,7 @@ export default function Body() {
           how to import a car from Thailand
         </InlineLink>
         , or what our{" "}
-        <InlineLink href="/source-cars-from/thailand">Thailand team</InlineLink>{" "}
+        <InlineLink href="/import-cars-from/thailand">Thailand team</InlineLink>{" "}
         handles locally.
       </P>
 

@@ -209,7 +209,7 @@ export default function Body() {
           what it costs to import a car from the UK
         </InlineLink>
         , or start with the stock our{" "}
-        <InlineLink href="/source-cars-from/united-kingdom">
+        <InlineLink href="/import-cars-from/united-kingdom">
           UK office
         </InlineLink>{" "}
         is buying.

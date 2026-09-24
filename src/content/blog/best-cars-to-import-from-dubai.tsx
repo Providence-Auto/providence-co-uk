@@ -147,11 +147,11 @@ export default function Body() {
         <CheckLI>
           <Strong>Right-hand-drive cars.</Strong> The market is LHD, so RHD
           stock is thin, and thin stock means no negotiating position. Buy RHD
-          from <InlineLink href="/source-cars-from/japan">Japan</InlineLink>,{" "}
-          <InlineLink href="/source-cars-from/united-kingdom">
+          from <InlineLink href="/import-cars-from/japan">Japan</InlineLink>,{" "}
+          <InlineLink href="/import-cars-from/united-kingdom">
             the UK
           </InlineLink>{" "}
-          or <InlineLink href="/source-cars-from/thailand">Thailand</InlineLink>{" "}
+          or <InlineLink href="/import-cars-from/thailand">Thailand</InlineLink>{" "}
           instead.
         </CheckLI>
         <CheckLI>
@@ -180,7 +180,7 @@ export default function Body() {
           what it costs to import a car from the UAE
         </InlineLink>
         , or see what our{" "}
-        <InlineLink href="/source-cars-from/uae">UAE team</InlineLink> is buying
+        <InlineLink href="/import-cars-from/uae">UAE team</InlineLink> is buying
         now.
       </P>
 

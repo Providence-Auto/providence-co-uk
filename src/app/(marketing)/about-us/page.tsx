@@ -168,7 +168,7 @@ const VALUES = [
   },
 ];
 
-// ── Why we're different (condensed from /source-cars-from) ─────────────────
+// ── Why we're different (condensed from /import-cars-from) ─────────────────
 const PILLARS = [
   {
     icon: Building2,

@@ -59,7 +59,7 @@ export default function Body() {
         less duty and the advantage survives the journey intact. Where duty is
         charged on engine capacity or a fixed schedule, it compresses —
         sometimes to the point where India stops making sense against{" "}
-        <InlineLink href="/source-cars-from/japan">Japan</InlineLink>.
+        <InlineLink href="/import-cars-from/japan">Japan</InlineLink>.
       </P>
       <Table
         head={["Segment", "Price advantage", "Dealer notes"]}
@@ -232,7 +232,7 @@ export default function Body() {
         None of these is a reason not to run India. All of them are reasons to
         run it with a written specification and a partner with staff in the
         country. See what our{" "}
-        <InlineLink href="/source-cars-from/india">India team</InlineLink>{" "}
+        <InlineLink href="/import-cars-from/india">India team</InlineLink>{" "}
         handles, or start with{" "}
         <InlineLink href="/blog/cost-to-import-a-car-from-india">
           the landed-cost breakdown

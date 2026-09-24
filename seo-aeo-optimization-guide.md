@@ -64,6 +64,7 @@ On-page SEO is a balancing act. The content must solve the user's problem gracef
 *   **URL Structure:** Keep URLs short, descriptive, and keyword-rich (e.g., `website.com/seo-guide` rather than `website.com/p=123`).
 *   **Internal Linking:** Link to other relevant pages on your site using descriptive anchor text. This passes "link equity" and helps crawlers map your site.
 *   **Image Alt Text:** Describe what the image is for visually impaired users and image search engines.
+*   **One intent per page (Providence landing pages):** A landing page targets the exact phrase a buyer types — in the slug, title, H1 and H2s — and follows the simple template in CLAUDE.md ("Landing pages: one keyword, one simple template"). When an informational guide and a transactional landing page share a topic ("how to import a car from Australia" vs "import cars from Australia"), each targets only its own phrase and links to the other; neither uses the other's phrase as a heading.
 
 ---
 
@@ -103,6 +104,7 @@ AI models and voice assistants prefer to pull data from pages that offer clear, 
 *   **Target the "Position Zero" (Featured Snippet):** AI engines often source their answers from the featured snippet. 
 *   **Provide Definitive Answers:** When posing a question in a heading (e.g., "What is AEO?"), answer it immediately in the very next sentence. Keep the direct answer between 40-50 words.
 *   **Use the Inverted Pyramid Style:** Start with the exact answer (The "What"), follow with details (The "Why" and "How"), and end with examples.
+*   **Keep answers in the served HTML:** An FAQ rendered as a collapsed accordion can leave its answers out of the HTML crawlers receive. Render FAQ answers as plain text (a heading plus a paragraph), and make the FAQPage JSON-LD read the same list the page shows.
 
 ### 2. Optimizing for Voice Search
 Voice searches are conversational, longer, and usually phrased as questions.
