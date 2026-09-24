@@ -224,6 +224,8 @@ const DESTINATION_SLUGS = [
   "seychelles",
   "zimbabwe",
   "botswana",
+  "zambia",
+  "south-africa",
   "jamaica",
   "trinidad-and-tobago",
   "grenada",
@@ -241,6 +243,8 @@ const DESTINATION_SLUGS = [
   "pakistan",
   "bangladesh",
   "nepal",
+  "india",
+  "fiji",
 ];
 
 /**

@@ -12,16 +12,16 @@ This is the reference document. The repeatable weekly run that turns it into 20 
 
 **Destination markets — where the cars land.** Every right-hand-drive country on earth, plus left-hand-drive markets *for luxury vehicles only*.
 
-The 29 destinations we already hold country assets for, and therefore our priority list. This table mirrors `DESTINATION_REGIONS` in `src/app/(marketing)/about-us/page.tsx`, which is canonical — if the two ever disagree, the code is right and this needs updating.
+The 34 destinations we already hold country assets for, and therefore our priority list. This table mirrors `DESTINATION_REGIONS` in `src/app/(marketing)/about-us/page.tsx`, which is canonical — if the two ever disagree, the code is right and this needs updating.
 
 | Region | Markets |
 |---|---|
 | Europe | Ireland, United Kingdom, Germany, Malta, Cyprus, Jersey |
-| Africa | Kenya, Uganda, Zimbabwe, Botswana, Tanzania, Mauritius, Seychelles |
-| Caribbean | Jamaica, Trinidad and Tobago, Barbados, Guyana, Bahamas |
-| Asia-Pacific | Australia, New Zealand, Hong Kong, Malaysia, Indonesia, Thailand, Pakistan, Bangladesh, Nepal, Singapore, Sri Lanka |
+| Africa | Kenya, Uganda, Zimbabwe, Botswana, Zambia, South Africa, Tanzania, Mauritius, Seychelles |
+| Caribbean | Jamaica, Trinidad and Tobago, Grenada, Barbados, Guyana, Bahamas |
+| Asia-Pacific | Australia, New Zealand, Hong Kong, Malaysia, Indonesia, Thailand, Pakistan, Bangladesh, Nepal, India, Singapore, Fiji, Sri Lanka |
 
-Germany is a destination for **luxury LHD only**, per the exception below.
+Germany is a destination for **luxury LHD only**, per the exception below. India is both a source and a destination: we ship cars *into* India as well as buying there, so an India story can be written from either side of the trade — say which.
 
 **Sri Lanka is in scope and should be covered actively** — it has a full blog cluster, a country page and one of the most volatile import regimes we track, which makes it high-value editorial. Write it for both readers per §1.2, and lean on the multi-unit angle at least as hard as the single-car one.
 
@@ -227,10 +227,14 @@ Structure to reason through, per destination:
 | New Zealand | NZTA / Waka Kotahi (entry certification, emissions), Customs NZ | Medium |
 | Sri Lanka | Sri Lanka Customs, Dept of Motor Traffic, Central Bank notices | **Very high** — import regimes have been suspended and reopened |
 | Malta / Cyprus | National registration-tax authority + EU customs code | Medium |
-| Jamaica, T&T, Barbados, Guyana, Bahamas | National customs authority (age limits, CIF-based duty) | Medium |
+| Jamaica, T&T, Grenada, Barbados, Guyana, Bahamas | National customs authority (age limits, CIF-based duty) | Medium |
 | Hong Kong | Transport Dept, first-registration tax | Medium |
 | Malaysia / Indonesia / Thailand | National customs + excise authority; AP/permit regimes | High |
 | Maldives, Uganda, Zimbabwe | National revenue authority | High |
+| Zambia | Zambia Revenue Authority (duty, excise, VAT); Road Transport and Safety Agency (registration) | Unassessed — verify at publish |
+| South Africa | SARS (customs, VAT); ITAC (import permits — check the used-vehicle permit position first) | Unassessed — verify at publish |
+| India | CBIC (customs duty); DGFT (import policy for vehicles); MoRTH (homologation) | Unassessed — verify at publish |
+| Fiji | Fiji Revenue and Customs Service (duty, VAT); Land Transport Authority (registration, age rules) | Unassessed — verify at publish |
 
 If a story turns on a rate we cannot verify from a primary source, **we publish the story without the rate** and say what we could not confirm.
 

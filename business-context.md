@@ -90,7 +90,7 @@ presence-only country could be added again.
 |---|---|---|---|
 | **Presence** | 7 | Countries where Providence has its own people/operations teams. Since 2026-09-23 this is the same seven as the source list — Sri Lanka is no longer claimed as an office, a presence or an operations hub. | `OFFICE_COUNTRY_NAMES`, `OFFICE_COUNTRIES_SENTENCE` in `src/config/countries.ts` — kept as separate names from the source list so a presence-only country could be added later without touching every call site. |
 | **Source** | 7 | Countries Providence actually **buys cars in**. Identical to presence today. | `SOURCE_COUNTRIES_SENTENCE`, `COUNTRY_PAGES` / `SOURCE_COUNTRY_PAGES` in `src/config/countries.ts` |
-| **Destination** | 29 (as of 2026-08-25) | Markets Providence ships **to**. Includes Sri Lanka, which is a destination market only. A country can be in more than one of these lists (Australia, New Zealand, Thailand and the UK are sources and destinations). | `DESTINATION_REGIONS` in `/about-us` (`src/app/(marketing)/about-us/page.tsx`) |
+| **Destination** | 34 (as of 2026-09-24) | Markets Providence ships **to**. Includes Sri Lanka, which is a destination market only. A country can be in more than one of these lists (Australia, New Zealand, Thailand, India and the UK are sources and destinations). | `DESTINATION_REGIONS` in `/about-us` (`src/app/(marketing)/about-us/page.tsx`) |
 
 **Sri Lanka specifically:** we ship into the market and support buyers through
 its (notoriously complex) import process — but Sri Lanka is not a
@@ -109,8 +109,10 @@ countries — only **London** is a registered, visitable head office. Public
 copy should say "our own people/teams", not "our offices", except for the UK.
 See §5.1.
 
-**Destination-market count is a moving number.** 29 is the count on
-`/about-us` as of the Sri Lanka addition (2026-08-25). It is a literal
+**Destination-market count is a moving number.** 34 is the count on
+`/about-us` as of 2026-09-24, when Grenada, Zambia, South Africa, India and
+Fiji were added (29 → 34). The `/b2c` hero stat is typed by hand — a Next page
+file cannot export the list — so update it in the same change. It is a literal
 count of `DESTINATION_REGIONS` — the page derives its own headline and stat
 tile from `.length`, so they can't silently disagree with each other again.
 Two other lists have **not** been reconciled to that count and are known
@@ -382,6 +384,7 @@ don't just fix the copy silently.
 | 2026-09-23 | **200+ dealership clients globally** added as a public figure; it replaces the "40+ retail sourcing markets" tile on `/about-us` | Business instruction. Recorded in §1 and the `brand-position.md` §9 proof line so the number has a documented basis. |
 | 2026-09-23 | The sourcing team renamed the **sales team**; consultants are **Sales Consultants** | Business instruction. Applied to `/team`, every profile page and `sales-profile-spec.md`. The profile meta titles lose the "car sourcing consultant" keyword, which was accepted. |
 | 2026-09-23 | The Ireland customs carve-out retired: CNF to port with clearance support in **every** market, and the UK's NOVA/DVLA handling restated as prepared paperwork rather than a done-for-you service | The business stated on 2026-09-18 that Ireland is CNF like everywhere else and that Providence takes no responsibility for the clearance itself or for delivery from the port; on 2026-09-23 it asked for the documents and every page to follow, and for the site to say we assist with clearance and provide documentation rather than delivering door to door. Treating the UK the same way is the consistent reading of that instruction. |
+| 2026-09-24 | Five destinations added: **Grenada, Zambia, South Africa, India and Fiji** (29 → 34) | Business instruction. Grenada closes the gap raised on 2026-09-21: the India page had sold into it since launch while the canonical list left it out. India is now a destination as well as a source — we ship cars into India too. The four new markets enter the car-page registry (`src/config/destinations.ts`) as `listed`: no tax, duty, age or drive-side claim is made for them until one is reviewed, and `news-editorial-playbook.md` §1.1 and its research map were updated the same day. |
 | 2026-09-24 | **Auction bidding is Japan only**, recorded in §2 step 1 | Business instruction. The site had claimed trade-auction buying in the UK, Australia, New Zealand, the UAE and Thailand, and two news callouts said we bid in UK, UAE and Australian auctions. All corrected; a test now fails any non-Japan country page that mentions bidding or auctions. |
 | 2026-09-24 | The `/source-cars-from` pages renamed `/import-cars-from` (old URLs 301) and rewritten onto one simple template: a general import guide plus our office details, no country-feature copy | Business instruction: rank for the phrase buyers search ("import cars from Australia") and give them only what they need to act. The template and its rules are in CLAUDE.md ("Landing pages: one keyword, one simple template"). |
 | 2026-09-24 | Search intent split: the blog "how to import / cost to import" guides are the **informational** pages, the `/import-cars-from` pages the **transactional** ones | Business instruction. The landing pages dropped "how to" and "how much does it cost" headings and research FAQs in favour of pre-purchase ones; every source-country guide now ends with a CTA to its country's landing page, labelled with the transactional keyword, instead of the Japan→Ireland form it used to default to. |

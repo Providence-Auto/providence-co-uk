@@ -20,7 +20,7 @@ const STATS = [
   // The length of DESTINATION_REGIONS in /about-us, the canonical list
   // (business-context.md §3). A Next page file cannot export it, so keep this
   // in step by hand when a destination is added.
-  { value: 29, label: "Destinations we ship to" },
+  { value: 34, label: "Destinations we ship to" },
   { value: 24, suffix: " hrs", label: "To your first quote" },
 ];
 
