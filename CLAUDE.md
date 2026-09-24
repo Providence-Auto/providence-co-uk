@@ -81,6 +81,7 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 - `scripts/migrate.mjs` — runs the generated `drizzle/` SQL migrations against `DATABASE_URL` (SSL configured for the Railway pool).
 - `scripts/create-car-page.mjs` — upserts a spec dossier (a public car page) from a JSON brief, uploading any local images to R2. Supports `--dry-run`, `--publish` and `--env dev|staging|production`; upserts by slug so re-running an edited brief updates the same page. Driven by the `car-landing-page` skill (`/car-landing-page`). Briefs for pages that are meant to exist in every environment are kept in `scripts/briefs/` so the same page can be recreated on staging and production — **a car page is a database row, so a code deploy never carries one between environments; re-run the brief with `--env` against each.**
 - `scripts/optimize-car-images.mjs` — re-encodes a folder of car photographs to WebP at a display width. Car images under `public/` are served as plain `<img>` tags, so nothing resizes them at request time; run this before committing manufacturer JPEGs.
+- `scripts/blur-plate.mjs` — pixelates and blurs one or more `x,y,w,h` rectangles of a car photo in place (WebP or JPEG), for removing a number plate that does not match the page's country. See `car-imagery-checklist.md`.
 - `scripts/apply-grade-columns.mjs` — adds the grade/steering columns (`drizzle/0004_grade_columns.sql`) to one environment. Read-only until `--apply`.
 - `scripts/apply-destination-column.mjs` — adds `specdossier.destinations` (`drizzle/0006_destination_column.sql`) to one environment. Read-only until `--apply`. Like every column change here, it has to be run against dev, staging and production separately.
 - `scripts/backfill-dossier-destinations.mjs` — offers every existing car page into the core five markets (Ireland, UK, Kenya, Tanzania, Sri Lanka). Read-only until `--apply`, idempotent, and **merges** rather than replacing, so a car that already has destinations keeps its ranking. Skips the markets flagged `rhdOnly` for a dossier that can only be sourced LHD, and says so rather than silently listing a car the buyer could not register.
@@ -219,6 +220,86 @@ Every new page ships with all of the following by default — a page missing any
 
 This is additive to, not a replacement for, the per-content-type rules above — `sourcing-analyzer-methodology.md` still governs the sourcing tool's numbers, and `news-editorial-playbook.md` still governs news articles' voice and fact-checking.
 
+### Landing pages: one keyword, one simple template
+
+Every landing page is built for **the phrase a buyer types**, and nothing
+else. The keyword goes in the URL slug, the title tag, the H1, the first
+sentence and the H2s, verbatim — `/import-cars-from/australia`, "Import Cars
+from Australia", "How to import a car from Australia in five steps". An
+internal name for the thing ("source", "network", "hub") never reaches the URL
+or a heading if buyers do not search for it. The `/source-cars-from` pages were
+renamed to `/import-cars-from` on 2026-09-24 for exactly this reason.
+
+**Split the intent: the guide informs, the landing page converts.** Every
+country has two pages that sound alike and must not compete:
+
+| Page | Intent | Owns the query | Ends with |
+| --- | --- | --- | --- |
+| `/blog/how-to-import-a-car-from-<country>` (+ the cost, documents and best-cars posts) | Informational — researching | "how to import a car from Australia", "cost to import a car from Australia" | A `BlogCTA` whose button is the transactional keyword ("Import a car from Australia") and goes to the landing page's form |
+| `/import-cars-from/<country>` | Transactional — ready to import now | "import cars from Australia" | The inquiry form |
+
+So the landing page's title says "Get a Quote", its headings speak to someone
+acting ("Import your car from Australia in five steps", "Your landed quote
+covers five costs"), and its FAQ is pre-purchase only — quote, payment,
+timing, delivery. It never uses "How to …" or "How much does it cost to …?" as
+a heading and never lists the cost keyword; it links to the guides that own
+those phrases instead ("Researching first? Read our guide…"). The guides, in
+turn, never target "import cars from X". The CTA wiring lives in `post()` in
+`src/config/blog-countries.ts`.
+
+**A landing page is a general guide plus our details — not a feature about the
+place.** Write what a buyer needs to act and what a crawler needs to classify
+the page, then stop:
+
+1. **H1 = the keyword.** Directly under it, a **40–55 word direct answer**
+   starting "You can …" that names our own team, the inspection before payment
+   and the one landed price. It is the BLUF paragraph and the AI-answer extract.
+2. **The facts, as a `<table>`** — drive side, where we buy, the history check,
+   ports, transit, where we ship. Plain values, no adjectives.
+3. **The steps, as an `<ol>`** — "Import your car from X in N steps" — with a
+   link to the how-to guide for readers still researching.
+4. **What the quote covers** — the cost *components*, never an invented
+   figure — linking to the cost guide for the full breakdown.
+5. **The documents**, as a list.
+6. **The cars people commonly import**, as text, not a photo grid (each photo
+   is one more thing that can fail `car-imagery-checklist.md`).
+7. **Our office**: address, phone, email, hours and what the team does.
+8. **The inquiry form** — the primary CTA.
+9. **The FAQ, pre-purchase questions only, rendered as plain `<h3>` + `<p>`**,
+   not an accordion: a collapsed accordion keeps its answers out of the served
+   HTML. The FAQPage JSON-LD must read the same list the page renders (see
+   `countryFaqs()`).
+10. Related guides, the other countries, then the one secondary CTA.
+
+What does **not** go on it: a manifesto, a "why this country is special"
+feature block, a stats strip of claims nobody searches for, a country's
+industrial history, or any line whose only job is atmosphere — "built for the
+worst roads on earth" is a headline for an ad, not a landing page. If a fact
+is specific and useful (the PPSR check in Australia, the auction sheet in
+Japan), it goes in the facts table, a step or one FAQ answer — one line, not a
+section.
+
+The country pages live in `src/config/countries.ts` and render through
+`src/app/(marketing)/import-cars-from/[country]/CountryLanding.tsx`; the
+standard FAQ and the test that enforces title length, description length,
+answer length and "only Japan bids at auction" sit beside them. Add a country
+by adding an entry — never by forking the template.
+
+### Car imagery: the car must exist, match, and carry the right plate
+
+**Before adding or replacing any photograph of a car** — on a car page, a
+country page, a campaign page, a blog post, a news article or an OG image —
+run it through `car-imagery-checklist.md` at the repo root. The short version:
+
+- **The make and model must exist**, confirmed on the manufacturer's site or a
+  named motoring publication — never a render, a forum or a guess.
+- **The photo must show the make and model the copy names** (and the
+  generation, if named). Check badges and lights; alt text describes what is
+  actually in the frame.
+- **A visible number plate must match the page's country, or be removed** —
+  dealer placards, trade plates and background cars included. Remove one with
+  `scripts/blur-plate.mjs`, on every size of the image.
+
 ### Route Structure
 
 ```
@@ -239,7 +320,8 @@ This is additive to, not a replacement for, the per-content-type rules above —
 /latest-news/category/*    News category archives
 /latest-news/rss.xml       RSS feed
 /news-sitemap.xml          Google News sitemap
-/source-cars-from/*        Source-country network pages
+/import-cars-from          Import-from hub (was /source-cars-from, which 301s)
+/import-cars-from/[country] One page per country we buy in
 /admin/*                   Protected admin dashboard
 /api/v1/*                  REST API routes
 ```

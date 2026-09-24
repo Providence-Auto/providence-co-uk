@@ -4,7 +4,7 @@
  * language"), so this rule is what re-establishes the visual step down from
  * one section to the next.
  *
- * Shared by /about-us, /source-cars-from and every country page so the three
+ * Shared by /about-us, /import-cars-from and every country page so the three
  * read as one site rather than three generations of the same idea.
  */
 export default function SectionRule({

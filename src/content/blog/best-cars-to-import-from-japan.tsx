@@ -208,7 +208,7 @@ export default function Body() {
           the full cost breakdown is here
         </InlineLink>
         . If you want to skip to the stock our{" "}
-        <InlineLink href="/source-cars-from/japan">Japan team</InlineLink> is
+        <InlineLink href="/import-cars-from/japan">Japan team</InlineLink> is
         buying right now, that page lists it.
       </P>
 

@@ -91,7 +91,7 @@ For each story, all three files:
 
 If a story introduces a category with no existing archive, confirm it exists in `NEWS_CATEGORIES`. Empty categories 404 by design.
 
-Hero images: reuse Unsplash IDs already present in the codebase or local `/public` assets — **do not invent Unsplash photo IDs**, they 404. Any non-subject image needs a `heroCaption` flagging it as illustrative.
+Hero images: reuse Unsplash IDs already present in the codebase or local `/public` assets — **do not invent Unsplash photo IDs**, they 404. Any non-subject image needs a `heroCaption` flagging it as illustrative. Every car photo also passes `car-imagery-checklist.md`: the model named exists, the photo shows that model, and a plate that does not match the story's country is removed (`scripts/blur-plate.mjs`).
 
 ## Phase 6 — Verify the build
 

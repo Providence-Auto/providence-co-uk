@@ -12,11 +12,17 @@ export default function BlogCTA({
   heading = "Thinking about importing? Let's price your exact car.",
   body = "Tell us the make, model and year you want and we'll come back with a full landed-cost quote — car price, shipping, customs, VAT and VRT included — before you commit to a single euro.",
   href = "/import-japanese-cars-to-ireland#inquiry",
+  label = "Begin your import inquiry",
+  showCalculator = true,
 }: {
   heading?: string;
   body?: string;
-  /** Where "Begin your import inquiry" goes. */
+  /** Where the inquiry button goes. */
   href?: string;
+  /** The inquiry button's text — the keyword, on a source-country post. */
+  label?: string;
+  /** The calculator is Ireland-only, so non-Ireland posts turn it off. */
+  showCalculator?: boolean;
 }) {
   return (
     <Reveal
@@ -40,19 +46,21 @@ export default function BlogCTA({
             href={href}
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-black transition-transform hover:scale-105"
           >
-            Begin your import inquiry
+            {label}
             <ArrowRight
               size={16}
               className="group-hover:translate-x-1 transition-transform"
             />
           </a>
-          <a
-            href="/ireland-cost-calculator"
-            className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
-          >
-            <Calculator size={16} className="text-sky-400" />
-            Estimate the cost yourself
-          </a>
+          {showCalculator && (
+            <a
+              href="/ireland-cost-calculator"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
+            >
+              <Calculator size={16} className="text-sky-400" />
+              Estimate the cost yourself
+            </a>
+          )}
         </div>
       </div>
     </Reveal>

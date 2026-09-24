@@ -3,7 +3,7 @@
 //
 // Every photograph there is from Wikimedia Commons under a free licence (CC0,
 // public domain, CC BY or CC BY-SA). The BY licences require attribution, so
-// each /source-cars-from page renders the credits for the photos it shows —
+// each /import-cars-from page renders the credits for the photos it shows —
 // see creditsFor(). Adding a photo without adding its entry here breaks that
 // licence, so a missing entry is surfaced in development.
 //
@@ -662,6 +662,16 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
     licence: "CC BY-SA 4.0",
     source:
       "https://commons.wikimedia.org/wiki/File:2023_Toyota_Corolla_Hybrid_(E210)_hatchback_IMG_9884.jpg",
+  },
+  // The /import-cars-from/united-kingdom hero since 2026-09-24: a right-hand
+  // drive Jazz Crosstar on a London street, UK plate already blanked. The same
+  // photograph as the "blog/best-cars-to-import-from-the-uk" hero.
+  jazz: {
+    title: "Honda Jazz e HEV (2022) (53322700161).jpg",
+    author: "Charles from Port Chester, New York",
+    licence: "CC BY 2.0",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Honda_Jazz_e_HEV_(2022)_(53322700161).jpg",
   },
   qashqai: {
     title: "Nissan Qashqai (J12) Automesse Ludwigsburg 2022 1X7A5875.jpg",

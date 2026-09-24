@@ -141,7 +141,13 @@ export default function ArticleShell({
       {/* ── RELATED + CTA ──────────────────────────────── */}
       <div className="px-6 pb-20 max-w-3xl mx-auto">
         <RelatedPosts slug={post.slug} />
-        <BlogCTA href={post.ctaHref} />
+        <BlogCTA
+          href={post.ctaHref}
+          heading={post.ctaHeading}
+          body={post.ctaBody}
+          label={post.ctaLabel}
+          showCalculator={post.ctaCalculator}
+        />
         {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
         <PreferredSourceCallout />
       </div>

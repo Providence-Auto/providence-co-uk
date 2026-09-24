@@ -234,7 +234,7 @@ export default function Body() {
           the best cars to import from New Zealand
         </InlineLink>
         , or what our{" "}
-        <InlineLink href="/source-cars-from/new-zealand">
+        <InlineLink href="/import-cars-from/new-zealand">
           New Zealand team
         </InlineLink>{" "}
         is sourcing.

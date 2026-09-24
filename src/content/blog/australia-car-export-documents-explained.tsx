@@ -206,7 +206,7 @@ export default function Body() {
           how to import a car from Australia
         </InlineLink>
         , handled by our{" "}
-        <InlineLink href="/source-cars-from/australia">
+        <InlineLink href="/import-cars-from/australia">
           Australia team
         </InlineLink>
         .

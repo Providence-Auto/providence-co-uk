@@ -105,7 +105,7 @@ export default function RootLayout({
   // country config pulls in lucide icon references it does not need here. Keep
   // the two in sync when an office is added or its country changes.
   //
-  // `slug` is null for an office with no page under /source-cars-from, so a
+  // `slug` is null for an office with no page under /import-cars-from, so a
   // presence-only country never emits a URL that redirects. There are none
   // today: since 2026-09-23 the presence list is the same seven we buy in.
   const offices: { name: string; region: string; slug: string | null }[] = [
@@ -140,7 +140,7 @@ export default function RootLayout({
       name: `Providence Auto ${office.name}`,
       ...(office.slug
         ? {
-            url: `https://www.providenceauto.co.uk/source-cars-from/${office.slug}`,
+            url: `https://www.providenceauto.co.uk/import-cars-from/${office.slug}`,
           }
         : {}),
       areaServed: office.region,

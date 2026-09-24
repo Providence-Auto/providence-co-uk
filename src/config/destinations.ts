@@ -619,6 +619,20 @@ export const DESTINATIONS: DestinationConfig[] = [
     region: "Africa",
     drives: "left",
   }),
+  listed({
+    slug: "zambia",
+    name: "Zambia",
+    formCountry: "Zambia",
+    region: "Africa",
+    drives: "left",
+  }),
+  listed({
+    slug: "south-africa",
+    name: "South Africa",
+    formCountry: "South Africa",
+    region: "Africa",
+    drives: "left",
+  }),
 
   // Caribbean
   jamaica,
@@ -709,6 +723,20 @@ export const DESTINATIONS: DestinationConfig[] = [
     slug: "nepal",
     name: "Nepal",
     formCountry: "Nepal",
+    region: "Asia-Pacific",
+    drives: "left",
+  }),
+  listed({
+    slug: "india",
+    name: "India",
+    formCountry: "India",
+    region: "Asia-Pacific",
+    drives: "left",
+  }),
+  listed({
+    slug: "fiji",
+    name: "Fiji",
+    formCountry: "Fiji",
     region: "Asia-Pacific",
     drives: "left",
   }),
