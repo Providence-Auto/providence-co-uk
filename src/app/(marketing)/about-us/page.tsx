@@ -231,10 +231,11 @@ const AUDIENCES = [
 ];
 
 // ── Where we ship ────────────────────────────────────────────────────────────
-// Region grouping per the news-editorial-playbook.md destination-market
-// definition; country list matches the "destination" role entries in
-// src/config/globe.ts (globe.ts has no region field, so the grouping lives
-// here rather than being derived).
+// The canonical destination list (business-context.md §3). Region grouping
+// per the news-editorial-playbook.md destination-market definition. Every
+// country here has a marker in src/config/globe.ts — destinations that are
+// also source countries sit under their source/hub marker — so add one there
+// when adding one here, and update the hand-typed /b2c hero stat.
 const DESTINATION_REGIONS = [
   {
     region: "Europe",
