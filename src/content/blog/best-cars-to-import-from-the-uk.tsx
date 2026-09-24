@@ -154,9 +154,9 @@ export default function Body() {
       <P>
         The UK market is right-hand drive. That is ideal for RHD destinations
         and rules Britain out for most left-hand-drive markets. If you need LHD,
-        the <InlineLink href="/source-cars-from/uae">UAE</InlineLink> has the
+        the <InlineLink href="/import-cars-from/uae">UAE</InlineLink> has the
         deepest pool of nearly new left-hand-drive Japanese 4x4s anywhere, and{" "}
-        <InlineLink href="/source-cars-from/japan">Japan</InlineLink> supplies
+        <InlineLink href="/import-cars-from/japan">Japan</InlineLink> supplies
         genuine factory LHD in premium segments.
       </P>
       <H3>Ignoring write-off markers</H3>

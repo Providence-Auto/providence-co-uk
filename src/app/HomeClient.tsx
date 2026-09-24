@@ -264,7 +264,7 @@ export default function HomeClient() {
                   full document pack.
                 </p>
                 <Link
-                  href="/source-cars-from"
+                  href="/import-cars-from"
                   className="group mt-8 inline-flex items-center gap-2 text-base sm:text-lg font-medium text-black underline decoration-1 underline-offset-4 hover:decoration-2"
                 >
                   Meet the seven countries behind every car

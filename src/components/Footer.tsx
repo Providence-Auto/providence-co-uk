@@ -122,10 +122,10 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Offices Column: the physical network, one link per source country */}
+        {/* Import-from column: one link per country we buy in */}
         <div className="flex flex-col gap-4">
           <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
-            Global Network
+            Import cars from
           </h2>
           <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
             {FOOTER_OFFICES.map((country) => (
@@ -141,7 +141,7 @@ export default function Footer() {
               href={COUNTRY_BASE_PATH}
               className="text-zinc-300 hover:text-white transition-colors"
             >
-              The whole network &rarr;
+              All seven countries &rarr;
             </Link>
           </nav>
         </div>

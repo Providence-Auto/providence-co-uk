@@ -17,7 +17,10 @@ import VoyageTrack, { type VoyageStage } from "@/components/VoyageTrack";
 const STATS = [
   { value: 40, suffix: "+", label: "Sourcing markets" },
   { value: 7, label: "Countries we buy in" },
-  { value: 28, label: "Destinations we ship to" },
+  // The length of DESTINATION_REGIONS in /about-us, the canonical list
+  // (business-context.md §3). A Next page file cannot export it, so keep this
+  // in step by hand when a destination is added.
+  { value: 34, label: "Destinations we ship to" },
   { value: 24, suffix: " hrs", label: "To your first quote" },
 ];
 
@@ -26,7 +29,7 @@ const STATS = [
 // two pips are stated at that level. Same treatment as /about-us.
 const IMPORT_STAGES: VoyageStage[] = [
   { label: "You choose", at: 0 },
-  { label: "We bid", at: 0.18 },
+  { label: "We source", at: 0.18 },
   { label: "Inspected", at: 0.36 },
   { label: "At sea", at: 0.62 },
   { label: "At your port", at: 0.84 },

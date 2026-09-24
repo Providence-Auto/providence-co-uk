@@ -168,7 +168,7 @@ const VALUES = [
   },
 ];
 
-// ── Why we're different (condensed from /source-cars-from) ─────────────────
+// ── Why we're different (condensed from /import-cars-from) ─────────────────
 const PILLARS = [
   {
     icon: Building2,
@@ -231,10 +231,11 @@ const AUDIENCES = [
 ];
 
 // ── Where we ship ────────────────────────────────────────────────────────────
-// Region grouping per the news-editorial-playbook.md destination-market
-// definition; country list matches the "destination" role entries in
-// src/config/globe.ts (globe.ts has no region field, so the grouping lives
-// here rather than being derived).
+// The canonical destination list (business-context.md §3). Region grouping
+// per the news-editorial-playbook.md destination-market definition. Every
+// country here has a marker in src/config/globe.ts — destinations that are
+// also source countries sit under their source/hub marker — so add one there
+// when adding one here, and update the hand-typed /b2c hero stat.
 const DESTINATION_REGIONS = [
   {
     region: "Europe",
@@ -254,6 +255,8 @@ const DESTINATION_REGIONS = [
       "Uganda",
       "Zimbabwe",
       "Botswana",
+      "Zambia",
+      "South Africa",
       "Tanzania",
       "Mauritius",
       "Seychelles",
@@ -264,6 +267,7 @@ const DESTINATION_REGIONS = [
     countries: [
       "Jamaica",
       "Trinidad & Tobago",
+      "Grenada",
       "Barbados",
       "Guyana",
       "Bahamas",
@@ -281,7 +285,9 @@ const DESTINATION_REGIONS = [
       "Pakistan",
       "Bangladesh",
       "Nepal",
+      "India",
       "Singapore",
+      "Fiji",
       "Sri Lanka",
     ],
   },
@@ -1009,39 +1015,6 @@ export default function AboutUsPage() {
                         />
                       </span>
                     </Link>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ── BY THE NUMBERS ───────────────────────── */}
-          <section className="py-20 md:py-28 px-6 bg-[#FAFAFA] border-y border-black/5">
-            <div className="max-w-5xl mx-auto">
-              <Reveal y={24} duration={0.6} className="text-center mb-12">
-                <SectionRule />
-                <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black">
-                  The network, by the numbers.
-                </h2>
-              </Reveal>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {STATS.map((s, i) => (
-                  <Reveal
-                    key={s.label}
-                    y={20}
-                    delay={i * 0.05}
-                    duration={0.5}
-                    className="rounded-2xl border border-black/5 bg-white px-5 py-6 text-center"
-                  >
-                    <div className="flex justify-center">
-                      <OdometerCounter
-                        value={s.value}
-                        suffix={s.suffix}
-                        label={s.label}
-                        className="text-3xl md:text-4xl font-bold tracking-tight text-center"
-                      />
-                    </div>
                   </Reveal>
                 ))}
               </div>

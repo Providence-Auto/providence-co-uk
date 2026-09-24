@@ -12,21 +12,50 @@ import {
 } from "@/config/countries";
 
 const SITE = "https://www.providenceauto.co.uk";
-const TITLE =
-  "Our Global Network — Seven Countries, One Landed Price | Providence Auto";
+const TITLE = "Import Cars from 7 Countries | Providence Auto";
 // 1200×630, self-hosted, so link previews never depend on a third-party CDN.
 const OG_IMAGE = `${SITE}/source-cars/og/network.jpg`;
-const DESCRIPTION = `Providence Auto buys directly in ${SOURCE_COUNTRIES_SENTENCE}, and sources vehicles from many more. Our own teams find, inspect and ship every car — see what each country does best.`;
+const DESCRIPTION = `Import a car from ${SOURCE_COUNTRIES_SENTENCE} through our own teams. Inspected before you pay, one landed price to your port. Get a quote.`;
+
+// The direct answer to "which country should I import my car from?" — the
+// question this page exists to rank for, answered before the table.
+const CHOOSE_ANSWER =
+  "Start from your own country's rules, then compare landed cost. Drive side and age limits rule some sources out; freight distance, duty and the car's price at source decide the rest. Tell us the car and we compare every country that can supply it, then quote the cheapest landed price.";
+
+const PILLARS = [
+  {
+    icon: Building2,
+    title: "Seven countries, not seven agents",
+    desc: "Every country on this page has Providence staff in it. They find the car, inspect it, file the export paperwork and load the vessel. Nothing is subcontracted to an exporter you never speak to.",
+  },
+  {
+    icon: Globe2,
+    title: "We source far beyond them",
+    desc: "These seven countries are where we buy, with our own people on the ground. We source across many more markets than these, and we add new ones as the volume justifies it.",
+  },
+  {
+    icon: Users,
+    title: "One team handles your car all the way to your port",
+    desc: "The team that buys your vehicle stays with it. Inspection reports, photographs and shipping milestones come from the people who physically handled it.",
+  },
+  {
+    icon: Ship,
+    title: "One landed price, wherever it comes from",
+    desc: "We compare the total landed cost across our source countries for the specification you want, then buy where it lands cheapest — and quote you a single all-in figure before you commit.",
+  },
+];
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   keywords: [
-    "global car sourcing network",
-    "international vehicle sourcing teams",
-    "car exporter with global teams",
-    "source cars from japan uk uae india thailand",
-    "vehicle sourcing company worldwide",
+    "import cars from abroad",
+    "import cars from overseas",
+    "import cars from japan",
+    "import cars from the uk",
+    "import cars from dubai",
+    "import cars from australia",
+    "which country to import a car from",
   ],
   alternates: { canonical: COUNTRY_BASE_PATH },
   openGraph: {
@@ -41,7 +70,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "A Toyota Land Cruiser — one of the cars Providence Auto sources worldwide",
+        alt: "A classic Toyota Land Cruiser in a desert landscape",
       },
     ],
   },
@@ -54,30 +83,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const PILLARS = [
-  {
-    icon: Building2,
-    title: "Seven countries, not seven agents",
-    desc: "Every country on this page has Providence staff in it. They bid, they inspect, they file the export paperwork and they load the vessel. Nothing is subcontracted to an exporter you never speak to.",
-  },
-  {
-    icon: Globe2,
-    title: "We source far beyond them",
-    desc: "These seven are where we buy, with our own people on the ground. We source across many more markets than these, and we add new ones as the volume justifies it.",
-  },
-  {
-    icon: Users,
-    title: "One team owns your car",
-    desc: "The team that buys your vehicle stays with it. Inspection reports, photographs and shipping milestones come from the people who physically handled it.",
-  },
-  {
-    icon: Ship,
-    title: "One landed price, wherever it comes from",
-    desc: "We compare the total landed cost across our source countries for the specification you want, then buy where it lands cheapest — and quote you a single all-in figure before you commit.",
-  },
-];
-
-export default function GlobalNetworkPage() {
+export default function ImportCarsFromPage() {
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -86,7 +92,7 @@ export default function GlobalNetworkPage() {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Global network",
+        name: "Import cars from",
         item: `${SITE}${COUNTRY_BASE_PATH}`,
       },
     ],
@@ -98,8 +104,7 @@ export default function GlobalNetworkPage() {
     name: "Providence Auto",
     url: `${SITE}/`,
     logo: `${SITE}/logo.png`,
-    description:
-      "Global vehicle sourcing and export group with its own teams in seven source countries across Europe, Asia, the Middle East and Oceania.",
+    description: `Vehicle import group with its own teams in ${SOURCE_COUNTRIES_SENTENCE}. Buyers import cars from those countries to their own port, inspected before payment, on one landed price.`,
     areaServed: "Worldwide",
     subOrganization: SOURCE_COUNTRY_PAGES.map((c) => ({
       "@type": "LocalBusiness",
@@ -112,13 +117,25 @@ export default function GlobalNetworkPage() {
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Providence Auto source countries",
+    name: "Countries you can import cars from with Providence Auto",
     itemListElement: SOURCE_COUNTRY_PAGES.map((c, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      name: c.shortName,
+      name: `Import cars from ${c.country}`,
       url: `${SITE}${COUNTRY_BASE_PATH}/${c.slug}`,
     })),
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Which country should I import my car from?",
+        acceptedAnswer: { "@type": "Answer", text: CHOOSE_ANSWER },
+      },
+    ],
   };
 
   return (
@@ -138,6 +155,11 @@ export default function GlobalNetworkPage() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
 
       <main className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
         <MinimalHeader />
@@ -151,27 +173,27 @@ export default function GlobalNetworkPage() {
             duration={0.8}
             className="pa-headline-gradient text-4xl md:text-7xl font-bold tracking-tighter leading-[1.05] mb-6"
           >
-            Seven countries.
-            <br className="hidden md:block" /> One standard.
+            Import cars from seven countries, through our own teams
           </Reveal>
           <Reveal
             immediate
+            as="p"
             y={16}
             delay={0.1}
             duration={0.6}
             className="text-xl md:text-2xl text-zinc-500 font-light max-w-3xl mx-auto"
           >
-            Providence Auto buys directly in{" "}
+            You can import a car from{" "}
             <span className="text-black font-medium">
               {SOURCE_COUNTRIES_SENTENCE}
             </span>
-            , and sources vehicles from many more markets besides. Wherever your
-            car comes from, it is our own people who find it, inspect it and put
-            it on the ship.
+            , with our own people in each one to find it, inspect it before your
+            money moves and ship it to your port — on one all-in landed price
+            quoted before you commit.
           </Reveal>
         </section>
 
-        {/* ── OFFICE GRID ──────────────────────────── */}
+        {/* ── COUNTRY GRID ─────────────────────────── */}
         <section className="px-6 max-w-6xl mx-auto pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {SOURCE_COUNTRY_PAGES.map((c, i) => (
@@ -187,7 +209,7 @@ export default function GlobalNetworkPage() {
                   className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-sky-500/20 hover:shadow-[0_24px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1"
                 >
                   <div className="relative h-44 overflow-hidden bg-zinc-900">
-                    {/* biome-ignore lint/performance/noImgElement: remote/static hero image, intentional <img> per site convention */}
+                    {/* biome-ignore lint/performance/noImgElement: static hero image, intentional <img> per site convention */}
                     <img
                       src={c.hero.backgroundImage}
                       alt={c.hero.imageAlt}
@@ -196,9 +218,6 @@ export default function GlobalNetworkPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
-                      <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/60 mb-1">
-                        {c.region}
-                      </p>
                       <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-sm">
                         {c.shortName}
                       </h2>
@@ -209,7 +228,7 @@ export default function GlobalNetworkPage() {
                       {c.cardBlurb}
                     </p>
                     <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-sky-600">
-                      See the {c.shortName} team
+                      Import cars from {c.country}
                       <ArrowRight
                         size={14}
                         className="group-hover:translate-x-1 transition-transform"
@@ -222,8 +241,76 @@ export default function GlobalNetworkPage() {
           </div>
         </section>
 
+        {/* ── WHICH COUNTRY: the direct answer + the comparison table ── */}
+        <section className="py-20 md:py-28 px-6 mt-16">
+          <div className="max-w-6xl mx-auto">
+            <Reveal
+              y={24}
+              duration={0.7}
+              className="text-center mb-10 max-w-3xl mx-auto"
+            >
+              <SectionRule />
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
+                Which country should you import your car from?
+              </h2>
+              <p className="text-lg text-zinc-500 font-light">
+                {CHOOSE_ANSWER}
+              </p>
+            </Reveal>
+
+            {/* A plain div, not <Reveal>: a transformed ancestor breaks
+                touch scrolling on iOS for the horizontal scroller inside. */}
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[720px] overflow-hidden rounded-[1.5rem] border border-black/5 bg-white text-left text-sm">
+                <caption className="sr-only">
+                  The seven countries you can import cars from, compared
+                </caption>
+                <thead className="bg-[#FAFAFA] text-xs font-bold tracking-[0.12em] uppercase text-zinc-500">
+                  <tr>
+                    <th scope="col" className="px-5 py-4">
+                      Country
+                    </th>
+                    <th scope="col" className="px-5 py-4">
+                      Drive side
+                    </th>
+                    <th scope="col" className="px-5 py-4">
+                      Export ports
+                    </th>
+                    <th scope="col" className="px-5 py-4">
+                      Typical sea transit
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-black/5">
+                  {SOURCE_COUNTRY_PAGES.map((c) => (
+                    <tr key={c.slug} className="align-top">
+                      <th scope="row" className="px-5 py-4 font-bold">
+                        <Link
+                          href={`${COUNTRY_BASE_PATH}/${c.slug}`}
+                          className="text-black hover:text-sky-600 transition-colors"
+                        >
+                          {c.shortName}
+                        </Link>
+                      </th>
+                      <td className="px-5 py-4 text-zinc-600 font-light">
+                        {c.facts.steering}
+                      </td>
+                      <td className="px-5 py-4 text-zinc-600 font-light">
+                        {c.logistics.ports.join(", ")}
+                      </td>
+                      <td className="px-5 py-4 text-zinc-600 font-light">
+                        {c.logistics.transit}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         {/* ── HOW THE NETWORK WORKS ────────────────── */}
-        <section className="py-24 md:py-32 px-6 bg-[#FAFAFA] border-y border-black/5 mt-16">
+        <section className="py-24 md:py-32 px-6 bg-[#FAFAFA] border-y border-black/5">
           <div className="max-w-6xl mx-auto">
             <Reveal
               y={30}
@@ -270,7 +357,7 @@ export default function GlobalNetworkPage() {
           <Reveal y={24} duration={0.7}>
             <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-              Not sure which country is cheapest?
+              Not sure which country is the cheapest to source from?
             </h2>
             <p className="text-lg text-zinc-500 font-light mb-8">
               Tell us the car. We will compare the landed cost from every

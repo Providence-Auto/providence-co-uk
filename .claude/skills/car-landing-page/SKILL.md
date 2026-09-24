@@ -66,6 +66,8 @@ Order of preference:
 2. **Manufacturer press imagery**, where the licence permits editorial use.
 3. **Stock imagery** for an upcoming model with no press pack yet.
 
+**Every image passes `car-imagery-checklist.md` at the repo root before it goes in the brief.** In short: confirm the model exists (manufacturer's site first — never build a page for a model you cannot find there); confirm each photo shows this make, model and generation, not a sister model or a facelift; and check every visible number plate. A car page is sold into specific destinations, so a plate from anywhere else — including a dealer placard in the plate position, or a legible plate on a car in the background — is removed with `scripts/blur-plate.mjs` before upload.
+
 If the image is not the actual car — a stock shot standing in for a model that hasn't been photographed — say so. Put it in `notes`, the same way `heroCaption` flags illustrative imagery on news articles. Passing a stock photo off as the car is the one thing that turns a good page into a complaint.
 
 Ask before downloading images from the internet, and confirm the licence covers commercial use.
@@ -250,5 +252,6 @@ Default to leaving the page as a Draft and telling the user it's ready for revie
 
 - **Never invent a specification, price, tax or duty figure.** Cite or omit. This is the same standard the news desk works to — see `news-editorial-playbook.md`.
 - **Never present stock imagery as the actual car** without saying so in `notes`.
+- **Never publish a model that does not exist, a photo of a different model, or a plate from the wrong country** — `car-imagery-checklist.md`.
 - Colour hexes are approximations of real paint; don't describe them as exact matches.
 - Confirm before publishing, before downloading third-party images, and before overwriting an existing slug's page.

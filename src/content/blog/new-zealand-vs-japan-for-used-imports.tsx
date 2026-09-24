@@ -185,8 +185,8 @@ export default function Body() {
         are shipping into Oceania or the Pacific.
       </P>
       <P>
-        We run <InlineLink href="/source-cars-from/japan">both</InlineLink>{" "}
-        <InlineLink href="/source-cars-from/new-zealand">teams</InlineLink>, so
+        We run <InlineLink href="/import-cars-from/japan">both</InlineLink>{" "}
+        <InlineLink href="/import-cars-from/new-zealand">teams</InlineLink>, so
         tell us the requirement and we will compare the landed cost from each
         rather than defending one.
       </P>

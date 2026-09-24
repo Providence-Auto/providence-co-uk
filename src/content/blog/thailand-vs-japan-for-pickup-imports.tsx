@@ -188,8 +188,8 @@ export default function Body() {
       <P>
         We have our own team in both, so we have no reason to push you toward
         one. Tell us the requirement and we compare the landed cost from each —{" "}
-        <InlineLink href="/source-cars-from/thailand">Thailand</InlineLink> and{" "}
-        <InlineLink href="/source-cars-from/japan">Japan</InlineLink>.
+        <InlineLink href="/import-cars-from/thailand">Thailand</InlineLink> and{" "}
+        <InlineLink href="/import-cars-from/japan">Japan</InlineLink>.
       </P>
 
       <Disclaimer>

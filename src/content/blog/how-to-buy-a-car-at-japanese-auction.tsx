@@ -235,7 +235,7 @@ export default function Body() {
       </UL>
       <P>
         If you would rather start from the cars than the process, our{" "}
-        <InlineLink href="/source-cars-from/japan">
+        <InlineLink href="/import-cars-from/japan">
           Japan sourcing page
         </InlineLink>{" "}
         lists what our team buys most, and{" "}

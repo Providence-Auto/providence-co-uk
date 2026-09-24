@@ -207,7 +207,7 @@ export default function Body() {
           how to import a car from the UK
         </InlineLink>
         , and our{" "}
-        <InlineLink href="/source-cars-from/united-kingdom">
+        <InlineLink href="/import-cars-from/united-kingdom">
           UK office
         </InlineLink>{" "}
         handles all of it as the exporter of record.

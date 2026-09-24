@@ -87,6 +87,17 @@ export type BlogPost = {
    * so the reader is not sent to an unrelated market's form.
    */
   ctaHref?: string;
+  /**
+   * The end-of-post CTA's heading, body and button label. Unset keeps the
+   * Ireland-flavoured defaults in BlogCTA. Source-country posts set all three
+   * (see `post()` in blog-countries.ts) so the guide hands the reader to that
+   * country's /import-cars-from page with the keyword as the link text.
+   */
+  ctaHeading?: string;
+  ctaBody?: string;
+  ctaLabel?: string;
+  /** false hides the Ireland cost calculator button, for non-Ireland posts. */
+  ctaCalculator?: boolean;
   /** Mark the pillar/hub post. */
   isPillar?: boolean;
 };

@@ -154,7 +154,7 @@ export default function Body() {
       <P>
         If you want a <em>new</em> pickup, though, Thailand is the production
         source and will be cheaper —{" "}
-        <InlineLink href="/source-cars-from/thailand">
+        <InlineLink href="/import-cars-from/thailand">
           see that country
         </InlineLink>
         .

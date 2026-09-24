@@ -54,8 +54,12 @@ export type GlobeRoute = {
  * Every marker on the globe.
  *
  * The first seven are the countries in src/config/countries.ts — the places we
- * source from and keep our own teams in. The rest are the delivery markets
- * shown in the home page flag strip.
+ * source from and keep our own teams in. The rest are the destination markets
+ * in DESTINATION_REGIONS on /about-us, the canonical list (business-context.md
+ * §3). Destinations that are also source countries — the UK, Australia, New
+ * Zealand, Thailand and India — appear once, under their source/hub role.
+ * Reconciled to all 34 destinations on 2026-09-24; add a marker here whenever
+ * a destination is added there.
  */
 export const GLOBE_PLACES: GlobePlace[] = [
   // ── Source countries and offices ──────────────────────────────────────────
@@ -119,13 +123,6 @@ export const GLOBE_PLACES: GlobePlace[] = [
     lng: 31.05,
   },
   {
-    id: "maldives",
-    name: "Maldives",
-    role: "destination",
-    lat: 4.18,
-    lng: 73.51,
-  },
-  {
     id: "malaysia",
     name: "Malaysia",
     role: "destination",
@@ -175,6 +172,97 @@ export const GLOBE_PLACES: GlobePlace[] = [
     lng: -61.52,
   },
   { id: "guyana", name: "Guyana", role: "destination", lat: 6.8, lng: -58.16 },
+  {
+    id: "germany",
+    name: "Germany",
+    role: "destination",
+    lat: 53.55,
+    lng: 8.58,
+  },
+  {
+    id: "tanzania",
+    name: "Tanzania",
+    role: "destination",
+    lat: -6.79,
+    lng: 39.21,
+  },
+  {
+    id: "botswana",
+    name: "Botswana",
+    role: "destination",
+    lat: -24.65,
+    lng: 25.91,
+  },
+  {
+    id: "zambia",
+    name: "Zambia",
+    role: "destination",
+    lat: -15.39,
+    lng: 28.32,
+  },
+  {
+    id: "south-africa",
+    name: "South Africa",
+    role: "destination",
+    lat: -29.86,
+    lng: 31.03,
+  },
+  {
+    id: "mauritius",
+    name: "Mauritius",
+    role: "destination",
+    lat: -20.16,
+    lng: 57.5,
+  },
+  {
+    id: "seychelles",
+    name: "Seychelles",
+    role: "destination",
+    lat: -4.62,
+    lng: 55.45,
+  },
+  {
+    id: "grenada",
+    name: "Grenada",
+    role: "destination",
+    lat: 12.05,
+    lng: -61.75,
+  },
+  {
+    id: "pakistan",
+    name: "Pakistan",
+    role: "destination",
+    lat: 24.86,
+    lng: 67.01,
+  },
+  {
+    id: "bangladesh",
+    name: "Bangladesh",
+    role: "destination",
+    lat: 22.34,
+    lng: 91.83,
+  },
+  {
+    id: "nepal",
+    name: "Nepal",
+    role: "destination",
+    lat: 27.72,
+    lng: 85.32,
+  },
+  {
+    id: "singapore",
+    name: "Singapore",
+    role: "destination",
+    lat: 1.29,
+    lng: 103.85,
+  },
+  {
+    id: "fiji",
+    name: "Fiji",
+    role: "destination",
+    lat: -18.14,
+    lng: 178.44,
+  },
 ];
 
 /**
@@ -198,13 +286,17 @@ export const GLOBE_ROUTES: GlobeRoute[] = [
   { from: "united-kingdom", to: "kenya" },
   { from: "uae", to: "uganda" },
   { from: "uae", to: "zimbabwe" },
-  { from: "uae", to: "maldives" },
+  { from: "uae", to: "pakistan" },
+  { from: "uae", to: "tanzania" },
   { from: "thailand", to: "australia" },
   { from: "thailand", to: "malaysia" },
   { from: "india", to: "guyana" },
   { from: "australia", to: "indonesia" },
   { from: "japan", to: "hong-kong" },
   { from: "japan", to: "bahamas" },
+  { from: "japan", to: "fiji" },
+  { from: "india", to: "south-africa" },
+  { from: "india", to: "grenada" },
 ];
 
 /** Lookup by id, built once. */
