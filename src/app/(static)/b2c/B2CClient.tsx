@@ -26,7 +26,7 @@ const STATS = [
 // two pips are stated at that level. Same treatment as /about-us.
 const IMPORT_STAGES: VoyageStage[] = [
   { label: "You choose", at: 0 },
-  { label: "We bid", at: 0.18 },
+  { label: "We source", at: 0.18 },
   { label: "Inspected", at: 0.36 },
   { label: "At sea", at: 0.62 },
   { label: "At your port", at: 0.84 },

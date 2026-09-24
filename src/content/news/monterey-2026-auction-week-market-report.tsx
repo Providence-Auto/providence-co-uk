@@ -269,8 +269,8 @@ export default function Monterey2026AuctionWeekMarketReport() {
 
       <Callout title="Bidding on something specific?" tone="emerald">
         <p>
-          We bid in Japanese, UK, UAE and Australian auctions every week for
-          dealers and private clients, and we quote the full landed cost &mdash;
+          We source from Japanese auctions and dealer networks in seven
+          countries every week for dealers and private clients, and we quote the full landed cost &mdash;
           car, shipping, duty, VAT and registration tax &mdash; before anyone
           commits. Start with the{" "}
           <InlineLink href="/ireland-cost-calculator">

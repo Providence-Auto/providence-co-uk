@@ -566,8 +566,8 @@ export default function FerrariLuceChassis040MillionAuction() {
 
       <Callout title="Sourcing something rare?" tone="emerald">
         <p>
-          We bid in Japanese, UK, UAE and Australian auctions on behalf of
-          dealers and private clients every week, and we quote the full landed
+          We source from Japanese auctions and dealer networks in seven
+          countries on behalf of dealers and private clients every week, and we quote the full landed
           cost &mdash; car, shipping, duty, VAT and registration tax &mdash;
           before anyone commits. If there is a specific chassis you want,{" "}
           <InlineLink href="/request">tell us what it is</InlineLink> and

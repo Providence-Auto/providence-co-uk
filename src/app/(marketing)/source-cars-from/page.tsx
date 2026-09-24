@@ -58,16 +58,16 @@ const PILLARS = [
   {
     icon: Building2,
     title: "Seven countries, not seven agents",
-    desc: "Every country on this page has Providence staff in it. They bid, they inspect, they file the export paperwork and they load the vessel. Nothing is subcontracted to an exporter you never speak to.",
+    desc: "Every country on this page has Providence staff in it. They find the car, inspect it, file the export paperwork and load the vessel. Nothing is subcontracted to an exporter you never speak to.",
   },
   {
     icon: Globe2,
     title: "We source far beyond them",
-    desc: "These seven are where we buy, with our own people on the ground. We source across many more markets than these, and we add new ones as the volume justifies it.",
+    desc: "These seven countries are where we buy, with our own people on the ground. We source across many more markets than these, and we add new ones as the volume justifies it.",
   },
   {
     icon: Users,
-    title: "One team owns your car",
+    title: "One team handles your car all the way to your port",
     desc: "The team that buys your vehicle stays with it. Inspection reports, photographs and shipping milestones come from the people who physically handled it.",
   },
   {
@@ -270,7 +270,7 @@ export default function GlobalNetworkPage() {
           <Reveal y={24} duration={0.7}>
             <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-              Not sure which country is cheapest?
+              Not sure which country is the cheapest to source from?
             </h2>
             <p className="text-lg text-zinc-500 font-light mb-8">
               Tell us the car. We will compare the landed cost from every
