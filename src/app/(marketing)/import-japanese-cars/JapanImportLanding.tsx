@@ -30,7 +30,7 @@ import { japanImportCampaignConfig } from "@/config/landing-pages";
 // slug so the gallery stays scoped to this campaign's stock.
 const CAMPAIGN_TAG = "import-japanese-cars";
 
-// The cars we buy most often at Japanese auction. Everything here is sourced
+// The cars we buy most often in Japan. Everything here is sourced
 // in Japan; not everything here was built there. `make` must match a value in
 // the request form's CAR_MAKES list so the prefill lands on a valid option;
 // `model` prefills the free-text/model field.
@@ -127,7 +127,7 @@ const MODEL_GROUPS: ModelGroup[] = [
     label: "SUVs & 4x4s",
     title: "Land Cruisers and premium SUVs.",
     blurb:
-      "Japan registers more Land Cruisers than almost any other market and sells them on while they are still young, which is why a Japanese-sourced 4x4 usually lands cheaper than the equivalent car bought locally. Every vehicle in this group is right-hand drive as standard, and you see its auction grade, condition map and our own inspection findings before we bid on it.",
+      "Japan registers more Land Cruisers than almost any other market and sells them on while they are still young, which is why a Japanese-sourced 4x4 usually lands cheaper than the equivalent car bought locally. Every vehicle in this group is right-hand drive as standard, and you see its grade and our own inspection findings before you commit.",
     cars: [
       {
         name: "Toyota Harrier",
@@ -240,7 +240,7 @@ const MODEL_GROUPS: ModelGroup[] = [
         make: "BMW",
         model: "3 Series",
         blurb:
-          "BMW's compact executive saloon, bought at Japanese wholesale auction prices.",
+          "BMW's compact executive saloon, bought direct from Japan.",
         image: "/import-cars/bmw.webp",
       },
       {
@@ -267,11 +267,11 @@ const DESTINATIONS: Destination[] = [
     label: "United Kingdom",
     formCountry: "United Kingdom",
     headline: "The United Kingdom sets no age limit on imported cars.",
-    body: "No age limit, no steering conversion, and a DVLA process we've run hundreds of times. From a daily-driver Aqua to a GR Yaris or an Alphard the family will fight over, we file the NOVA notification within 14 days of arrival and prepare your DVLA registration pack — with duty and VAT locked into your quote before you commit.",
+    body: "No age limit, no steering conversion, and a DVLA process we've run hundreds of times. From a daily-driver Aqua to a GR Yaris or an Alphard the family will fight over, we prepare the NOVA notification for the 14-day window and your DVLA registration pack — with duty and VAT locked into your quote before you commit.",
     facts: [
       { icon: Gauge, label: "No import age limit" },
-      { icon: ShieldCheck, label: "NOVA filed, DVLA pack prepared" },
-      { icon: CalendarClock, label: "Typically 8–12 weeks auction to arrival" },
+      { icon: ShieldCheck, label: "NOVA and DVLA paperwork prepared" },
+      { icon: CalendarClock, label: "Typically 8–12 weeks order to arrival" },
       { icon: Anchor, label: "RoRo or container to UK ports" },
     ],
     popular:
@@ -283,7 +283,7 @@ const DESTINATIONS: Destination[] = [
     label: "Ireland",
     formCountry: "Ireland",
     headline: "Japan-built cars enter Ireland at zero customs duty.",
-    body: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan agreement, and efficient Japanese hybrids sit in the lowest VRT bands — which is why they consistently land thousands below Irish forecourt prices even after VAT. We calculate your exact VRT before you commit, ship the car to an Irish port, and prepare the declarations and the NCTS pack for your registration.",
+    body: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan agreement, and efficient Japanese hybrids sit in the low VRT bands. You get a lower-mileage car graded 4 or above, inspected before you pay. We calculate your VRT before you commit, ship the car to an Irish port, and prepare the declarations and the NCTS pack.",
     facts: [
       { icon: Gauge, label: "0% duty on Japan-built cars" },
       { icon: ShieldCheck, label: "VRT calculated before you commit" },
@@ -303,8 +303,8 @@ const DESTINATIONS: Destination[] = [
     body: "More used cars reach New Zealand from Japan than from anywhere else, and the route is well worn: no customs duty on used vehicles, GST charged once on the landed value, a biosecurity clean before the ship, and entry certification before the plates go on. We buy to the standards the certifier will accept, arrange the steam clean in Japan, and land a car that's ready to comply.",
     facts: [
       { icon: Gauge, label: "No customs duty on used cars" },
-      { icon: ShieldCheck, label: "GST + entry certification handled" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks auction to arrival" },
+      { icon: ShieldCheck, label: "GST + certification in your quote" },
+      { icon: CalendarClock, label: "Typically 6–10 weeks order to arrival" },
       { icon: Anchor, label: "MPI biosecurity clean arranged in Japan" },
     ],
     popular:
@@ -319,11 +319,11 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Kenya",
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
-    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock straight off the auction sheet, book the KEBS-compliance inspection in Japan, and land your car at Mombasa with every duty in the quote you approved.",
+    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock, book the KEBS-compliance inspection in Japan, and land your car at Mombasa with every duty in the quote you approved.",
     facts: [
       { icon: Gauge, label: "8-year age rule — compliant stock only" },
       { icon: ShieldCheck, label: "Pre-export inspection arranged in Japan" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks auction to arrival" },
+      { icon: CalendarClock, label: "Typically 6–10 weeks order to arrival" },
       { icon: Anchor, label: "Clearance support at Mombasa" },
     ],
     popular:
@@ -340,7 +340,7 @@ const DESTINATIONS: Destination[] = [
     facts: [
       { icon: Gauge, label: "No age ban — excise built into quote" },
       { icon: ShieldCheck, label: "Pre-shipment inspection arranged" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks auction to arrival" },
+      { icon: CalendarClock, label: "Typically 6–10 weeks order to arrival" },
       { icon: Anchor, label: "Clearance support at Dar es Salaam" },
     ],
     popular:
@@ -357,7 +357,7 @@ const DESTINATIONS: Destination[] = [
     facts: [
       { icon: Gauge, label: "15-year rule — sweet spot sourced" },
       { icon: ShieldCheck, label: "URA taxes in your up-front quote" },
-      { icon: CalendarClock, label: "Typically 7–11 weeks auction to arrival" },
+      { icon: CalendarClock, label: "Typically 7–11 weeks order to arrival" },
       { icon: Anchor, label: "Bonded transit Mombasa → Kampala" },
     ],
     popular:
@@ -370,7 +370,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: null,
     headline:
       "We ship to right-hand-drive markets beyond our six core countries.",
-    body: "Beyond our six core markets we ship to right-hand-drive countries worldwide — across the Caribbean, southern Africa, and the Pacific. Every destination gets the same treatment: auction sheet before payment, your country's rules confirmed before you commit, and one all-in landed price. Tell us your country in the form and we'll come back with the exact rules, timeline and cost.",
+    body: "Beyond our six core markets we ship to right-hand-drive countries worldwide — across the Caribbean, southern Africa, and the Pacific. Every destination gets the same treatment: the grade and our inspection before payment, your country's rules confirmed before you commit, and one all-in landed price. Tell us your country in the form and we'll come back with the exact rules, timeline and cost.",
     facts: [
       { icon: Globe2, label: "RHD markets worldwide" },
       { icon: ShieldCheck, label: "Local rules confirmed before you pay" },
@@ -508,8 +508,8 @@ export default function JapanImportLanding() {
       {/* ── DESTINATION PANEL ────────────────────────── */}
       <DestinationPanel
         destination={destination}
-        emptyHeadline="Buy direct from Japan's auction floor — with the auction sheet, the landed number and the paperwork support to do it with confidence."
-        emptyBody="Japan's wholesale auctions sell more than 100,000 independently graded cars every week, at prices no retail forecourt can match — and until now you needed a licence and a buyer in the hall to reach them. You tell us the model and specification you want. We find it, send you the original auction sheet and our own inspection findings before we bid, and quote one landed price covering the car, shipping, marine cover, duty and the taxes that apply at your destination. Choose your destination above and we will show you exactly how the rules, taxes and timeline work for your country."
+        emptyHeadline="Buy direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
+        emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and quote one landed price covering the car, shipping, marine cover, duty and your destination's taxes. Choose your destination above to see the rules and timeline for your country."
       />
 
       {/* ── MODEL CARDS, BY CATEGORY ─────────────────── */}
@@ -530,12 +530,9 @@ export default function JapanImportLanding() {
               Choose the car you want us to source.
             </h2>
             <p className="text-lg text-zinc-500 font-light">
-              Every model below is one we buy regularly in Japan, which means we
-              already know what it should cost at auction, what condition to
-              expect at each grade, and how it will be taxed when it reaches
-              your country. Select one and we will open the inquiry form with
-              that car filled in. If what you want is not shown here, use the
-              card at the end of the grid and describe it to us instead.
+              Every model below is one we buy regularly in Japan. Select one and
+              we will open the inquiry form with it filled in, or use the card
+              at the end to tell us about something else.
             </p>
           </Reveal>
 
@@ -594,7 +591,7 @@ export default function JapanImportLanding() {
                           the previous fixed-height card cut the wheels off. */}
                       <img
                         src={model.image}
-                        alt={`${model.name} sourced from Japanese auction by Providence Auto`}
+                        alt={`${model.name} sourced in Japan by Providence Auto`}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 ease-out"
                       />
@@ -660,7 +657,7 @@ export default function JapanImportLanding() {
               >
                 describe it in the inquiry form
               </a>{" "}
-              and we will find it at auction for you.
+              and we will find it in Japan for you.
             </p>
           </Reveal>
         </div>
@@ -672,8 +669,8 @@ export default function JapanImportLanding() {
           <GalleryPreview
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
-            title="Available Now From Japanese Auction"
-            subtitle="These are cars we have already sourced and graded in Japan, ready to ship to your country. The original auction sheet for any of them is available on request."
+            title="Available Now From Japan"
+            subtitle="Cars we have already sourced and graded in Japan, ready to ship to your country."
           />
         </div>
       </div>
@@ -761,11 +758,11 @@ export default function JapanImportLanding() {
             Tell us exactly what you want.
           </h2>
           <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
-            Tell us the car you are after and we will find it{" "}
-            <span className="text-black font-medium">at Japanese auction</span>,
-            verify its auction sheet, and come back to you with a full
-            landed-cost quote for {destination?.formCountry ?? "your country"}{" "}
-            before you commit to anything.
+            Tell us the car you are after and we will find it in Japan,{" "}
+            <span className="text-black font-medium">graded 4 or above</span>,
+            and come back to you with a full landed-cost quote for{" "}
+            {destination?.formCountry ?? "your country"} before you commit to
+            anything.
           </p>
         </Reveal>
 

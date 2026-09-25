@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: japanImportCampaignConfig.hero.backgroundImage,
-        alt: "Japanese cars sourced at auction by Providence Auto",
+        alt: "Japanese cars sourced in Japan by Providence Auto",
       },
     ],
   },
@@ -99,7 +99,7 @@ export default function ImportJapaneseCarsPage() {
     "@context": "https://schema.org",
     "@type": "Service",
     name: "Japanese Car Sourcing & Import",
-    serviceType: "Vehicle sourcing and import from Japanese auctions",
+    serviceType: "Vehicle sourcing and import from Japanese dealers and auctions",
     description: japanImportCampaignConfig.meta.description,
     url: URL,
     areaServed: [
