@@ -308,7 +308,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "How does the Japanese auction grading system work?",
-            a: "Independent inspectors grade every auction car on a standard scale: Grade 5 is near-new, Grade 4 is excellent, Grade 3.5 is very good with minor cosmetic marks, and accident-repaired cars are flagged separately as Grade R. The grade, panel-by-panel condition map and inspector's notes all appear on the auction sheet. We source Grade 3.5 and above, send you the original sheet with a translation before bidding, and if a car doesn't match its grade on our own inspection, we don't ship it.",
+            a: "Independent inspectors grade every auction car on a standard scale: Grade 5 is near-new, Grade 4 is excellent, Grade 3.5 is very good with minor cosmetic marks, and accident-repaired cars are flagged separately as Grade R. The grade, panel-by-panel condition map and inspector's notes all appear on the auction sheet. We source Grade 4 and above, send you the original sheet with a translation before bidding, and if a car doesn't match its grade on our own inspection, we don't ship it.",
           },
           {
             q: "Is the mileage on Japanese import cars genuine?",

@@ -99,7 +99,7 @@ export default function Body() {
         caption="Grades follow a national convention but are applied by individual inspectors; treat half-point differences as indicative rather than absolute."
       />
       <P>
-        We buy Grade 3.5 and above as standard, and we tell you the grade before
+        We buy Grade 4 and above as standard, and we tell you the grade before
         we bid rather than after we have won.
       </P>
 

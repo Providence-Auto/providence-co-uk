@@ -52,14 +52,19 @@ reasoning, the four pillars and the competitive frame are in
 The five-step pipeline, consistent across every source country:
 
 1. **Find it** — the local team searches for the exact model, grade, colour and
-   spec requested. **Auction bidding happens in Japan only**, where the team
-   bids at the graded auctions up to the buyer's approved maximum. In the other
-   six countries we buy from dealers and fleet disposals (and, in the UK, from
-   specialist retailers and private sellers) — never "at auction", so no page
-   may claim bidding or auction buying outside Japan.
+   spec requested. **In Japan, most private-buyer (B2C) cars are bought from
+   dealers across the country**, and the team also bids at the graded
+   auctions up to the buyer's approved maximum — so Japan copy says "dealers
+   and auctions across Japan", never the auction alone. **Auction bidding
+   happens in Japan only.** In the other six countries we buy from dealers and
+   fleet disposals (and, in the UK, from specialist retailers and private
+   sellers) — never "at auction", so no page may claim bidding or auction
+   buying outside Japan.
 2. **Inspect it** — a multi-point physical inspection (engine, transmission,
-   underbody, electronics, panel gaps, interior), photographed. If the car
-   doesn't match its grade, it doesn't ship, and the customer isn't charged.
+   underbody, electronics, panel gaps, interior), photographed. **We only
+   source Japanese cars graded 4.0 and above** on the auction scale (never
+   3.5). If the car doesn't match its grade, it doesn't ship, and the customer
+   isn't charged.
 3. **Clear it for export** — deregistration, the export certificate with
    certified mileage, any pre-shipment inspection the destination requires
    (JEVIC, QISJ, KEBS and similar), biosecurity cleaning where needed. This is
@@ -390,6 +395,9 @@ don't just fix the copy silently.
 | 2026-09-24 | The `/source-cars-from` pages renamed `/import-cars-from` (old URLs 301) and rewritten onto one simple template: a general import guide plus our office details, no country-feature copy | Business instruction: rank for the phrase buyers search ("import cars from Australia") and give them only what they need to act. The template and its rules are in CLAUDE.md ("Landing pages: one keyword, one simple template"). |
 | 2026-09-24 | Search intent split: the blog "how to import / cost to import" guides are the **informational** pages, the `/import-cars-from` pages the **transactional** ones | Business instruction. The landing pages dropped "how to" and "how much does it cost" headings and research FAQs in favour of pre-purchase ones; every source-country guide now ends with a CTA to its country's landing page, labelled with the transactional keyword, instead of the Japan→Ireland form it used to default to. |
 | 2026-09-24 | Car imagery rules introduced: the model named must exist, the photo must show it, and a number plate must match the page's country or be removed — `car-imagery-checklist.md` | Business instruction. Four country heroes carried a foreign plate or dealer placard (a Colombian plate on the UAE page among them); all were blurred with `scripts/blur-plate.mjs`, and the UK hero was replaced with a right-hand-drive car on a London street. |
+| 2026-09-25 | Japan sourcing restated as **dealers and auctions across Japan**, with most B2C cars bought from dealers; the minimum grade we source is **4.0** (the site had said 3.5) — §2 steps 1–2 | Business instruction, prompted by a review of `/import-japanese-cars-to-ireland`. The site led Japan copy on the auction floor alone and promised 3.5-and-above; both overstated or misstated what the desk actually buys. Every page that said "we source 3.5 and above" now says 4.0. |
+| 2026-09-25 | For Irish buyers, Japan copy leads on **the quality of the car and a clear process**, with the price of buying direct kept as a supporting point; copy never says importing is *not* cheaper — `brand-position.md` §5 | Business instruction. After VAT and VRT on OMSP the landed total can sit close to an Irish forecourt price, but a like-for-like price comparison doesn't hold (an older, lower-mileage, graded car is not the same purchase as a newer, higher-mileage one), so the page neither denies the saving nor leads on it. |
+| 2026-09-25 | Trustpilot review sections removed from every page (the three campaign landing pages, `/campaigns/[slug]` and the gallery) | Business instruction, "for now". The review data stays in `src/config/landing-pages.ts` so the section can be restored. |
 | 2026-09-01 | The sourcing analyzer's market median can be overridden by the operator; `sourcing-analyzer-methodology.md` §4 documents it | The desk was already moving the median by adding and removing comparables until the number looked right. That edits the evidence to reach a conclusion and leaves no record of it. An explicit override is the same judgement made visible: the comparable set stays as crawled, and every surface says the median is a desk figure. It is an operator input, so "numbers are computed, prose is generated" is untouched — no model produces it. |
 
 ## 12. Known documentation to reconcile

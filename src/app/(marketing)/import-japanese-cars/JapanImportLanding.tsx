@@ -7,10 +7,8 @@ import {
   CalendarClock,
   Gauge,
   Globe2,
-  Play,
   Plus,
   ShieldCheck,
-  Star,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
 import {
@@ -826,133 +824,9 @@ export default function JapanImportLanding() {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-black/5 blur-[120px] rounded-full pointer-events-none" />
       </section>
 
-      {/* ── REVIEWS ──────────────────────────────────── */}
-      <section className="py-32 px-6 bg-[#FAFAFA] border-y border-black/5 overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
-                Our customers' Trustpilot reviews
-              </h2>
-              <div className="flex items-center gap-3">
-                <span className="text-xl font-bold">Excellent</span>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="bg-[#00B67A] p-1 rounded-sm">
-                      <Star size={16} fill="white" stroke="none" />
-                    </div>
-                  ))}
-                </div>
-                <span className="text-zinc-500 font-light ml-2">
-                  {config.reviews.averageRating} average rating based on{" "}
-                  {config.reviews.totalReviews} reviews
-                </span>
-              </div>
-            </div>
-            <img
-              src="https://cdn.trustpilot.net/brand-assets/4.1.0/logo-black.svg"
-              alt="Trustpilot"
-              className="h-8"
-            />
-          </div>
-
-          <div className="flex overflow-x-auto gap-6 pb-12 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
-            {config.reviews.items.map((review, i) => (
-              <Reveal
-                key={i}
-                y={0}
-                x={20}
-                delay={i * 0.1}
-                duration={0.5}
-                className="min-w-[320px] md:min-w-[400px] bg-white border border-black/5 rounded-[2rem] p-8 snap-start hover:shadow-xl transition-shadow duration-300"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <div key={i} className="bg-[#00B67A] p-1 rounded-sm">
-                      <Star size={12} fill="white" stroke="none" />
-                    </div>
-                  ))}
-                </div>
-                <h4 className="font-bold text-lg mb-2">{review.title}</h4>
-                <p className="text-zinc-500 font-light mb-6 line-clamp-4">
-                  {review.desc}
-                </p>
-                <div className="mt-auto flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-zinc-200 overflow-hidden">
-                    <div className="w-full h-full flex items-center justify-center text-zinc-500 font-bold bg-zinc-100">
-                      {review.name.charAt(0)}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm">{review.name}</p>
-                    <p className="text-zinc-400 text-xs">{review.date}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          {/* Featured customer story */}
-          <Reveal
-            y={30}
-            duration={0.8}
-            className="mt-16 bg-white rounded-[2.5rem] p-4 md:p-8 border border-black/5 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-center shadow-sm"
-          >
-            <div className="relative aspect-video rounded-[1.5rem] overflow-hidden group cursor-pointer">
-              <img
-                src={config.featuredReview.image}
-                alt={config.featuredReview.carName}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center transition-colors group-hover:bg-black/30">
-                <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-black transform transition-transform group-hover:scale-110">
-                  <Play size={24} className="ml-1" fill="currentColor" />
-                </div>
-              </div>
-              <div className="absolute top-6 left-6 flex items-center gap-2">
-                <span className="bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-sm font-bold tracking-wider uppercase text-black">
-                  {config.featuredReview.carName.toUpperCase()}
-                </span>
-              </div>
-            </div>
-            <div className="pr-4 md:pr-12 py-4">
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tighter mb-4">
-                {config.featuredReview.title} {config.featuredReview.carName}
-              </h3>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="bg-black text-white px-3 py-1 font-bold text-sm rounded-md">
-                  {config.featuredReview.rating.toFixed(1)}
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(Math.floor(config.featuredReview.rating))].map(
-                    (_, i) => (
-                      <Star key={i} size={16} fill="currentColor" />
-                    ),
-                  )}
-                  {[...Array(5 - Math.floor(config.featuredReview.rating))].map(
-                    (_, i) => (
-                      <Star key={i} size={16} className="text-zinc-300" />
-                    ),
-                  )}
-                </div>
-              </div>
-              <p className="text-zinc-500 font-light leading-relaxed mb-8">
-                "{config.featuredReview.text}"
-              </p>
-              <a
-                href="#inquiry"
-                className="inline-block px-8 py-3 rounded-full border border-black/20 font-medium hover:bg-black hover:text-white transition-colors duration-300"
-              >
-                Start your inquiry
-              </a>
-            </div>
-          </Reveal>
-
-          {/* ── PARTNERS / AFFILIATES ──────────────────
-              Same seven logos, sizing and grayscale-to-colour hover as the
-              home page's partner strip, so the two read as one brand. */}
-          <GlobalPartnersStrip />
-        </div>
+      {/* ── PARTNERS / AFFILIATES ────────────────────── */}
+      <section className="py-24 md:py-32 px-6 bg-white">
+        <GlobalPartnersStrip className="mt-0" />
       </section>
 
       {/* ── PREFERRED SOURCE ─────────────────────────── */}

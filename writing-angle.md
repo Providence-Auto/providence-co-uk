@@ -86,7 +86,10 @@ documentation support to do it. See `brand-position.md` §5.
 Only the *second* line differs:
 
 - **B2C** adds the price advantage of cutting the dealership out — you buy at
-  the price a dealer buys at, and that margin stays with you.
+  the price a dealer buys at, and that margin stays with you. Where destination
+  taxes narrow the gap (Ireland), lead on the car instead — lower mileage,
+  graded 4.0 or above, inspected first — and keep the price as a supporting
+  point. Never write that importing is *not* cheaper (`brand-position.md` §5).
 - **B2B** adds stock you don't have to floor-plan — a global inventory sold
   under your own brand, without owning it.
 
