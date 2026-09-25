@@ -202,8 +202,7 @@ export const lhdCampaignConfig: LandingPageConfig = {
 export const japanImportCampaignConfig: LandingPageConfig = {
   slug: "import-japanese-cars",
   meta: {
-    title:
-      "Import Japanese Cars — Grade 4 and Above | Providence Auto",
+    title: "Import Japanese Cars — Grade 4 and Above | Providence Auto",
     description:
       "Import Japanese cars graded 4 and above — Aqua, Prius, Harrier, Land Cruiser and more — shipped to your port with one landed price. Get your quote.",
   },
@@ -248,7 +247,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
       {
         icon: Landmark,
         title: "One Honest Landed Price",
-        desc: "Before you commit anything, we give you one all-in quote covering the car, any auction fees, freight, marine insurance, duty and every local tax that applies at your destination. The price we quote is the price you pay on arrival.",
+        desc: "Before you commit anything, you get the whole landed figure, itemised in two halves: the CNF price you pay us — the car, any auction fees, freight and marine cover to your port — and the duty and local taxes you pay your own customs authority when it lands, worked out for your exact car and country. You see both numbers before any money moves.",
         glowColor: "group-hover:bg-indigo-500/15",
       },
       {
@@ -281,7 +280,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
         name: "Ciarán D.",
         date: "1 month ago",
         title: "Hybrid import to Ireland — VRT worked out before I committed",
-        desc: "Zero customs duty on a Japan-built hybrid, VRT calculated before I committed, NCTS appointment booked for me. It still came in thousands under the forecourt price for the same car here.",
+        desc: "Zero customs duty on a Japan-built hybrid, VRT calculated before I committed, and the NCTS pack ready before I got there. It still came in thousands under the forecourt price for the same car here.",
         rating: 5,
       },
     ],
@@ -316,11 +315,11 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "How much does it cost to import a car from Japan?",
-            a: "The total is the car's price (plus auction fees if it's bought at auction), inland transport in Japan, ocean freight, marine insurance, and your country's import duties and taxes — which vary widely by destination and vehicle. That's why we quote one all-in landed cost for your specific car and country before you commit anything. The number we quote is the number you pay; there are no surprise charges on arrival.",
+            a: "The total is the car's price (plus auction fees if it's bought at auction), inland transport in Japan, ocean freight, marine insurance, and your country's import duties and taxes — which vary widely by destination and vehicle. We work out the whole landed figure for your specific car and country before you commit anything, itemised so you can see which part you pay us — the car, fees, freight and marine cover to your port — and which part you pay your own customs authority when it lands. What you pay us is fixed before you commit, and there are no surprise charges from us on arrival.",
           },
           {
             q: "How long does it take to import a car from Japan?",
-            a: "Typically 6–14 weeks from order to arrival, depending on destination: 1–2 weeks to find and inspect the right car, then roughly 3–5 weeks shipping to East African ports, 4–6 weeks to South Asia, or 6–8 weeks to the UK and Ireland, followed by customs clearance and local registration. You get live milestone updates the whole way.",
+            a: "Typically 6–14 weeks from order to the car reaching your port, depending on destination: 1–2 weeks to find and inspect the right car, then roughly 3–5 weeks shipping to East African ports, 4–6 weeks to South Asia, or 6–8 weeks to the UK and Ireland. Customs clearance and local registration follow at your end — those are yours to complete, with our documents prepared and our team on the file. You get live milestone updates from the moment it leaves Japan.",
           },
         ],
       },
@@ -329,7 +328,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
         items: [
           {
             q: "What are the rules for importing a Japanese car to the UK?",
-            a: "The UK has no age limit on imports, which is why it's the natural home of the JDM classic. Your car must be notified to HMRC through NOVA within 14 days of arrival, approved where required, and registered with the DVLA — we prepare the paperwork for each step. Duty and VAT depend on the vehicle and are included in your up-front landed-cost quote.",
+            a: "The UK has no age limit on imports, which is why it's the natural home of the JDM classic. Your car must be notified to HMRC through NOVA within 14 days of arrival, approved where required, and registered with the DVLA — we prepare the paperwork for each step, and you file it as the importer. Duty and VAT depend on the vehicle; we calculate both before you commit, and you pay them to HMRC in your own name.",
           },
           {
             q: "What does it cost to import a Japanese car to Ireland?",
@@ -341,18 +340,18 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What is the age limit for importing a car to Kenya?",
-            a: "Kenya only accepts vehicles under 8 years old from the year of first registration, right-hand drive only, and every car must pass a mandatory pre-export roadworthiness inspection in Japan for KEBS compliance. We source age-compliant stock, arrange the inspection, and ship into Mombasa with duties quoted up front — the Toyota Harrier, Fielder, Vitz and Land Cruiser Prado are the perennial fast movers.",
+            a: "Kenya only accepts vehicles under 8 years old from the year of first registration, right-hand drive only, and every car must pass a mandatory pre-export roadworthiness inspection in Japan for KEBS compliance. We source age-compliant stock, arrange the inspection, and ship into Mombasa with the duty calculated up front and payable by you on clearance — the Toyota Harrier, Fielder, Vitz and Land Cruiser Prado are the perennial fast movers.",
           },
           {
             q: "Can I import an older Japanese car to Tanzania?",
-            a: "Yes — Tanzania has no outright age ban, though vehicles more than 10 years old attract additional excise duty, which we include in your landed-cost quote so there are no surprises. Cars ship into Dar es Salaam and must pass pre-shipment inspection in Japan, which we arrange. The IST, Harrier, Noah and Land Cruiser are among the most in-demand imports.",
+            a: "Yes — Tanzania has no outright age ban, though vehicles more than 10 years old attract additional excise duty, which we work into your landed figure up front so there is no surprise when you clear it. Cars ship into Dar es Salaam and must pass pre-shipment inspection in Japan, which we arrange. The IST, Harrier, Noah and Land Cruiser are among the most in-demand imports.",
           },
           {
             q: "What are Uganda's rules for Japanese car imports?",
-            a: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot: think Harrier, Premio, Wish or Hiace. Tell us the car you want and we will confirm Uganda's rules for it and quote one landed price, taxes included, before you buy.",
+            a: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot: think Harrier, Premio, Wish or Hiace. Tell us the car you want and we will confirm Uganda's rules for it and give you the full landed figure before you buy — what you pay us, and what you pay at the border, itemised.",
           },
           {
-            q: "Do you deliver to other right-hand-drive countries?",
+            q: "Do you ship to other right-hand-drive countries?",
             a: "Yes. Beyond the UK, Ireland, Cyprus, Kenya, Tanzania and Uganda, we ship to right-hand-drive markets worldwide — including the wider Caribbean, southern Africa, and the Pacific. Tell us your country in the inquiry form and we'll come back with the exact rules, timeline and full landed cost for your destination.",
           },
         ],
@@ -374,7 +373,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What documents do I receive with my import?",
-            a: "The car's condition grade and our inspection report (with the original auction sheet and translation, where it came through auction), the export certificate with verified mileage, the deregistration certificate, the Bill of Lading, any required pre-export inspection certificates for your country, and full customs clearance paperwork on arrival — everything needed to register and own the car outright.",
+            a: "The car's condition grade and our inspection report (with the original auction sheet and translation, where it came through auction), the export certificate with verified mileage, the deregistration certificate, the Bill of Lading, and any required pre-export inspection certificates for your country — the full file you or your clearing agent needs to clear, register and own the car outright.",
           },
         ],
       },
