@@ -7,10 +7,8 @@ import {
   CalendarClock,
   Gauge,
   Globe2,
-  Play,
   Plus,
   ShieldCheck,
-  Star,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
 import {
@@ -32,7 +30,7 @@ import { japanImportCampaignConfig } from "@/config/landing-pages";
 // slug so the gallery stays scoped to this campaign's stock.
 const CAMPAIGN_TAG = "import-japanese-cars";
 
-// The cars we buy most often at Japanese auction. Everything here is sourced
+// The cars we buy most often in Japan. Everything here is sourced
 // in Japan; not everything here was built there. `make` must match a value in
 // the request form's CAR_MAKES list so the prefill lands on a valid option;
 // `model` prefills the free-text/model field.
@@ -129,7 +127,7 @@ const MODEL_GROUPS: ModelGroup[] = [
     label: "SUVs & 4x4s",
     title: "Land Cruisers and premium SUVs.",
     blurb:
-      "Japan registers more Land Cruisers than almost any other market and sells them on while they are still young, which is why a Japanese-sourced 4x4 usually lands cheaper than the equivalent car bought locally. Every vehicle in this group is right-hand drive as standard, and you see its auction grade, condition map and our own inspection findings before we bid on it.",
+      "Japan registers more Land Cruisers than almost any other market and sells them on while they are still young, which is why a Japanese-sourced 4x4 usually lands cheaper than the equivalent car bought locally. Every vehicle in this group is right-hand drive as standard, and you see its grade and our own inspection findings before you commit.",
     cars: [
       {
         name: "Toyota Harrier",
@@ -241,8 +239,7 @@ const MODEL_GROUPS: ModelGroup[] = [
         name: "BMW 3 Series",
         make: "BMW",
         model: "3 Series",
-        blurb:
-          "BMW's compact executive saloon, bought at Japanese wholesale auction prices.",
+        blurb: "BMW's compact executive saloon, bought direct from Japan.",
         image: "/import-cars/bmw.webp",
       },
       {
@@ -269,11 +266,11 @@ const DESTINATIONS: Destination[] = [
     label: "United Kingdom",
     formCountry: "United Kingdom",
     headline: "The United Kingdom sets no age limit on imported cars.",
-    body: "No age limit, no steering conversion, and a DVLA process we've run hundreds of times. From a daily-driver Aqua to a GR Yaris or an Alphard the family will fight over, we file the NOVA notification within 14 days of arrival and prepare your DVLA registration pack — with duty and VAT locked into your quote before you commit.",
+    body: "No age limit, no steering conversion, and a DVLA process we've run hundreds of times. From a daily-driver Aqua to a GR Yaris or an Alphard the family will fight over, we prepare the NOVA notification for the 14-day window and your DVLA registration pack — with duty and VAT locked into your quote before you commit.",
     facts: [
       { icon: Gauge, label: "No import age limit" },
-      { icon: ShieldCheck, label: "NOVA filed, DVLA pack prepared" },
-      { icon: CalendarClock, label: "Typically 8–12 weeks auction to arrival" },
+      { icon: ShieldCheck, label: "NOVA and DVLA paperwork prepared" },
+      { icon: CalendarClock, label: "Typically 8–12 weeks order to arrival" },
       { icon: Anchor, label: "RoRo or container to UK ports" },
     ],
     popular:
@@ -285,7 +282,7 @@ const DESTINATIONS: Destination[] = [
     label: "Ireland",
     formCountry: "Ireland",
     headline: "Japan-built cars enter Ireland at zero customs duty.",
-    body: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan agreement, and efficient Japanese hybrids sit in the lowest VRT bands — which is why they consistently land thousands below Irish forecourt prices even after VAT. We calculate your exact VRT before you commit, ship the car to an Irish port, and prepare the declarations and the NCTS pack for your registration.",
+    body: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan agreement, and efficient Japanese hybrids sit in the low VRT bands. You get a lower-mileage car graded 4 or above, inspected before you pay. We calculate your VRT before you commit, ship the car to an Irish port, and prepare the declarations and the NCTS pack.",
     facts: [
       { icon: Gauge, label: "0% duty on Japan-built cars" },
       { icon: ShieldCheck, label: "VRT calculated before you commit" },
@@ -297,35 +294,16 @@ const DESTINATIONS: Destination[] = [
     readMoreHref: "/import-japanese-cars-to-ireland",
   },
   {
-    key: "new-zealand",
-    label: "New Zealand",
-    formCountry: "New Zealand",
-    headline:
-      "New Zealand imports more used cars from Japan than from anywhere else.",
-    body: "More used cars reach New Zealand from Japan than from anywhere else, and the route is well worn: no customs duty on used vehicles, GST charged once on the landed value, a biosecurity clean before the ship, and entry certification before the plates go on. We buy to the standards the certifier will accept, arrange the steam clean in Japan, and land a car that's ready to comply.",
-    facts: [
-      { icon: Gauge, label: "No customs duty on used cars" },
-      { icon: ShieldCheck, label: "GST + entry certification handled" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks auction to arrival" },
-      { icon: Anchor, label: "MPI biosecurity clean arranged in Japan" },
-    ],
-    popular:
-      "Most requested for New Zealand: Toyota Aqua and Prius, the Honda Fit, the Suzuki Swift, and the Land Cruiser Prado.",
-    // No dedicated New Zealand guide page exists yet, so this stays null
-    // rather than pointing the CTA at a 404.
-    readMoreHref: null,
-  },
-  {
     key: "kenya",
     label: "Kenya",
     formCountry: "Kenya",
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
-    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock straight off the auction sheet, book the KEBS-compliance inspection in Japan, and land your car at Mombasa with every duty in the quote you approved.",
+    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock, book the KEBS-compliance inspection in Japan, and ship your car to Mombasa with every duty calculated in the quote you approved — payable by you when you clear it.",
     facts: [
       { icon: Gauge, label: "8-year age rule — compliant stock only" },
       { icon: ShieldCheck, label: "Pre-export inspection arranged in Japan" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks auction to arrival" },
+      { icon: CalendarClock, label: "Typically 6–10 weeks order to arrival" },
       { icon: Anchor, label: "Clearance support at Mombasa" },
     ],
     popular:
@@ -338,11 +316,11 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Tanzania",
     headline:
       "Tanzania has no age limit, but older cars carry extra excise duty.",
-    body: "Tanzania welcomes a wider range of Japanese imports than its neighbours: there's no outright age limit, though cars over 10 years old carry extra excise — which we build into your landed quote so the number never moves. Pre-shipment inspection is arranged in Japan, and we support your car's clearance through Dar es Salaam, with our team on it the whole way.",
+    body: "Tanzania welcomes a wider range of Japanese imports than its neighbours: there's no outright age limit, though cars over 10 years old carry extra excise — which we build into your landed quote so the number never moves. Pre-shipment inspection is arranged in Japan, and we support your car's clearance through Dar es Salaam with the file prepared and our team on it throughout.",
     facts: [
       { icon: Gauge, label: "No age ban — excise built into quote" },
       { icon: ShieldCheck, label: "Pre-shipment inspection arranged" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks auction to arrival" },
+      { icon: CalendarClock, label: "Typically 6–10 weeks order to arrival" },
       { icon: Anchor, label: "Clearance support at Dar es Salaam" },
     ],
     popular:
@@ -353,18 +331,35 @@ const DESTINATIONS: Destination[] = [
     key: "uganda",
     label: "Uganda",
     formCountry: "Uganda",
-    headline:
-      "Uganda is landlocked, so we support clearance at Mombasa and run overland to Kampala.",
-    body: "Your car lands at Mombasa and travels overland to Kampala under a bonded transit we arrange — one quote, one team, no handoffs at the border. Uganda's 15-year age ban and environmental levy make a 5–9 year-old Japanese car the sweet spot, and we source exactly that, with URA taxes included in the single price you approve up front.",
+    headline: "Japanese cars are among Uganda's most popular imports.",
+    body: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot. Tell us the car you want and we'll confirm Uganda's rules for it, then give you the full landed figure before you commit — what you pay us, and what you pay at the border.",
     facts: [
-      { icon: Gauge, label: "15-year rule — sweet spot sourced" },
-      { icon: ShieldCheck, label: "URA taxes in your up-front quote" },
-      { icon: CalendarClock, label: "Typically 7–11 weeks auction to arrival" },
-      { icon: Anchor, label: "Bonded transit Mombasa → Kampala" },
+      { icon: Gauge, label: "Age rules confirmed first" },
+      { icon: ShieldCheck, label: "Taxes calculated up front" },
+      { icon: CalendarClock, label: "Timeline quoted up front" },
+      { icon: Anchor, label: "Grade 4 and above" },
     ],
     popular:
       "Most requested for Uganda: the Toyota Harrier, Premio, Wish, Hiace and Fielder.",
     readMoreHref: "/import-japanese-cars-to-uganda",
+  },
+  {
+    key: "cyprus",
+    label: "Cyprus",
+    formCountry: "Cyprus",
+    headline: "Cyprus drives on the left, so a Japanese car suits its roads.",
+    body: "Every car from Japan is right-hand drive, which is what Cyprus drives. As an EU member, Cyprus takes Japan-built cars at 0% customs duty under the EU–Japan agreement. Tell us the car you want and we'll confirm the rules for it and quote one landed price before you commit.",
+    facts: [
+      { icon: Gauge, label: "0% duty on Japan-built cars" },
+      { icon: ShieldCheck, label: "Rules confirmed before you commit" },
+      { icon: CalendarClock, label: "Timeline quoted up front" },
+      { icon: Anchor, label: "Shipped to Cyprus" },
+    ],
+    popular:
+      "Tell us the car you want in the form and we will quote it to Cyprus in full.",
+    // No dedicated Cyprus guide page exists, so this stays null rather than
+    // pointing the CTA at a 404.
+    readMoreHref: null,
   },
   {
     key: "other",
@@ -372,7 +367,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: null,
     headline:
       "We ship to right-hand-drive markets beyond our six core countries.",
-    body: "Beyond our six core markets we ship to right-hand-drive countries worldwide — across the Caribbean, southern Africa, and the Pacific. Every destination gets the same treatment: auction sheet before payment, your country's rules confirmed before you commit, and one all-in landed price. Tell us your country in the form and we'll come back with the exact rules, timeline and cost.",
+    body: "Beyond our six core markets we ship to right-hand-drive countries worldwide — across the Caribbean, southern Africa, and the Pacific. Every destination gets the same treatment: the grade and our inspection before payment, your country's rules confirmed before you commit, and the whole landed figure itemised — what you pay us, and what you pay at your border. Tell us your country in the form and we'll come back with the exact rules, timeline and cost.",
     facts: [
       { icon: Globe2, label: "RHD markets worldwide" },
       { icon: ShieldCheck, label: "Local rules confirmed before you pay" },
@@ -510,8 +505,8 @@ export default function JapanImportLanding() {
       {/* ── DESTINATION PANEL ────────────────────────── */}
       <DestinationPanel
         destination={destination}
-        emptyHeadline="Buy direct from Japan's auction floor — with the auction sheet, the landed number and the paperwork support to do it with confidence."
-        emptyBody="Japan's wholesale auctions sell more than 100,000 independently graded cars every week, at prices no retail forecourt can match — and until now you needed a licence and a buyer in the hall to reach them. You tell us the model and specification you want. We find it, send you the original auction sheet and our own inspection findings before we bid, and quote one landed price covering the car, shipping, marine cover, duty and the taxes that apply at your destination. Choose your destination above and we will show you exactly how the rules, taxes and timeline work for your country."
+        emptyHeadline="Buy direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
+        emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and give you the whole landed figure itemised — the CNF price you pay us for the car, shipping and marine cover to your port, and the duty and taxes you pay on arrival. Choose your destination above to see the rules and timeline for your country."
       />
 
       {/* ── MODEL CARDS, BY CATEGORY ─────────────────── */}
@@ -532,12 +527,9 @@ export default function JapanImportLanding() {
               Choose the car you want us to source.
             </h2>
             <p className="text-lg text-zinc-500 font-light">
-              Every model below is one we buy regularly in Japan, which means we
-              already know what it should cost at auction, what condition to
-              expect at each grade, and how it will be taxed when it reaches
-              your country. Select one and we will open the inquiry form with
-              that car filled in. If what you want is not shown here, use the
-              card at the end of the grid and describe it to us instead.
+              Every model below is one we buy regularly in Japan. Select one and
+              we will open the inquiry form with it filled in, or use the card
+              at the end to tell us about something else.
             </p>
           </Reveal>
 
@@ -596,7 +588,7 @@ export default function JapanImportLanding() {
                           the previous fixed-height card cut the wheels off. */}
                       <img
                         src={model.image}
-                        alt={`${model.name} sourced from Japanese auction by Providence Auto`}
+                        alt={`${model.name} sourced in Japan by Providence Auto`}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 ease-out"
                       />
@@ -662,7 +654,7 @@ export default function JapanImportLanding() {
               >
                 describe it in the inquiry form
               </a>{" "}
-              and we will find it at auction for you.
+              and we will find it in Japan for you.
             </p>
           </Reveal>
         </div>
@@ -674,8 +666,8 @@ export default function JapanImportLanding() {
           <GalleryPreview
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
-            title="Available Now From Japanese Auction"
-            subtitle="These are cars we have already sourced and graded in Japan, ready to ship to your country. The original auction sheet for any of them is available on request."
+            title="Available Now From Japan"
+            subtitle="Cars we have already sourced and graded in Japan, ready to ship to your country."
           />
         </div>
       </div>
@@ -763,11 +755,11 @@ export default function JapanImportLanding() {
             Tell us exactly what you want.
           </h2>
           <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
-            Tell us the car you are after and we will find it{" "}
-            <span className="text-black font-medium">at Japanese auction</span>,
-            verify its auction sheet, and come back to you with a full
-            landed-cost quote for {destination?.formCountry ?? "your country"}{" "}
-            before you commit to anything.
+            Tell us the car you are after and we will find it in Japan,{" "}
+            <span className="text-black font-medium">graded 4 or above</span>,
+            and come back to you with a full landed-cost quote for{" "}
+            {destination?.formCountry ?? "your country"} before you commit to
+            anything.
           </p>
         </Reveal>
 
@@ -826,133 +818,9 @@ export default function JapanImportLanding() {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-black/5 blur-[120px] rounded-full pointer-events-none" />
       </section>
 
-      {/* ── REVIEWS ──────────────────────────────────── */}
-      <section className="py-32 px-6 bg-[#FAFAFA] border-y border-black/5 overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
-                Our customers' Trustpilot reviews
-              </h2>
-              <div className="flex items-center gap-3">
-                <span className="text-xl font-bold">Excellent</span>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="bg-[#00B67A] p-1 rounded-sm">
-                      <Star size={16} fill="white" stroke="none" />
-                    </div>
-                  ))}
-                </div>
-                <span className="text-zinc-500 font-light ml-2">
-                  {config.reviews.averageRating} average rating based on{" "}
-                  {config.reviews.totalReviews} reviews
-                </span>
-              </div>
-            </div>
-            <img
-              src="https://cdn.trustpilot.net/brand-assets/4.1.0/logo-black.svg"
-              alt="Trustpilot"
-              className="h-8"
-            />
-          </div>
-
-          <div className="flex overflow-x-auto gap-6 pb-12 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
-            {config.reviews.items.map((review, i) => (
-              <Reveal
-                key={i}
-                y={0}
-                x={20}
-                delay={i * 0.1}
-                duration={0.5}
-                className="min-w-[320px] md:min-w-[400px] bg-white border border-black/5 rounded-[2rem] p-8 snap-start hover:shadow-xl transition-shadow duration-300"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <div key={i} className="bg-[#00B67A] p-1 rounded-sm">
-                      <Star size={12} fill="white" stroke="none" />
-                    </div>
-                  ))}
-                </div>
-                <h4 className="font-bold text-lg mb-2">{review.title}</h4>
-                <p className="text-zinc-500 font-light mb-6 line-clamp-4">
-                  {review.desc}
-                </p>
-                <div className="mt-auto flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-zinc-200 overflow-hidden">
-                    <div className="w-full h-full flex items-center justify-center text-zinc-500 font-bold bg-zinc-100">
-                      {review.name.charAt(0)}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm">{review.name}</p>
-                    <p className="text-zinc-400 text-xs">{review.date}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          {/* Featured customer story */}
-          <Reveal
-            y={30}
-            duration={0.8}
-            className="mt-16 bg-white rounded-[2.5rem] p-4 md:p-8 border border-black/5 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-center shadow-sm"
-          >
-            <div className="relative aspect-video rounded-[1.5rem] overflow-hidden group cursor-pointer">
-              <img
-                src={config.featuredReview.image}
-                alt={config.featuredReview.carName}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center transition-colors group-hover:bg-black/30">
-                <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-black transform transition-transform group-hover:scale-110">
-                  <Play size={24} className="ml-1" fill="currentColor" />
-                </div>
-              </div>
-              <div className="absolute top-6 left-6 flex items-center gap-2">
-                <span className="bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-sm font-bold tracking-wider uppercase text-black">
-                  {config.featuredReview.carName.toUpperCase()}
-                </span>
-              </div>
-            </div>
-            <div className="pr-4 md:pr-12 py-4">
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tighter mb-4">
-                {config.featuredReview.title} {config.featuredReview.carName}
-              </h3>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="bg-black text-white px-3 py-1 font-bold text-sm rounded-md">
-                  {config.featuredReview.rating.toFixed(1)}
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(Math.floor(config.featuredReview.rating))].map(
-                    (_, i) => (
-                      <Star key={i} size={16} fill="currentColor" />
-                    ),
-                  )}
-                  {[...Array(5 - Math.floor(config.featuredReview.rating))].map(
-                    (_, i) => (
-                      <Star key={i} size={16} className="text-zinc-300" />
-                    ),
-                  )}
-                </div>
-              </div>
-              <p className="text-zinc-500 font-light leading-relaxed mb-8">
-                "{config.featuredReview.text}"
-              </p>
-              <a
-                href="#inquiry"
-                className="inline-block px-8 py-3 rounded-full border border-black/20 font-medium hover:bg-black hover:text-white transition-colors duration-300"
-              >
-                Start your inquiry
-              </a>
-            </div>
-          </Reveal>
-
-          {/* ── PARTNERS / AFFILIATES ──────────────────
-              Same seven logos, sizing and grayscale-to-colour hover as the
-              home page's partner strip, so the two read as one brand. */}
-          <GlobalPartnersStrip />
-        </div>
+      {/* ── PARTNERS / AFFILIATES ────────────────────── */}
+      <section className="py-24 md:py-32 px-6 bg-white">
+        <GlobalPartnersStrip className="mt-0" />
       </section>
 
       {/* ── PREFERRED SOURCE ─────────────────────────── */}
