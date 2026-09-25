@@ -295,25 +295,6 @@ const DESTINATIONS: Destination[] = [
     readMoreHref: "/import-japanese-cars-to-ireland",
   },
   {
-    key: "new-zealand",
-    label: "New Zealand",
-    formCountry: "New Zealand",
-    headline:
-      "New Zealand imports more used cars from Japan than from anywhere else.",
-    body: "More used cars reach New Zealand from Japan than from anywhere else, and the route is well worn: no customs duty on used vehicles, GST charged once on the landed value, a biosecurity clean before the ship, and entry certification before the plates go on. We buy to the standards the certifier will accept, arrange the steam clean in Japan, and land a car that's ready to comply.",
-    facts: [
-      { icon: Gauge, label: "No customs duty on used cars" },
-      { icon: ShieldCheck, label: "GST + certification in your quote" },
-      { icon: CalendarClock, label: "Typically 6–10 weeks order to arrival" },
-      { icon: Anchor, label: "MPI biosecurity clean arranged in Japan" },
-    ],
-    popular:
-      "Most requested for New Zealand: Toyota Aqua and Prius, the Honda Fit, the Suzuki Swift, and the Land Cruiser Prado.",
-    // No dedicated New Zealand guide page exists yet, so this stays null
-    // rather than pointing the CTA at a 404.
-    readMoreHref: null,
-  },
-  {
     key: "kenya",
     label: "Kenya",
     formCountry: "Kenya",
@@ -351,18 +332,35 @@ const DESTINATIONS: Destination[] = [
     key: "uganda",
     label: "Uganda",
     formCountry: "Uganda",
-    headline:
-      "Uganda is landlocked, so we support clearance at Mombasa and run overland to Kampala.",
-    body: "Your car lands at Mombasa and travels overland to Kampala under a bonded transit we arrange — one quote, one team, no handoffs at the border. Uganda's 15-year age ban and environmental levy make a 5–9 year-old Japanese car the sweet spot, and we source exactly that, with URA taxes included in the single price you approve up front.",
+    headline: "Japanese cars are among Uganda's most popular imports.",
+    body: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot. Tell us the car you want and we'll confirm Uganda's rules for it, then quote one landed price, taxes included, before you commit.",
     facts: [
-      { icon: Gauge, label: "15-year rule — sweet spot sourced" },
-      { icon: ShieldCheck, label: "URA taxes in your up-front quote" },
-      { icon: CalendarClock, label: "Typically 7–11 weeks order to arrival" },
-      { icon: Anchor, label: "Bonded transit Mombasa → Kampala" },
+      { icon: Gauge, label: "Age rules confirmed first" },
+      { icon: ShieldCheck, label: "Taxes in your up-front quote" },
+      { icon: CalendarClock, label: "Timeline quoted up front" },
+      { icon: Anchor, label: "Grade 4 and above" },
     ],
     popular:
       "Most requested for Uganda: the Toyota Harrier, Premio, Wish, Hiace and Fielder.",
     readMoreHref: "/import-japanese-cars-to-uganda",
+  },
+  {
+    key: "cyprus",
+    label: "Cyprus",
+    formCountry: "Cyprus",
+    headline: "Cyprus drives on the left, so a Japanese car suits its roads.",
+    body: "Every car from Japan is right-hand drive, which is what Cyprus drives. As an EU member, Cyprus takes Japan-built cars at 0% customs duty under the EU–Japan agreement. Tell us the car you want and we'll confirm the rules for it and quote one landed price before you commit.",
+    facts: [
+      { icon: Gauge, label: "0% duty on Japan-built cars" },
+      { icon: ShieldCheck, label: "Rules confirmed before you commit" },
+      { icon: CalendarClock, label: "Timeline quoted up front" },
+      { icon: Anchor, label: "Shipped to Cyprus" },
+    ],
+    popular:
+      "Tell us the car you want in the form and we will quote it to Cyprus in full.",
+    // No dedicated Cyprus guide page exists, so this stays null rather than
+    // pointing the CTA at a 404.
+    readMoreHref: null,
   },
   {
     key: "other",

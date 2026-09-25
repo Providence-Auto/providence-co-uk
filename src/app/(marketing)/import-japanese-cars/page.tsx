@@ -32,7 +32,7 @@ const MODEL_NAMES = [
 const DESTINATION_COUNTRIES = [
   "United Kingdom",
   "Ireland",
-  "New Zealand",
+  "Cyprus",
   "Kenya",
   "Tanzania",
   "Uganda",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     "import cars from japan to uk",
     "import cars from japan to ireland",
     "import cars from japan to kenya",
-    "import cars from japan to new zealand",
+    "import cars from japan to cyprus",
     "import cars from japan to tanzania",
     "import cars from japan to uganda",
     "toyota aqua import",

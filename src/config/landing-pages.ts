@@ -336,8 +336,8 @@ export const japanImportCampaignConfig: LandingPageConfig = {
             a: "Three charges apply: customs duty — 0% for Japan-built cars under the EU–Japan Economic Partnership Agreement — VAT at 23% on the landed value, and VRT based on CO2 emissions, which runs as low as 7–14% for efficient Japanese hybrids. Every import must be registered at NCTS within 30 days of arrival. We calculate all of it before you commit and prepare the declarations; the taxes are paid in your name, as the car's owner.",
           },
           {
-            q: "What do I need to import a Japanese car to New Zealand?",
-            a: "New Zealand takes more used imports from Japan than from anywhere else, and the route is well worn. There is no customs duty on used cars; GST at 15% is charged once on the landed value. Every vehicle must arrive clean enough to clear MPI biosecurity — we arrange the steam clean in Japan — and then pass entry certification, where the car is checked against New Zealand's structural, frontal-impact and emissions requirements before it can be registered and plated. We source stock that meets those standards, include GST and compliance in your landed cost, and ship into Auckland, Tauranga, Wellington or Lyttelton.",
+            q: "Can I import a Japanese car to Cyprus?",
+            a: "Yes. Cyprus drives on the left, so a right-hand-drive car from Japan suits its roads, and as an EU member it takes Japan-built cars at 0% customs duty under the EU–Japan agreement. Tell us the car you want and we will confirm the rules and quote one landed price before you commit.",
           },
           {
             q: "What is the age limit for importing a car to Kenya?",
@@ -349,11 +349,11 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What are Uganda's rules for Japanese car imports?",
-            a: "Uganda bans vehicles older than 15 years and applies an environmental levy to older eligible cars, so the sweet spot is a 5–9 year-old Japanese vehicle — think Harrier, Premio, Wish or Hiace. Your car lands at Mombasa and travels overland to Kampala under a bonded transit we arrange, with URA taxes included in the single landed price we quote before you buy.",
+            a: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot: think Harrier, Premio, Wish or Hiace. Tell us the car you want and we will confirm Uganda's rules for it and quote one landed price, taxes included, before you buy.",
           },
           {
             q: "Do you deliver to other right-hand-drive countries?",
-            a: "Yes. Beyond the UK, Ireland, New Zealand, Kenya, Tanzania and Uganda, we ship to right-hand-drive markets worldwide — including the wider Caribbean, southern Africa, and the Pacific. Tell us your country in the inquiry form and we'll come back with the exact rules, timeline and full landed cost for your destination.",
+            a: "Yes. Beyond the UK, Ireland, Cyprus, Kenya, Tanzania and Uganda, we ship to right-hand-drive markets worldwide — including the wider Caribbean, southern Africa, and the Pacific. Tell us your country in the inquiry form and we'll come back with the exact rules, timeline and full landed cost for your destination.",
           },
         ],
       },
