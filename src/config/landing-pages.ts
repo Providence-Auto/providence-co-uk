@@ -33,24 +33,6 @@ export type LandingPageConfig = {
     }>;
     containerImage: string;
   };
-  reviews: {
-    averageRating: number;
-    totalReviews: string;
-    items: Array<{
-      name: string;
-      date: string;
-      title: string;
-      desc: string;
-      rating: number;
-    }>;
-  };
-  featuredReview: {
-    title: string;
-    carName: string;
-    text: string;
-    rating: number;
-    image: string;
-  };
   faqs: {
     title: string;
     subtitle: string;
@@ -69,7 +51,7 @@ export const lhdCampaignConfig: LandingPageConfig = {
   meta: {
     title: "Left-Hand Drive Luxury Cars from Japan | Providence Auto",
     description:
-      "Source left-hand drive (LHD) luxury cars — Rolls-Royce, Ferrari, Lamborghini, Porsche, Bentley and more — direct from Japan's grade-verified auctions. Fully landed to Europe, the Middle East, and the Americas.",
+      "Source left-hand drive (LHD) luxury cars — Rolls-Royce, Ferrari, Lamborghini, Porsche, Bentley and more — direct from Japan's grade-verified auctions. Shipped to your port across Europe, the Middle East and the Americas.",
   },
   hero: {
     tagline: "Providence Auto · Left-Hand Drive Specialists",
@@ -113,41 +95,6 @@ export const lhdCampaignConfig: LandingPageConfig = {
       },
     ],
   },
-  reviews: {
-    averageRating: 4.9,
-    totalReviews: "250+",
-    items: [
-      {
-        name: "Karim A.",
-        date: "2 weeks ago",
-        title: "My LHD 911 landed in Dubai flawlessly",
-        desc: "Sourced a low-mileage left-hand drive Porsche 911 from a Japanese auction. Auction sheet, inspection photos and landed-cost quote came before I paid a cent. Registered in the UAE with zero drama.",
-        rating: 5,
-      },
-      {
-        name: "Sofia M.",
-        date: "1 month ago",
-        title: "Genuine factory LHD — not a conversion",
-        desc: "I was nervous about buying from Japan, but every car they offered was verified native left-hand drive. My Bentley Continental arrived in Germany exactly as graded. Communication was excellent throughout.",
-        rating: 5,
-      },
-      {
-        name: "Daniel K.",
-        date: "1 month ago",
-        title: "One landed number, and it held",
-        desc: "They quoted the full landed cost — car, freight, duty and VAT — up front, and had the clearance paperwork ready before the ship docked. My LHD Lexus LX arrived on schedule and well under the local dealer price.",
-        rating: 5,
-      },
-    ],
-  },
-  featuredReview: {
-    title: "Customer story:",
-    carName: "Left-Hand Drive Import",
-    text: "I'd spent months trying to find a genuine left-hand drive example in Europe with no luck. Providence found one at a graded Japanese auction within a fortnight, sent me the full auction sheet and inspection report, and had the duty and tax position mapped out before I committed a penny. It arrived exactly as described.",
-    rating: 5.0,
-    image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2940&auto=format&fit=crop",
-  },
   faqs: {
     title: "Left-Hand Drive Imports — Your Questions Answered",
     subtitle:
@@ -179,10 +126,10 @@ export const lhdCampaignConfig: LandingPageConfig = {
         items: [
           {
             q: "Will you tell me the full landed cost before I commit?",
-            a: "Yes. Before you pay anything, we give you a single all-in landed-cost quote covering the car, freight, insurance, import duty and VAT for your destination country. No surprise charges on arrival.",
+            a: "Yes. Before you pay anything, you get the whole landed figure, itemised in two halves: the CNF price you pay us — the car, freight and marine cover to your port — and the import duty and VAT you pay your own customs authority when it lands. What you pay us is fixed before you commit, and there are no surprise charges from us on arrival.",
           },
           {
-            q: "Which countries can you deliver to?",
+            q: "Which countries can you ship to?",
             a: "We specialise in export to left-hand-drive markets across Europe, the Middle East, and the Americas. We arrange RoRo or container shipping to your port, prepare the customs and registration paperwork for your country, and support you through clearance at the other end.",
           },
           {
@@ -257,41 +204,6 @@ export const japanImportCampaignConfig: LandingPageConfig = {
         glowColor: "group-hover:bg-amber-500/15",
       },
     ],
-  },
-  reviews: {
-    averageRating: 4.9,
-    totalReviews: "250+",
-    items: [
-      {
-        name: "Njeri W.",
-        date: "2 weeks ago",
-        title: "My Harrier cleared Mombasa without a hitch",
-        desc: "They confirmed the car was under Kenya's 8-year rule, handled the pre-export inspection, and sent me the auction sheet before I paid a thing. It landed exactly as graded — friends keep asking where I got it.",
-        rating: 5,
-      },
-      {
-        name: "Ruwan P.",
-        date: "1 month ago",
-        title: "Toyota Aqua landed in Colombo, paperwork perfect",
-        desc: "I was worried about the import rules changing, but Providence knew exactly what qualified. Full landed cost up front, live vessel tracking, and the car arrived with lower mileage than anything I'd seen locally.",
-        rating: 5,
-      },
-      {
-        name: "Ciarán D.",
-        date: "1 month ago",
-        title: "Hybrid import to Ireland — VRT worked out before I committed",
-        desc: "Zero customs duty on a Japan-built hybrid, VRT calculated before I committed, and the NCTS pack ready before I got there. It still came in thousands under the forecourt price for the same car here.",
-        rating: 5,
-      },
-    ],
-  },
-  featuredReview: {
-    title: "Customer story:",
-    carName: "Japan Auction Import",
-    text: "I'd been burned before by an importer who promised one grade and delivered another. Providence sent me the original auction sheet, the translation, and the inspection photos before I paid anything — then the exact car in those photos is the one that arrived. That's the whole difference.",
-    rating: 5.0,
-    image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2940&auto=format&fit=crop",
   },
   faqs: {
     title: "Importing From Japan — Your Questions Answered",
@@ -419,7 +331,7 @@ export const indianCampaignConfig: LandingPageConfig = {
       {
         icon: Landmark,
         title: "One Honest Price",
-        desc: "Before you commit a penny, you get a single all-in landed cost — car, freight, insurance, duty and VAT. The India price advantage lands in your pocket, not in hidden fees.",
+        desc: "Before you commit a penny, you get the whole landed cost itemised in two halves: the CNF price you pay us — car, freight and marine cover to your port — and the duty and VAT you pay your own customs authority on arrival. The India price advantage lands in your pocket, not in hidden fees.",
         glowColor: "group-hover:bg-indigo-500/15",
       },
       {
@@ -429,41 +341,6 @@ export const indianCampaignConfig: LandingPageConfig = {
         glowColor: "group-hover:bg-amber-500/15",
       },
     ],
-  },
-  reviews: {
-    averageRating: 4.9,
-    totalReviews: "250+",
-    items: [
-      {
-        name: "Priya S.",
-        date: "3 weeks ago",
-        title: "My India-built Seltos landed for thousands less",
-        desc: "I'd priced the same spec locally and couldn't believe the difference. Providence sent the inspection report and the full landed cost before I paid anything. The car arrived exactly as described — you'd never guess it cost me that little.",
-        rating: 5,
-      },
-      {
-        name: "James O.",
-        date: "1 month ago",
-        title: "Six cars in, zero surprises",
-        desc: "We take regular stock through Providence's India network now. Every car arrives inspected, documented and ready to retail. The margins work because they buy at the source — and their safety checks mean nothing comes back to bite us.",
-        rating: 5,
-      },
-      {
-        name: "Amira H.",
-        date: "1 month ago",
-        title: "They talked me OUT of a cheaper car",
-        desc: "The first car I picked didn't pass their inspection, so they refused to ship it and found me a better one for nearly the same money. That's when I knew I'd picked the right importer.",
-        rating: 5,
-      },
-    ],
-  },
-  featuredReview: {
-    title: "Customer story:",
-    carName: "India-Built Import",
-    text: 'I always assumed "cheaper" meant "worse" — then I did the maths on an India-built car with Providence. They showed me the inspection report, the crash-test rating, the full landed cost, everything, before I committed. The car turned up better equipped than the one I\'d almost bought locally, for a lot less money.',
-    rating: 5.0,
-    image:
-      "https://images.unsplash.com/photo-1685019718640-6e562edc365e?q=80&w=2940&auto=format&fit=crop",
   },
   faqs: {
     title: "India-Built Imports — Your Questions Answered",
@@ -496,7 +373,7 @@ export const indianCampaignConfig: LandingPageConfig = {
         items: [
           {
             q: "Will you tell me the full landed cost before I commit?",
-            a: "Yes. Before you pay anything, we give you a single all-in landed-cost quote covering the car, freight, insurance, import duty and VAT for your destination. The saving you see is the saving you keep — no surprise charges on arrival.",
+            a: "Yes. Before you pay anything, you get the whole landed figure for your destination, itemised so you can see which part you pay us — the car, freight and marine cover to your port — and which part you pay your own customs authority as the importer. The saving you see is the saving you keep, and there are no surprise charges from us on arrival.",
           },
           {
             q: "How does Providence source cars from India?",
@@ -507,7 +384,7 @@ export const indianCampaignConfig: LandingPageConfig = {
             a: "Absolutely. Whether you're after a single car in an exact spec or a regular multi-unit allocation, our India network is built for volume — same inspection standard, same landed-cost transparency, on every unit.",
           },
           {
-            q: "How long does delivery take, and is my payment protected?",
+            q: "How long does it take to arrive, and is my payment protected?",
             a: "Typically 6–10 weeks from confirmed order to arrival at your port, depending on destination — sourcing and inspection first, then shipping, with live milestone updates throughout. Customs clearance and registration follow, with our documents and support. Funds are held securely until your car is confirmed, inspected and cleared to ship, and every car is covered by marine insurance for the voyage.",
           },
         ],
