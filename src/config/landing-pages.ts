@@ -203,15 +203,15 @@ export const japanImportCampaignConfig: LandingPageConfig = {
   slug: "import-japanese-cars",
   meta: {
     title:
-      "Import Japanese Cars — Auction Sourced, Fully Landed | Providence Auto",
+      "Import Japanese Cars — Grade 4 and Above | Providence Auto",
     description:
-      "Import Japan's fastest-moving cars — Toyota Aqua, Prius, Harrier, Land Cruiser, Noah, Honda Fit and more — grade-verified at auction and landed in the UK, Ireland, New Zealand, Kenya, Tanzania, Uganda or any right-hand-drive country. Full landed cost quoted before you commit.",
+      "Import Japanese cars graded 4 and above — Aqua, Prius, Harrier, Land Cruiser and more — shipped to your port with one landed price. Get your quote.",
   },
   hero: {
     tagline: "Providence Auto · Japan Import Specialists",
-    title: "Now You Can Buy Your Dream Car\nDirect from Japanese Auction.",
+    title: "Now You Can Buy Your Dream Car\nDirect from Japan.",
     subtitle:
-      "Wherever you live, you can now buy from the same wholesale auction floor the trade buys on. You choose the car; we bid to your instruction, inspect it in person before your money moves, and give you the auction sheet, one all-in landed price and the paperwork support to import it with confidence.",
+      "Tell us the car you want. We search dealers and auctions across Japan for a grade 4+ example, inspect it before your money moves, and ship it to your port with one landed price and the paperwork to import it.",
     // Self-hosted (unlike the other campaigns' remote heroes) so the hero has
     // no third-party dependency: a photograph of an FJ62 Land Cruiser, the
     // model that built Toyota's reputation in exactly the import markets this
@@ -226,8 +226,8 @@ export const japanImportCampaignConfig: LandingPageConfig = {
     backgroundImage: "/import-cars/hero-land-cruiser.webp",
   },
   intro: {
-    highlight: "You see the auction sheet before we spend a yen.",
-    text: "Every car we bid on carries an original Japanese auction sheet — an independent condition grade the entire trade relies on. We translate it, cross-check the mileage against Japan's inspection records, and send it to you with photographs before any money moves. You see the auction sheet before we spend a yen.",
+    highlight: "You see the grade and our inspection before we spend a yen.",
+    text: "Every car we source is graded 4 or above and inspected by our own team in Japan, with its mileage checked against Japan's inspection records. You see the grade and our inspection before we spend a yen.",
   },
   valueProps: {
     title: "Why Import From Providence Auto",
@@ -235,8 +235,8 @@ export const japanImportCampaignConfig: LandingPageConfig = {
     features: [
       {
         icon: FileSearch,
-        title: "Auction-Grade Verified",
-        desc: "We send you the original auction sheet with a full translation, so you can read the independent inspector's grade and panel-by-panel condition map for yourself. We cross-check the odometer against Japan's export certificate and inspection history, and if the car does not match its grade, we do not bid on it.",
+        title: "Grade 4 and Above, Verified",
+        desc: "We only source cars graded 4 or above. Japanese owners drive little and most cars never see a salted road, so they come to market clean and low-mileage. We check the odometer against Japan's inspection records, and if a car doesn't match its grade, we don't buy it.",
         glowColor: "group-hover:bg-blue-500/15",
       },
       {
@@ -248,7 +248,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
       {
         icon: Landmark,
         title: "One Honest Landed Price",
-        desc: "Before you commit anything, we give you one all-in quote covering the car, auction fees, freight, marine insurance, duty and every local tax that applies at your destination. The price we quote is the price you pay on arrival.",
+        desc: "Before you commit anything, we give you one all-in quote covering the car, any auction fees, freight, marine insurance, duty and every local tax that applies at your destination. The price we quote is the price you pay on arrival.",
         glowColor: "group-hover:bg-indigo-500/15",
       },
       {
@@ -304,11 +304,11 @@ export const japanImportCampaignConfig: LandingPageConfig = {
         items: [
           {
             q: "Why buy a used car from Japan?",
-            a: "Japan's strict shaken roadworthiness regime makes older cars expensive to keep, so owners sell young — which floods the auction network with low-mileage, meticulously maintained cars. Over 100,000 vehicles pass through graded auctions every week, each independently inspected, and buying at wholesale auction prices means a Japanese import routinely lands below local used prices even after freight and taxes.",
+            a: "Japanese owners drive little and sell young, because the shaken inspection regime makes older cars expensive to keep. Cars come to market with low, verifiable mileage, and most never see a salted road. We source grade 4 and above only, and buying direct means you pay a Japanese price, not a local dealer's markup.",
           },
           {
             q: "How does the Japanese auction grading system work?",
-            a: "Independent inspectors grade every auction car on a standard scale: Grade 5 is near-new, Grade 4 is excellent, Grade 3.5 is very good with minor cosmetic marks, and accident-repaired cars are flagged separately as Grade R. The grade, panel-by-panel condition map and inspector's notes all appear on the auction sheet. We source Grade 3.5 and above, send you the original sheet with a translation before bidding, and if a car doesn't match its grade on our own inspection, we don't ship it.",
+            a: "Independent inspectors grade every auction car on a standard scale: Grade 5 is near-new, Grade 4 is excellent, Grade 3.5 is very good with minor cosmetic marks, and accident-repaired cars are flagged separately as Grade R. The grade, panel-by-panel condition map and inspector's notes all appear on the auction sheet. We source Grade 4 and above only. Where a car comes through auction, you get the original sheet with a translation before we bid, and if a car doesn't match its grade on our own inspection, we don't ship it.",
           },
           {
             q: "Is the mileage on Japanese import cars genuine?",
@@ -316,11 +316,11 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "How much does it cost to import a car from Japan?",
-            a: "The total is the auction price plus auction fees, inland transport in Japan, ocean freight, marine insurance, and your country's import duties and taxes — which vary widely by destination and vehicle. That's why we quote one all-in landed cost for your specific car and country before you commit anything. The number we quote is the number you pay; there are no surprise charges on arrival.",
+            a: "The total is the car's price (plus auction fees if it's bought at auction), inland transport in Japan, ocean freight, marine insurance, and your country's import duties and taxes — which vary widely by destination and vehicle. That's why we quote one all-in landed cost for your specific car and country before you commit anything. The number we quote is the number you pay; there are no surprise charges on arrival.",
           },
           {
             q: "How long does it take to import a car from Japan?",
-            a: "Typically 6–14 weeks from bid to arrival, depending on destination: 1–2 weeks to source and win the right car at auction, then roughly 3–5 weeks shipping to East African ports, 4–6 weeks to South Asia, or 6–8 weeks to the UK and Ireland, followed by customs clearance and local registration. You get live milestone updates the whole way.",
+            a: "Typically 6–14 weeks from order to arrival, depending on destination: 1–2 weeks to find and inspect the right car, then roughly 3–5 weeks shipping to East African ports, 4–6 weeks to South Asia, or 6–8 weeks to the UK and Ireland, followed by customs clearance and local registration. You get live milestone updates the whole way.",
           },
         ],
       },
@@ -329,15 +329,15 @@ export const japanImportCampaignConfig: LandingPageConfig = {
         items: [
           {
             q: "What are the rules for importing a Japanese car to the UK?",
-            a: "The UK has no age limit on imports, which is why it's the natural home of the JDM classic. Your car must be notified to HMRC through NOVA within 14 days of arrival, approved where required, and registered with the DVLA — all of which we handle. Duty and VAT depend on the vehicle and are included in your up-front landed-cost quote.",
+            a: "The UK has no age limit on imports, which is why it's the natural home of the JDM classic. Your car must be notified to HMRC through NOVA within 14 days of arrival, approved where required, and registered with the DVLA — we prepare the paperwork for each step. Duty and VAT depend on the vehicle and are included in your up-front landed-cost quote.",
           },
           {
             q: "What does it cost to import a Japanese car to Ireland?",
-            a: "Three charges apply: customs duty — 0% for Japan-built cars under the EU–Japan Economic Partnership Agreement — VAT at 23% on the landed value, and VRT based on CO2 emissions, which runs as low as 7–14% for efficient Japanese hybrids. Every import must be registered at NCTS within 30 days of arrival. We calculate and declare all of it, quoted in full before you commit — registration taxes are charged to you as the registered owner, so those are paid in your name.",
+            a: "Three charges apply: customs duty — 0% for Japan-built cars under the EU–Japan Economic Partnership Agreement — VAT at 23% on the landed value, and VRT based on CO2 emissions, which runs as low as 7–14% for efficient Japanese hybrids. Every import must be registered at NCTS within 30 days of arrival. We calculate all of it before you commit and prepare the declarations; the taxes are paid in your name, as the car's owner.",
           },
           {
-            q: "What do I need to import a Japanese car to New Zealand?",
-            a: "New Zealand takes more used imports from Japan than from anywhere else, and the route is well worn. There is no customs duty on used cars; GST at 15% is charged once on the landed value. Every vehicle must arrive clean enough to clear MPI biosecurity — we arrange the steam clean in Japan — and then pass entry certification, where the car is checked against New Zealand's structural, frontal-impact and emissions requirements before it can be registered and plated. We source stock that meets those standards, include GST and compliance in your landed cost, and ship into Auckland, Tauranga, Wellington or Lyttelton.",
+            q: "Can I import a Japanese car to Cyprus?",
+            a: "Yes. Cyprus drives on the left, so a right-hand-drive car from Japan suits its roads, and as an EU member it takes Japan-built cars at 0% customs duty under the EU–Japan agreement. Tell us the car you want and we will confirm the rules and quote one landed price before you commit.",
           },
           {
             q: "What is the age limit for importing a car to Kenya?",
@@ -349,11 +349,11 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What are Uganda's rules for Japanese car imports?",
-            a: "Uganda bans vehicles older than 15 years and applies an environmental levy to older eligible cars, so the sweet spot is a 5–9 year-old Japanese vehicle — think Harrier, Premio, Wish or Hiace. Your car lands at Mombasa and travels overland to Kampala under a bonded transit we arrange, with URA taxes included in the single landed price we quote before you buy.",
+            a: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot: think Harrier, Premio, Wish or Hiace. Tell us the car you want and we will confirm Uganda's rules for it and quote one landed price, taxes included, before you buy.",
           },
           {
             q: "Do you deliver to other right-hand-drive countries?",
-            a: "Yes. Beyond the UK, Ireland, New Zealand, Kenya, Tanzania and Uganda, we ship to right-hand-drive markets worldwide — including the wider Caribbean, southern Africa, and the Pacific. Tell us your country in the inquiry form and we'll come back with the exact rules, timeline and full landed cost for your destination.",
+            a: "Yes. Beyond the UK, Ireland, Cyprus, Kenya, Tanzania and Uganda, we ship to right-hand-drive markets worldwide — including the wider Caribbean, southern Africa, and the Pacific. Tell us your country in the inquiry form and we'll come back with the exact rules, timeline and full landed cost for your destination.",
           },
         ],
       },
@@ -366,7 +366,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "Is my payment protected when buying a car from Japan?",
-            a: "Yes. Funds are held securely until your vehicle is confirmed, inspected and cleared for shipment, and every car is covered by marine insurance for the voyage. Providence is an established international sourcing and export group with its own people in Japan and seven other countries — including a team on the ground at the auction — so you always know exactly where your car and your money are.",
+            a: "Yes. Funds are held securely until your vehicle is confirmed, inspected and cleared for shipment, and every car is covered by marine insurance for the voyage. Providence is an established international sourcing and export group with its own people in seven countries, including a team on the ground in Japan, so you always know exactly where your car and your money are.",
           },
           {
             q: "Will my car ship by RoRo or container?",
@@ -374,7 +374,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What documents do I receive with my import?",
-            a: "The original Japanese auction sheet with translation, the export certificate with verified mileage, the deregistration certificate, the Bill of Lading, any required pre-export inspection certificates for your country, and full customs clearance paperwork on arrival — everything needed to register and own the car outright.",
+            a: "The car's condition grade and our inspection report (with the original auction sheet and translation, where it came through auction), the export certificate with verified mileage, the deregistration certificate, the Bill of Lading, any required pre-export inspection certificates for your country, and full customs clearance paperwork on arrival — everything needed to register and own the car outright.",
           },
         ],
       },
