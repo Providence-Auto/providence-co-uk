@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle2,
@@ -10,10 +9,9 @@ import {
   Search,
   ShieldCheck,
   Ship,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import FAQSection from "@/components/faqSection";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
@@ -157,100 +155,6 @@ const PROCESS_STEPS = [
   },
 ];
 
-const TOP_MODELS = [
-  {
-    make: "Toyota",
-    prefillMake: "Toyota",
-    model: "Aqua",
-    prefillModel: "Aqua",
-    displayName: "Aqua",
-    type: "Hybrid",
-    note: "Lowest VRT band. Japan's most abundant hybrid at auction — supply keeps prices consistently low.",
-    badge: null,
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "Best bought 2–6 years old. Shaken-enforced turnover means excellent stock at low prices.",
-  },
-  {
-    make: "Toyota",
-    prefillMake: "Toyota",
-    model: "Prius",
-    prefillModel: "Prius",
-    displayName: "Prius",
-    type: "Hybrid",
-    note: "Industry-proven hybrid reliability. Strong Irish resale demand, especially for post-2019 models.",
-    badge: null,
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "3–7 year models offer the best value-to-condition ratio at Japanese auction.",
-  },
-  {
-    make: "Toyota",
-    prefillMake: "Toyota",
-    model: "Corolla",
-    prefillModel: "Corolla",
-    displayName: "Corolla Hybrid",
-    type: "Hybrid",
-    note: "Japan-built, mainstream Irish demand, and strong residual value make this a safe import.",
-    badge: null,
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "2020–2023 models hit the sweet spot for spec, price, and VRT efficiency.",
-  },
-  {
-    make: "Honda",
-    prefillMake: "Honda",
-    model: "Fit",
-    prefillModel: "Fit",
-    displayName: "Fit / Jazz",
-    type: "Hybrid",
-    note: "Compact, efficient, and significantly cheaper at Japanese auction than the Irish equivalent.",
-    badge: null,
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "3–7 year old Jazz/Fit hybrids have the best auction availability and condition grades.",
-  },
-  {
-    make: "Mazda",
-    prefillMake: "Mazda",
-    model: "Mazda3",
-    prefillModel: "Mazda3",
-    displayName: "Mazda 3 Skyactiv",
-    type: "Petrol",
-    note: "Premium interior feel, efficient Skyactiv engine, and consistently high-grade auction stock.",
-    badge: null,
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "Pre-owned strongly preferred — limited new supply at Japanese auction. 2019–2022 models are ideal.",
-  },
-  {
-    make: "Nissan",
-    prefillMake: "Nissan",
-    model: "Leaf",
-    prefillModel: "Leaf",
-    displayName: "Leaf",
-    type: "EV",
-    note: "Lowest CO2 band, zero NOx levy, and up to €5,000 VRT relief — but only until 31 December 2026.",
-    badge: "Act before Dec 2026",
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "2018–2022 models qualify for the full €5,000 EV relief. Shipping takes 6–10 weeks — start now.",
-  },
-  {
-    make: "Nissan",
-    prefillMake: "Nissan",
-    model: "Note",
-    prefillModel: "Note",
-    displayName: "Note e-Power",
-    type: "e-Power",
-    note: "Self-charging e-Power system — no plug required. Exceptional fuel efficiency in Irish conditions.",
-    badge: null,
-    bestCondition: "Pre-owned",
-    conditionNote:
-      "2020–2023 second-gen models offer the latest e-Power tech at well below Irish forecourt prices.",
-  },
-];
-
 // ── COUNTDOWN ────────────────────────────────────────────────────────────────
 
 function getTimeLeft() {
@@ -275,6 +179,10 @@ function getTimeLeft() {
   );
   return { months, days, hours };
 }
+
+// Stable identity: the form's prefill effect compares by reference, and this
+// page re-renders every minute from the countdown.
+const IRELAND_PREFILL = { countryOfImport: "Ireland" };
 
 const TRUST_BADGES = [
   "15+ Years Trading",
@@ -320,42 +228,6 @@ export default function ImportJapaneseCarsIreland() {
     const id = setInterval(() => setTimeLeft(getTimeLeft()), 60_000);
     return () => clearInterval(id);
   }, []);
-
-  // Model-card → form prefill
-  const [selectedMake, setSelectedMake] = useState("");
-  const [selectedVehicleModel, setSelectedVehicleModel] = useState("");
-  const [showPrefillNotice, setShowPrefillNotice] = useState(false);
-  const [prefillNoticeText, setPrefillNoticeText] = useState("");
-
-  // Stable prefill object — only recreated when the user actually clicks a model card.
-  // Avoids triggering the form's prefill effect on every countdown re-render.
-  const prefill = useMemo(
-    () => ({
-      countryOfImport: "Ireland",
-      ...(selectedMake
-        ? { make: selectedMake, vehicle_model: selectedVehicleModel }
-        : {}),
-    }),
-    [selectedMake, selectedVehicleModel],
-  );
-
-  const handleModelSelect = (model: (typeof TOP_MODELS)[0]) => {
-    setSelectedMake(model.prefillMake);
-    setSelectedVehicleModel(model.prefillModel);
-    setPrefillNoticeText(`${model.make} ${model.displayName}`);
-    setShowPrefillNotice(true);
-    setTimeout(() => setShowPrefillNotice(false), 7000);
-    document.getElementById("inquiry")?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Group models by brand for display
-  const modelsByBrand = TOP_MODELS.reduce<Record<string, typeof TOP_MODELS>>(
-    (acc, m) => {
-      (acc[m.make] = acc[m.make] || []).push(m);
-      return acc;
-    },
-    {},
-  );
 
   return (
     <main className="min-h-screen bg-white text-black selection:bg-black/10 selection:text-black font-sans overflow-x-hidden">
@@ -767,116 +639,6 @@ export default function ImportJapaneseCarsIreland() {
         </div>
       </section>
 
-      {/* ── TOP MODELS ──────────────────────────────── */}
-      <section className="py-32 px-6 bg-zinc-50 border-y border-black/5 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <Reveal y={40} duration={0.8} className="text-center mb-16">
-            <p className="text-sm font-bold tracking-[0.3em] text-zinc-400 uppercase mb-4">
-              Top Picks
-            </p>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-6">
-              Most popular Japanese imports
-              <br className="hidden md:block" /> for Ireland.
-            </h2>
-            <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-light">
-              These models tick every box: 0% duty, low CO2, favourable VRT, and
-              strong Irish demand.
-            </p>
-          </Reveal>
-
-          <div className="space-y-12">
-            {Object.entries(modelsByBrand).map(
-              ([brand, models], brandIndex) => (
-                <Reveal
-                  key={brand}
-                  y={30}
-                  delay={brandIndex * 0.08}
-                  duration={0.6}
-                >
-                  {/* Brand header */}
-                  <div className="flex items-center gap-4 mb-5">
-                    <p className="text-xs font-bold tracking-[0.3em] text-zinc-400 uppercase shrink-0">
-                      {brand}
-                    </p>
-                    <div className="flex-1 h-px bg-black/5" />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {models.map((model, index) => (
-                      <Reveal
-                        as="button"
-                        key={`${model.make}-${model.model}`}
-                        onClick={() => handleModelSelect(model)}
-                        y={20}
-                        delay={index * 0.05}
-                        duration={0.5}
-                        className="bg-white rounded-[1.5rem] border border-black/5 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] flex flex-col gap-3 text-left hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:border-sky-500/20 transition-all duration-300 group cursor-pointer"
-                      >
-                        {model.badge && (
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 border border-sky-500/20 rounded-full w-fit">
-                            <Zap size={11} className="text-sky-500" />
-                            <span className="text-xs font-bold text-sky-600">
-                              {model.badge}
-                            </span>
-                          </div>
-                        )}
-                        <div>
-                          <h3 className="text-xl font-bold text-black group-hover:text-sky-600 transition-colors duration-300">
-                            {model.displayName}
-                          </h3>
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="px-3 py-1 bg-sky-500/10 rounded-full text-xs font-bold text-sky-600">
-                            {model.type}
-                          </span>
-                          <span className="px-3 py-1 bg-zinc-100 rounded-full text-xs font-medium text-zinc-500">
-                            {model.bestCondition}
-                          </span>
-                        </div>
-                        <p className="text-zinc-500 text-sm leading-relaxed font-light">
-                          {model.note}
-                        </p>
-                        <p className="text-zinc-400 text-xs leading-relaxed italic border-t border-black/5 pt-3">
-                          {model.conditionNote}
-                        </p>
-                        <div className="flex items-center gap-1.5 text-sky-500 text-xs font-bold mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          Enquire with this model pre-filled{" "}
-                          <ArrowRight size={12} />
-                        </div>
-                      </Reveal>
-                    ))}
-                  </div>
-                </Reveal>
-              ),
-            )}
-
-            {/* Don't see your car */}
-            <Reveal
-              as="a"
-              href="#inquiry"
-              y={24}
-              duration={0.6}
-              className="bg-black rounded-[1.5rem] p-6 flex flex-col gap-3 hover:bg-zinc-900 transition-colors duration-300 cursor-pointer group"
-            >
-              <h3 className="text-xl font-bold text-white">
-                Don't see your car?
-              </h3>
-              <p className="text-white/50 text-sm leading-relaxed font-light flex-1">
-                Tell us what you're looking for. If it's sold in Japan, we can
-                find it and ship it to an Irish port.
-              </p>
-              <div className="flex items-center gap-2 text-white font-bold text-sm mt-2">
-                Start your inquiry{" "}
-                <ArrowRight
-                  size={15}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
       {/* ── EV URGENCY ──────────────────────────────── */}
       <section className="py-14 px-6 bg-black relative z-10">
         <div className="max-w-5xl mx-auto">
@@ -932,27 +694,10 @@ export default function ImportJapaneseCarsIreland() {
             <span className="text-black font-medium">
               full landed-cost breakdown
             </span>{" "}
-            — our price for the car and freight to an Irish port, plus the
-            duty, VAT and VRT you'll pay Revenue — before you commit a single
-            euro.
+            — our price for the car and freight to an Irish port, plus the duty,
+            VAT and VRT you'll pay Revenue — before you commit a single euro.
           </p>
         </Reveal>
-
-        {/* Prefill notice */}
-        <AnimatePresence>
-          {showPrefillNotice && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.35 }}
-              className="w-full max-w-3xl mx-auto mb-4 px-6 py-3 bg-sky-500/10 border border-sky-500/20 rounded-2xl text-sky-700 text-sm font-medium text-center"
-            >
-              Form pre-filled with <strong>{prefillNoticeText}</strong>. Review
-              your details and continue.
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <div className="w-full relative z-20">
           <Suspense
@@ -962,11 +707,7 @@ export default function ImportJapaneseCarsIreland() {
               </div>
             }
           >
-            <RequestForm
-              key={`${selectedMake}-${selectedVehicleModel}`}
-              prefill={prefill}
-              defaultPhoneCountry="IE"
-            />
+            <RequestForm prefill={IRELAND_PREFILL} defaultPhoneCountry="IE" />
           </Suspense>
         </div>
 

@@ -239,8 +239,7 @@ const MODEL_GROUPS: ModelGroup[] = [
         name: "BMW 3 Series",
         make: "BMW",
         model: "3 Series",
-        blurb:
-          "BMW's compact executive saloon, bought direct from Japan.",
+        blurb: "BMW's compact executive saloon, bought direct from Japan.",
         image: "/import-cars/bmw.webp",
       },
       {
@@ -300,7 +299,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Kenya",
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
-    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock, book the KEBS-compliance inspection in Japan, and land your car at Mombasa with every duty in the quote you approved.",
+    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock, book the KEBS-compliance inspection in Japan, and ship your car to Mombasa with every duty calculated in the quote you approved — payable by you when you clear it.",
     facts: [
       { icon: Gauge, label: "8-year age rule — compliant stock only" },
       { icon: ShieldCheck, label: "Pre-export inspection arranged in Japan" },
@@ -317,7 +316,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Tanzania",
     headline:
       "Tanzania has no age limit, but older cars carry extra excise duty.",
-    body: "Tanzania welcomes a wider range of Japanese imports than its neighbours: there's no outright age limit, though cars over 10 years old carry extra excise — which we build into your landed quote so the number never moves. Pre-shipment inspection is arranged in Japan, and we support your car's clearance through Dar es Salaam, with our team on it the whole way.",
+    body: "Tanzania welcomes a wider range of Japanese imports than its neighbours: there's no outright age limit, though cars over 10 years old carry extra excise — which we build into your landed quote so the number never moves. Pre-shipment inspection is arranged in Japan, and we support your car's clearance through Dar es Salaam with the file prepared and our team on it throughout.",
     facts: [
       { icon: Gauge, label: "No age ban — excise built into quote" },
       { icon: ShieldCheck, label: "Pre-shipment inspection arranged" },
@@ -333,10 +332,10 @@ const DESTINATIONS: Destination[] = [
     label: "Uganda",
     formCountry: "Uganda",
     headline: "Japanese cars are among Uganda's most popular imports.",
-    body: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot. Tell us the car you want and we'll confirm Uganda's rules for it, then quote one landed price, taxes included, before you commit.",
+    body: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot. Tell us the car you want and we'll confirm Uganda's rules for it, then give you the full landed figure before you commit — what you pay us, and what you pay at the border.",
     facts: [
       { icon: Gauge, label: "Age rules confirmed first" },
-      { icon: ShieldCheck, label: "Taxes in your up-front quote" },
+      { icon: ShieldCheck, label: "Taxes calculated up front" },
       { icon: CalendarClock, label: "Timeline quoted up front" },
       { icon: Anchor, label: "Grade 4 and above" },
     ],
@@ -368,7 +367,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: null,
     headline:
       "We ship to right-hand-drive markets beyond our six core countries.",
-    body: "Beyond our six core markets we ship to right-hand-drive countries worldwide — across the Caribbean, southern Africa, and the Pacific. Every destination gets the same treatment: the grade and our inspection before payment, your country's rules confirmed before you commit, and one all-in landed price. Tell us your country in the form and we'll come back with the exact rules, timeline and cost.",
+    body: "Beyond our six core markets we ship to right-hand-drive countries worldwide — across the Caribbean, southern Africa, and the Pacific. Every destination gets the same treatment: the grade and our inspection before payment, your country's rules confirmed before you commit, and the whole landed figure itemised — what you pay us, and what you pay at your border. Tell us your country in the form and we'll come back with the exact rules, timeline and cost.",
     facts: [
       { icon: Globe2, label: "RHD markets worldwide" },
       { icon: ShieldCheck, label: "Local rules confirmed before you pay" },
@@ -507,7 +506,7 @@ export default function JapanImportLanding() {
       <DestinationPanel
         destination={destination}
         emptyHeadline="Buy direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
-        emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and quote one landed price covering the car, shipping, marine cover, duty and your destination's taxes. Choose your destination above to see the rules and timeline for your country."
+        emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and give you the whole landed figure itemised — the CNF price you pay us for the car, shipping and marine cover to your port, and the duty and taxes you pay on arrival. Choose your destination above to see the rules and timeline for your country."
       />
 
       {/* ── MODEL CARDS, BY CATEGORY ─────────────────── */}
