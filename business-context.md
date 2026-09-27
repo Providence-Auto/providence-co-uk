@@ -308,7 +308,20 @@ These apply to every page, not just the one where a rule was introduced.
 
 ## 9. Content operations — blog, news, SEO/AEO
 
-Two deliberately separate systems (`CLAUDE.md`, "Editorial: blog vs news"):
+**Every public page is one of two types, and the type is settled before a word
+is written — `page-types.md`.** An **informational** page explains how something
+works in the world, at the angle our audience needs; `/blog` and `/latest-news`
+are the informational surfaces, and both are fact-checked like journalism
+(verified primary sources only for tax, duty and government claims; a second
+independent source for anything load-bearing; no pitching in the body). A
+**landing page** expresses what something is in the context of Providence Auto
+and sells one service into the funnel; it carries **no section that was not
+asked for**, and a landing page request begins with SEO research and a proposed
+section list, not with copy. `page-types.md` §8 holds the register of which live
+page is which, including the two that are currently mixed.
+
+Below, the two informational systems, which are deliberately separate
+(`CLAUDE.md`, "Editorial: blog vs news"):
 
 - **`/blog`** — evergreen how-to guides in keyword clusters (`src/config/blog.ts`,
   `src/config/blog-countries.ts`). Country clusters currently live: Australia,
@@ -399,6 +412,8 @@ don't just fix the copy silently.
 | 2026-09-25 | For Irish buyers, Japan copy leads on **the quality of the car and a clear process**, with the price of buying direct kept as a supporting point; copy never says importing is *not* cheaper — `brand-position.md` §5 | Business instruction. After VAT and VRT on OMSP the landed total can sit close to an Irish forecourt price, but a like-for-like price comparison doesn't hold (an older, lower-mileage, graded car is not the same purchase as a newer, higher-mileage one), so the page neither denies the saving nor leads on it. |
 | 2026-09-25 | Trustpilot review sections removed from every page (the three campaign landing pages, `/campaigns/[slug]` and the gallery) | Business instruction, "for now". The review data stays in `src/config/landing-pages.ts` so the section can be restored. |
 | 2026-09-01 | The sourcing analyzer's market median can be overridden by the operator; `sourcing-analyzer-methodology.md` §4 documents it | The desk was already moving the median by adding and removing comparables until the number looked right. That edits the evidence to reach a conclusion and leaves no record of it. An explicit override is the same judgement made visible: the comparable set stays as crawled, and every surface says the median is a desk figure. It is an operator input, so "numbers are computed, prose is generated" is untouched — no model produces it. |
+| 2026-09-28 | Informational and landing pages separated site-wide as two named page types with their own rules; `page-types.md` created and added to the read-before-you-write set | Business instruction. The split existed only for `/import-cars-from` vs the blog guides (the 2026-09-24 row above) and had never been generalised, so an agent writing any other page had no rule telling it whether it was explaining the world or selling a service — which is how `/import-cars-to-ireland` became a sectioned Irish tax explainer sitting at a transactional URL. **Informational** pages (`/blog`, `/latest-news`) are written from the internal docs and fact-checked like journalism: verified primary sources only for tax, duty and government claims, a second independent source for anything load-bearing, no pitching in the body. **Landing pages** carry no section that was not asked for. |
+| 2026-09-28 | Landing pages made a **process gate** rather than a content template: SEO research first, then a proposed section list, then questions — and only then copy | Business instruction, and the reason the rule is a process and not a ban: general copy about what Providence offers or handles *is* allowed on a landing page, but only when the business asks for it on that page. The failure mode being closed is a writer reaching for generic offer copy to fill a section it invented. This retires the sentence "a landing page is a general guide plus our details" from `CLAUDE.md` — the ten-section country-page list is now recorded there as the agreed outcome of this process for one family of pages, not as a default for the next page. |
 
 ## 12. Known documentation to reconcile
 
@@ -425,6 +440,7 @@ find-and-replace:
 | **`business-context.md`** (this file) | What the business is, does, and claims — read this for *what the site should say*. |
 | `brand-position.md` | The position itself: access-plus-capability, the four pillars, what we are not, the competitive frame, boilerplate. Read for *what we stand for*. |
 | `writing-angle.md` | The sentence-level rules that carry the position: the subject test, banned concierge phrasing, rewrite patterns, the pre-publish check. Read for *how to phrase it*. |
+| `page-types.md` | Informational vs landing pages: the definitions, the one-line test, the journalistic sourcing standard for informational pages, the ask-first process gate for landing pages, and the register of which live page is which. Read for *which kind of page am I writing* — it is the first question, and it decides which of the rules above apply. |
 | `sourcing-analyzer-methodology.md` | The admin Sourcing & Profit Analyzer: landed-cost formula, market-comparable pipeline, margin/verdict logic. |
 | `news-editorial-playbook.md` | `/latest-news` — market/reader definitions, the relevance gate, the seven landed-cost lenses, "The Landed Desk" voice, SEO/AEO spec, fact-checking protocol, the weekly 20-story slate. |
 | `seo-aeo-optimization-guide.md` | The SEO/AEO process every new page runs through, Phase 1–5, plus the pre-publish checklist. |

@@ -4,6 +4,8 @@
 
 This is the reference document. The repeatable weekly run that turns it into 20 publish-ready stories lives in `.claude/skills/news-desk/SKILL.md` — invoke it with `/news-desk`.
 
+**`/latest-news` is an informational surface** (`page-types.md` §1.1): the subject of every article is the world, not Providence, and the article body does not sell. This playbook is the narrower standard that governs it, and where it overlaps the general marketing rules it wins here. Its §6 fact-checking protocol is now the standard for `/blog` as well — the source tiers and the checks-in-order were written for the news desk, but they are not news-specific.
+
 ---
 
 ## 1. Who we are writing for
