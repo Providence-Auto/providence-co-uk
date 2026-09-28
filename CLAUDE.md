@@ -2,17 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Before writing or editing any customer-facing copy** — marketing pages, campaign pages, car pages, blog posts, news articles, sales-profile content, or any claim about what Providence Auto does, where it operates, or what it delivers — read these three at the repo root first:
+**Before writing or editing any customer-facing copy** — marketing pages, campaign pages, car pages, blog posts, news articles, sales-profile content, or any claim about what Providence Auto does, where it operates, or what it delivers — read these four at the repo root first:
 
+- `page-types.md` — **settle this one first.** Is the page *informational* (how something works in the world, for the reader's benefit — `/blog`, `/latest-news`) or a *landing page* (what something is in the context of Providence Auto, selling one service into the funnel — everything else)? The answer changes where the facts must come from and what may be written without asking. An informational page is fact-checked like journalism; a landing page carries **no section that was not asked for**.
 - `business-context.md` — the central source of truth for the business itself (identity, the presence/source/destination geography split, the customs-clearance and CNF-delivery boundaries, values, offers). It also indexes every other standing doc.
 - `brand-position.md` — the position: Providence gives you **direct access** to the world's auctions plus the tools, documentation and people to use it. **You buy the car; we make it possible.** Not a concierge, not "we handle everything".
 - `writing-angle.md` — how to phrase it: the customer is the subject of the sentence. Bans "so you don't have to", "we handle everything", "hassle-free", blanket "door-to-door".
 
 These are about *what the site should say*; this file is about *how the site is built*.
 
-**Read all three every time — not "when in doubt".** The August 2026 repositioning had to be done twice because the first pass swept seven files and left the retired vocabulary standing on `/b2c`, `/b2b`, `/request` and the gallery.
+**Read all four every time — not "when in doubt".** The August 2026 repositioning had to be done twice because the first pass swept seven files and left the retired vocabulary standing on `/b2c`, `/b2b`, `/request` and the gallery.
 
-**Never change a source-of-truth document on your own authority.** That means these three plus `news-editorial-playbook.md`, `sourcing-analyzer-methodology.md`, `seo-aeo-optimization-guide.md` and `sales-profile-spec.md`. When work shows one of them is wrong, incomplete or self-contradictory, raise it as a numbered question with a recommendation, log it in `brand-position.md` §11.3, and **keep re-raising it until answered** — a pending documented-truth change is carried into the next session, never quietly closed. This is narrow: ordinary suggestions about the site are raised once and dropped if not taken up. Full rule: `brand-position.md` §11.2.
+**Never change a source-of-truth document on your own authority.** That means these four plus `news-editorial-playbook.md`, `sourcing-analyzer-methodology.md`, `seo-aeo-optimization-guide.md` and `sales-profile-spec.md`. When work shows one of them is wrong, incomplete or self-contradictory, raise it as a numbered question with a recommendation, log it in `brand-position.md` §11.3, and **keep re-raising it until answered** — a pending documented-truth change is carried into the next session, never quietly closed. This is narrow: ordinary suggestions about the site are raised once and dropped if not taken up. Full rule: `brand-position.md` §11.2.
 
 ## Commands
 
@@ -127,7 +128,7 @@ Car pages are **database rows, not files** — they can't be added by committing
 
 ### Editorial: blog vs news
 
-Two separate content systems, deliberately not merged:
+Both are **informational** pages under `page-types.md` §1.1 — the subject is how something works in the world, not what Providence sells. Everything in §2 of that document applies to both: verified primary sources only for any tax, duty or government claim, a second independent source for anything load-bearing, and no pitching in the body. Two separate content systems, deliberately not merged:
 
 - **`/blog`** — evergreen how-to guides in keyword clusters. Registry `src/config/blog.ts`, bodies `src/content/blog/`, schema `BlogPosting`. Gets updated, does not age.
 - **`/latest-news`** — dated automotive reporting: new-model releases, industry moves, auction results, market data, and the tax/policy changes that move landed cost. Registry `src/config/news.ts`, bodies `src/content/news/`, schema `NewsArticle`. Ages, and is fed to Google News.
@@ -222,6 +223,8 @@ This is additive to, not a replacement for, the per-content-type rules above —
 
 ### Landing pages: one keyword, one simple template
 
+**First, the process gate — `page-types.md` §3.** Nothing goes on a landing page by default. When a landing page is requested: research the SEO for the exact phrase first, come back with **the content sections needed to rank for it**, and ask your questions **before** writing any claim or any passage of prose. General copy about what Providence offers or handles is allowed on a landing page **only when the business asks for it on that page** — never reached for to fill a section. The section list below is the *agreed outcome* of that process for the `/import-cars-from` country pages, not a default to apply to the next page.
+
 Every landing page is built for **the phrase a buyer types**, and nothing
 else. The keyword goes in the URL slug, the title tag, the H1, the first
 sentence and the H2s, verbatim — `/import-cars-from/australia`, "Import Cars
@@ -247,9 +250,11 @@ those phrases instead ("Researching first? Read our guide…"). The guides, in
 turn, never target "import cars from X". The CTA wiring lives in `post()` in
 `src/config/blog-countries.ts`.
 
-**A landing page is a general guide plus our details — not a feature about the
-place.** Write what a buyer needs to act and what a crawler needs to classify
-the page, then stop:
+**A landing page is our process for one service — not a general guide, and not
+a feature about the place.** It states the facts a buyer needs in order to act
+and links the guide that owns the explanation; it does not teach the mechanism
+(`page-types.md` §3.7). The ten sections below are the list agreed for the
+country pages. Write those, and stop:
 
 1. **H1 = the keyword.** Directly under it, a **40–55 word direct answer**
    starting "You can …" that names our own team, the inspection before payment
