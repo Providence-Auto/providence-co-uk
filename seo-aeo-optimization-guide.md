@@ -10,6 +10,8 @@ This guide will walk you through the end-to-end process of identifying your audi
 
 Before writing a single word, you must know *who* you are writing for and *why* they are searching. 
 
+> **Providence: settle the page type before Phase 1 — `page-types.md`.** An **informational** page (`/blog`, `/latest-news`) explains how something works in the world; its facts come from verified primary sources, cross-checked, and it does not pitch in the body. A **landing page** sells one service in Providence's own terms and carries **no section that was not asked for**. A landing page request therefore *begins* in this phase and stops at the end of Phase 2: research the phrase, then come back with the content sections needed to rank for it and the questions that research raised. Copy is written only after that section list is agreed — never in the same pass as the research.
+
 ### 1. Identify Your User Persona
 *   **Demographics & Psychographics:** Who are they? What is their level of expertise? (e.g., A beginner needs simple terms; an expert needs technical depth).
 *   **Pain Points:** What specific problem are they trying to solve? 
