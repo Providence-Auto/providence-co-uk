@@ -126,11 +126,11 @@ This document adds to, and does not override:
 - **Never invent a tax figure; never forecast a currency.** The empowerment
   angle raises the stakes here rather than lowering them — copy that hands
   the reader numbers to decide on must have those numbers right.
-- **Page type** (`page-types.md`) — which type you are writing is settled
-  before the first sentence, and it decides where the facts come from and what
-  may be written without asking. These rules apply to both types: the subject
-  test holds on an informational page too, and the banned concierge vocabulary
-  is banned on both.
+- **Page type** (`page-types.md`) — which of the three types you are writing is
+  settled before the first sentence, and it decides where the facts come from
+  and what may be written without asking. These rules apply to all three: the
+  subject test holds on an informational page too, and the banned concierge
+  vocabulary is banned everywhere.
 
 ## 8. Pre-publish check
 
@@ -152,13 +152,14 @@ Five questions for any customer-facing page:
    the registered owner? (`business-context.md` §4)
 5. **Opening line.** Do B2B and B2C open on the same proposition, with the
    audience-specific advantage second rather than first? (§5)
-6. **Page type.** Is this an informational page or a landing page
-   (`page-types.md` §1.3), and are you writing to that type's rules? An
+6. **Page type.** Is this an informational page, a landing page or a tool
+   (`page-types.md` §1.4), and are you writing to that type's rules? An
    informational page needs a named, dated primary source behind every tax,
    duty or government claim and does not pitch in the body. A landing page
    carries no section that was not asked for — including general copy about
    what Providence offers or handles, which goes on only when the business
-   asks for it on that page.
+   asks for it on that page. A tool is held to both: sourced, dated rates with
+   the working shown, and an ask-first conversion path.
 
 If the work shows a source-of-truth document is wrong or contradicts another,
 do not edit it on your own authority: raise it, log it in `brand-position.md`
