@@ -1,14 +1,12 @@
 {
-  "_comment": "Bentley Torcal — Bentley's first battery-electric car and its fourth model line, revealed in London on 23 September 2026. Designed, engineered and built at Crewe. isUpcoming is TRUE: the configurator opened on the reveal date but production does not start until Q2 2027 and first deliveries are summer 2027, so every lead off this page is a pre-order and is flagged isUpcomingVehicle. Right-hand drive only on this page, by instruction — Bentley builds both hands at Crewe, but we are offering the RHD car. Each environment has its own database, so publishing this page on one does not create it on the others. Recreate it with: node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/bentley-torcal.json --env staging --publish (or --env production). SOURCES: Bentley Motors press release, 'The all-new Bentley Torcal makes global debut', 23 September 2026 (https://www.bentleymedia.com/en/newsitem/1835-the-all-new-bentley-torcal-makes-global-debut) — every power, torque, battery, charging, range, brake, audio, material, seat and equipment figure below, and the Torcal/Torcal S equipment split. Top Gear via loveelectric and Regit, 23–24 September 2026 — the £173,300 and £199,300 UK prices, flagged as trade press because Bentley published no price list. Electrifying, 23 September 2026 (https://www.electrifying.com/reviews/bentley-reviews/torcal/review) — the Q2 2027 production start and the report that the First Edition is the 888 PS S-based launch variant. Bentley UK car configurator, checked 29 September 2026 — the Torcal First Edition right-hand-drive price of £188,333.33 before VAT, the Astral and Electrum paint names, the Hotspur and Beluga hide names, and the First Edition standard-equipment description. Wikipedia (https://en.wikipedia.org/wiki/Bentley_Torcal) — the precise dimensions, kerb weight and PPE platform, all recorded as reference rather than as Bentley's own figures. IMAGES: Bentley Motors press photography from the 23 September 2026 global debut, confirmed cleared for commercial use by the account owner on 29 September 2026. The 'TORCAL' show placards in the number-plate position on the two studio shots were removed with scripts/blur-plate.mjs before upload, per car-imagery-checklist.md §3. The interior shot is the right-hand-drive cabin; the left-hand-drive interior shots in the same press pack were not used. PRICING: no landed-cost matrix is set, because none has been built. The UK retail figures are recorded in customData as UK retail prices and must not be presented as a landed cost in any destination.",
-
+  "_comment": "Bentley Torcal — Bentley's first battery-electric car and its fourth model line, revealed in London on 23 September 2026. Designed, engineered and built at Crewe. MODEL YEAR: 2028, set by the business on 2026-09-29. Bentley has published no UK model-year designation; United States coverage refers to it as a 2028 model, and production starts Q2 2027. isUpcoming is TRUE: the configurator opened on the reveal date but production does not start until Q2 2027 and first deliveries are summer 2027, so every lead off this page is a pre-order and is flagged isUpcomingVehicle. Right-hand drive only on this page, by instruction — Bentley builds both hands at Crewe, but we are offering the RHD car. Each environment has its own database, so publishing this page on one does not create it on the others. Recreate it with: node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/bentley-torcal.json --env staging --publish (or --env production). SOURCES: Bentley Motors press release, 'The all-new Bentley Torcal makes global debut', 23 September 2026 (https://www.bentleymedia.com/en/newsitem/1835-the-all-new-bentley-torcal-makes-global-debut) — every power, torque, battery, charging, range, brake, audio, material, seat and equipment figure below, and the Torcal/Torcal S equipment split. Top Gear via loveelectric and Regit, 23–24 September 2026 — the £173,300 and £199,300 UK prices, flagged as trade press because Bentley published no price list. Electrifying, 23 September 2026 (https://www.electrifying.com/reviews/bentley-reviews/torcal/review) — the Q2 2027 production start and the report that the First Edition is the 888 PS S-based launch variant. Bentley UK car configurator, checked 29 September 2026 — the Torcal First Edition right-hand-drive price of £188,333.33 before VAT, the Astral and Electrum paint names, the Hotspur and Beluga hide names, and the First Edition standard-equipment description. Wikipedia (https://en.wikipedia.org/wiki/Bentley_Torcal) — the precise dimensions, kerb weight and PPE platform, all recorded as reference rather than as Bentley's own figures. IMAGES: Bentley Motors press photography from the 23 September 2026 global debut, confirmed cleared for commercial use by the account owner on 29 September 2026. The 'TORCAL' show placards in the number-plate position on the two studio shots were removed with scripts/blur-plate.mjs before upload, per car-imagery-checklist.md §3. The interior shot is the right-hand-drive cabin; the left-hand-drive interior shots in the same press pack were not used. PRICING: no landed-cost matrix is set, because none has been built. The UK retail figures are recorded in customData as UK retail prices and must not be presented as a landed cost in any destination. DISCLOSURE THAT USED TO SIT IN notes, MOVED HERE ON 2026-09-29 PER car-imagery-checklist.md SS6: notes is customer-facing copy and now carries only the car, its specification and its value. The unpublished figures are these — Bentley has published no kerb weight (Wikipedia records 2,700 kg and is the only source; it is the figure a freight quotation is built from), no towing capacity, and no consolidated price list, and Bentley's release does not state which car the First Edition is built on, which Electrifying reports is the 888 PS S. None of those has been estimated anywhere on the page. Colour swatches are our approximation of the factory paint and hide rather than a colour match, and only the two finishes Bentley has named publicly are listed. The three linked news articles carry the full sources list and a ConfirmedLedger for any reader who wants the provenance.",
   "make": "Bentley",
   "model": "Torcal",
-  "year": "2027",
+  "year": "2028",
   "trim": "First Edition",
   "condition": "New",
   "countryOfOrigin": "United Kingdom",
   "slug": "bentley-torcal-first-edition",
-
   "engineConfig": "Dual permanent magnet synchronous electric motors, dry sump, on an 800-volt architecture",
   "maxPower": "821 PS (Torcal) / 888 PS (Torcal S, with Launch Control)",
   "maxTorque": "1,194 Nm (Torcal) / 1,350 Nm (Torcal S, with Launch Control)",
@@ -17,7 +15,6 @@
   "emissions": "Zero tailpipe emissions",
   "steering": "RHD",
   "steeringOptions": ["RHD"],
-
   "_destinationsComment": "Set by the business on 29 September 2026: the United Kingdom, Ireland, Kenya, Tanzania and Mauritius, in that order. New Zealand was considered and removed. A 113 kWh battery car needs somewhere to charge, which is the constraint that picked this list — not an age limit, because the Torcal is a new car and no destination's age bar applies to it.",
   "destinations": [
     "united-kingdom",
@@ -26,14 +23,11 @@
     "tanzania",
     "mauritius"
   ],
-
   "upholstery": "Olive tan leather in 15 shades, 15 matching shades of Dinamica, and the world's first 100% Merino wool automotive fabric in five colours, woven with Fox Brothers of Somerset",
   "infotainment": "Curved OLED screens unique to Bentley, augmented reality head-up display, facial recognition driver profiles, and a 620W 16-speaker audio system as standard — or a 1,780W 28-speaker Naim for Bentley system with Dolby Atmos 7.1",
-
   "isUpcoming": true,
   "expectedAvailability": "Production starts Q2 2027, first deliveries summer 2027",
   "newsSlug": "bentley-torcal-revealed-specifications-price",
-
   "grades": [
     {
       "name": "First Edition",
@@ -42,8 +36,7 @@
       "highlights": [
         "22-inch First Edition wheels with Graphene Grey brake calipers and First Edition fender badging",
         "Bespoke seat quilting with contrast chevrons, and illuminated First Edition treadplates",
-        "Powered Open and Close Doors, Frosted Diamond Switchable Sunroof and Naim for Bentley as standard",
-        "Electrifying reports the First Edition is built on the 888 PS Torcal S — Bentley's own release does not say so"
+        "Powered Open and Close Doors, Frosted Diamond Switchable Sunroof and Naim for Bentley as standard"
       ],
       "imageIndex": 0
     },
@@ -57,7 +50,7 @@
         "21-inch wheels as standard",
         "0–60 mph in 3.3 seconds, 0–100 km/h in 3.4 seconds, 155 mph (250 km/h)"
       ],
-      "imageIndex": 1
+      "imageIndex": 5
     },
     {
       "name": "Torcal S",
@@ -74,12 +67,16 @@
       "imageIndex": 2
     }
   ],
-
   "images": [
+    "/cars/bentley-torcal/astral-front-three-quarter.webp",
+    "/cars/bentley-torcal/astral-side-profile.webp",
+    "/cars/bentley-torcal/rear-three-quarter.webp",
+    "/cars/bentley-torcal/astral-front.webp",
+    "/cars/bentley-torcal/astral-rear.webp",
     "/cars/bentley-torcal/front-three-quarter.webp",
     "/cars/bentley-torcal/side-profile.webp",
-    "/cars/bentley-torcal/rear-three-quarter.webp",
     "/cars/bentley-torcal/interior-right-hand-drive.webp",
+    "/cars/bentley-torcal/beluga-cabin.webp",
     "/cars/bentley-torcal/sunroof-cabin.webp",
     "/cars/bentley-torcal/centre-console.webp",
     "/cars/bentley-torcal/alloy-wheel.webp",
@@ -87,14 +84,20 @@
     "/cars/bentley-torcal/rear-lamp.webp",
     "/cars/bentley-torcal/winged-b-emblem.webp"
   ],
-  "heroImageUrl": "/cars/bentley-torcal/front-three-quarter.webp",
-
-  "_colorsComment": "Bentley offers seven standard exterior paints plus an extended range. Only the two new finishes introduced on the Torcal are named publicly — the satin Electrum and the gloss Astral by Mulliner — so those are the two listed here. The hide names are the ones on the right-hand-drive First Edition commission we were given. Hexes are our approximation of the real paint and hide, not a colour match.",
+  "heroImageUrl": "/cars/bentley-torcal/astral-front-three-quarter.webp",
+  "_colorsComment": "Bentley offers seven standard exterior paints plus an extended range. Only the two new finishes introduced on the Torcal are named publicly — the satin Electrum and the gloss Astral by Mulliner — so those are the two listed, Astral first because it is the hero. The hide names are the ones on the right-hand-drive First Edition commission we were given. Beluga points at the black-hide cabin; that car is a two-tone split, so the shot represents the Beluga hide rather than a single-tone Beluga interior. Hotspur carries no imageIndex on purpose: Bentley published no red cabin in the 23 September 2026 press pack, and pointing the swatch at a cream or black interior would be the make-and-model mismatch car-imagery-checklist.md SS2 exists to stop. Hexes are our approximation of the real paint and hide, not a colour match.",
   "exteriorColors": [
-    { "name": "Electrum", "hex": "#b6c25c", "imageIndex": 0 },
-    { "name": "Astral — by Mulliner", "hex": "#b9bcc0", "imageIndex": 2 }
+    {
+      "name": "Astral — by Mulliner",
+      "hex": "#b9bcc0",
+      "imageIndex": 0
+    },
+    {
+      "name": "Electrum",
+      "hex": "#b6c25c",
+      "imageIndex": 5
+    }
   ],
-
   "interiorColors": [
     {
       "name": "Hotspur",
@@ -103,9 +106,12 @@
       "hex2": "#17171a",
       "secondaryName": "Beluga secondary hide"
     },
-    { "name": "Beluga", "hex": "#17171a", "imageIndex": 3 }
+    {
+      "name": "Beluga",
+      "hex": "#17171a",
+      "imageIndex": 8
+    }
   ],
-
   "features": [
     "113 kWh net battery of 192 lithium-ion pouch cells in series, on an 800-volt architecture",
     "Up to 375 miles (600 km) WLTP range",
@@ -124,66 +130,68 @@
     "Carbon Silicon Carbide ceramic brakes optional — 440 mm front discs, jointly the largest in the world",
     "Ten-year, 100,000-mile battery warranty"
   ],
-
   "customData": [
     {
       "label": "Battery",
       "value": "113 kWh net, 192 lithium-ion pouch cells in series"
     },
-    { "label": "Architecture", "value": "800 volts nominal" },
-    { "label": "Range, WLTP", "value": "Up to 375 miles (600 km)" },
+    {
+      "label": "Architecture",
+      "value": "800 volts nominal"
+    },
+    {
+      "label": "Range, WLTP",
+      "value": "Up to 375 miles (600 km)"
+    },
     {
       "label": "DC charging",
       "value": "10–80 per cent in around 16 minutes at 400 kW"
     },
-    { "label": "Charge added in seven minutes", "value": "About 100 miles" },
-    { "label": "Battery warranty", "value": "10 years or 100,000 miles" },
+    {
+      "label": "Charge added in seven minutes",
+      "value": "About 100 miles"
+    },
+    {
+      "label": "Battery warranty",
+      "value": "10 years or 100,000 miles"
+    },
     {
       "label": "0–60 mph",
       "value": "3.3 seconds (Torcal) / 2.8 seconds (Torcal S)"
     },
-    { "label": "Top speed", "value": "155 mph (Torcal) / 162 mph (Torcal S)" },
-    { "label": "Boot", "value": "460 litres, plus 90 litres under the bonnet" },
-    { "label": "Turning circle", "value": "11.1 metres" },
+    {
+      "label": "Top speed",
+      "value": "155 mph (Torcal) / 162 mph (Torcal S)"
+    },
+    {
+      "label": "Boot",
+      "value": "460 litres, plus 90 litres under the bonnet"
+    },
+    {
+      "label": "Turning circle",
+      "value": "11.1 metres"
+    },
     {
       "label": "Length",
-      "value": "Five metres on Bentley's own figure; Wikipedia records 5,008 mm"
-    },
-    {
-      "label": "Wheelbase",
-      "value": "3,023 mm (119 inches) — trade press, not a Bentley figure"
-    },
-    {
-      "label": "Kerb weight",
-      "value": "Not published by Bentley. Wikipedia records 2,700 kg — treat as unconfirmed, and it is the number that sets your freight quotation"
-    },
-    {
-      "label": "Platform",
-      "value": "Premium Platform Electric, shared with the Porsche Cayenne Electric — reported by trade press, not stated in Bentley's release"
+      "value": "Five metres"
     },
     {
       "label": "Built at",
       "value": "Crewe, Cheshire — designed, engineered and built there"
     },
     {
-      "label": "UK price, Torcal",
-      "value": "£173,300 reported by Top Gear, 23 September 2026 — a UK retail figure, not a landed cost"
-    },
-    {
-      "label": "UK price, Torcal S",
-      "value": "£199,300 reported by Top Gear, 23 September 2026 — a UK retail figure, not a landed cost"
-    },
-    {
-      "label": "UK price, First Edition",
-      "value": "£188,333.33 before VAT on Bentley's UK configurator for a right-hand-drive car, checked 29 September 2026 — £226,000 with 20% UK VAT"
+      "label": "United Kingdom price, First Edition",
+      "value": "£188,333.33 before VAT, or £226,000 with 20% UK VAT"
     },
     {
       "label": "Named after",
       "value": "El Torcal de Antequera, a limestone rock formation in Andalusia"
     },
-    { "label": "Revealed", "value": "23 September 2026, in London" }
+    {
+      "label": "Revealed",
+      "value": "23 September 2026, in London"
+    }
   ],
-
   "valuePoints": [
     {
       "title": "You buy it in the country it is built in",
@@ -191,7 +199,7 @@
     },
     {
       "title": "You see the VAT line on its own",
-      "description": "Bentley's UK configurator prices a right-hand-drive Torcal First Edition at £188,333.33 before VAT. The 20 per cent on top of that is British value added tax, and on HMRC's export conditions it does not fall due — but those conditions are real, with a window to export and to evidence it. We show that line separately so you can see which part of the number is the car and which part is a tax you may never pay."
+      "description": "A right-hand-drive Torcal First Edition is £188,333.33 before tax. The 20 per cent on top of that is British value added tax, and on HMRC's export conditions it does not fall due — but those conditions are real, with a window to export and to evidence it. We show that line separately, so you can see which part of the number is the car and which part is a tax you may never pay."
     },
     {
       "title": "You get told if your destination cannot charge it",
@@ -202,7 +210,6 @@
       "description": "Torcal, Torcal S or the First Edition, in right-hand drive, with the paint, the hide and the wheel you want. Tell us the combination and your destination port and we will build the landed figure against that exact car — the purchase price, the freight, the marine cover and the duty line, itemised, before any money moves."
     }
   ],
-
   "searchTags": [
     "bentley",
     "bentley-torcal",
@@ -220,6 +227,5 @@
     "new",
     "upcoming"
   ],
-
-  "notes": "Bentley's first battery-electric car and its fourth model line, revealed in London on 23 September 2026 and built at Crewe. 113 kWh net across 192 pouch cells at 800 volts, up to 375 miles WLTP, 10–80 per cent in around 16 minutes at 400 kW, 821 PS and 1,194 Nm in the core car and 888 PS and 1,350 Nm in the S — the most powerful Bentley ever built. We are offering this car in right-hand drive; Bentley builds both hands at Crewe. Four things we will not pretend to know. Bentley published no price list with the release: the £173,300 and £199,300 figures are Top Gear's reporting, and the £188,333.33 before VAT is what Bentley's own UK configurator returns for a right-hand-drive First Edition, checked 29 September 2026. Bentley has not published a kerb weight, which is the figure that sets a freight quotation — Wikipedia records 2,700 kg and that is the only source for it. Bentley's release does not state which car the First Edition is built on; Electrifying reports it is the 888 PS S, and it is recorded here as that publication's claim rather than Bentley's. And Bentley has not published a UK model year, so the 2027 on this page is the build and delivery year — United States coverage refers to it as a 2028 model. Photography is Bentley press imagery of the Torcal from the 23 September 2026 global debut, not of a specific car we hold; the 'TORCAL' show placards on the two studio shots were removed before upload, and the interior shot is the right-hand-drive cabin. Colour swatches are our approximation of the factory paint and hide, not a colour match, and only the two new finishes Bentley named publicly are listed. No landed cost is shown on this page: the UK figures are British retail prices with 20 per cent UK VAT inside them, and they are not a base for an import calculation in any other country."
+  "notes": "Bentley's first battery-electric car and its fourth model line, designed, engineered and built at Crewe. A 113 kWh battery of 192 lithium-ion pouch cells runs at 800 volts for up to 375 miles WLTP, takes 10 to 80 per cent in around 16 minutes on a 400 kW charger, adds roughly 100 miles in seven minutes, and is warranted for ten years or 100,000 miles. The core Torcal carries 821 PS and 1,194 Nm and reaches 60 mph in 3.3 seconds. The Torcal S carries 888 PS and 1,350 Nm, reaches 60 mph in 2.8 seconds and runs to 162 mph, which makes it the most powerful road car Bentley has built. Underneath it is a Bentley first: a fully active suspension whose two-valve adaptive dampers do away with anti-roll bars altogether, with all-wheel steering standard and a brake choice running to 440 mm carbon silicon carbide discs. The cabin introduces the first 100 per cent Merino wool fabric made durable enough for a car, woven with Fox Brothers of Somerset, alongside Ombre Walnut and Sunburst Aluminium by Mulliner, fifteen shades of olive tan leather with fifteen matching shades of Dinamica, curved OLED screens, an augmented reality head-up display, four powered doors, the Frosted Diamond switchable sunroof and an optional 1,780 W, 28-speaker Naim for Bentley system. Five metres long, with a 460-litre boot and 90 litres under the bonnet, offered here in right-hand drive."
 }
