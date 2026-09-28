@@ -1,4 +1,7 @@
 import type { ComponentType } from "react";
+import BentleyTorcalRevealedSpecificationsPrice from "./bentley-torcal-revealed-specifications-price";
+import BentleyTorcalRightHandDriveImportMarkets from "./bentley-torcal-right-hand-drive-import-markets";
+import BentleyTorcalVsRangeRoverElectricBritishLuxuryEv from "./bentley-torcal-vs-range-rover-electric-british-luxury-ev";
 import BonhamsGoodwoodRevival2026AuctionPreview from "./bonhams-goodwood-revival-2026-auction-preview";
 import ChanganRayongRightHandDriveThailandExportBase from "./changan-rayong-right-hand-drive-thailand-export-base";
 import ChineseEvBrandsRecordEuropeMarketShare2026 from "./chinese-ev-brands-record-europe-market-share-2026";
@@ -39,6 +42,12 @@ import YenIntervention2026JapanCarImportCost from "./yen-intervention-2026-japan
 // Maps a news slug to its body component. Keep keys in sync with NEWS_ARTICLES
 // in src/config/news.ts.
 export const NEWS_BODIES: Record<string, ComponentType> = {
+  "bentley-torcal-revealed-specifications-price":
+    BentleyTorcalRevealedSpecificationsPrice,
+  "bentley-torcal-right-hand-drive-import-markets":
+    BentleyTorcalRightHandDriveImportMarkets,
+  "bentley-torcal-vs-range-rover-electric-british-luxury-ev":
+    BentleyTorcalVsRangeRoverElectricBritishLuxuryEv,
   "ferrari-luce-chassis-0-40-million-auction":
     FerrariLuceChassis040MillionAuction,
   "monterey-2026-auction-week-market-report":
