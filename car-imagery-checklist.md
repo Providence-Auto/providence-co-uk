@@ -45,7 +45,9 @@ copy names one.
 - A generic photo (no model named anywhere near it) is fine only where nothing
   on the page claims it is a specific car.
 - A stock or press shot standing in for the actual vehicle is labelled as
-  illustrative (`heroCaption` on news, `notes` on a car page brief).
+  illustrative. On news that is `heroCaption`, which is public and reads as a
+  caption. On a car page it is the brief's `_comment` — **not `notes`**, which
+  is customer-facing copy. See §6.
 
 ## 3. Number plates must match the page's country, or be removed
 
@@ -91,6 +93,39 @@ nothing is legible. Say "number plate removed" in the alt text.
 - OG images are 1200×630 JPEGs with the same plate treatment as the hero they
   are cropped from.
 
+## 6. Where the provenance record goes on a car page
+
+A car page brief has two prose fields and they are not interchangeable.
+
+| Field | Who reads it | What goes in it |
+|---|---|---|
+| `notes` | **The customer.** It renders as the description paragraph on `/b2c/gallery/<slug>`, behind a READ MORE toggle. | The car, its specification and what makes it worth importing. Nothing else. |
+| `_comment` | **Us.** The seeder ignores unrecognised keys, so it never reaches the page. | Everything below. |
+
+The `_comment` is the provenance record, and it carries:
+
+- **Where every figure came from** — the manufacturer release, the publication,
+  the date each was checked. Anything attributed to trade press rather than the
+  manufacturer is named as such here.
+- **Imagery provenance and licence** — whose photography it is, the date
+  commercial use was confirmed and by whom, whether the shots are of a specific
+  car or illustrative, and which sets were rejected and why.
+- **Plate treatment** — every rectangle blurred, on which file, with the
+  `scripts/blur-plate.mjs` invocation.
+- **What was deliberately left out** — a figure the manufacturer has not
+  published is recorded here as unpublished, so the next person does not
+  quietly fill it in.
+- **The re-run command** for each environment.
+
+**Why the split.** `notes` was written like a build note on the Bentley Torcal
+page and shipped licence and sourcing commentary to customers. Provenance is
+real and has to be written down — it just belongs where the business reads it,
+not in the sales copy. A reader who wants the sourcing has the linked news
+article, which carries its `sources` list and its `ConfirmedLedger`.
+
+A prefixed key (`_comment`, `_colorsComment`, `_destinationsComment`) is the
+convention for any other internal annotation on a brief.
+
 ---
 
 ## The checklist
@@ -105,3 +140,4 @@ photo.
 - [ ] Every size of the image (hero, card, OG) has had the same treatment, and each was opened and checked.
 - [ ] The licence allows this use, and a Commons photo has its credit entry.
 - [ ] A stand-in or illustrative image is labelled as such.
+- [ ] On a car page, the provenance record is in the brief's `_comment` and `notes` carries only the car, its specification and its value (§6).
