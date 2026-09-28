@@ -36,8 +36,7 @@
       "highlights": [
         "22-inch First Edition wheels with Graphene Grey brake calipers and First Edition fender badging",
         "Bespoke seat quilting with contrast chevrons, and illuminated First Edition treadplates",
-        "Powered Open and Close Doors, Frosted Diamond Switchable Sunroof and Naim for Bentley as standard",
-        "Electrifying reports the First Edition is built on the 888 PS Torcal S — Bentley's own release does not say so"
+        "Powered Open and Close Doors, Frosted Diamond Switchable Sunroof and Naim for Bentley as standard"
       ],
       "imageIndex": 0
     },
@@ -174,35 +173,15 @@
     },
     {
       "label": "Length",
-      "value": "Five metres on Bentley's own figure; Wikipedia records 5,008 mm"
-    },
-    {
-      "label": "Wheelbase",
-      "value": "3,023 mm (119 inches) — trade press, not a Bentley figure"
-    },
-    {
-      "label": "Kerb weight",
-      "value": "Not published by Bentley. Wikipedia records 2,700 kg — treat as unconfirmed, and it is the number that sets your freight quotation"
-    },
-    {
-      "label": "Platform",
-      "value": "Premium Platform Electric, shared with the Porsche Cayenne Electric — reported by trade press, not stated in Bentley's release"
+      "value": "Five metres"
     },
     {
       "label": "Built at",
       "value": "Crewe, Cheshire — designed, engineered and built there"
     },
     {
-      "label": "UK price, Torcal",
-      "value": "£173,300 reported by Top Gear, 23 September 2026 — a UK retail figure, not a landed cost"
-    },
-    {
-      "label": "UK price, Torcal S",
-      "value": "£199,300 reported by Top Gear, 23 September 2026 — a UK retail figure, not a landed cost"
-    },
-    {
-      "label": "UK price, First Edition",
-      "value": "£188,333.33 before VAT on Bentley's UK configurator for a right-hand-drive car, checked 29 September 2026 — £226,000 with 20% UK VAT"
+      "label": "United Kingdom price, First Edition",
+      "value": "£188,333.33 before VAT, or £226,000 with 20% UK VAT"
     },
     {
       "label": "Named after",
@@ -220,7 +199,7 @@
     },
     {
       "title": "You see the VAT line on its own",
-      "description": "Bentley's UK configurator prices a right-hand-drive Torcal First Edition at £188,333.33 before VAT. The 20 per cent on top of that is British value added tax, and on HMRC's export conditions it does not fall due — but those conditions are real, with a window to export and to evidence it. We show that line separately so you can see which part of the number is the car and which part is a tax you may never pay."
+      "description": "A right-hand-drive Torcal First Edition is £188,333.33 before tax. The 20 per cent on top of that is British value added tax, and on HMRC's export conditions it does not fall due — but those conditions are real, with a window to export and to evidence it. We show that line separately, so you can see which part of the number is the car and which part is a tax you may never pay."
     },
     {
       "title": "You get told if your destination cannot charge it",
