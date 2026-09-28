@@ -17,7 +17,7 @@ answered (`brand-position.md` §11.2).
 
 ---
 
-## 1. The two types
+## 1. The three types
 
 ### 1.1 An informational page
 
@@ -56,14 +56,42 @@ is currently a guide, and `/import-japanese-cars-to-ireland` leaks
 informational-intent questions into its FAQ. Both are recorded in the §8
 register with what each needs.
 
-### 1.3 The test
+### 1.3 A tool page
 
-**Delete every mention of Providence from the page and read what is left.**
+**Computes an answer for the reader's own situation.** The reader did not come
+to read a page; they came to put their numbers in and get a figure back. The
+output *is* the product.
+
+A tool is its own type because it is the one page that is genuinely both. Its
+numbers carry the whole of its value, so they answer to §2's sourcing standard.
+Its job is to produce a lead, so its conversion path answers to §3's gate.
+Filing it as either one alone licenses the wrong failure: as an informational
+page it would have no discipline over what it claims about us, and as a landing
+page it would be allowed to state a tax rate nobody verified.
+
+A tool is **the one page permitted to teach the mechanism it computes** — the
+§3.7 exception — because a figure the reader cannot follow is a figure they
+cannot act on. That permission is exactly as wide as its own output and no
+wider: explaining how the number in front of them was reached is the tool
+working; everything past that is a guide, and it links one.
+
+Live tool surfaces: **`/ireland-cost-calculator`**.
+
+### 1.4 The test
+
+**Does the page compute something from the reader's own input?** If so it is a
+**tool** — stop here, and apply §2's sourcing standard to its numbers and §3's
+gate to its selling.
+
+Otherwise, **delete every mention of Providence from the page and read what is
+left.**
 
 - Still useful to the reader → **informational page**.
 - Nothing of substance left → **landing page**.
 - Useful *and* selling, at length, in one scroll → the page is **mixed**, and
-  mixed means it is two pages wearing one URL. See §4.
+  mixed means it is two pages wearing one URL. See §4. A calculator is not the
+  exception to this — a page is only a tool if it *computes*. Prose about a tax,
+  sitting beside a CTA, is a mixed page however many numbers it contains.
 
 A second read, when the first is close: find the verbs that carry the knowledge.
 If **the world** is doing them — *duty is charged at 10%*, *the NCTS appointment
@@ -166,7 +194,8 @@ This is a process, and it runs in this order:
    an auction grade is assigned, what the IVA test involves — that is an
    informational page's subject. A landing page may state the *fact a buyer
    needs in order to act* (a rate, a ceiling, a transit time) and then link the
-   guide that owns the explanation. It does not teach the mechanism.
+   guide that owns the explanation. It does not teach the mechanism. **A tool
+   page is the one exception** — see §3A.
 
 The per-template mechanics that follow from this — the keyword in the slug,
 title, H1 and H2s, and the current agreed section list for the
@@ -176,10 +205,48 @@ for one family of pages**, not a default to apply to the next page.
 
 ---
 
-## 4. Where the two meet
+## 3A. Tool pages — both standards, and show the working
 
-The two types are wired to each other, and the wiring is what keeps them from
-competing in search.
+A tool answers to §2 for what it *states* and §3 for what it *sells*. There is
+no third, softer standard: it is held to the stricter half of each.
+
+1. **Every rate is a sourced rate.** Each band, threshold, percentage, relief
+   and cut-off in the calculation comes from the revenue authority or the
+   responsible department, named and dated, exactly as §2.3 requires. A number
+   inside a calculator is not a smaller claim than a number in an article — it
+   is a larger one, because the reader acts on the output instead of weighing a
+   sentence.
+
+2. **Show the working.** The inputs, the rates applied and the order they were
+   applied in are visible on the page, not just the total. A figure the reader
+   cannot trace is a figure they cannot use, and it is the one thing a tool
+   exists to give them.
+
+3. **Date the tables, and carry `<Disclaimer />`.** Rates change on a budget
+   cycle. Every table says when it was last checked, so a reader and the next
+   writer can both see when it went stale.
+
+4. **It may teach its own mechanism, and only that.** The §3.7 exception, and it
+   ends where the reader's own output does. Background on the tax, its history,
+   what else it applies to, how other countries handle it — that is a guide, and
+   the tool links it.
+
+5. **The conversion path follows §3.** The CTA, the form, and any claim about
+   what Providence does with the result are ask-first like any landing page.
+   Nothing about the tool's numeric licence extends to its selling.
+
+6. **Never invent a figure to keep the tool complete.** A missing rate is shown
+   as missing. A tool that fills a gap with a guess is worse than one that says
+   it cannot price that case, because the guess is indistinguishable from the
+   sourced figures beside it.
+
+---
+
+## 4. Where informational and landing meet
+
+These two are wired to each other, and the wiring is what keeps them from
+competing in search. (A tool sits outside this: it targets its own calculator
+query and competes with neither.)
 
 | | Informational | Landing |
 |---|---|---|
@@ -202,25 +269,20 @@ converting URL, where it ranks cleanly for neither phrase.
 
 ---
 
-## 5. Pages that are neither
+## 5. Pages that are none of the three
 
-Not every page sells or informs, and forcing one into a type is worse than
-naming the third case.
+Not every page sells, informs or computes, and forcing one into a type is worse
+than naming the remainder honestly.
 
 | Page | What it is | Rule it follows |
 |---|---|---|
 | `/about-us`, `/team`, `/team/[slug]` | Navigational — brand, proof, people | `brand-position.md` §9 boilerplate; `sales-profile-spec.md` for profiles |
 | `/request`, `/track/[id]`, `/signup`, `/auth/*` | Funnel utility — the transaction itself | No editorial rules; form microcopy follows `writing-angle.md` |
 | `/admin/*`, `/dealer-dashboard` | Internal / logged-in product | Not public copy |
-| `/ireland-cost-calculator` | **A tool, and the one genuine hybrid** | See below |
 
-`/ireland-cost-calculator` is a working landed-cost calculator sitting on a deep
-bed of general Irish tax mechanics. It converts like a landing page and teaches
-like a guide, and it cannot honestly be filed as either. Its classification is
-raised as a pending question in `brand-position.md` §11.3 rather than decided
-here. Until that is answered, its **numbers** are held to §2's sourcing standard
-(verified primary sources, dated, disclaimed) and its **selling** to §3's — the
-safe reading of both.
+These are not a fourth type with rules of its own — they are pages the three
+types do not reach. If one of them starts making tax claims or selling a
+service, it has become one of the three and is held to that type's rules.
 
 ---
 
@@ -229,22 +291,23 @@ safe reading of both.
 This document adds to, and does not override:
 
 - **`brand-position.md` / `writing-angle.md`** — the position and the
-  sentence-level rules apply to both types. The customer is still the subject of
-  the sentence on an informational page, and the banned concierge vocabulary is
-  banned there too.
-- **Heading language** (`CLAUDE.md`) — one heading says the whole thing, on both
-  types. The AEO question/answer eyebrow remains the one exception.
-- **No filler copy** — a line earns its place by carrying a fact, on both types.
+  sentence-level rules apply to all three types. The customer is still the
+  subject of the sentence on an informational page, and the banned concierge
+  vocabulary is banned everywhere.
+- **Heading language** (`CLAUDE.md`) — one heading says the whole thing, on all
+  three. The AEO question/answer eyebrow remains the one exception.
+- **No filler copy** — a line earns its place by carrying a fact, on all three.
 - **Secondary CTAs** (`CLAUDE.md`) — one per page, always below the primary.
 - **SEO & AEO** (`CLAUDE.md`, `seo-aeo-optimization-guide.md`) — the per-page
   minimum (title, description, OG image with real dimensions, canonical,
   JSON-LD, one H1, a 40–50 word direct answer, explicit `robots`) is the same
-  for both. Only the *schema* differs: `Article` / `NewsArticle` and `FAQPage`
-  for informational, `Product` / `Service` / `LocalBusiness` / `ItemList` for
-  landing.
-- **`car-imagery-checklist.md`** — every car photo on either type.
-- **`business-context.md` §14** — channel policy is a decision input on both,
-  and becomes public copy on neither.
+  for all three. Only the *schema* differs: `Article` / `NewsArticle` and
+  `FAQPage` for informational, `Product` / `Service` / `LocalBusiness` /
+  `ItemList` for landing, and `WebApplication` (plus `FAQPage` where it has one)
+  for a tool, whose core entity is the calculation rather than the prose.
+- **`car-imagery-checklist.md`** — every car photo on any of them.
+- **`business-context.md` §14** — channel policy is a decision input on all
+  three, and becomes public copy on none.
 
 ---
 
@@ -262,15 +325,24 @@ general offer copy that was not asked for? Does the page sell exactly one
 service to one phrase? Does it teach a mechanism it should be linking a guide
 for? Does it use a heading that belongs to a guide?
 
-**Both.** Run `writing-angle.md` §8's five questions and the `CLAUDE.md` SEO/AEO
-minimum. Then apply the test in §1.3 and confirm the page is the type you meant
-to write.
+**Tool.** Does every rate, band and threshold in the calculation name a primary
+source and the date it was checked? Is the working visible — inputs, rates, and
+the order they were applied — or only the total? Are the tables dated and is
+there a `<Disclaimer />`? Does any part of the explainer go beyond making its own
+output legible? Was every claim about what Providence does with the result
+confirmed, per §3? Is any figure in it a guess standing in for a rate nobody
+sourced?
+
+**All three.** Run `writing-angle.md` §8's five questions and the `CLAUDE.md`
+SEO/AEO minimum. Then apply the test in §1.4 and confirm the page is the type
+you meant to write.
 
 ---
 
 ## 8. The register
 
-Audited 2026-09-28. Update this table when a public page is added, retired or
+Audited 2026-09-28; `/ireland-cost-calculator` reclassified as a **tool**
+2026-09-29. Update this table when a public page is added, retired or
 reclassified — a page missing from it has not been classified, and an
 unclassified page is the state this document exists to prevent.
 
@@ -290,10 +362,12 @@ unclassified page is the state this document exists to prevent.
 | `/b2c/gallery` + car pages + `[destination]` | dynamic | Landing | Car pages are database rows, not files |
 | `/about-us`, `/team`, `/team/[slug]` | dynamic | Neither — navigational | §5 |
 | `/request`, `/track/[id]`, `/signup`, `/auth/*` | — | Neither — funnel utility | §5 |
-| `/ireland-cost-calculator` | 1 | **Hybrid, unresolved** | §5; pending in `brand-position.md` §11.3 |
+| `/ireland-cost-calculator` | 1 | **Tool** | §1.3 and §3A. Numbers to §2's sourcing standard, selling to §3's gate, and the one page permitted to teach the mechanism it computes |
 
 ---
 
 **The one-line test.** Before you write a word: *am I explaining the world, or
 am I selling our service?* If the honest answer is "both", you are looking at
-two pages, and the next decision is which one you are writing.
+two pages, and the next decision is which one you are writing — unless the page
+*computes the answer*, which is the one case where "both" is the correct answer
+and the page is a tool.
