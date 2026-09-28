@@ -3756,6 +3756,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       { id: "applies", label: "Does this apply to you?" },
       { id: "substitute", label: "When to buy something else instead" },
+      { id: "unknowns", label: "What we could not confirm" },
     ],
     faqs: [
       {
