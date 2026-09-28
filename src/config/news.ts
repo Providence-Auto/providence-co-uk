@@ -3612,6 +3612,311 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       "uk-car-history-checks-explained",
     ],
   },
+  {
+    slug: "bentley-torcal-revealed-specifications-price",
+    title: "Bentley's first electric car: 888 PS, 375 miles, built in Crewe",
+    h1: "Bentley's First Electric Car Is Here: 888 PS, 375 Miles and Built in Crewe",
+    seoTitle: "Bentley Torcal: Specs, Price and Import Read",
+    description:
+      "Bentley revealed the Torcal on 23 September 2026 — 888 PS, 113 kWh, 375 miles WLTP, built at Crewe. The specification, the UK prices and what is still unknown.",
+    excerpt:
+      "Bentley published an unusually complete engineering release and no price list at all. The two figures in circulation are Top Gear's — and the kerb weight, which is the number that sets your freight quotation, comes from nobody.",
+    category: "Releases",
+    dateline: "Crewe, Cheshire",
+    keywords: [
+      "bentley torcal",
+      "bentley torcal price",
+      "bentley torcal specifications",
+      "bentley torcal range miles",
+      "how much is the bentley torcal",
+      "where is the bentley torcal built",
+      "can you import a bentley torcal",
+      "when is the bentley torcal on sale",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-29",
+    updatedDate: "2026-09-29",
+    readingTimeMins: 12,
+    heroImage: "/cars/bentley-torcal/front-three-quarter.webp",
+    heroAlt:
+      "A Bentley Torcal in satin Electrum green, photographed front three-quarter in a studio, show placard removed",
+    heroCaption:
+      "Bentley press image of the Torcal from the global debut on 23 September 2026. The 'TORCAL' show placard in the number-plate position has been removed. Bentley states that its configurator content is provided for general information and does not constitute an offer for the sale of any specific goods.",
+    toc: [
+      { id: "confirmed", label: "What Bentley actually confirmed" },
+      { id: "price", label: "The price, and who published it" },
+      { id: "landed", label: "What it means landed" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Move now or wait?" },
+      { id: "unknowns", label: "What is still unknown" },
+    ],
+    faqs: [
+      {
+        q: "How much does the Bentley Torcal cost?",
+        a: "Bentley published no price list with the reveal. Top Gear reported United Kingdom prices of £173,300 for the Torcal and £199,300 for the Torcal S on 23 September 2026. Bentley's own UK configurator prices a right-hand-drive Torcal First Edition at £188,333.33 before value added tax, which is £226,000 with 20 per cent UK VAT added. Treat the first two as trade reporting.",
+      },
+      {
+        q: "What is the Bentley Torcal's range?",
+        a: "Up to 375 miles, or 600 km, on the WLTP cycle, from a 113 kWh net battery of 192 lithium-ion pouch cells running at 800 volts. Bentley quotes 10 to 80 per cent in around 16 minutes on a 400 kW charger, and about 100 miles of range added in seven minutes. Bentley has published one range figure rather than a separate real-world number.",
+      },
+      {
+        q: "Where is the Bentley Torcal built?",
+        a: "At Crewe in Cheshire. Bentley states the Torcal is designed, engineered and built there, supported by a United Kingdom supplier network. Crewe has built Bentleys since 1946. For an importer that makes the United Kingdom the source market for this car rather than one of several, which is the single most useful fact in the announcement.",
+      },
+      {
+        q: "How powerful is the Bentley Torcal?",
+        a: "The core Torcal produces 821 PS and 1,194 Nm, reaching 60 mph in 3.3 seconds and 155 mph. The Torcal S produces 888 PS and 1,350 Nm with Launch Control active, reaching 60 mph in 2.8 seconds and 162 mph. The S is the most powerful road car Bentley has built in its 107-year history.",
+      },
+      {
+        q: "Is the Bentley Torcal available in right-hand drive?",
+        a: "Yes. It is built at Crewe in both hands, and Bentley's UK configurator prices a right-hand-drive Torcal First Edition directly. Right-hand drive is the standard specification for the British home market rather than a special order, which is what makes the car straightforward to source for Ireland, East Africa, the Indian Ocean markets and the Caribbean.",
+      },
+      {
+        q: "When can you buy a Bentley Torcal?",
+        a: "The configurator opened on the reveal date of 23 September 2026. Electrifying reports that production starts in the second quarter of 2027, with first deliveries in summer 2027. Any order placed now is a pre-order against a car that does not yet exist, so treat delivery dates as Bentley's current intention rather than as a commitment.",
+      },
+    ],
+    sources: [
+      {
+        label: "The all-new Bentley Torcal makes global debut",
+        href: "https://www.bentleymedia.com/en/newsitem/1835-the-all-new-bentley-torcal-makes-global-debut",
+        publisher: "Bentley Motors (Bentley Newsroom)",
+      },
+      {
+        label: "Torcal — Models",
+        href: "https://www.bentleymotors.com/en/models/torcal.html",
+        publisher: "Bentley Motors",
+      },
+      {
+        label: "Bentley Torcal review: price, specs, range and on-sale date",
+        href: "https://www.electrifying.com/reviews/bentley-reviews/torcal/review",
+        publisher: "Electrifying",
+      },
+      {
+        label: "Bentley Torcal revealed",
+        href: "https://www.loveelectric.cars/blog/bentley-torcal-revealed",
+        publisher: "loveelectric",
+      },
+      {
+        label:
+          "Bentley unveils Torcal, its first EV: 888 PS, 375 miles of range",
+        href: "https://electrek.co/2026/09/23/bentley-torcal-first-electric-bentley-unveiled/",
+        publisher: "Electrek",
+      },
+      {
+        label: "VAT on goods exported from the UK (VAT Notice 703)",
+        href: "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703",
+        publisher: "GOV.UK (HMRC)",
+      },
+    ],
+    relatedGuides: [
+      "how-to-import-a-car-from-the-uk",
+      "cost-to-import-a-car-from-the-uk",
+      "best-cars-to-import-from-the-uk",
+    ],
+    linkedVehicleSlugs: ["bentley-torcal-first-edition"],
+  },
+  {
+    slug: "bentley-torcal-right-hand-drive-import-markets",
+    title:
+      "A right-hand-drive Torcal can go almost anywhere. The charger decides.",
+    h1: "A Right-Hand-Drive Bentley Torcal Can Go Almost Anywhere — the Charger Decides Whether It Should",
+    seoTitle: "Bentley Torcal RHD: Which Import Markets Work",
+    description:
+      "The Bentley Torcal is built right-hand drive at Crewe, and no age limit touches a new car. What actually decides the market is 113 kWh and a 400 kW charger.",
+    excerpt:
+      "Almost every question an importer asks about a new model — the age bar, the hand of drive, type approval — has a boring answer here. The one that does not is where you plug it in.",
+    category: "Releases",
+    dateline: "Crewe, Cheshire",
+    keywords: [
+      "bentley torcal right hand drive",
+      "import a bentley torcal",
+      "bentley torcal rhd markets",
+      "can you import a bentley torcal to kenya",
+      "does a new car have an import age limit",
+      "bentley torcal charging speed",
+      "importing an electric car to east africa",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-29",
+    updatedDate: "2026-09-29",
+    readingTimeMins: 10,
+    heroImage: "/cars/bentley-torcal/side-profile.webp",
+    heroAlt:
+      "A Bentley Torcal in satin Electrum green photographed in side profile against mountains, with no number plate visible",
+    heroCaption:
+      "Bentley press image of the Torcal from the global debut on 23 September 2026. Illustrative — not a photograph of a specific vehicle offered for sale.",
+    toc: [
+      { id: "hand", label: "The hand of drive question, answered quickly" },
+      { id: "age", label: "Why no age limit touches this car" },
+      { id: "charger", label: "The constraint that actually binds" },
+      {
+        id: "freight",
+        label: "What a 113 kWh battery does to the freight line",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "substitute", label: "When to buy something else instead" },
+    ],
+    faqs: [
+      {
+        q: "Is the Bentley Torcal right-hand drive?",
+        a: "Yes. The Torcal is built at Crewe in Cheshire and right-hand drive is the standard specification for its British home market. Bentley's own UK configurator prices a right-hand-drive Torcal First Edition directly, so a right-hand-drive car is an ordinary order rather than a special build. That removes the single most common obstacle to importing a new luxury car.",
+      },
+      {
+        q: "Does an import age limit stop you bringing in a Bentley Torcal?",
+        a: "No. Import age limits — Kenya's, Sri Lanka's, and those across much of the Caribbean — restrict how old a used vehicle may be at import. A new car has no age to fail against. The Torcal enters production in 2027, so the age bars that decide most import questions in those markets simply do not engage with it.",
+      },
+      {
+        q: "Can you charge a Bentley Torcal at its full speed outside Europe?",
+        a: "Only where a 400 kW DC charger exists. Bentley's 16-minute figure for 10 to 80 per cent assumes that hardware. On a slower public charger or a domestic supply the same 113 kWh battery takes substantially longer, and the car still works — it just stops being a 16-minute proposition. Check what is actually installed near where the car will live before ordering.",
+      },
+      {
+        q: "Does the battery change what it costs to ship a car?",
+        a: "It changes how it ships more than what it weighs. Large lithium-ion batteries are carried under tightened Ro-Ro rules, and carriers commonly apply state-of-charge limits and stowage conditions to electric vehicles. Bentley has not published a kerb weight for the Torcal, and weight is what a freight quotation is built from, so get the figure confirmed before you accept a quote.",
+      },
+      {
+        q: "Should you import a Bentley Torcal or a Bentayga?",
+        a: "If the destination has no rapid charging, the combustion or hybrid Bentayga does the same job without the constraint. The Torcal is the better car where the charging answer is yes and the worse one where it is no. That is a question about your market's infrastructure, not about the car, and it is worth answering honestly before any money moves.",
+      },
+      {
+        q: "Is a new Bentley Torcal easier to import than a used luxury car?",
+        a: "In several respects, yes. There is no age bar to clear, no auction grade to interpret, no mileage or service-history risk, and the documentation comes from the manufacturer rather than from a previous owner. What you give up is the price advantage of buying used, and you take on a delivery date in 2027 rather than a car that exists today.",
+      },
+    ],
+    sources: [
+      {
+        label: "The all-new Bentley Torcal makes global debut",
+        href: "https://www.bentleymedia.com/en/newsitem/1835-the-all-new-bentley-torcal-makes-global-debut",
+        publisher: "Bentley Motors (Bentley Newsroom)",
+      },
+      {
+        label: "Bentley Torcal review: price, specs, range and on-sale date",
+        href: "https://www.electrifying.com/reviews/bentley-reviews/torcal/review",
+        publisher: "Electrifying",
+      },
+      {
+        label: "Importing vehicles into Kenya",
+        href: "https://www.kra.go.ke/importation/importing-a-motor-vehicle",
+        publisher: "Kenya Revenue Authority",
+      },
+      {
+        label: "SOLAS Chapter II-2 and the carriage of vehicles",
+        href: "https://www.imo.org/en/OurWork/Safety/Pages/Cargoes-Default.aspx",
+        publisher: "International Maritime Organization",
+      },
+      {
+        label: "VAT on goods exported from the UK (VAT Notice 703)",
+        href: "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703",
+        publisher: "GOV.UK (HMRC)",
+      },
+    ],
+    relatedGuides: [
+      "how-to-import-a-car-from-the-uk",
+      "uk-car-export-documents-explained",
+      "cost-to-import-a-car-from-the-uk",
+    ],
+    linkedVehicleSlugs: ["bentley-torcal-first-edition"],
+  },
+  {
+    slug: "bentley-torcal-vs-range-rover-electric-british-luxury-ev",
+    title: "Two British electric flagships, revealed three weeks apart",
+    h1: "Bentley Torcal vs Range Rover Electric: Two British Electric Flagships, Three Weeks Apart",
+    seoTitle: "Torcal vs Range Rover Electric: Specs Compared",
+    description:
+      "JLR revealed the Range Rover Electric on 2 September 2026 and Bentley the Torcal on 23 September. Both British-built, both right-hand drive. How they compare.",
+    excerpt:
+      "Britain produced two electric luxury flagships in three weeks. They are not the same car, they are not aimed at the same buyer, and only one of them can be ordered today.",
+    category: "Market",
+    dateline: "Crewe and Solihull",
+    keywords: [
+      "bentley torcal vs range rover electric",
+      "british electric luxury suv",
+      "range rover electric vs bentley torcal specs",
+      "which british electric suv has more range",
+      "best electric luxury suv to import",
+      "bentley torcal range rover electric price comparison",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-29",
+    updatedDate: "2026-09-29",
+    readingTimeMins: 11,
+    heroImage: "/cars/bentley-torcal/rear-three-quarter.webp",
+    heroAlt:
+      "A Bentley Torcal in Astral silver photographed rear three-quarter in a studio, show placard removed",
+    heroCaption:
+      "Bentley press image of the Torcal from the global debut on 23 September 2026, with the show placard removed. This article compares the Torcal with the Range Rover Electric; only the Torcal is pictured.",
+    toc: [
+      { id: "numbers", label: "The two cars, side by side" },
+      { id: "different", label: "Where the two genuinely diverge" },
+      { id: "sourcing", label: "What each one means as a sourcing decision" },
+      { id: "dealers", label: "The dealer read" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "unknowns", label: "What neither manufacturer has published" },
+    ],
+    faqs: [
+      {
+        q: "Which has more range, the Bentley Torcal or the Range Rover Electric?",
+        a: "The Bentley Torcal, on the published WLTP figures: up to 375 miles against the Range Rover Electric's 372 miles. The gap is three miles and is not a reason to choose either car. JLR additionally publishes a real-world figure of up to 333 miles for the Range Rover Electric; Bentley has published no equivalent second number for the Torcal.",
+      },
+      {
+        q: "Which charges faster, the Torcal or the Range Rover Electric?",
+        a: "The Bentley Torcal. It runs an 800-volt architecture at up to 400 kW, giving 10 to 80 per cent in around 16 minutes. The Range Rover Electric also uses 800 volts but peaks at 350 kW, giving 10 to 80 per cent in around 22 minutes. Both figures assume a charger capable of those rates, which is the real variable.",
+      },
+      {
+        q: "Which is more powerful, the Bentley Torcal or the Range Rover Electric?",
+        a: "The Bentley Torcal, by a wide margin. The Torcal S produces 888 PS and 1,350 Nm and reaches 60 mph in 2.8 seconds. The Range Rover Electric produces up to 550PS and 850 Nm and reaches 60 mph in as little as 4.3 seconds. Even the core 821 PS Torcal carries about 300 PS more than the Range Rover.",
+      },
+      {
+        q: "Which British electric SUV can you order today?",
+        a: "The Range Rover Electric. JLR opened order books on 2 September 2026, the day of the reveal. Bentley opened the Torcal configurator on 23 September 2026, but Electrifying reports production does not start until the second quarter of 2027 with deliveries in summer 2027. One is a purchase; the other is a pre-order.",
+      },
+      {
+        q: "Which one can tow?",
+        a: "Neither manufacturer has settled this. JLR published no towing figure for the Range Rover Electric; Carscoops reports 2,500 kg, against 3,500 kg for the combustion car. Bentley published no towing figure for the Torcal at all. If you tow, this is the specification line that decides the purchase, and right now it is unanswered for both cars.",
+      },
+      {
+        q: "Are both cars built in the United Kingdom?",
+        a: "Yes, and in different places. The Bentley Torcal is designed, engineered and built at Crewe in Cheshire. The Range Rover Electric is built at Solihull in the West Midlands, with battery packs and drive units from JLR's Wolverhampton plant. Both are the only plants making their respective cars anywhere in the world, which makes Britain the source market for each.",
+      },
+    ],
+    sources: [
+      {
+        label: "The all-new Bentley Torcal makes global debut",
+        href: "https://www.bentleymedia.com/en/newsitem/1835-the-all-new-bentley-torcal-makes-global-debut",
+        publisher: "Bentley Motors (Bentley Newsroom)",
+      },
+      {
+        label: "Range Rover Electric: A New Era For The Original Luxury SUV",
+        href: "https://media.jlr.com/range-rover/news/2026/09/range-rover-electric-new-era-original-luxury-suv",
+        publisher: "JLR (Range Rover Media Newsroom)",
+      },
+      {
+        label: "Bentley Torcal review: price, specs, range and on-sale date",
+        href: "https://www.electrifying.com/reviews/bentley-reviews/torcal/review",
+        publisher: "Electrifying",
+      },
+      {
+        label:
+          "The electric Range Rover costs $25,000 more than the gas one and tows a ton less",
+        href: "https://www.carscoops.com/2026/09/range-rover-electric-official-launch/",
+        publisher: "Carscoops",
+      },
+      {
+        label: "Bentley Torcal revealed",
+        href: "https://www.loveelectric.cars/blog/bentley-torcal-revealed",
+        publisher: "loveelectric",
+      },
+    ],
+    relatedGuides: [
+      "best-cars-to-import-from-the-uk",
+      "cost-to-import-a-car-from-the-uk",
+      "how-to-import-a-car-from-the-uk",
+    ],
+    linkedVehicleSlugs: [
+      "bentley-torcal-first-edition",
+      "range-rover-electric-2026",
+    ],
+  },
 ];
 
 export const NEWS_BASE_PATH = "/latest-news";
