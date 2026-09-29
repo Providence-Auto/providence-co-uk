@@ -65,8 +65,49 @@ export function clampDescription(candidates: string[]): string {
   return `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).replace(/[\s,.;:—-]+$/, "")}…`;
 }
 
+/** The first sentence of a paragraph — up to a full stop before a capital. */
+function firstSentence(text: string): string {
+  const match = text.match(/^[\s\S]+?[.!?](?=\s+[A-Z"“‘'(]|$)/);
+  return match ? match[0] : text;
+}
+
 // biome-ignore lint/suspicious/noExplicitAny: the dossier is serialised loosely
 export type CarRecord = any;
+
+/**
+ * The photograph a car's link preview is cut from: the admin-selected hero,
+ * then the first gallery image. Null when the dossier has neither.
+ */
+export function carOgSource(car: CarRecord): string | null {
+  const source = car.heroImageUrl || car.images?.[0];
+  return typeof source === "string" && source.length > 0 ? source : null;
+}
+
+/** FNV-1a, as eight hex characters — a cache-buster, not a security hash. */
+function shortHash(value: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
+/**
+ * The link-preview image for a car page: the hero, re-cut to a 1200×630 JPEG
+ * by src/app/og/car/[file]/route.ts.
+ *
+ * Shipping the hero as-is left the preview blank on WhatsApp and LinkedIn: the
+ * heroes are WebP (which neither renders reliably) or multi-megabyte PNGs, at
+ * whatever size they were uploaded, while the tag declared 1200×630. The
+ * `?v=` hash of the source URL changes when the hero does, so Cloudflare and
+ * every platform's preview cache fetch the new picture rather than the old.
+ */
+export function carOgImagePath(car: CarRecord, fallbackId: string): string {
+  const source = carOgSource(car);
+  if (!source) return DEFAULT_OG_IMAGE;
+  return `/og/car/${car.slug || fallbackId}.jpg?v=${shortHash(source)}`;
+}
 
 /** `/b2c/gallery/<slug-or-id>`, with the destination segment when there is one. */
 export function carPath(
@@ -135,13 +176,14 @@ export function buildCarMetadata(
         `Importing a ${vehicle} to ${destination.name}: the rules, the paperwork and one landed cost, confirmed before you commit.`,
       ])
     : car.notes?.trim()
-      ? car.notes
+      ? // The notes are the page's long-form description — the Torcal's runs
+        // to 1,500 characters, which shipped whole as the meta and OG
+        // description. The full notes when they fit, else their first
+        // sentence, else a word-boundary trim.
+        clampDescription([car.notes.trim(), firstSentence(car.notes.trim())])
       : `View full specifications, gallery, and details for the ${vehicle}.`;
 
-  // Honour the admin-selected hero image, then the first gallery image, then a
-  // static default. metadataBase (src/app/layout.tsx) resolves the relative
-  // path to an absolute URL for the preview crawler.
-  const ogImage = car.heroImageUrl || car.images?.[0] || DEFAULT_OG_IMAGE;
+  const ogImage = carOgImagePath(car, fallbackId);
   const path = carPath(car, fallbackId, destination);
 
   return {
@@ -156,7 +198,15 @@ export function buildCarMetadata(
       description,
       url: path,
       siteName: "Providence Auto",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          type: "image/jpeg",
+          alt: title,
+        },
+      ],
       locale: "en_US",
       type: "website",
     },
