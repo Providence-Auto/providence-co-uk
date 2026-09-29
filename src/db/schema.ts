@@ -293,6 +293,64 @@ export const sourcingAnalyses = pgTable("sourcinganalysis", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
+// A dealership asking us to source cars for it, from /car-sourcing-for-dealers.
+// Not the same thing as `dealerProfiles` below, which is an account on the
+// dealer *platform* (the embed and dashboard): an inquiry needs no account, and
+// most dealers who send one will never have one.
+export const dealerInquiries = pgTable(
+  "dealerinquiry",
+  {
+    id: text("id").primaryKey(),
+    // The market the dealer checked, spelled as COUNTRIES spells it, and what
+    // the check said about it: "destination" (one of ours) or "unlisted" (a
+    // left-traffic country not on our list yet, so the route is confirmed
+    // before anything else).
+    country: text("country").notNull(),
+    marketStatus: text("marketStatus").notNull(),
+    dealershipName: text("dealershipName").notNull(),
+    // At least one of these two is always present.
+    website: text("website"),
+    socialMedia: text("socialMedia"),
+    contactName: text("contactName").notNull(),
+    designation: text("designation").notNull(),
+    email: text("email").notNull(),
+    // E.164, checked against the dealer's own country before it is stored.
+    whatsapp: text("whatsapp").notNull(),
+    // A slug from DEALER_SOURCE_MARKETS, or null for no preference.
+    sourceMarket: text("sourceMarket"),
+    // Up to five DealerCar objects (src/lib/dealer-inquiry.ts). Empty when the
+    // dealer only chose a source market.
+    cars: jsonb("cars").notNull().default([]),
+    notes: text("notes"),
+    // The inquiry's own vocabulary — DEALER_INQUIRY_STATUSES — never the B2C
+    // lead statuses, which drive the ad-platform conversion ledger.
+    status: text("status").default("New").notNull(),
+    statusHistory: jsonb("statusHistory").notNull().default([]),
+    assignedToId: text("assignedToId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    assignedToName: text("assignedToName"),
+    // "round-robin", "country" or "manual" (reassigned from the admin panel).
+    assignmentMethod: text("assignmentMethod").default("round-robin").notNull(),
+    // Response-time instrumentation: when it reached someone, and when that
+    // person first moved it on from New. Neither can be backfilled later.
+    assignedAt: timestamp("assignedAt"),
+    firstContactedAt: timestamp("firstContactedAt"),
+    isArchived: boolean("isArchived").default(false).notNull(),
+    source: text("source"),
+    gclid: text("gclid"),
+    fbclid: text("fbclid"),
+    fbc: text("fbc"),
+    fbp: text("fbp"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("dealerinquiry_created_idx").on(table.createdAt),
+    index("dealerinquiry_assigned_idx").on(table.assignedToId),
+  ],
+);
+
 export const dealerProfiles = pgTable("dealerprofile", {
   id: text("id").primaryKey(),
   userId: text("userId")

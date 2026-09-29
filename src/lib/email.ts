@@ -1,12 +1,19 @@
 import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { getSuggestedPosts } from "@/config/blog";
+import { CONTACT_EMAIL } from "@/config/contact";
 import AdminInvitationEmail from "@/emails/admin-invitation";
 import AuthActionEmail from "@/emails/auth-action";
 import { toEmailBlogPosts } from "@/emails/blog-suggestions";
 import CalculatorBreakdownEmail from "@/emails/calculator-breakdown";
 import ContactScheduledEmail from "@/emails/contact-scheduled";
 import CustomerConfirmationEmail from "@/emails/customer-confirmation";
+import DealerInquiryAlertEmail, {
+  type DealerInquiryAlertProps,
+} from "@/emails/dealer-inquiry-alert";
+import DealerInquiryConfirmationEmail, {
+  type DealerInquiryConfirmationProps,
+} from "@/emails/dealer-inquiry-confirmation";
 import LeadQualifiedAlertEmail from "@/emails/lead-qualified-alert";
 import StaffAlertEmail from "@/emails/staff-alert";
 import type { BreakdownData } from "@/lib/ireland-cost";
@@ -206,6 +213,43 @@ export const emailService = {
       subject: `Your Ireland landed cost estimate — ${data.totalLanded.toLocaleString("en-IE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 })}`,
       component: CalculatorBreakdownEmail({ data }),
       attachments: [{ filename: pdf.filename, content: pdf.contentBase64 }],
+    });
+  },
+
+  /**
+   * A dealer inquiry from /car-sourcing-for-dealers, to the consultant it was
+   * assigned to (or the general inbox when no one could be).
+   */
+  sendDealerInquiryAlert: async (to: string, data: DealerInquiryAlertProps) => {
+    const cars = data.cars.length;
+    await sendEmail({
+      to,
+      subject: `New dealer inquiry: ${data.dealershipName} (${data.country}) — ${
+        cars ? `${cars} car${cars > 1 ? "s" : ""}` : "sourcing"
+      } · ${data.reference}`,
+      component: DealerInquiryAlertEmail(data),
+    });
+  },
+
+  /**
+   * The dealer's receipt for their inquiry. Sent from the assigned consultant
+   * (From + reply-to), the same way the B2C confirmation is; with no consultant
+   * a reply still reaches a person, at the general inbox.
+   *
+   * The subject carries only our own reference — never the dealership name.
+   * The form is public, so anything typed into it could otherwise put
+   * someone else's words in a subject line sent from our domain.
+   */
+  sendDealerInquiryConfirmation: async (
+    to: string,
+    data: DealerInquiryConfirmationProps,
+  ) => {
+    await sendEmail({
+      to,
+      subject: `Your sourcing request ${data.reference} — Providence Auto`,
+      from: agentFrom(data.agent?.name),
+      replyTo: data.agent?.email || CONTACT_EMAIL,
+      component: DealerInquiryConfirmationEmail(data),
     });
   },
 

@@ -353,12 +353,13 @@ unclassified page is the state this document exists to prevent.
 | `/import-cars-from/[country]` | 7 | Landing | Agreed section list in `CLAUDE.md`; enforced by `src/config/__tests__/countries.test.ts` |
 | `/import-cars-from` | 1 | Landing | Hub |
 | `/campaigns/[slug]` | 3 | Landing | `src/config/landing-pages.ts` |
+| `/car-sourcing-for-dealers` | 1 | Landing | Added 2026-09-29. Sells dealer sourcing to "car sourcing for dealers"; sections as asked by the business (market check + dealer form, the value proposition without the dealer platform, each source market's ports and transit). It took the dealer-sourcing phrase from `/b2b`, which moved to `/b2b-inquiry` on 2026-09-30 |
 | `/import-japanese-cars` | 1 | Landing | |
 | `/indian-manufactured-cars` | 1 | Landing | |
 | `/japanese-luxury-cars-lhd` | 1 | Landing | |
 | `/import-japanese-cars-to-ireland` | 1 | Landing — **with a leak** | Structurally a landing page (hero, sections, form, FAQ, one secondary CTA). But its FAQ category "Irish Import Taxes" answers *informational*-intent questions — "What is VRT and how is it calculated?" — which the guides own and which `CLAUDE.md` restricts to pre-purchase questions. Move those answers to the guide and link them; keep the quote, payment, timing and delivery questions |
 | `/import-cars-to-ireland` | 1 | **Mixed** | The clearest case on the site. 1,972 lines whose own table of contents reads "The four charges / How the charges stack / Reliefs you can legally claim / The process and its deadlines", with numbered subsections `2.1 Customs duty`, `2.2 VAT — 23%`, `2.3 VRT`, `2.4 The NOx levy`, a "Who this is for" panel and an on-page contents list. That is a guide at a transactional URL; §4 split applies |
-| `/`, `/b2c`, `/b2b`, `/saas` | 4 | Landing | One proposition, two audiences — `brand-position.md` §5 |
+| `/`, `/b2c`, `/b2b-inquiry`, `/saas` | 4 | Landing | One proposition, two audiences — `brand-position.md` §5. `/b2b-inquiry` was `/b2b` until 2026-09-30 (it 301s) and now targets B2B inquiries |
 | `/b2c/gallery` + car pages + `[destination]` | dynamic | Landing | Car pages are database rows, not files |
 | `/about-us`, `/team`, `/team/[slug]` | dynamic | Neither — navigational | §5 |
 | `/request`, `/track/[id]`, `/signup`, `/auth/*` | — | Neither — funnel utility | §5 |

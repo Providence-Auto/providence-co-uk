@@ -107,6 +107,13 @@ export type DestinationConfig = {
    */
   formCountry: string;
   region: DestinationRegion;
+  /**
+   * Which side of the road the traffic takes — a hard fact, and deliberately
+   * not the same claim as `rhdOnly` below (see the note above `listed`).
+   * Read by the dealer sourcing page's market checker, which offers every
+   * destination whose traffic keeps left.
+   */
+  drives: DriveSide;
   depth: DestinationDepth;
   /**
    * Whether this market may take one of the five hero slots on a car page.
@@ -156,6 +163,7 @@ const unitedKingdom: DestinationConfig = {
   shortName: "UK",
   formCountry: "United Kingdom",
   region: "Europe",
+  drives: "left",
   depth: "full",
   focusList: true,
   base: {
@@ -196,6 +204,7 @@ const ireland: DestinationConfig = {
   shortName: "Ireland",
   formCountry: "Ireland",
   region: "Europe",
+  drives: "left",
   depth: "full",
   focusList: true,
   base: {
@@ -255,6 +264,7 @@ const kenya: DestinationConfig = {
   shortName: "Kenya",
   formCountry: "Kenya",
   region: "Africa",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -278,6 +288,7 @@ const tanzania: DestinationConfig = {
   shortName: "Tanzania",
   formCountry: "Tanzania",
   region: "Africa",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -301,6 +312,7 @@ const uganda: DestinationConfig = {
   shortName: "Uganda",
   formCountry: "Uganda",
   region: "Africa",
+  drives: "left",
   depth: "full",
   focusList: true,
   base: {
@@ -323,6 +335,7 @@ const mauritius: DestinationConfig = {
   shortName: "Mauritius",
   formCountry: "Mauritius",
   region: "Africa",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -349,6 +362,7 @@ const seychelles: DestinationConfig = {
   shortName: "Seychelles",
   formCountry: "Seychelles",
   region: "Africa",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -372,6 +386,7 @@ const trinidadAndTobago: DestinationConfig = {
   shortName: "Trinidad",
   formCountry: "Trinidad and Tobago",
   region: "Caribbean",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -394,6 +409,7 @@ const jamaica: DestinationConfig = {
   shortName: "Jamaica",
   formCountry: "Jamaica",
   region: "Caribbean",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -417,6 +433,7 @@ const grenada: DestinationConfig = {
   shortName: "Grenada",
   formCountry: "Grenada",
   region: "Caribbean",
+  drives: "left",
   depth: "full",
   focusList: true,
   rhdOnly: true,
@@ -440,6 +457,7 @@ const newZealand: DestinationConfig = {
   shortName: "New Zealand",
   formCountry: "New Zealand",
   region: "Asia-Pacific",
+  drives: "left",
   depth: "full",
   focusList: true,
   base: {
@@ -468,6 +486,7 @@ const sriLanka: DestinationConfig = {
   shortName: "Sri Lanka",
   formCountry: "Sri Lanka",
   region: "Asia-Pacific",
+  drives: "left",
   depth: "full",
   // Stays fully selectable, fully linked and fully indexed — it just never
   // takes one of the five hero slots. `business-context.md` §14.2.
@@ -524,7 +543,7 @@ const sriLanka: DestinationConfig = {
 // These pages are `noindex`. They exist so the link is shareable and the form
 // arrives pre-set, not to compete in search with the full entries above.
 
-type DriveSide = "left" | "right";
+export type DriveSide = "left" | "right";
 
 function listed(input: {
   slug: string;
@@ -540,6 +559,7 @@ function listed(input: {
     shortName: input.shortName ?? input.name,
     formCountry: input.formCountry,
     region: input.region,
+    drives: input.drives,
     depth: "listed",
     focusList: false,
     base: {

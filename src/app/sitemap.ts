@@ -4,6 +4,7 @@ import { listPublishedProfileSlugs } from "@/actions/sales-profile-actions";
 import { getAllSpecDossiers } from "@/actions/spec-actions";
 import { BLOG_BASE_PATH, BLOG_POSTS } from "@/config/blog";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
+import { DEALER_SOURCING_PATH } from "@/config/dealer-sourcing";
 import { destinationPath } from "@/config/destinations";
 import {
   getPopulatedCategories,
@@ -53,6 +54,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/import-japanese-cars-to-ireland",
     "/indian-manufactured-cars",
     "/ireland-cost-calculator",
+    DEALER_SOURCING_PATH,
+    "/b2b-inquiry",
     "/team",
     BLOG_BASE_PATH,
     NEWS_BASE_PATH,

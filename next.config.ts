@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
         // If a content-hashed naming convention is ever adopted for these
         // folders, this can safely become `max-age=31536000, immutable`.
         source:
-          "/:path(car_logo|country|home|affiliate|cars|about|import-cars)/:file*",
+          "/:path(car_logo|country|flags|home|affiliate|cars|about|import-cars)/:file*",
         headers: [
           {
             key: "Cache-Control",
@@ -83,6 +83,13 @@ const nextConfig: NextConfig = {
       {
         source: "/source-cars-from/:country",
         destination: "/import-cars-from/:country",
+        permanent: true,
+      },
+      {
+        // Moved on 2026-09-30 and re-aimed at B2B inquiries, so it no longer
+        // competes with /car-sourcing-for-dealers for "dealer car sourcing".
+        source: "/b2b",
+        destination: "/b2b-inquiry",
         permanent: true,
       },
       {
