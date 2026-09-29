@@ -455,7 +455,7 @@ export default function HomeClient() {
 
               <Reveal y={30} delay={0.2} duration={0.8} className="h-full">
                 <Link
-                  href="/b2b"
+                  href="/b2b-inquiry"
                   className="pa-lift group relative bg-zinc-50 border border-black/[0.07] rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between h-full hover:bg-white hover:border-black/10 overflow-hidden min-h-[350px] md:min-h-[400px]"
                 >
                   {/* Colorful gradient wash — on by default on mobile, on hover on desktop */}

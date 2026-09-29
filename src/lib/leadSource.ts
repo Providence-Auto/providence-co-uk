@@ -31,7 +31,10 @@ export function pathnameToSource(pathname: string): string {
   if (!slug) return "Home Page";
   const MAP: Record<string, string> = {
     request: "Request Page",
+    // /b2b moved to /b2b-inquiry on 2026-09-30. Old leads keep the old path,
+    // so both read the same label and the landing-page stats stay continuous.
     b2b: "B2B Landing",
+    "b2b-inquiry": "B2B Landing",
     b2c: "B2C Landing",
     "import-japanese-cars-to-ireland": "Import to Ireland",
     // Distinct label from the Japan page above: both carry an inquiry form and

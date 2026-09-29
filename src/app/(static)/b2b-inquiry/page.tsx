@@ -6,7 +6,7 @@ import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 
-export default function B2BLanding() {
+export default function B2BInquiryLanding() {
   return (
     <main className="min-h-screen bg-white text-black selection:bg-black/10 selection:text-black font-sans overflow-x-hidden">
       <MinimalHeader />
@@ -20,9 +20,7 @@ export default function B2BLanding() {
           {/* Above-the-fold hero content animates on mount so it shows immediately on load. */}
           <Reveal immediate y={30} scale={0.95} duration={1}>
             <h1 className="pa-headline-gradient text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[1.05] drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]">
-              Inventory.
-              <br />
-              On Demand.
+              B2B Inquiries.
             </h1>
           </Reveal>
 
@@ -44,11 +42,14 @@ export default function B2BLanding() {
             duration={0.8}
             className="flex flex-col sm:flex-row gap-6 w-full justify-center"
           >
+            {/* A dealer's request goes through the dealer form — its market
+                check, dealership details and up to five cars — not the
+                single-car B2C form at /request. */}
             <Link
-              href="/request"
+              href="/car-sourcing-for-dealers#inquiry-form"
               className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-black rounded-full overflow-hidden transition-transform hover:scale-105 shadow-[0_10px_40px_rgba(0,0,0,0.1)]"
             >
-              <span className="relative z-10">Request a Car Now</span>
+              <span className="relative z-10">Send a Dealer Inquiry</span>
             </Link>
             <Link
               href="/saas"

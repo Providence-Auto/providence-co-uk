@@ -62,7 +62,10 @@ export default function Footer() {
             <Link href="/b2c" className="hover:text-white transition-colors">
               For Direct Buyers
             </Link>
-            <Link href="/b2b" className="hover:text-white transition-colors">
+            <Link
+              href="/b2b-inquiry"
+              className="hover:text-white transition-colors"
+            >
               For Dealerships
             </Link>
             <Link href="/saas" className="hover:text-white transition-colors">
