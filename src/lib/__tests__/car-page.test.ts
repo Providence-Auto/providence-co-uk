@@ -3,6 +3,8 @@ import { DESTINATIONS, getDestination } from "@/config/destinations";
 import {
   buildCarJsonLd,
   buildCarMetadata,
+  carOgImagePath,
+  carOgSource,
   carPath,
   clampDescription,
   META_DESCRIPTION_LIMIT,
@@ -160,7 +162,54 @@ describe("buildCarMetadata", () => {
     const image = (meta.openGraph as any)?.images?.[0];
     expect(image?.width).toBe(1200);
     expect(image?.height).toBe(630);
-    expect(image?.url).toBe(CAR.heroImageUrl);
+    expect(image?.type).toBe("image/jpeg");
+    expect(image?.url).toMatch(
+      /^\/og\/car\/nissan-patrol-y63\.jpg\?v=[0-9a-f]{8}$/,
+    );
+  });
+
+  // A WebP hero shipped as the og:image left the Torcal page with no preview
+  // on WhatsApp and LinkedIn. The preview is the hero, re-cut as a JPEG.
+  it("previews the hero through the JPEG route, never the raw file", () => {
+    for (const destination of [undefined, getDestination("kenya")]) {
+      const meta = buildCarMetadata(CAR, CAR.slug, destination);
+      // biome-ignore lint/suspicious/noExplicitAny: narrowing Next's OG union
+      const og = (meta.openGraph as any)?.images?.[0]?.url;
+      // biome-ignore lint/suspicious/noExplicitAny: narrowing Next's Twitter union
+      const tw = (meta.twitter as any)?.images?.[0];
+      expect(og).toBe(carOgImagePath(CAR, CAR.slug));
+      expect(tw).toBe(og);
+      expect(og).not.toContain(".webp");
+    }
+  });
+
+  it("changes the preview URL when the hero changes", () => {
+    const before = carOgImagePath(CAR, CAR.slug);
+    const after = carOgImagePath(
+      { ...CAR, heroImageUrl: "/cars/nissan-patrol-y63/rear.webp" },
+      CAR.slug,
+    );
+    expect(after).not.toBe(before);
+  });
+
+  it("falls back to the first gallery image, then the site card", () => {
+    expect(carOgSource({ ...CAR, heroImageUrl: "" })).toBe(CAR.images[0]);
+    expect(
+      carOgImagePath({ ...CAR, heroImageUrl: "", images: [] }, CAR.slug),
+    ).toBe("/og/default.jpg");
+  });
+
+  it("keeps a long-form notes description under 155", () => {
+    const notes =
+      "Bentley's first battery-electric car and its fourth model line, designed, engineered and built at Crewe. " +
+      "A 113 kWh battery of 192 lithium-ion pouch cells runs at 800 volts for up to 375 miles WLTP.";
+    const meta = buildCarMetadata({ ...CAR, notes }, CAR.slug);
+    expect(meta.description).toBe(
+      "Bentley's first battery-electric car and its fourth model line, designed, engineered and built at Crewe.",
+    );
+    expect(meta.openGraph?.description).toBe(meta.description);
+    // Short notes still go through whole.
+    expect(buildCarMetadata(CAR, CAR.slug).description).toBe(CAR.notes);
   });
 });
 
