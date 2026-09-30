@@ -25,6 +25,7 @@ import {
   submitCarRequest,
   submitContactPreferences,
 } from "@/actions/request-actions";
+import DualRangeSlider from "@/components/DualRangeSlider";
 import SuggestedGuides, {
   type SuggestedGuide,
 } from "@/components/SuggestedGuides";
@@ -52,6 +53,18 @@ import {
   swatchStyle,
   type VehicleColor,
 } from "@/lib/vehicle-colors";
+import {
+  CAR_MAKES,
+  fetchModelsForMake,
+  formatMileage,
+  IMPORT_TIMELINES,
+  MILEAGE_MAX,
+  MILEAGE_MIN,
+  MILEAGE_STEP,
+  mileageRangeLabel,
+  VEHICLE_CONDITIONS,
+  YEAR_PRESETS,
+} from "@/lib/vehicle-inquiry";
 
 const CONTACT_METHOD_ICONS: Record<string, any> = {
   WhatsApp: MessageCircle,
@@ -61,26 +74,6 @@ const CONTACT_METHOD_ICONS: Record<string, any> = {
 };
 
 const TOTAL_STEPS = 3;
-
-// --- USED-CAR SPEC RANGES ---
-const MILEAGE_MIN = 0;
-const MILEAGE_MAX = 150_000;
-const MILEAGE_STEP = 2_500;
-
-/** Format a mileage value for display; the top of the range reads as "150,000+". */
-const formatMileage = (v: number) =>
-  v >= MILEAGE_MAX ? `${MILEAGE_MAX.toLocaleString()}+` : v.toLocaleString();
-
-/** Human-readable label stored on the request (e.g. "Up to 60,000 mi", "20,000–80,000 mi"). */
-const mileageRangeLabel = (lo: number, hi: number) => {
-  const hiTxt =
-    hi >= MILEAGE_MAX
-      ? `${MILEAGE_MAX.toLocaleString()}+`
-      : hi.toLocaleString();
-  return lo <= MILEAGE_MIN
-    ? `Up to ${hiTxt} mi`
-    : `${lo.toLocaleString()}–${hiTxt} mi`;
-};
 
 /**
  * Convert a specific odometer reading (e.g. a used dossier's mileage) into a
@@ -100,84 +93,6 @@ export const mileageToPrefillRange = (
   );
   return { mileageMin, mileageMax };
 };
-
-// Year presets grouped the way buyers actually think ("2020 or newer"), each
-// mapping to a concrete numeric from/to so the request stores clean years.
-const CURRENT_YEAR = new Date().getFullYear();
-const YEAR_PRESETS: { label: string; from: number; to: number }[] = [
-  { label: "2024 & newer", from: 2024, to: CURRENT_YEAR },
-  { label: "2020 – 2023", from: 2020, to: 2023 },
-  { label: "2016 – 2019", from: 2016, to: 2019 },
-  { label: "2015 & older", from: 1990, to: 2015 },
-];
-
-const CAR_MAKES = [
-  "Acura",
-  "Alfa Romeo",
-  "Aston Martin",
-  "Audi",
-  "Bentley",
-  "BMW",
-  "Bugatti",
-  "Buick",
-  "BYD",
-  "Cadillac",
-  "Chevrolet",
-  "Chrysler",
-  "Citroën",
-  "Dacia",
-  "Dodge",
-  "Ferrari",
-  "Fiat",
-  "Fisker",
-  "Ford",
-  "Genesis",
-  "GMC",
-  "Honda",
-  "Hyundai",
-  "Infiniti",
-  "Isuzu",
-  "Jaguar",
-  "Jeep",
-  "Kia",
-  "Koenigsegg",
-  "Lamborghini",
-  "Land Rover",
-  "Lexus",
-  "Lincoln",
-  "Lotus",
-  "Lucid",
-  "Mahindra",
-  "Maserati",
-  "Mazda",
-  "McLaren",
-  "Mercedes-Benz",
-  "MG",
-  "Mini",
-  "Mitsubishi",
-  "Nio",
-  "Nissan",
-  "Pagani",
-  "Peugeot",
-  "Polestar",
-  "Porsche",
-  "Ram",
-  "Renault",
-  "Rivian",
-  "Rolls-Royce",
-  "Seat",
-  "Skoda",
-  "Subaru",
-  "Suzuki",
-  "Tata",
-  "Tesla",
-  "Toyota",
-  "VinFast",
-  "Volkswagen",
-  "Volvo",
-  "Xpeng",
-  "Zeekr",
-].sort();
 
 // Alpha-2 → dial code for defaultPhoneCountry prop
 const ALPHA2_TO_DIAL: Record<string, string> = {
@@ -339,67 +254,6 @@ const SelectDropdown = ({
           <AlertCircle size={10} /> {error}
         </p>
       )}
-    </div>
-  );
-};
-
-// Dual-thumb range slider. Two stacked native range inputs (styled in
-// globals.css as .pa-range) let each end be dragged independently; the visible
-// track + active fill are the divs behind them.
-const DualRangeSlider = ({
-  min,
-  max,
-  step,
-  valueMin,
-  valueMax,
-  onChange,
-}: {
-  min: number;
-  max: number;
-  step: number;
-  valueMin: number;
-  valueMax: number;
-  onChange: (lo: number, hi: number) => void;
-}) => {
-  const minPct = ((valueMin - min) / (max - min)) * 100;
-  const maxPct = ((valueMax - min) / (max - min)) * 100;
-  // When both thumbs sit at the very top the min input would cover the max
-  // thumb and trap it; lift the min input above only in that corner case.
-  const minOnTop = valueMin > max - (max - min) * 0.04;
-
-  return (
-    <div className="relative h-6 flex items-center touch-none">
-      <div className="absolute h-1.5 w-full rounded-full bg-black/10" />
-      <div
-        className="absolute h-1.5 rounded-full bg-[#4da8da]"
-        style={{ left: `${minPct}%`, right: `${100 - maxPct}%` }}
-      />
-      <input
-        type="range"
-        className="pa-range"
-        style={{ zIndex: minOnTop ? 5 : 3 }}
-        min={min}
-        max={max}
-        step={step}
-        value={valueMin}
-        aria-label="Minimum mileage"
-        onChange={(e) =>
-          onChange(Math.min(Number(e.target.value), valueMax - step), valueMax)
-        }
-      />
-      <input
-        type="range"
-        className="pa-range"
-        style={{ zIndex: 4 }}
-        min={min}
-        max={max}
-        step={step}
-        value={valueMax}
-        aria-label="Maximum mileage"
-        onChange={(e) =>
-          onChange(valueMin, Math.max(Number(e.target.value), valueMin + step))
-        }
-      />
     </div>
   );
 };
@@ -965,29 +819,7 @@ export default function RequestForm({
       setApiFailed(false); // Reset before new attempt
 
       try {
-        const url = `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${encodeURIComponent(formData.make)}?format=json`;
-        const res = await fetch(
-          `https://corsproxy.io/?${encodeURIComponent(url)}`,
-        );
-
-        if (res.status === 503) {
-          throw new Error(
-            "NHTSA Server is currently unavailable (503). Please try again later.",
-          );
-        }
-
-        if (!res.ok) throw new Error("Network response was not ok");
-
-        const data = await res.json();
-
-        if (data.Results) {
-          const models = data.Results.map((item: any) =>
-            item.Model_Name.trim()
-              .toLowerCase()
-              .replace(/\b\w/g, (c: string) => c.toUpperCase()),
-          );
-          setAvailableModels([...new Set(models)].sort() as string[]);
-        }
+        setAvailableModels(await fetchModelsForMake(formData.make));
       } catch (err) {
         console.error("Fetch Error:", err);
         setApiFailed(true); // <-- Trigger the manual input fallback
@@ -1549,7 +1381,7 @@ export default function RequestForm({
                       Condition
                     </label>
                     <div className="flex gap-4">
-                      {["New", "Used"].map((cond) => (
+                      {VEHICLE_CONDITIONS.map((cond) => (
                         <button
                           key={cond}
                           type="button"
@@ -1902,13 +1734,7 @@ export default function RequestForm({
                       <span className="text-red-500">*</span>
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {[
-                        "Immediately",
-                        "1–3 months",
-                        "3–6 months",
-                        "Not sure",
-                        "Just Inquiring",
-                      ].map((option) => (
+                      {IMPORT_TIMELINES.map((option) => (
                         <button
                           key={option}
                           type="button"

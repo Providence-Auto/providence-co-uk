@@ -71,6 +71,7 @@ Drizzle tables are defined in `src/db/schema.ts`. Import the `db` client and tab
 - **socialPosts** — Instagram embed posts per page (home/b2c/b2b), ordered via a `page_order_idx`
 - **salesProfiles** — Per-agent public sales landing-page profiles
 - **sourcingAnalyses** — Saved landed-cost / market analyses from the sourcing tool
+- **dealerInquiries** (`dealerinquiry`) — Sourcing requests from `/b2b-inquiry`: the market the dealer checked, the dealership, the contact (WhatsApp stored as E.164), a preferred source market and up to five cars (`cars` jsonb, shape in `src/lib/dealer-inquiry.ts`). Its own status vocabulary (`DEALER_INQUIRY_STATUSES`), never the B2C lead statuses, which drive the ad-conversion ledger. Not the same thing as `dealerProfiles`, which is an account on the dealer *platform*.
 
 Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). JSON-shaped fields (`pricing`, `statusHistory`, `documents`, testimonials, etc.) use `jsonb`; list fields use Postgres text arrays.
 
@@ -85,6 +86,7 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 - `scripts/blur-plate.mjs` — pixelates and blurs one or more `x,y,w,h` rectangles of a car photo in place (WebP or JPEG), for removing a number plate that does not match the page's country. See `car-imagery-checklist.md`.
 - `scripts/apply-grade-columns.mjs` — adds the grade/steering columns (`drizzle/0004_grade_columns.sql`) to one environment. Read-only until `--apply`.
 - `scripts/apply-destination-column.mjs` — adds `specdossier.destinations` (`drizzle/0006_destination_column.sql`) to one environment. Read-only until `--apply`. Like every column change here, it has to be run against dev, staging and production separately.
+- `scripts/apply-dealer-inquiry-table.mjs` — creates the `dealerinquiry` table from `drizzle/0007_dealer_inquiry_table.sql` in one environment (it reads that file, so the SQL has one source). Read-only until `--apply`, idempotent, and checks every column, index and the foreign key. **Run it against an environment before deploying the dealer page there** — the form's submit fails without the table.
 - `scripts/backfill-dossier-destinations.mjs` — offers every existing car page into the core five markets (Ireland, UK, Kenya, Tanzania, Sri Lanka). Read-only until `--apply`, idempotent, and **merges** rather than replacing, so a car that already has destinations keeps its ranking. Skips the markets flagged `rhdOnly` for a dossier that can only be sourced LHD, and says so rather than silently listing a car the buyer could not register.
 
 ### Sourcing & Profit Analyzer
@@ -327,6 +329,8 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 /news-sitemap.xml          Google News sitemap
 /import-cars-from          Import-from hub (was /source-cars-from, which 301s)
 /import-cars-from/[country] One page per country we buy in
+/b2b-inquiry               B2B inquiry landing page: market check + 4-step dealer form
+/admin/dealer-inquiries    The dealer inquiries it produces
 /admin/*                   Protected admin dashboard
 /api/v1/*                  REST API routes
 ```
@@ -335,6 +339,18 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 
 All mutations go through server actions in `src/actions/`, not API routes. Key actions:
 - `submitCarRequest` — creates Request, assigns agent round-robin, sends email alerts
+- `dealer-inquiry-actions.ts` — `submitDealerInquiry` (public, from `/b2b-inquiry`) and the `/admin/dealer-inquiries` actions. See "B2B inquiry page" below.
+
+### B2B inquiry page (`/b2b-inquiry`)
+
+A landing page built around one action — a dealership sending a sourcing inquiry — built on 2026-09-29 to the sections the business asked for: the market check, the shared value proposition *without* the dealer platform, and each source market's speed (ports and sea transit, read from `COUNTRY_PAGES` so they never drift from the `/import-cars-from` pages). The rules that matter:
+
+- **The market check never prints the destination list.** It answers from `DESTINATIONS` (`src/lib/dealer-markets.ts`, server-side): a destination whose traffic keeps left (every one but Germany — `drives` on each registry entry) → "yes"; a left-traffic country we don't list (`LEFT_TRAFFIC_COUNTRIES` in `src/config/dealer-sourcing.ts`) → let through, flagged "not on list" for the consultant to confirm; right-traffic → pointed at `/japanese-luxury-cars-lhd`. The copy says "drive on the left", never "RHD market" — see the note above `listed()` in `src/config/destinations.ts`.
+- **One set of rules on both sides.** `src/lib/dealer-inquiry.ts` holds every validator; the form runs them for inline errors and `submitDealerInquiry` runs them again before storing anything. The WhatsApp number is checked with libphonenumber's *max* metadata against the dealer's own country (the default metadata only checks length); the form loads it lazily.
+- **Assignment** (`src/lib/lead-routing.ts`): a country owner first (`COUNTRY_LEAD_OWNERS`, shared with B2C), then a least-recently-assigned rotation across Sales — its own rotation, separate from B2C leads — under a transaction-scoped advisory lock, stamped with the database clock once the lock is held, so two submissions can't land on the same person. **`DEALER_ROTATION_EXCLUDED` keeps Chathuranga out of it** — keyed on his account email (`chathuranga@providenceauto.uk.com`, business instruction 2026-09-30), never on the name, which is common enough to catch someone else. An exclusion never falls back to the excluded person: the inquiry goes unassigned and the alert goes to the general inbox. **Every Cyprus inquiry goes to Shaq** (country owner), confirmed for dealer inquiries on 2026-09-30.
+- **Abuse limits** (`src/lib/rate-limit.ts`, in memory): 5 complete requests an hour per client address and at most 2 receipts a day per inbox; a failed insert gives its hit back, and loopback addresses (a local server) are never limited. The receipt's subject carries only our reference, never dealer-typed text.
+- **It is framed on the inquiry, not on "dealer car sourcing"** (business instruction 2026-09-30): `/b2b` keeps that phrase, and a test fails if this page's title, H1 or description reaches for it.
+- **The per-car vocabulary is shared** with the B2C form through `src/lib/vehicle-inquiry.ts` (makes, year presets, mileage, timelines, the NHTSA model lookup) and `src/components/DualRangeSlider.tsx`, so the two forms can't drift apart.
 - `admin-actions.ts` — user/request management for admin
 - `pdf-actions.tsx` — PDF generation for dossiers
 - `spec-actions.ts` — SpecDossier CRUD

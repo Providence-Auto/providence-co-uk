@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
         // If a content-hashed naming convention is ever adopted for these
         // folders, this can safely become `max-age=31536000, immutable`.
         source:
-          "/:path(car_logo|country|home|affiliate|cars|about|import-cars)/:file*",
+          "/:path(car_logo|country|flags|home|affiliate|cars|about|import-cars)/:file*",
         headers: [
           {
             key: "Cache-Control",
