@@ -1,10 +1,13 @@
 import { ImageResponse } from "next/og";
-import { DEALER_SOURCE_MARKETS } from "@/config/dealer-sourcing";
+import {
+  DEALER_SOURCE_MARKETS,
+  DEALER_SOURCING_H1,
+} from "@/config/dealer-sourcing";
 
-// Branded 1200×630 share card for /car-sourcing-for-dealers. Type only, no car
+// Branded 1200×630 share card for /b2b-inquiry. Type only, no car
 // photograph: a dealer page for dozens of markets has no photo whose number
 // plate could match them all (car-imagery-checklist.md).
-export const alt = "Car Sourcing for Dealers — Providence Auto";
+export const alt = `${DEALER_SOURCING_H1} — Providence Auto`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -35,14 +38,14 @@ export default function OgImage() {
         <div
           style={{
             display: "flex",
-            fontSize: 96,
+            fontSize: 88,
             fontWeight: 800,
             color: "#ffffff",
             lineHeight: 1.02,
             letterSpacing: -3,
           }}
         >
-          Car Sourcing for Dealers
+          {DEALER_SOURCING_H1}
         </div>
         <div
           style={{

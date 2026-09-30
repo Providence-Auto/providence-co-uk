@@ -86,13 +86,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        // Moved on 2026-09-30 and re-aimed at B2B inquiries, so it no longer
-        // competes with /car-sourcing-for-dealers for "dealer car sourcing".
-        source: "/b2b",
-        destination: "/b2b-inquiry",
-        permanent: true,
-      },
-      {
         // "/:path(.*)" matches "/" AND captures the path; "/:path*" misses "/".
         source: "/:path(.*)",
         has: [{ type: "host", value: APEX_HOST }],

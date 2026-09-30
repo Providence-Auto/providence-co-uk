@@ -47,7 +47,7 @@ const inquiry = (patch: Partial<DealerInquiryView>): DealerInquiryView => ({
   assignedAt: "2026-09-29T10:00:00.000Z",
   firstContactedAt: null,
   isArchived: false,
-  source: "/car-sourcing-for-dealers",
+  source: "/b2b-inquiry",
   createdAt: "2026-09-29T10:00:00.000Z",
   updatedAt: "2026-09-29T10:00:00.000Z",
   ...patch,

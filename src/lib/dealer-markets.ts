@@ -1,5 +1,5 @@
 /**
- * The market check on /car-sourcing-for-dealers, resolved on the server.
+ * The market check on /b2b-inquiry, resolved on the server.
  *
  * It reads the destination registry (src/config/destinations.ts), which is the
  * canonical list of markets we ship to, so the page and the server action can

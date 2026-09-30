@@ -218,7 +218,7 @@ const AUDIENCES = [
     icon: Store,
     title: "Dealerships",
     desc: "Sell inventory you don't hold. We source and ship on request.",
-    href: "/b2b-inquiry",
+    href: "/b2b",
     cta: "For dealerships",
   },
   {

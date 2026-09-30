@@ -125,7 +125,7 @@ type SubmitResult =
   | { success: false; message: string; errors?: FieldErrors };
 
 /**
- * The public submit from /car-sourcing-for-dealers. Validates everything again
+ * The public submit from /b2b-inquiry. Validates everything again
  * on the server with the same rules the form used, assigns a consultant, stores
  * the inquiry, and sends the consultant's alert and the dealer's receipt.
  */

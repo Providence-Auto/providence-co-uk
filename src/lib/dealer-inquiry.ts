@@ -1,5 +1,5 @@
 /**
- * The dealer inquiry from /car-sourcing-for-dealers: its shape, and every rule
+ * The dealer inquiry from /b2b-inquiry: its shape, and every rule
  * that decides whether it is complete.
  *
  * The same functions run in the browser (inline errors as the dealer moves

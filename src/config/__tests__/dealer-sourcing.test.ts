@@ -1,4 +1,4 @@
-// Guards for /car-sourcing-for-dealers: the SEO limits, and the three lists the
+// Guards for /b2b-inquiry: the SEO limits, and the three lists the
 // market check is built from — which have to agree with COUNTRIES, the
 // destination registry and the source-country pages, or a dealer is told the
 // wrong thing about their own country.
@@ -13,6 +13,7 @@ import {
   DEALER_SOURCING_ANSWER,
   DEALER_SOURCING_DESCRIPTION,
   DEALER_SOURCING_H1,
+  DEALER_SOURCING_PATH,
   DEALER_SOURCING_TITLE,
   flagSrc,
   LEFT_TRAFFIC_COUNTRIES,
@@ -30,14 +31,23 @@ describe("dealer sourcing page — SEO minimum", () => {
     expect(DEALER_SOURCING_DESCRIPTION.length).toBeLessThanOrEqual(155);
   });
 
-  it("puts the keyword in the title, the H1 and the description", () => {
-    expect(DEALER_SOURCING_TITLE.toLowerCase()).toContain(
-      "car sourcing for dealers",
-    );
-    expect(DEALER_SOURCING_H1).toBe("Car Sourcing for Dealers");
-    expect(DEALER_SOURCING_DESCRIPTION.toLowerCase()).toContain(
-      "car sourcing for dealers",
-    );
+  it("puts the inquiry in the path, the title, the H1 and the description", () => {
+    expect(DEALER_SOURCING_PATH).toBe("/b2b-inquiry");
+    expect(DEALER_SOURCING_TITLE.toLowerCase()).toContain("b2b inquiry");
+    expect(DEALER_SOURCING_H1.toLowerCase()).toContain("b2b inquiry");
+    expect(DEALER_SOURCING_DESCRIPTION.toLowerCase()).toContain("b2b inquiry");
+  });
+
+  it("leaves the dealer-sourcing phrase to /b2b", () => {
+    // Business instruction (2026-09-30): /b2b's title is "Dealer Car
+    // Sourcing"; this page is about the inquiry, so the two never compete.
+    for (const text of [
+      DEALER_SOURCING_TITLE,
+      DEALER_SOURCING_H1,
+      DEALER_SOURCING_DESCRIPTION,
+    ]) {
+      expect(text.toLowerCase()).not.toMatch(/car sourcing|dealer sourcing/);
+    }
   });
 
   it("opens with a 40–55 word direct answer starting 'You can'", () => {
@@ -51,10 +61,7 @@ describe("dealer sourcing page — SEO minimum", () => {
 describe("dealer sourcing page — copy rules", () => {
   // The rendered copy, not the comments that explain it.
   const source = readFileSync(
-    join(
-      process.cwd(),
-      "src/app/(marketing)/car-sourcing-for-dealers/page.tsx",
-    ),
+    join(process.cwd(), "src/app/(marketing)/b2b-inquiry/page.tsx"),
     "utf8",
   )
     .split("\n")

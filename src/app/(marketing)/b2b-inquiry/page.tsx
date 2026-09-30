@@ -34,8 +34,9 @@ import { DESTINATIONS } from "@/config/destinations";
 import { buildMarketOptions } from "@/lib/dealer-markets";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// /car-sourcing-for-dealers — a landing page (page-types.md §1.2) selling one
-// service, sourcing cars for a dealership, to one phrase.
+// /b2b-inquiry — a landing page (page-types.md §1.2) built around one action:
+// a dealership sending a sourcing inquiry. Framed on the inquiry rather than
+// on "dealer car sourcing", which /b2b holds (business instruction 2026-09-30).
 //
 // Sections are the ones the business asked for on 2026-09-29, and nothing else:
 //   1. the market check, opening the multi-step dealer form (the primary CTA);
@@ -56,11 +57,11 @@ export const metadata: Metadata = {
   title: { absolute: DEALER_SOURCING_TITLE },
   description: DEALER_SOURCING_DESCRIPTION,
   keywords: [
-    "car sourcing for dealers",
-    "vehicle sourcing for dealers",
+    "b2b inquiry",
+    "dealer inquiry",
+    "b2b car inquiry",
+    "dealership car request",
     "import cars for your dealership",
-    "car sourcing from Japan",
-    "Japanese car import for dealers",
   ],
   alternates: { canonical: DEALER_SOURCING_PATH },
   openGraph: {

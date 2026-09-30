@@ -293,7 +293,7 @@ export const sourcingAnalyses = pgTable("sourcinganalysis", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
-// A dealership asking us to source cars for it, from /car-sourcing-for-dealers.
+// A dealership asking us to source cars for it, from /b2b-inquiry.
 // Not the same thing as `dealerProfiles` below, which is an account on the
 // dealer *platform* (the embed and dashboard): an inquiry needs no account, and
 // most dealers who send one will never have one.

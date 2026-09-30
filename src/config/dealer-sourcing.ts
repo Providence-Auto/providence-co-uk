@@ -1,22 +1,24 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Providence Auto — dealer sourcing page (/car-sourcing-for-dealers).
+// Providence Auto — the B2B inquiry page (/b2b-inquiry).
 //
 // Client-safe constants only. Anything that has to read the destination
 // registry (which carries every market's copy) lives in
 // src/lib/dealer-markets.ts and runs on the server, so the form's bundle does
 // not ship 900 lines of destination copy to the browser.
 //
-// The page sells one service — sourcing cars for a dealership — to one phrase.
-// It deliberately carries none of the dealer *platform* (the embed, the
-// dashboard, /saas): that is a different offer with an approval gate of its own
-// (`business-context.md` §6.1).
+// The page is built around one action — a dealership sending us a sourcing
+// inquiry — by business instruction (2026-09-30). It is deliberately not a
+// "dealer car sourcing" page: /b2b already holds that phrase, and two pages on
+// one phrase split the ranking. It carries none of the dealer *platform* (the
+// embed, the dashboard, /saas) either: that is a different offer with an
+// approval gate of its own (`business-context.md` §6.1).
 // ─────────────────────────────────────────────────────────────────────────────
 import type { CountryCode } from "libphonenumber-js";
 
-export const DEALER_SOURCING_PATH = "/car-sourcing-for-dealers";
+export const DEALER_SOURCING_PATH = "/b2b-inquiry";
 
-/** The H1 is the keyword, verbatim. */
-export const DEALER_SOURCING_H1 = "Car Sourcing for Dealers";
+/** The H1 names the action the page exists for. */
+export const DEALER_SOURCING_H1 = "B2B Inquiry for Dealerships";
 
 /**
  * The direct answer under the H1 — the BLUF paragraph and the likeliest AI
@@ -26,15 +28,15 @@ export const DEALER_SOURCING_H1 = "Car Sourcing for Dealers";
  * before commitment (`brand-position.md` §4, pillar 2).
  */
 export const DEALER_SOURCING_ANSWER =
-  "You can source cars for your dealership directly from Japan, the UK, Australia, New Zealand, Thailand, India and the UAE, and ship them to your own port. Our own teams find and inspect each car before your money moves, and you see the full landed cost before you commit.";
+  "You can send a B2B inquiry for your dealership and source cars directly from Japan, the UK, Australia, New Zealand, Thailand, India and the UAE, shipped to your own port. Our own teams find and inspect each car before your money moves, and you see the full landed cost before you commit.";
 
-/** Title tag. 55 characters — keep it under 60 (tested). */
+/** Title tag. 58 characters — keep it under 60 (tested). */
 export const DEALER_SOURCING_TITLE =
-  "Car Sourcing for Dealers: Get a Quote | Providence Auto";
+  "B2B Inquiry for Dealerships: Get a Quote | Providence Auto";
 
 /** Meta description. Keep it under 155 characters (tested). */
 export const DEALER_SOURCING_DESCRIPTION =
-  "Car sourcing for dealers from Japan, the UK, Australia, New Zealand, Thailand, India and the UAE. Check your country, then request up to five cars.";
+  "B2B inquiry for dealerships: check your market, then request up to five cars from Japan, the UK, Australia, New Zealand, Thailand, India or the UAE.";
 
 /** The most cars one request can carry. */
 export const MAX_DEALER_CARS = 5;

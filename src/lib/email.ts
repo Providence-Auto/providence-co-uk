@@ -217,7 +217,7 @@ export const emailService = {
   },
 
   /**
-   * A dealer inquiry from /car-sourcing-for-dealers, to the consultant it was
+   * A dealer inquiry from /b2b-inquiry, to the consultant it was
    * assigned to (or the general inbox when no one could be).
    */
   sendDealerInquiryAlert: async (to: string, data: DealerInquiryAlertProps) => {

@@ -55,7 +55,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/indian-manufactured-cars",
     "/ireland-cost-calculator",
     DEALER_SOURCING_PATH,
-    "/b2b-inquiry",
     "/team",
     BLOG_BASE_PATH,
     NEWS_BASE_PATH,

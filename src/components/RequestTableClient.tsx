@@ -69,7 +69,7 @@ const BASE_URL = "https://providenceauto.co.uk";
 const LEGACY_LABEL_TO_PATH: Record<string, string> = {
   "Home Page": "/",
   "Request Page": "/request",
-  "B2B Landing": "/b2b-inquiry",
+  "B2B Landing": "/b2b",
   "B2C Landing": "/b2c",
   "Import to Ireland": "/import-japanese-cars-to-ireland",
   "Ireland Calculator": "/ireland-cost-calculator",

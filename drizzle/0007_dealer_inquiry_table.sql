@@ -1,4 +1,4 @@
--- Dealer inquiries from /car-sourcing-for-dealers.
+-- Dealer inquiries from /b2b-inquiry.
 --
 -- dealerinquiry  one row per dealership request: the market the dealer
 --                checked, the dealership, the person filling it in, and either

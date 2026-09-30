@@ -507,8 +507,9 @@ consumer ad's targeting set, a deck slide — **Sri Lanka does not take one of t
 slots.** Those slots belong to markets we are actively acquiring in.
 
 **Dealer-facing and trade surfaces follow §14.1 instead**, where Sri Lanka is an
-active B2B market. So a country list on `/b2b`, on the dealer application form,
-on a dealer landing page, or in dealer-channel outreach may include Sri Lanka —
+active B2B market. So a country list on `/b2b`, in the market check on
+`/b2b-inquiry`, on the dealer application form, on a dealer landing page, or in
+dealer-channel outreach may include Sri Lanka —
 because paid B2B acquisition there is something we do. The exclusion is about
 consumer demand generation, which is the thing that would compete with the
 dealers who already buy volume from us.

@@ -1,7 +1,7 @@
 /**
  * The per-car vocabulary shared by every inquiry form — the B2C form
  * (src/components/requestForm.tsx) and the dealer form on
- * /car-sourcing-for-dealers, which asks the same questions for each of up to
+ * /b2b-inquiry, which asks the same questions for each of up to
  * five cars.
  *
  * Kept in one place so the two forms cannot drift into different makes, year
