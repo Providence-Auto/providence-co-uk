@@ -9,6 +9,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import {
+  briefBody,
+  briefHeading,
   DestinationBrief,
   DestinationChips,
   DestinationGuides,
@@ -131,27 +133,75 @@ describe("DestinationChips", () => {
 });
 
 describe("DestinationBrief", () => {
-  it("shows the origin-specific rule when the source country has one", () => {
+  function heading(html: string) {
+    return html.match(/<h2[^>]*>([^<]*)<\/h2>/)?.[1] ?? "";
+  }
+
+  // A car page is a landing page: the heading names the car and the country,
+  // not the market's tax rule (business instruction 2026-10-02).
+  it("names the car and the country in a generic heading", () => {
+    const kenya = resolve("kenya");
+    const html = renderToStaticMarkup(
+      <DestinationBrief
+        destination={kenya}
+        copy={destinationCopy(kenya, "Japan")}
+        vehicle="Nissan Patrol"
+      />,
+    );
+
+    expect(heading(html)).toBe(
+      "Import the new Nissan Patrol to Kenya with less friction.",
+    );
+    expect(html).not.toContain(kenya.base.headline);
+    expect(html).not.toContain(kenya.base.body);
+  });
+
+  it("does not call a used car new", () => {
+    const tanzania = resolve("tanzania");
+    const html = renderToStaticMarkup(
+      <DestinationBrief
+        destination={tanzania}
+        copy={destinationCopy(tanzania, "Japan")}
+        vehicle="Toyota Land Cruiser"
+        isUsed
+      />,
+    );
+
+    expect(heading(html)).toBe(
+      "Import a used Toyota Land Cruiser to Tanzania with less friction.",
+    );
+  });
+
+  it("still reads as a sentence when the dossier has no make or model", () => {
+    expect(briefHeading("", "Ireland")).toBe(
+      "Import this car to Ireland with less friction.",
+    );
+    expect(briefBody("", "Ireland")).toContain("Before you buy the car,");
+  });
+
+  it("keeps the market's own facts, origin overrides included", () => {
     const ireland = resolve("ireland");
     const html = renderToStaticMarkup(
       <DestinationBrief
         destination={ireland}
         copy={destinationCopy(ireland, "Japan")}
+        vehicle="Toyota Aqua"
       />,
     );
 
-    expect(html).toContain("zero customs duty");
+    expect(html).toContain("0% duty on Japan-built cars");
   });
 
   // CLAUDE.md, heading language: no eyebrow label restating the heading below
-  // it. Every headline in the registry names its own country, so the label the
-  // campaign-page DestinationPanel carries would be exactly that restatement.
+  // it. The heading names the country, so the label the campaign-page
+  // DestinationPanel carries would be exactly that restatement.
   it("carries the country in the heading, not in an eyebrow above it", () => {
     const ireland = resolve("ireland");
     const html = renderToStaticMarkup(
       <DestinationBrief
         destination={ireland}
         copy={destinationCopy(ireland, "Japan")}
+        vehicle="Toyota Aqua"
       />,
     );
 
@@ -160,22 +210,7 @@ describe("DestinationBrief", () => {
     const visible = html.replace(/<[^>]+>/g, " ");
     expect(visible).not.toContain("Importing to Ireland");
     expect(html).toContain('aria-label="Importing to Ireland"');
-
-    const heading = html.match(/<h2[^>]*>([^<]*)<\/h2>/)?.[1] ?? "";
-    expect(heading).toContain("Ireland");
-  });
-
-  it("falls back to the base rule for a source country with no override", () => {
-    const ireland = resolve("ireland");
-    const html = renderToStaticMarkup(
-      <DestinationBrief
-        destination={ireland}
-        copy={destinationCopy(ireland, "Thailand")}
-      />,
-    );
-
-    expect(html).not.toContain("zero customs duty");
-    expect(html).toContain("VRT");
+    expect(heading(html)).toContain("Ireland");
   });
 
   it("names the destination in the call to action", () => {
@@ -184,6 +219,7 @@ describe("DestinationBrief", () => {
       <DestinationBrief
         destination={kenya}
         copy={destinationCopy(kenya, "Japan")}
+        vehicle="Nissan Patrol"
       />,
     );
     expect(html).toContain("Start your Kenya inquiry");
@@ -195,7 +231,11 @@ describe("DestinationBrief", () => {
     expect(copy.landing).toBeUndefined();
 
     const html = renderToStaticMarkup(
-      <DestinationBrief destination={kenya} copy={copy} />,
+      <DestinationBrief
+        destination={kenya}
+        copy={copy}
+        vehicle="Nissan Patrol"
+      />,
     );
     // The only anchor left is the inquiry jump link.
     expect(html.match(/<a /g)).toHaveLength(1);
