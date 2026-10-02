@@ -291,7 +291,7 @@ export default function ImportJapaneseCarsIreland() {
             duration={1}
             className="pa-headline-gradient text-4xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[1.1] drop-shadow-[0_0_15px_rgba(255,255,255,1)]"
           >
-            Import a Japanese Car
+            Import Japanese Cars
             <br />
             to Ireland.
           </Reveal>
