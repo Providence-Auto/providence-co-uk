@@ -169,6 +169,68 @@ describe("admin-actions", () => {
       expect(result.success).toBe(true);
     });
 
+    describe("reassignment history", () => {
+      const lead = {
+        id: "req-1",
+        status: "Request Initiated",
+        statusHistory: [{ action: "Earlier entry" }],
+        assignedToId: "u-abd",
+        assignedToName: "Abdallah",
+        createdAt: new Date(),
+      };
+
+      function primeDb(existing: object) {
+        vi.mocked(db.then)
+          .mockImplementationOnce((onFulfilled) => onFulfilled([existing]))
+          .mockImplementationOnce((onFulfilled) => onFulfilled([existing]));
+      }
+
+      it("logs the previous and the new owner when a lead is reassigned", async () => {
+        primeDb(lead);
+
+        await updateRequestStatus("req-1", "Request Initiated", {
+          assignedToId: "u-chat",
+          assignedToName: "Chathuranga Pitigala",
+          salesComment: "",
+        });
+
+        const saved = vi.mocked(db.set).mock.calls[0][0];
+        expect(saved.assignedToId).toBe("u-chat");
+        expect(saved.statusHistory).toHaveLength(2);
+        expect(saved.statusHistory[0]).toEqual({ action: "Earlier entry" });
+        expect(saved.statusHistory[1]).toMatchObject({
+          action: "Reassigned: Abdallah → Chathuranga Pitigala",
+          performedBy: "Admin User",
+        });
+      });
+
+      it("logs nothing when the assign dialog is saved unchanged", async () => {
+        primeDb(lead);
+
+        await updateRequestStatus("req-1", "Request Initiated", {
+          assignedToId: "u-abd",
+          assignedToName: "Abdallah",
+          salesComment: "",
+        });
+
+        expect(vi.mocked(db.set).mock.calls[0][0].statusHistory).toBeUndefined();
+      });
+
+      it("names an unassigned lead's first owner", async () => {
+        primeDb({ ...lead, assignedToId: null, assignedToName: null });
+
+        await updateRequestStatus("req-1", "Request Initiated", {
+          assignedToId: "u-abd",
+          assignedToName: "Abdallah",
+          salesComment: "",
+        });
+
+        expect(
+          vi.mocked(db.set).mock.calls[0][0].statusHistory[1].action,
+        ).toBe("Reassigned: Unassigned → Abdallah");
+      });
+    });
+
     // These use the labels the dashboard dropdown actually produces. The
     // previous version of this test used "New" -> "Qualified", neither of
     // which the UI can emit, which is why it stayed green while production

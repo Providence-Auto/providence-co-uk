@@ -266,6 +266,26 @@ export async function updateRequestStatus(
       });
     }
 
+    // Check if the lead changed hands. The row only holds the current owner,
+    // so this entry is the only record of who had it before — name both sides.
+    if (
+      cleanedPayload.assignedToId !== undefined &&
+      (cleanedPayload.assignedToId || null) !==
+        (existingRequest.assignedToId || null)
+    ) {
+      const from = existingRequest.assignedToName || "Unassigned";
+      const to = cleanedPayload.assignedToId
+        ? cleanedPayload.assignedToName || "Unknown member"
+        : "Unassigned";
+
+      historyLogs.push({
+        action: `Reassigned: ${from} → ${to}`,
+        performedBy: currentUser,
+        date: new Date(),
+        comment: "",
+      });
+    }
+
     // Check if Sales Status is Provided
     if (cleanedPayload.leadStatus) {
       const isStatusChanged =
