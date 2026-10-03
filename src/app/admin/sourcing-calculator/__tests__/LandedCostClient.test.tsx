@@ -114,6 +114,7 @@ function clickByText(t: string) {
 }
 
 beforeEach(async () => {
+  analyzeMarket.mockClear();
   analyzeMarket.mockResolvedValue({ success: true, data: MARKET });
   container = document.createElement("div");
   document.body.appendChild(container);
@@ -212,6 +213,46 @@ describe("Sourcing panel, end to end", () => {
     expect(text()).toContain("Clears the 30% minimum ROI");
     // The ceiling bid re-solves off the manual number, so the old one is gone.
     expect(text()).not.toContain("598,989");
+  });
+
+  it("prices the car from an estimated sale price without a crawl", async () => {
+    await act(async () => {
+      setInput("Make", "BMW");
+      setInput("Model", "1 Series");
+      setInput("Year", "2015");
+      setInput("Auction hammer / purchase price", "600000");
+    });
+    // Nothing to measure against yet, so no profit line is invented.
+    expect(text()).not.toContain("Profit after all costs");
+
+    await act(async () => setInput("Estimated sale price", "14400"));
+
+    expect(analyzeMarket).not.toHaveBeenCalled();
+    // 14,400 ÷ 1.2 = £12,000 net, labelled as the desk's own figure.
+    expect(text()).toContain("Estimated resale (ex VAT)");
+    expect(text()).toContain("£12,000");
+    expect(text()).toContain("manual estimate");
+    // Same P&L as the manual-median case: 12,000 − 6,768 = £5,232 at 77.3%.
+    expect(text()).toContain("£5,232");
+    expect(text()).toContain("77.3% ROI");
+    expect(text()).toContain("Clears the 30% minimum ROI");
+    expect(text()).toContain("Max auction bid for 30% ROI");
+  });
+
+  it("lets a crawl's market median replace the estimate", async () => {
+    await act(async () => {
+      setInput("Make", "BMW");
+      setInput("Model", "1 Series");
+      setInput("Year", "2015");
+      setInput("Auction hammer / purchase price", "600000");
+    });
+    await act(async () => setInput("Estimated sale price", "14400"));
+    await act(async () => clickByText("rawl market listings"));
+
+    expect(text()).toContain("Median resale (ex VAT)");
+    expect(text()).toContain("£8,791");
+    expect(text()).not.toContain("Estimated sale price");
+    expect(text()).not.toContain("£5,232");
   });
 
   it("re-solves everything when the minimum ROI is raised to 35%", async () => {
