@@ -512,9 +512,19 @@ export default function LandedCostClient({
   // car will actually sell at. Everything downstream — net resale, profit, the
   // ceiling bid, the verdict, the PDF and the saved run — reads the effective
   // median below, so one number moves the whole page at once.
+  //
+  // With no comparables — no crawl yet, or a crawl that matched nothing — there
+  // is no scraped median to fall back on, so a figure typed into the summary
+  // panel's "Estimated sale price" is in force on its own. That lets the desk
+  // price a car without spending scraper credits.
   const [medianOverrideOn, setMedianOverrideOn] = useState(false);
   const [medianOverrideInput, setMedianOverrideInput] = useState("");
-  const medianOverridden = medianOverrideOn && num(medianOverrideInput) > 0;
+  const noComparables = liveStats.count === 0;
+  const medianOverridden =
+    (medianOverrideOn || noComparables) && num(medianOverrideInput) > 0;
+  // A resale figure exists to measure against: scraped, or typed by the desk.
+  const hasResale = !noComparables || medianOverridden;
+  const manualResaleLabel = noComparables ? "manual estimate" : "manual median";
   const effectiveMedian = medianOverridden
     ? num(medianOverrideInput)
     : liveStats.median;
@@ -1446,15 +1456,57 @@ export default function LandedCostClient({
 
             {/* The other half of the P&L: what the car earns net of VAT, and
                 what is left after every cost above. */}
-            {liveStats.count > 0 ? (
+            {/* No comparables to take a median from, so the desk can type
+                the price it expects instead. Same state as "Set the median
+                myself" below, so it survives listings being added by hand. */}
+            {noComparables ? (
+              <div className="mt-3 rounded-lg border border-zinc-700 px-3 py-2">
+                <div className="flex items-center justify-between gap-3">
+                  <label
+                    htmlFor="manual-estimate"
+                    className="text-[11px] uppercase tracking-widest text-zinc-400"
+                  >
+                    Estimated sale price
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-zinc-400">
+                      £
+                    </span>
+                    <Input
+                      id="manual-estimate"
+                      inputMode="decimal"
+                      value={medianOverrideInput}
+                      onChange={(e) => {
+                        setMedianOverrideInput(e.target.value);
+                        setMedianOverrideOn(true);
+                      }}
+                      className="h-8 w-28 border-zinc-600 bg-zinc-800 pl-6 text-right text-sm text-white tabular-nums"
+                    />
+                  </div>
+                </div>
+                <p className="mt-1 text-[11px] text-zinc-500">
+                  VAT-inclusive retail, like a forecourt listing — divided by{" "}
+                  {RESALE_VAT_DIVISOR} for profit. A crawl replaces it with the
+                  market median.
+                </p>
+              </div>
+            ) : null}
+
+            {hasResale ? (
               <div className="[&_p]:text-zinc-300 [&_.border-zinc-100]:border-zinc-700">
                 <BreakdownRow
-                  label="Median resale (ex VAT)"
+                  label={
+                    noComparables
+                      ? "Estimated resale (ex VAT)"
+                      : "Median resale (ex VAT)"
+                  }
                   value={fmtGBP(medianExVat)}
                   sub={
-                    medianOverridden
-                      ? `${fmtGBP(effectiveMedian)} manual median ÷ ${RESALE_VAT_DIVISOR} · scraped ${fmtGBP(liveStats.median)}`
-                      : `${fmtGBP(liveStats.median)} market median ÷ ${RESALE_VAT_DIVISOR}`
+                    noComparables
+                      ? `${fmtGBP(effectiveMedian)} manual estimate ÷ ${RESALE_VAT_DIVISOR} · no comparables`
+                      : medianOverridden
+                        ? `${fmtGBP(effectiveMedian)} manual median ÷ ${RESALE_VAT_DIVISOR} · scraped ${fmtGBP(liveStats.median)}`
+                        : `${fmtGBP(liveStats.median)} market median ÷ ${RESALE_VAT_DIVISOR}`
                   }
                 />
                 <div className="flex items-start justify-between py-2">
@@ -1514,8 +1566,8 @@ export default function LandedCostClient({
             </div>
 
             {/* The ceiling bid — the single number a buyer needs in the room.
-                Only meaningful once there's a market median to work back from. */}
-            {liveStats.count > 0 ? (
+                Only meaningful once there's a resale figure to work back from. */}
+            {hasResale ? (
               <div className="mt-4 rounded-lg border border-zinc-700 bg-zinc-800/60 p-3">
                 <p className="text-[10px] uppercase tracking-widest text-zinc-400">
                   Max auction bid for {targetLabel} ROI
@@ -1530,7 +1582,7 @@ export default function LandedCostClient({
                       ≈ {fmtGBP(maxBid.maxHammer * fxGbpPerUnit)} · lands at{" "}
                       {fmtGBP(maxBid.maxLandedGbp)} against a{" "}
                       {fmtGBP(medianExVat)} net resale
-                      {medianOverridden ? " (manual median)" : ""}
+                      {medianOverridden ? ` (${manualResaleLabel})` : ""}
                     </p>
                     {num(hammerPrice) > 0 ? (
                       <p
@@ -1574,7 +1626,9 @@ export default function LandedCostClient({
             </Button>
             <p className="mt-2 text-[11px] text-zinc-500">
               {!market
-                ? "Crawl market listings first (top-left), then add costs."
+                ? medianOverridden
+                  ? "Your estimate already drives profit and the ceiling bid; the written verdict needs crawled comparables."
+                  : "Crawl market listings first (top-left), or enter an estimated sale price above."
                 : liveStats.count === 0
                   ? "No comparable listings yet — widen the match range and re-crawl."
                   : "Uses the crawled comparables + the landed cost above."}
@@ -1636,7 +1690,8 @@ export default function LandedCostClient({
                   {market.totalScraped === 1 ? " was" : "s were"} scraped, but
                   none fit <strong>{market.matchUsed}</strong>. Widen the year
                   or mileage range (a Year range of ±0 only matches the exact
-                  year) and re-run.
+                  year) and re-run, or enter an estimated sale price in the
+                  landed-cost panel.
                 </p>
                 {market.allListings.length > 0 ? (
                   <>

@@ -217,15 +217,44 @@ export function DestinationChips({
  * Rendered only when a destination is selected. The empty state is the chips
  * above it asking the question — a second placeholder card saying nothing has
  * been chosen yet would be the filler copy CLAUDE.md rules out.
+ *
+ * The heading and body are the same for every market, with the car and the
+ * country written in (business instruction 2026-10-02): a car page is a
+ * landing page, so it names what the reader is buying and where it is going,
+ * not the market's tax rule. The rule itself stays on the page as the fact
+ * chips, and the registry's per-market headline still feeds the search
+ * snippet (src/lib/car-page.ts).
  */
+export function briefHeading(
+  vehicle: string,
+  destinationName: string,
+  isUsed = false,
+): string {
+  const car = vehicle.trim();
+  if (!car) return `Import this car to ${destinationName} with less friction.`;
+  return isUsed
+    ? `Import a used ${car} to ${destinationName} with less friction.`
+    : `Import the new ${car} to ${destinationName} with less friction.`;
+}
+
+export function briefBody(vehicle: string, destinationName: string): string {
+  const car = vehicle.trim() || "car";
+  return `Before you buy the ${car}, you see the rules ${destinationName} sets for it — which hand it can be registered in, the age limit, the duty and the taxes — confirmed for your exact model and priced into one landed figure, so you decide on the real number. Your quote covers the car and the freight to your port of arrival, with marine cover on the voyage, the document pack prepared and clearance support at the port.`;
+}
+
 export function DestinationBrief({
   destination,
   copy,
+  vehicle,
+  isUsed = false,
   id = "destination",
   inquiryHref = "#inquiry",
 }: {
   destination: DestinationConfig;
-  copy: ResolvedDestinationCopy;
+  copy: Pick<ResolvedDestinationCopy, "facts" | "landing">;
+  /** Make and model, de-duped — "Nissan Patrol", not "2025 Nissan Patrol". */
+  vehicle: string;
+  isUsed?: boolean;
   id?: string;
   inquiryHref?: string;
 }) {
@@ -240,8 +269,8 @@ export function DestinationBrief({
         duration={0.6}
         className="max-w-[1400px] mx-auto rounded-[2rem] border border-black/8 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-7 md:p-11"
       >
-        {/* A rule rather than an "Importing to Ireland" eyebrow: every headline
-            in the registry names its own country, so the label would restate
+        {/* A rule rather than an "Importing to Ireland" eyebrow: the heading
+            names the country, so the label would restate
             the heading below it — CLAUDE.md, heading language. The rule does
             the eyebrow's visual job of stepping down into the section, and
             `aria-label` on the section carries the context for a screen
@@ -252,10 +281,10 @@ export function DestinationBrief({
         />
 
         <h2 className="text-2xl md:text-4xl font-bold tracking-tighter text-black mb-4 max-w-4xl">
-          {copy.headline}
+          {briefHeading(vehicle, destination.name, isUsed)}
         </h2>
         <p className="text-base md:text-lg text-zinc-500 font-light leading-relaxed mb-8 max-w-3xl">
-          {copy.body}
+          {briefBody(vehicle, destination.name)}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">

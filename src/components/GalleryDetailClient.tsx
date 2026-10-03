@@ -39,7 +39,11 @@ import {
 } from "@/config/destinations";
 import type { GuideLink } from "@/lib/destination-guides";
 import { getLogoFilename } from "@/lib/logo-utils";
-import { parseSteeringOptions, steeringLabel } from "@/lib/vehicle";
+import {
+  formatVehicleTitle,
+  parseSteeringOptions,
+  steeringLabel,
+} from "@/lib/vehicle";
 import {
   colorLabel,
   parseColors,
@@ -860,6 +864,8 @@ export default function GalleryDetailClient({
         <DestinationBrief
           destination={selectedDestination}
           copy={destinationBrief}
+          vehicle={formatVehicleTitle(car.make, car.model)}
+          isUsed={isUsed}
         />
       )}
 

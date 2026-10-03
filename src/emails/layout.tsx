@@ -27,6 +27,12 @@ interface EmailLayoutProps {
     image?: string | null;
     role?: string;
   };
+  /**
+   * The footer's second line. Defaults to "do not reply", which is right for a
+   * system message; an email sent with a reply-to that a person reads should
+   * say where a reply goes instead.
+   */
+  footerNote?: string;
   children: React.ReactNode;
 }
 
@@ -34,6 +40,7 @@ export const EmailLayout = ({
   preview,
   heading,
   profile,
+  footerNote = "This is an automated system message. Please do not reply directly.",
   children,
 }: EmailLayoutProps) => {
   return (
@@ -78,7 +85,7 @@ export const EmailLayout = ({
           <Text style={footerTextStyle}>
             © {new Date().getFullYear()} Providence Auto. All rights reserved.
             <br />
-            This is an automated system message. Please do not reply directly.
+            {footerNote}
           </Text>
         </Container>
       </Body>
