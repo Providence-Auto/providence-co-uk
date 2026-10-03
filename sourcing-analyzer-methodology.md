@@ -249,6 +249,11 @@ The rules that keep it honest:
 - **A new crawl clears it.** An override belongs to the car it was typed for; carrying it silently into the next vehicle would be the worst failure this feature could have.
 - **Changing it stales an existing verdict**, exactly as adding or removing a listing does (§3.7) — the effective median is part of the signature the narrative is signed against.
 
+**Estimated sale price, before any crawl.** The same operator figure can be entered when there are no comparables at all: before a crawl, or after a crawl that matched nothing. It is the "Estimated sale price" field in the summary panel, and it writes the same state as the override above. It exists so the desk can price a car without spending scraper credits. The rules above stand unchanged: it is an operator input, entered VAT-inclusive and divided by 1.2, and a new crawl clears it. Two things differ:
+
+- **It is labelled as an estimate, not a median.** The summary panel reads "Estimated resale (ex VAT)" with "manual estimate · no comparables" beneath it, and the ceiling bid names it the same way. There is no scraped figure to show beside it, because there is none.
+- **It drives the P&L and the ceiling bid only.** Net resale, profit, ROI and the maximum bid (§5.3) all read it. The written verdict (§6.1), the PDF and the saved run still need crawled comparables, because the verdict prompt describes the listing distribution and an estimate has none. Once listings are in the comparison, by a crawl or by hand, the figure behaves exactly as the override above, and reaches every surface that list names.
+
 **Confidence flag.** Fewer than 5 comparables marks the analysis as thin supply / lower confidence, which cascades into the verdict (see §6).
 
 ---
@@ -378,7 +383,7 @@ Every one of these is a stated assumption, not a fact about a specific car. They
 |---|---|
 | "Market scraper is blocked… monthly usage limit" | The Apify account cap. Raise it in the Apify console — this is not a code bug. See memory `apify-free-tier-cap`. |
 | "GEMINI_API_KEY / APIFY_TOKEN is not configured" | The key is set locally but missing on that Railway service. |
-| Listings scraped, none matched | The year or mileage band is too tight. A year band of ±0 matches the exact year only. Widen, or add listings manually from the scraped set. |
+| Listings scraped, none matched | The year or mileage band is too tight. A year band of ±0 matches the exact year only. Widen, or add listings manually from the scraped set. Or enter an estimated sale price (§4) to price the car without comparables. |
 | Verdict prose disagrees with the figures on screen | The comparable set was edited after the verdict ran. The banner says so; re-run it. |
 | Zero results for a Mercedes or BMW model | A model-token quirk in the search URL. `autoTraderModelToken` covers the *Class* and *Series* families; a new pattern may need adding. |
 
