@@ -353,6 +353,7 @@ unclassified page is the state this document exists to prevent.
 | `/import-cars-from/[country]` | 7 | Landing | Agreed section list in `CLAUDE.md`; enforced by `src/config/__tests__/countries.test.ts` |
 | `/import-cars-from` | 1 | Landing | Hub |
 | `/campaigns/[slug]` | 3 | Landing | `src/config/landing-pages.ts` |
+| `/b2b-inquiry` | 1 | Landing | Added 2026-09-29/30. Built around one action — a dealership sending a sourcing inquiry; sections as asked by the business (market check + dealer form, the value proposition without the dealer platform, each source market's ports and transit). Framed on the inquiry so it does not compete with `/b2b` for "dealer car sourcing" |
 | `/import-japanese-cars` | 1 | Landing | |
 | `/indian-manufactured-cars` | 1 | Landing | |
 | `/japanese-luxury-cars-lhd` | 1 | Landing | |

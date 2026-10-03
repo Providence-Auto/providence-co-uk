@@ -14,27 +14,12 @@ import {
 import { sendMetaConversion } from "@/lib/conversions";
 import { formatBudget } from "@/lib/currencies";
 import { emailService } from "@/lib/email";
+import { COUNTRY_OWNER_EMAILS, countryLeadOwner } from "@/lib/lead-routing";
 import { LEAD_EVENT } from "@/lib/leadConversion";
 import connectToDatabase from "@/lib/mongoose";
 
-// Destination markets owned by a named member rather than the shared Sales
-// rotation: an inquiry to import to one of these goes to that person.
-//
-// Keyed by `countryOfImport` lowercased, valued by email rather than user id
-// so the rule survives the owner's account being re-created and, crucially,
-// their role changing — the round-robin pool is role "Sales" only, and these
-// owners are often admins who would never come up in it.
-const COUNTRY_LEAD_OWNERS: Record<string, string> = {
-  cyprus: "shaq@providenceauto.uk.com",
-};
-
-// Owning a market is exclusive, not additive: a country owner takes their own
-// market's leads and nothing else, so they are held out of the general
-// rotation. Without this, giving an owner the "Sales" role to make them
-// assignable would also drop them into the round-robin for every country.
-const COUNTRY_OWNER_EMAILS = new Set(
-  Object.values(COUNTRY_LEAD_OWNERS).map((email) => email.toLowerCase()),
-);
+// Country owners (COUNTRY_LEAD_OWNERS) and the rule that holds them out of the
+// rotation live in src/lib/lead-routing.ts, shared with the dealer inquiry form.
 
 /**
  * The one rule for who may own a lead: an active member of the Sales team.
@@ -175,8 +160,7 @@ export async function submitCarRequest(data: {
     //     missing or banned falls through to the round-robin rather than
     //     leaving the lead unassigned.
     if (!assignedAgent) {
-      const ownerEmail =
-        COUNTRY_LEAD_OWNERS[data.countryOfImport?.trim().toLowerCase() ?? ""];
+      const ownerEmail = countryLeadOwner(data.countryOfImport);
 
       if (ownerEmail) {
         const [countryOwner] = await db

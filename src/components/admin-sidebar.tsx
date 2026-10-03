@@ -6,6 +6,7 @@ import {
   Car,
   ChevronRight,
   FilePlus2,
+  Handshake, // Dealer inquiries
   IdCard,
   Instagram,
   LayoutDashboard,
@@ -36,6 +37,11 @@ const navItems = [
   { title: "My Profile Page", url: "/admin/my-profile", icon: IdCard },
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Archived", url: "/admin/archived", icon: Archive },
+  {
+    title: "Dealer Inquiries",
+    url: "/admin/dealer-inquiries",
+    icon: Handshake,
+  },
   { title: "Cars", url: "/admin/dossiers", icon: Car },
   {
     title: "Sourcing Analyzer",

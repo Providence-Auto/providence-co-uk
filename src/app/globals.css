@@ -652,6 +652,21 @@ input[type="range"].pa-range::-moz-range-track {
   background: transparent;
 }
 
+/* Step change in a multi-step form (the dealer inquiry form). Transform only —
+   never opacity — so if the frame loop is paused (a backgrounded tab, the
+   preview pane) the new step is still fully visible, just not nudged. */
+@keyframes pa-step-in {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: none;
+  }
+}
+.pa-step-in {
+  animation: pa-step-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Crisp card hover-lift */
 .pa-lift {
   transition:
