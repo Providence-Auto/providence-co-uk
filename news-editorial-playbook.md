@@ -382,7 +382,7 @@ Every article ships with:
 - **`faqs`** — 4–6, each answer complete and standalone.
 - **`sources`** — minimum 3, each with a real publisher name.
 - **`relatedGuides`** — exactly 3 existing blog slugs. Verify they exist; a broken related-guide is a build-time landmine.
-- **Internal links** — minimum 3 in body: at least one evergreen guide, at least one tool (`/ireland-cost-calculator` or `/request`), and at least one other news article where genuinely relevant.
+- **Internal links** — minimum 3 in body: at least one evergreen guide, at least one action link — a tool (`/ireland-cost-calculator`) or the story's matching landing page through the contextual touchpoint in §4.4 — and at least one other news article where genuinely relevant.
 - **`category`** — one of Auctions, Releases, Market, Policy & Tax, Industry, Providence.
 
 **Cannibalisation rule.** Before creating a slug, check `NEWS_ARTICLES` and `BLOG_POSTS`. If an existing page targets the same primary keyword, **update that page instead of publishing a competitor to it.** Two of our own pages fighting for one term is a self-inflicted ranking loss.

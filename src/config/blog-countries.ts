@@ -95,6 +95,7 @@ const japanPosts: BlogPost[] = [
     ogImage: "/source-cars/blog/og/how-to-buy-a-car-at-japanese-auction.jpg",
     heroAlt: "A Toyota Land Cruiser 300",
     related: [
+      "import-japanese-cars-to-uk",
       "japanese-auction-grades-explained",
       "cost-to-import-a-car-from-japan",
       "best-cars-to-import-from-japan",
@@ -148,6 +149,7 @@ const japanPosts: BlogPost[] = [
     ogImage: "/source-cars/blog/og/japanese-auction-grades-explained.jpg",
     heroAlt: "A Toyota Harrier",
     related: [
+      "import-japanese-cars-to-uk",
       "how-to-buy-a-car-at-japanese-auction",
       "best-cars-to-import-from-japan",
       "japan-car-export-documents-explained",
@@ -169,7 +171,7 @@ const japanPosts: BlogPost[] = [
       },
       {
         q: "Should I avoid a Grade R car?",
-        a: "Not automatically, but you need to know what was repaired. Grade R means the car has had accident repair recorded — which in Japan can mean anything from a replaced bumper skin to structural work. The panel map and inspector's notes tell you which. We buy Grade R only where the repair is documented, cosmetic and verified on physical inspection, and we always disclose it.",
+        a: "Not automatically, but you need to know what was repaired. Grade R means the car has had accident repair recorded — which in Japan can mean anything from a replaced bumper skin to structural work. The panel map and inspector's notes tell you which. If you are considering one, ask for photographs of the repaired area and have it inspected in person before you buy.",
       },
       {
         q: "Can an auction sheet be faked?",
@@ -200,6 +202,7 @@ const japanPosts: BlogPost[] = [
     ogImage: "/source-cars/blog/og/best-cars-to-import-from-japan.jpg",
     heroAlt: "A Nissan GT-R (R35)",
     related: [
+      "import-japanese-cars-to-uk",
       "cost-to-import-a-car-from-japan",
       "how-to-buy-a-car-at-japanese-auction",
       "japanese-auction-grades-explained",
@@ -253,6 +256,7 @@ const japanPosts: BlogPost[] = [
     ogImage: "/source-cars/blog/og/cost-to-import-a-car-from-japan.jpg",
     heroAlt: "A Toyota Sienta",
     related: [
+      "import-japanese-cars-to-uk",
       "best-cars-to-import-from-japan",
       "how-to-buy-a-car-at-japanese-auction",
       "japan-car-export-documents-explained",
@@ -306,6 +310,7 @@ const japanPosts: BlogPost[] = [
     ogImage: "/source-cars/blog/og/japan-car-export-documents-explained.jpg",
     heroAlt: "A Toyota Noah",
     related: [
+      "import-japanese-cars-to-uk",
       "how-to-buy-a-car-at-japanese-auction",
       "japanese-auction-grades-explained",
       "cost-to-import-a-car-from-japan",

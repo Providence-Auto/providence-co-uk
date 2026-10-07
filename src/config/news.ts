@@ -14,6 +14,7 @@
 // src/content/news/index.ts. This file holds only the metadata.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { ARTICLE_CTAS, type ArticleCta, importFromCta } from "./article-ctas";
 import type { BlogFAQ, BlogTocItem } from "./blog";
 
 export type NewsCategory =
@@ -73,6 +74,13 @@ export type NewsArticle = {
   linkedVehicleSlugs?: string[];
   /** Pin to the top of the index regardless of date. */
   isFeatured?: boolean;
+  /**
+   * The landing page this story hands its reader to — the publisher note under
+   * the byline and the sign-off CTA both read it (brand-position.md §12,
+   * news-editorial-playbook.md §4.4). Pick the page that matches the story;
+   * unset falls back to the market-neutral default in NewsShell.
+   */
+  cta?: ArticleCta;
 };
 
 /**
@@ -207,6 +215,103 @@ export const NEWS_CATEGORIES: NewsCategoryMeta[] = [
 const AUTHOR = "Providence Auto";
 
 export const NEWS_ARTICLES: NewsArticle[] = [
+  {
+    slug: "hmrc-yen-customs-rate-japanese-car-import-uk",
+    cta: ARTICLE_CTAS.japanUk,
+    title:
+      "HMRC's October yen rate adds 3.4% to the customs value of a Japanese car",
+    h1: "HMRC's Yen Rate Caught Up With the Market in October, and UK Import Tax Followed",
+    seoTitle: "HMRC Yen Rate October 2026: Japanese Import Tax",
+    description:
+      "HMRC's October rate is ¥208.59 to the pound, from ¥215.70. On a ¥2,000,000 Japanese car that adds £315.71 to the value UK duty and VAT are charged on.",
+    excerpt:
+      "The market moved in early September. The customs rate moved on 1 October. Here is what that does to the duty and VAT on a car invoiced in yen — and when it does not apply.",
+    category: "Market",
+    dateline: "London",
+    keywords: [
+      "hmrc exchange rate yen october 2026",
+      "japanese car import tax uk",
+      "customs exchange rate car import uk",
+      "gbp jpy car import",
+      "which exchange rate is used for import duty uk",
+      "does a strong yen increase import vat",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-07",
+    updatedDate: "2026-10-07",
+    readingTimeMins: 7,
+    heroImage: "/source-cars/blog/cost-to-import-a-car-from-japan.webp",
+    heroAlt: "A Toyota Sienta",
+    heroCaption:
+      "Illustrative image: a 2022 Toyota Sienta, not a vehicle or transaction referred to in this article. Photo: オーバードライブ83, CC BY-SA 4.0, via Wikimedia Commons.",
+    toc: [
+      { id: "what-changed", label: "What changed on 1 October" },
+      {
+        id: "customs-vs-spot",
+        label: "Why the customs rate lagged the market",
+      },
+      { id: "landed", label: "What it does to a ¥2,000,000 car" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "legal", label: "Is your car still legal to import?" },
+      { id: "timing", label: "Should you move now or wait?" },
+      { id: "selling", label: "News, or a sales pitch?" },
+    ],
+    faqs: [
+      {
+        q: "What is HMRC's yen exchange rate for October 2026?",
+        a: "HMRC's monthly customs rate for the Japanese yen is 208.5932 yen to the pound for October 2026, published via the UK Integrated Online Tariff in a file dated 16 September 2026. September's rate was 215.6954. Fewer yen to the pound means a yen invoice converts to a larger sterling customs value, so duty and import VAT rise with it.",
+      },
+      {
+        q: "Which exchange rate is used for UK import duty on a car?",
+        a: "GOV.UK's guidance says to use the rate specified in your contract if there is one. Otherwise the importer uses HMRC's published rate in force when the import entry is accepted — not the rate on the day you paid the seller. HMRC checks its rates weekly and updates one mid-month only if the commercial rate differs by more than 5%.",
+      },
+      {
+        q: "How much more tax does a Japanese car pay in October 2026?",
+        a: "On a car invoiced at ¥2,000,000, the customs value rises from £9,272.33 at September's rate to £9,588.04 at October's. With duty at the 10% third-country rate, duty and VAT together rise from £2,967.15 to £3,068.17, about £101 more. Where the car qualifies for the 0% Japan preference, only the VAT changes, rising by £63.14.",
+      },
+      {
+        q: "Does the HMRC rate change apply to a car invoiced in pounds?",
+        a: "Not in the same way. GOV.UK's conversion rules exist to turn foreign-currency amounts into sterling, so an invoice already in pounds has nothing to convert, and a contract that fixes an exchange rate is normally converted at that fixed rate. Check the invoice currency and the contract terms before assuming the October rate affects your car.",
+      },
+      {
+        q: "Will the yen get stronger or weaker against the pound?",
+        a: "We do not know, and we do not forecast currencies. What is known is mechanical: October's HMRC rate stays fixed until 31 October unless the market moves more than 5% away from it, and November's rate will be set from the market in the second half of October. The tax date that matters is when your import entry is accepted.",
+      },
+    ],
+    sources: [
+      {
+        label: "Check foreign currency exchange rates (monthly rates)",
+        href: "https://www.trade-tariff.service.gov.uk/exchange_rates",
+        publisher: "HM Revenue & Customs",
+      },
+      {
+        label: "Spot exchange rate, Japanese yen into sterling (XUDLJYS)",
+        href: "https://www.bankofengland.co.uk/boeapps/database/",
+        publisher: "Bank of England",
+      },
+      {
+        label:
+          "Converting foreign currency amounts to include in the customs value",
+        href: "https://www.gov.uk/guidance/converting-foreign-currency-amounts-to-include-in-the-customs-value",
+        publisher: "GOV.UK",
+      },
+      {
+        label: "Importing vehicles into the UK: paying VAT and customs duty",
+        href: "https://www.gov.uk/importing-vehicles-into-the-uk/paying-vat-and-duty",
+        publisher: "GOV.UK",
+      },
+      {
+        label: "Commodity 8703 23 90 00",
+        href: "https://www.trade-tariff.service.gov.uk/commodities/8703239000",
+        publisher: "UK Integrated Online Tariff",
+      },
+    ],
+    relatedGuides: [
+      "japanese-car-import-duty-uk",
+      "paying-for-a-car-from-japan",
+      "import-japanese-cars-to-uk",
+    ],
+  },
   // ── Auctions ──────────────────────────────────────────────────────────────
   {
     slug: "ferrari-luce-chassis-0-40-million-auction",
@@ -566,6 +671,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   // ── Policy & Tax ──────────────────────────────────────────────────────────
   {
     slug: "uk-zev-mandate-review-2026-consultation",
+    cta: ARTICLE_CTAS.japanUk,
     title: "The UK has reopened the 2030 petrol and diesel ban — again",
     h1: "The UK Has Reopened the 2030 Petrol and Diesel Ban: What the New ZEV Mandate Review Actually Changes",
     seoTitle:
@@ -743,6 +849,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
 
   {
     slug: "ireland-ev-incentives-taper-2026-2028",
+    cta: ARTICLE_CTAS.ireland,
     title: "Ireland's EV incentives start winding down — here's the timetable",
     h1: "Ireland's EV Incentives Are Being Wound Down: The VRT and BIK Timetable to 2028",
     seoTitle:
@@ -829,6 +936,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   // ── Market ────────────────────────────────────────────────────────────────
   {
     slug: "japan-used-car-exports-record-weak-yen-2026",
+    cta: ARTICLE_CTAS.japan,
     title: "Japan exported a record 1.7m used cars — and the weak yen is why",
     h1: "Japan Exported a Record 1.7 Million Used Cars: What the Weak Yen Is Doing to Auction Prices",
     seoTitle:
@@ -913,6 +1021,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   // ── Releases ──────────────────────────────────────────────────────────────
   {
     slug: "mercedes-maybach-s-580-e-first-class-uk-spec",
+    cta: importFromCta("united-kingdom", "the UK"),
     title:
       "Mercedes-Maybach S 580 e First Class: £206,090, and a CO₂ figure worth reading",
     h1: "Mercedes-Maybach S 580 e First Class: The UK Specification, the £206,090 Price, and the 69 g/km That Sets Your Tax",
@@ -1016,6 +1125,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   // ── Policy & Tax ──────────────────────────────────────────────────────────
   {
     slug: "sri-lanka-vehicle-import-surcharge-extended-2026",
+    cta: ARTICLE_CTAS.dealer,
     title:
       "Sri Lanka extends the 50% vehicle import surcharge — and the real deadline is 15 November",
     h1: "Sri Lanka Extends the 50% Vehicle Import Duty Surcharge to 31 December 2026",
@@ -1125,6 +1235,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   // ── Nissan Patrol Y63 ─────────────────────────────────────────────────────
   {
     slug: "nissan-patrol-y63-australia-pricing-confirmed",
+    cta: importFromCta("australia", "Australia"),
     title:
       "Nissan prices the Y63 Patrol in Australia: six grades, A$98,990 to A$145,990",
     h1: "Nissan Patrol Y63 Australian Pricing Confirmed: Six Grades from A$98,990, First Deliveries Early 2027",
@@ -1229,6 +1340,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "nissan-patrol-y63-vs-landcruiser-300-dealer-read",
+    cta: ARTICLE_CTAS.dealer,
     title:
       "Patrol Y63 against the LandCruiser 300: the dealer read, not the spec sheet",
     h1: "Nissan Patrol Y63 vs Toyota LandCruiser 300: What It Changes for a Dealer",
@@ -1325,6 +1437,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "nissan-patrol-y63-right-hand-drive-markets",
+    cta: importFromCta("australia", "Australia"),
     title:
       "The Y63 Patrol's right-hand-drive map: Australia first, Japan in fiscal 2027",
     h1: "Which Markets Get the Nissan Patrol Y63, and When",
@@ -1421,6 +1534,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "mitsubishi-pajero-revealed-specifications-launch-markets",
+    cta: importFromCta("thailand", "Thailand"),
     title:
       "Mitsubishi reveals the all-new Pajero: Thai-built, 480 Nm, no price anywhere",
     h1: "The All-New Mitsubishi Pajero Is Revealed: Thai-Built, Seven Seats, and Unpriced in Every Market",
@@ -1530,6 +1644,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "mitsubishi-pajero-thailand-australia-sourcing-corridors",
+    cta: importFromCta("thailand", "Thailand"),
     title:
       "Two corridors for one Pajero: what Thailand and Australia each put in the price",
     h1: "Sourcing the New Mitsubishi Pajero: What the Thailand and Australia Corridors Actually Contain",
@@ -1634,6 +1749,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "range-rover-electric-revealed-specifications-price",
+    cta: importFromCta("united-kingdom", "the UK"),
     title: "The first electric Range Rover is here: 550PS, 372 miles, £154,070",
     h1: "The First Electric Range Rover Is Here: 550PS, 372 Miles and £154,070",
     seoTitle: "Range Rover Electric: Specs, Price and Import Read",
@@ -1739,6 +1855,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "range-rover-electric-uk-sourcing-export-vat",
+    cta: importFromCta("united-kingdom", "the UK"),
     title: "Sourcing the Range Rover Electric: the 20% inside a £154,070 price",
     h1: "Sourcing the Range Rover Electric Out of the UK: What the Corridor Actually Contains",
     seoTitle: "Importing a Range Rover Electric from the UK",
@@ -1843,6 +1960,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "pakistan-used-car-import-age-limit-removed-2026",
+    cta: ARTICLE_CTAS.japan,
     title:
       "Pakistan dropped the age cap on used imports — and the 30% duty is a cut",
     h1: "Pakistan Removed the Age Cap on Commercial Used-Car Imports, and Cut the Duty",
@@ -2119,6 +2237,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "tanzania-used-vehicle-excise-duty-finance-act-2026",
+    cta: ARTICLE_CTAS.japan,
     title:
       "Tanzania re-banded used-import excise, and cut one band by two points",
     h1: "Tanzania's Finance Act 2026 Redrew the Excise Bands on Imported Used Vehicles",
@@ -2290,6 +2409,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "thailand-vehicle-production-exports-2026-dealer-read",
+    cta: ARTICLE_CTAS.dealer,
     title: "Thailand is building more cars and exporting fewer of them",
     h1: "Thailand's Production Is Up and Its Export Book Is Shrinking",
     seoTitle: "Thailand Car Production and Exports 2026: Dealer Read",
@@ -2382,6 +2502,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "sri-lanka-vehicle-finance-loan-to-value-cap-2026",
+    cta: ARTICLE_CTAS.dealer,
     title: "Sri Lanka capped vehicle finance at 40%, and the deposit tripled",
     h1: "Sri Lanka Reopened Vehicle Imports, Then Capped the Credit That Pays for Them",
     seoTitle: "Sri Lanka Vehicle Finance Cap 2026: 40% Loan to Value",
@@ -2470,6 +2591,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "yen-intervention-2026-japan-car-import-cost",
+    cta: ARTICLE_CTAS.japan,
     title: "¥15.4 trillion later, the weak-yen discount is unwinding",
     h1: "Japan Intervened, the Yen Turned, and a ¥3,000,000 Car Now Costs €754 More",
     seoTitle: "Yen Intervention 2026: What It Costs to Import a Car",
@@ -2651,6 +2773,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "toyota-land-cruiser-fj-japan-price-thailand-built",
+    cta: ARTICLE_CTAS.japan,
     title: "Toyota's Land Cruiser FJ is a Japanese car built in Thailand",
     h1: "The Land Cruiser FJ Costs ¥4,500,100 in Japan and Is Assembled at Ban Pho",
     seoTitle: "Toyota Land Cruiser FJ: ¥4,500,100, Built in Thailand",
@@ -2742,6 +2865,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "kia-sorento-india-launch-price-anantapur-export",
+    cta: ARTICLE_CTAS.india,
     title: "Kia's Sorento lands in India at ₹27.99 lakh, built at Anantapur",
     h1: "Kia Launched the Sorento in India — an India-Built, Right-Hand-Drive Seven-Seater",
     seoTitle: "Kia Sorento India Price 2026 and the Import Read",
@@ -2828,6 +2952,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "maruti-baleno-facelift-2026-price-india-export",
+    cta: ARTICLE_CTAS.india,
     title: "Maruti's new Baleno puts Level 2 driver assistance under ₹6.5 lakh",
     h1: "The 2026 Maruti Baleno Starts at ₹6.10 Lakh and Brings ADAS Down the Price Ladder",
     seoTitle: "Maruti Baleno 2026 Price, Specs and the Import Read",
@@ -3083,6 +3208,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "jlr-4000-job-cuts-2026-uk-sourcing-read",
+    cta: importFromCta("united-kingdom", "the UK"),
     title:
       "JLR is cutting 4,000 jobs. Here is what it does to a UK-sourced Land Rover",
     h1: "JLR Confirmed 4,000 Job Cuts — the Number That Matters to a Buyer Is 300,000",
@@ -3172,6 +3298,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "changan-rayong-right-hand-drive-thailand-export-base",
+    cta: importFromCta("thailand", "Thailand"),
     title:
       "Changan builds right-hand drive in Rayong, and that changes your options",
     h1: "A Chinese Manufacturer Is Building Right-Hand-Drive Cars in a Market We Buy In",
@@ -3349,6 +3476,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "new-zealand-clean-car-standard-2026-used-import-charges",
+    cta: ARTICLE_CTAS.japan,
     title:
       "New Zealand kept the Clean Car Standard and cut the charge to NZ$7.50 a gram",
     h1: "New Zealand's Clean Car Standard Survived Its Review, at a Quarter of the Old Charge",
@@ -3436,6 +3564,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "kenya-crsp-used-car-valuation-uncertainty-2026",
+    cta: ARTICLE_CTAS.japan,
     title:
       "Kenya's used-car tax base is still contested, and we could not confirm which list is live",
     h1: "Kenya Taxes Imported Cars on a Schedule, Not Your Invoice — and the Schedule Is in Dispute",
@@ -3523,6 +3652,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "uk-eved-pay-per-mile-2028-ev-import-read",
+    cta: ARTICLE_CTAS.japanUk,
     title: "Britain's 3p-a-mile EV charge starts in April 2028",
     h1: "The UK Confirmed a 3p-a-Mile Charge on Electric Cars — and It Does Not Follow the Export",
     seoTitle: "UK eVED 2028: 3p a Mile, and the EV Import Read",
@@ -3614,6 +3744,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "bentley-torcal-revealed-specifications-price",
+    cta: importFromCta("united-kingdom", "the UK"),
     title: "Bentley's first electric car: 888 PS, 375 miles, built in Crewe",
     h1: "Bentley's First Electric Car Is Here: 888 PS, 375 Miles and Built in Crewe",
     seoTitle: "Bentley Torcal: Specs, Price and Import Read",
@@ -3718,6 +3849,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "bentley-torcal-right-hand-drive-import-markets",
+    cta: importFromCta("united-kingdom", "the UK"),
     title:
       "A right-hand-drive Torcal can go almost anywhere. The charger decides.",
     h1: "A Right-Hand-Drive Bentley Torcal Can Go Almost Anywhere — the Charger Decides Whether It Should",
@@ -3820,6 +3952,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   },
   {
     slug: "bentley-torcal-vs-range-rover-electric-british-luxury-ev",
+    cta: importFromCta("united-kingdom", "the UK"),
     title: "Two British electric flagships, revealed three weeks apart",
     h1: "Bentley Torcal vs Range Rover Electric: Two British Electric Flagships, Three Weeks Apart",
     seoTitle: "Torcal vs Range Rover Electric: Specs Compared",

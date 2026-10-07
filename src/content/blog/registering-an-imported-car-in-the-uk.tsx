@@ -370,20 +370,14 @@ export default function Body() {
         £2,500 and three penalty points.
       </P>
 
-      <H2 id="where-we-fit">Where we fit in this</H2>
       <P>
-        For cars we ship to the United Kingdom, we file the NOVA declaration and
-        prepare the DVLA registration pack, and you get the full scanned
-        document set when the vessel departs. Before that — before you commit to
-        a car at all — we tell you which approval route it falls into and what
-        that route costs, because it belongs in the landed number rather than in
-        a discovery at the port.
-      </P>
-      <P>
-        The parts of this you keep are the parts that are yours by law: the
-        vehicle is registered in your name, and the duty, VAT and tax are
-        charged to you as the registered owner. What you get from us is that
-        none of it arrives as a surprise.
+        When you are ready to buy, you can{" "}
+        <InlineLink href="/import-japanese-cars/uk">
+          import a Japanese car to the UK
+        </InlineLink>{" "}
+        with the approval route, the NOVA notification and the DVLA pack
+        prepared — and the duty, VAT and tax charged to you as the registered
+        owner, as the law requires.
       </P>
 
       <Disclaimer>

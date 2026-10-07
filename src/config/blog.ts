@@ -18,13 +18,18 @@
 // import regimes change frequently.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { ARTICLE_CTAS, blogCtaFields } from "./article-ctas";
 import { COUNTRY_BLOG_POSTS } from "./blog-countries";
+import { JAPAN_UK_POSTS } from "./blog-japan-uk";
 
 export type BlogCluster =
   | "Cost & Cheapest"
   | "Tax & Rules"
   | "Source Country"
   | "Guides"
+  // Japanese cars into the UK — the pillar and its supporting guides
+  // (src/config/blog-japan-uk.ts). Research: japanese-car-import-uk-research.md.
+  | "Japan to UK"
   // Importing *into* the UK. Deliberately separate from the "United Kingdom"
   // cluster, which is about buying *from* Britain — the reader is a different
   // person with a different question.
@@ -462,7 +467,7 @@ const IRELAND_POSTS: BlogPost[] = [
   {
     slug: "why-are-indian-manufactured-cars-cheaper",
     // An India post, so the inquiry button belongs on the India landing page.
-    ctaHref: "/indian-manufactured-cars#inquiry",
+    ...blogCtaFields(ARTICLE_CTAS.india),
     title:
       "Why Are Indian-Manufactured Cars Cheaper? (And Is the Quality Low?)",
     h1: "Why Are Indian-Manufactured Cars So Much Cheaper — and Is the Quality Low?",
@@ -531,6 +536,9 @@ const IRELAND_POSTS: BlogPost[] = [
 const MODEL_POSTS: BlogPost[] = [
   {
     slug: "how-to-import-a-nissan-patrol",
+    // A Patrol can come out of four corridors, so the guide ends on the
+    // market-neutral page rather than one country's form.
+    ...blogCtaFields(ARTICLE_CTAS.neutral),
     title: "How to Import a Nissan Patrol: Corridors, Costs and Approvals",
     h1: "How to Import a Nissan Patrol",
     seoTitle: "How to Import a Nissan Patrol: Costs, Rules & Corridors",
@@ -599,6 +607,9 @@ const MODEL_POSTS: BlogPost[] = [
   },
   {
     slug: "nissan-patrol-y63-grades-explained",
+    // A Patrol can come out of four corridors, so the guide ends on the
+    // market-neutral page rather than one country's form.
+    ...blogCtaFields(ARTICLE_CTAS.neutral),
     title: "Nissan Patrol Y63 Grades Explained: Ti to Ti-L Reserve",
     h1: "Nissan Patrol Y63 Grades Explained",
     seoTitle: "Nissan Patrol Y63 Grades Explained: Ti to Ti-L Reserve",
@@ -701,8 +712,10 @@ const UK_IVA_POSTS: BlogPost[] = [
     // Not flagged `isPillar` on purpose: the blog index filters pillar posts out
     // of their cluster group and features only the hardcoded Ireland hub, so the
     // flag would hide this post from the index entirely.
-    ctaHref: "/request",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
     related: [
+      "import-japanese-cars-to-uk",
       "do-i-need-an-iva-test",
       "iva-test-cost",
       "iva-test-requirements",
@@ -767,8 +780,10 @@ const UK_IVA_POSTS: BlogPost[] = [
     heroImage: "/source-cars/blog/do-i-need-an-iva-test.webp",
     ogImage: "/source-cars/blog/og/do-i-need-an-iva-test.jpg",
     heroAlt: "A Toyota Supra (A80)",
-    ctaHref: "/request",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
     related: [
+      "import-japanese-cars-to-uk",
       "iva-test-explained",
       "iva-test-cost",
       "registering-an-imported-car-in-the-uk",
@@ -834,8 +849,10 @@ const UK_IVA_POSTS: BlogPost[] = [
     heroImage: "/source-cars/blog/iva-test-cost.webp",
     ogImage: "/source-cars/blog/og/iva-test-cost.jpg",
     heroAlt: "A Mitsubishi Delica D:5",
-    ctaHref: "/request",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
     related: [
+      "import-japanese-cars-to-uk",
       "iva-test-explained",
       "do-i-need-an-iva-test",
       "registering-an-imported-car-in-the-uk",
@@ -900,8 +917,10 @@ const UK_IVA_POSTS: BlogPost[] = [
     heroImage: "/source-cars/blog/iva-test-requirements.webp",
     ogImage: "/source-cars/blog/og/iva-test-requirements.jpg",
     heroAlt: "A Mazda RX-7 (FD)",
-    ctaHref: "/request",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
     related: [
+      "import-japanese-cars-to-uk",
       "iva-test-explained",
       "iva-test-cost",
       "do-i-need-an-iva-test",
@@ -967,8 +986,10 @@ const UK_IVA_POSTS: BlogPost[] = [
     heroImage: "/source-cars/blog/iva-test-centres-uk.webp",
     ogImage: "/source-cars/blog/og/iva-test-centres-uk.jpg",
     heroAlt: "A Suzuki Jimny",
-    ctaHref: "/request",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
     related: [
+      "import-japanese-cars-to-uk",
       "iva-test-explained",
       "do-i-need-an-iva-test",
       "iva-test-requirements",
@@ -1033,8 +1054,10 @@ const UK_IVA_POSTS: BlogPost[] = [
     heroImage: "/source-cars/blog/registering-an-imported-car-in-the-uk.webp",
     ogImage: "/source-cars/blog/og/registering-an-imported-car-in-the-uk.jpg",
     heroAlt: "A Toyota Vellfire",
-    ctaHref: "/request",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
     related: [
+      "import-japanese-cars-to-uk",
       "iva-test-explained",
       "do-i-need-an-iva-test",
       "iva-test-cost",
@@ -1078,6 +1101,7 @@ const UK_IVA_POSTS: BlogPost[] = [
 export const BLOG_POSTS: BlogPost[] = [
   ...IRELAND_POSTS,
   ...MODEL_POSTS,
+  ...JAPAN_UK_POSTS,
   ...UK_IVA_POSTS,
   ...COUNTRY_BLOG_POSTS,
 ];
@@ -1159,6 +1183,7 @@ const SUGGESTED_BY_DESTINATION: Record<string, string[]> = {
   // a UK-bound buyer, so lead with approval and registration, then the sourcing
   // corridor most of our UK volume comes from.
   unitedkingdom: [
+    "import-japanese-cars-to-uk",
     "registering-an-imported-car-in-the-uk",
     "do-i-need-an-iva-test",
     "iva-test-explained",
@@ -1240,6 +1265,7 @@ export function getSuggestedPosts(options?: {
 
 export const CLUSTER_ORDER: BlogCluster[] = [
   "Guides",
+  "Japan to UK",
   "Japan",
   "United Kingdom",
   "UK Registration & IVA",

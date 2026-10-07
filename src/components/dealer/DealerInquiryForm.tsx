@@ -108,9 +108,19 @@ type Success = {
 
 export default function DealerInquiryForm({
   markets,
+  initialCountry = "",
+  initialSourceMarket = null,
 }: {
   /** Every country in the picker, resolved on the server (src/lib/dealer-markets.ts). */
   markets: MarketOption[];
+  /**
+   * Preselects the market check — a market-specific page such as
+   * /import-japanese-cars/dealership opens on its own country. Must be the
+   * exact COUNTRIES spelling; the dealer can still change it.
+   */
+  initialCountry?: string;
+  /** Preselects the source market (a DEALER_SOURCE_MARKETS slug). */
+  initialSourceMarket?: string | null;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -126,7 +136,7 @@ export default function DealerInquiryForm({
 
   const [step, setStep] = useState(0);
   const [furthest, setFurthest] = useState(0);
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState(initialCountry);
   const [form, setForm] = useState({
     dealershipName: "",
     website: "",
@@ -139,7 +149,9 @@ export default function DealerInquiryForm({
     faxNumber: "",
   });
   // null = not answered yet; "" = no particular market.
-  const [sourceMarket, setSourceMarket] = useState<string | null>(null);
+  const [sourceMarket, setSourceMarket] = useState<string | null>(
+    initialSourceMarket,
+  );
   const [wantsSpecificCars, setWantsSpecificCars] = useState<boolean | null>(
     null,
   );

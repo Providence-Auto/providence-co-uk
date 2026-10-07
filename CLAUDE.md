@@ -143,6 +143,10 @@ Feeds and discovery, all automatic: `/news-sitemap.xml` (Google News, 48-hour wi
 
 **Before writing any news article, read `news-editorial-playbook.md` at the repo root.** It defines the target market (all RHD destinations, plus LHD for luxury only), the two reader segments, the relevance gate, the seven landed-cost lenses, the "Landed Desk" voice, the SEO/AEO spec and the mandatory fact-checking protocol. The repeatable weekly run — 20 publish-ready stories — is the `news-desk` skill (`/news-desk`).
 
+**Every article carries three brand touchpoints** (`brand-position.md` §12, decided 2026-10-07): a publisher note under the byline, at most one contextual sentence-link in the body, and the closing CTA — all pointing at the one landing page that matches the article. They are wired through `src/config/article-ctas.ts`: a blog post sets its CTA with `blogCtaFields(ARTICLE_CTAS.<preset>)`, a news article with its `cta` field; `ArticleShell` and `NewsShell` render the publisher note and CTA from it. `src/config/__tests__/japan-uk.test.ts` fails any article whose CTA points outside `ARTICLE_CTA_ROUTES`.
+
+**Japan → UK cluster.** Research base `japanese-car-import-uk-research.md` (every rule sourced and dated); guides in `src/config/blog-japan-uk.ts`; landing-page copy in `src/config/japan-uk.ts`. The landing pages state **no duty rate** (business decision 2026-10-07).
+
 Three standing editorial rules: **never invent a tax, duty or registration-tax figure** — cite the revenue authority, date the check and add `<Disclaimer />`; **never forecast a currency** — name the pair, date the level, and say which side of the trade it lands on (a weak *source* currency makes the car cheaper; a weak *destination* currency makes everything dearer); and **a missing number is not a failure, a wrong number is.**
 
 ### Heading language: one heading says the whole thing
@@ -327,6 +331,9 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 /latest-news/category/*    News category archives
 /latest-news/rss.xml       RSS feed
 /news-sitemap.xml          Google News sitemap
+/import-japanese-cars/uk   Japanese cars into the UK (main landing page)
+/import-japanese-cars/uk/personal-buyer   B2C: one car, for yourself
+/import-japanese-cars/dealership          B2B: UK dealerships buying Japanese stock
 /import-cars-from          Import-from hub (was /source-cars-from, which 301s)
 /import-cars-from/[country] One page per country we buy in
 /b2b-inquiry               B2B inquiry landing page: market check + 4-step dealer form

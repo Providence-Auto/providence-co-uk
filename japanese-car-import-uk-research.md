@@ -226,8 +226,15 @@ product-specific rule; no model list was verified, so no model is named.)
 ### 3.4 The exchange rate HMRC uses
 
 Customs values in foreign currency are converted at **HMRC's published monthly
-rate**, not the spot rate on the day you pay. The rates are published through
-the UK Trade Tariff (API: `/api/v2/exchange_rates/{yyyy-m}?filter[type]=monthly`).
+rate**, not the spot rate on the day you pay. The UK Trade Tariff's exchange-rate
+page: rates "are published by HMRC on the penultimate Thursday of every month",
+"apply to the following calendar month" and "represent rates as of midday the
+day before publication". The October 2026 file is dated **16 September 2026**
+(a Wednesday — so state the date, not the weekday). API:
+`/api/v2/exchange_rates/{yyyy-m}?filter[type]=monthly`.
+
+Worked check (our arithmetic): ¥1,500,000 = £6,954.25 at September's rate and
+£7,191.03 at October's, a difference of £236.78 (+3.40%).
 
 | Month | HMRC monthly rate, JPY per £1 |
 |---|---|
@@ -438,10 +445,20 @@ Act 1994, Schedule 1** does (legislation.gov.uk text, last modified 6 August
 **So:** a Japanese-market car registered without a certificate stating a CO₂
 figure in g/km — which includes every over-10-year car registered without
 approval — is taxed at the **general rate**: £230 a year up to 1,549cc, £375
-above. If its IVA certificate does state a CO₂ figure, the graduated rates apply.
-A car taxed at the general rate is outside Part 1AA, so the **expensive car
+above. A car taxed at the general rate is outside Part 1AA, so the **expensive car
 supplement** (an extra £440 a year at 2026/27 rates for a list price over £40,000,
 or £50,000 for a zero-emission car) does not arise.
+
+**Unresolved: an IVA certificate that records a CO₂ figure.** Parts 1A and 1AA
+apply to a vehicle "first registered, under this Act or under the law of a
+country or territory outside the United Kingdom" and "so registered on the
+basis of" a certificate stating CO₂. A Japanese-market car's *first*
+registration was under Japanese law, not on an EC certificate of conformity or
+UK approval certificate — which reads as keeping it on the general rate even if
+a later IVA certificate records CO₂. The DVLA publishes no guidance on this
+case. **Copy must not assert either answer**; it tells the reader to confirm
+with the DVLA before buying a young car whose IVA certificate will carry a CO₂
+figure.
 
 2026/27 rates from GOV.UK *Vehicle tax rates* for reference: post-2017 standard
 rate **£200**; expensive car supplement total **£640**; pre-2001 cars by engine
@@ -528,7 +545,7 @@ offences, and the treaty's verification articles exist precisely to catch them.
 | 7.2 | **CEPA origin** | Duty 10% → 0% | Exporter's statement on origin backed by producer evidence; Japan Customs warns producers need not supply it; importer liable; HMRC can verify after release | CEPA Ch.3; Japan Customs leaflet; JETRO/MOF 24 Jun 2026 |
 | 7.3 | **30-year collector classification (heading 9705)** | Duty 0%; import VAT at an **effective 5%** (value × 25% × 20%); and a **margin scheme** becomes available to a dealer | UK Tariff Additional Chapter Note 1 to Ch.97: original state, no substantial changes to chassis, body, steering, braking, transmission or suspension, engine, wings; motor vehicles **at least 30 years old**; **model no longer in production**. Modernised/modified cars excluded. HMRC advises emailing the Tariff Classification Service **before buying** | UK Tariff Ch.97 note; tariff 9705 10 00 measures (0% duty, 5% VAT); GOV.UK *How to value goods for import VAT* |
 | 7.4 | **40-year exemptions** | No annual MOT; nil vehicle tax (historic class) | MOT: no substantial changes. Tax: built before 1 Jan 1986 for 2026/27 (rolling). Must still tax at nil and stay roadworthy | GOV.UK historic vehicles |
-| 7.5 | **General-rate road tax** | £230 / £375 a year instead of a CO₂ band; no expensive car supplement | Applies when the car is registered without a certificate stating CO₂ g/km. If the IVA certificate states CO₂, the bands apply | VERA 1994 Sch.1 Parts I, 1A, 1AA |
+| 7.5 | **General-rate road tax** | £230 / £375 a year instead of a CO₂ band; no expensive car supplement | Applies when the car is registered without a certificate stating CO₂ g/km. Where an IVA certificate records CO₂, the outcome is unresolved (§5.3) — confirm with the DVLA | VERA 1994 Sch.1 Parts I, 1A, 1AA |
 | 7.6 | **Transfer of residence** | No duty, no VAT | 12 months resident abroad; owned and used 6 months; ToR1 approval first; keep 12 months | GOV.UK ToR |
 | 7.7 | **VAT recovery for a VAT-registered business** | Import VAT reclaimed; with PVA, never paid in cash at the border | Business use; VAT number on the declaration; written PVA instruction to the agent | GOV.UK PVA |
 | 7.8 | **Basic IVA as a personal import** | Basic rather than normal inspection | Only if you lived in Japan 12+ months and owned/used the car 6+ months | DVSA IVA 1C notes, class P |
@@ -786,7 +803,24 @@ Decisions already made on 7 October 2026 are recorded first.
    FAQ said "We buy Grade R only where the repair is documented". Grade R sits
    outside the 4.0+ rule in `business-context.md` §2; the FAQ is corrected in this
    branch. Confirm nothing else is needed.
-6. **`/import-cars-from/japan` leads on the auction.** Its direct answer says "straight
+6. **Road tax on a young import whose IVA certificate records CO₂.** The
+   statute is ambiguous on this case (§5.3) and the DVLA publishes no guidance.
+   *Recommendation:* ask the DVLA for its written position once, and record it
+   here; until then every page says "confirm with the DVLA".
+7. **Sourcing analyzer road-tax line (pending since 2026-09-15 in
+   `brand-position.md` §11.3).** £206.25 — the figure questioned there — is
+   exactly the 2026/27 **six-month** payment for a car taxed by engine size over
+   1,549cc (GOV.UK rate table, pre-2001 / general-rate cars). That supports
+   reading the line as six months of general-rate tax, which is what most
+   Japanese imports pay (§5.3), rather than a mislabelled annual figure. It does
+   not answer whether first-year tax is also paid at registration.
+8. **Speedometer and fog lamp in the analyzer (pending since 2026-09-15).** The
+   MOT manual (s.4.5.1) requires a rear fog lamp on any car first used from
+   1 April 1980, so the £195 fog-lamp line applies to over-10-year stock as
+   well; the £175 speedometer line is required by IVA and is the safe position
+   under C&U reg. 35 (§6.2). Both are evidence for moving them out of the IVA
+   block.
+9. **`/import-cars-from/japan` leads on the auction.** Its direct answer says "straight
    from its graded auctions" and "bids to your instruction", which
    `business-context.md` §2 says must be "dealers and auctions across Japan". Not
    changed in this branch (out of scope); raised here.
