@@ -9,6 +9,7 @@ import CollectorCarMarket15YearLow2026NotABuySignal from "./collector-car-market
 import DestinationCurrencyCustomsExchangeRateCarImport from "./destination-currency-customs-exchange-rate-car-import";
 import EuEndOfLifeVehiclesRegulationUsedCarExports2031 from "./eu-end-of-life-vehicles-regulation-used-car-exports-2031";
 import FerrariLuceChassis040MillionAuction from "./ferrari-luce-chassis-0-40-million-auction";
+import HmrcYenCustomsRateJapaneseCarImportUk from "./hmrc-yen-customs-rate-japanese-car-import-uk";
 import HongKongEvFirstRegistrationTaxConcessionEnds from "./hong-kong-ev-first-registration-tax-concession-ends";
 import ImoSolas2026RoRoEvFireRulesFreightCost from "./imo-solas-2026-ro-ro-ev-fire-rules-freight-cost";
 import IrelandEvIncentivesTaper20262028 from "./ireland-ev-incentives-taper-2026-2028";
@@ -42,6 +43,8 @@ import YenIntervention2026JapanCarImportCost from "./yen-intervention-2026-japan
 // Maps a news slug to its body component. Keep keys in sync with NEWS_ARTICLES
 // in src/config/news.ts.
 export const NEWS_BODIES: Record<string, ComponentType> = {
+  "hmrc-yen-customs-rate-japanese-car-import-uk":
+    HmrcYenCustomsRateJapaneseCarImportUk,
   "bentley-torcal-revealed-specifications-price":
     BentleyTorcalRevealedSpecificationsPrice,
   "bentley-torcal-right-hand-drive-import-markets":

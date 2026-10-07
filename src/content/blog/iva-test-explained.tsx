@@ -328,19 +328,12 @@ export default function Body() {
         </p>
       </Callout>
 
-      <H2 id="providence">Where this sits in an import we handle</H2>
       <P>
-        We tell you the approval position on a specific car{" "}
-        <Strong>before you commit to buying it</Strong>, because it is a cost
-        and a delay that belongs in the landed figure rather than in a surprise
-        after discharge. For UK-bound cars we file the NOVA declaration and
-        prepare and submit the DVLA registration pack, and you get the full
-        scanned document set when the vessel departs.
-      </P>
-      <P>
-        What we do not do is pretend the process disappears. There is a test, or
-        there is an exemption, and either way you will know which before your
-        money moves.
+        When you have a car in mind, you can{" "}
+        <InlineLink href="/import-japanese-cars/uk">
+          import a Japanese car to the UK
+        </InlineLink>{" "}
+        knowing whether it faces a test or an exemption before your money moves.
       </P>
 
       <Disclaimer>

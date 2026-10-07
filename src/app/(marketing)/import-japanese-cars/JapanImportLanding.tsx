@@ -258,8 +258,8 @@ const MODEL_GROUPS: ModelGroup[] = [
 // One entry per country button. The UI lives in @/components/DestinationPicker
 // (shared with the India page); only the copy is page-specific, because the
 // duty and origin rules below are written for a Japan-built car.
-// `readMoreHref` points at the dedicated per-country guide — Ireland's is live;
-// the rest are planned pages.
+// `readMoreHref` points at the dedicated per-country page — Ireland's and the
+// UK's are live; the rest are planned pages.
 const DESTINATIONS: Destination[] = [
   {
     key: "uk",
@@ -275,7 +275,10 @@ const DESTINATIONS: Destination[] = [
     ],
     popular:
       "Most requested for the UK: Toyota Aqua, Prius and Alphard, the GR Yaris, and the Honda Vezel.",
-    readMoreHref: "/import-japanese-cars-to-uk",
+    // The UK has its own landing page (2026-10-07); the old
+    // /import-japanese-cars-to-uk target was never built and 404ed.
+    readMoreHref: "/import-japanese-cars/uk",
+    readMoreLabel: "Import Japanese cars to the UK",
   },
   {
     key: "ireland",
