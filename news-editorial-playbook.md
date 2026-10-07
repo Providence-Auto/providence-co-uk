@@ -327,7 +327,7 @@ The Desk is the person on the buying floor who has seen enough auctions to be un
 - No exclamation marks in body copy. Ever.
 - No rhetorical-question openers ("Ever wondered what it costs to import a car?").
 - No hedging stacks: "may potentially possibly".
-- No selling inside the article body. The commercial ask lives in one `Callout` at the end and nowhere else.
+- No selling inside the article body. The commercial ask lives in the sign-off CTA at the end — with the two narrow additions in §4.4, and nothing else.
 - Never call a car a "dream car" in editorial. That is marketing copy; this is the news desk.
 - No fake urgency. Real deadlines only, and cite them.
 
@@ -338,6 +338,33 @@ The Desk is the person on the buying floor who has seen enough auctions to be un
 > ✓ *"Ferrari Luce chassis 0 sold for $40,000,000 at RM Sotheby's Monterey on 15 August 2026 — roughly 62 times its list price. It is the most expensive new car ever auctioned. It is not the most expensive Ferrari, and it was not even the top sale of its own week."*
 
 The second version is more interesting *because* it is more accurate. That is the whole voice in one example.
+
+### 4.4 The three brand touchpoints
+
+Decided 2026-10-07 (`brand-position.md` §12). Every article carries Providence in
+exactly three places, all pointing at the **one landing page that matches the
+story**:
+
+1. **Publisher note** under the byline — rendered by `NewsShell` from the
+   article's `cta` field: one factual line about the Desk ("our own teams buy
+   cars in seven countries") and a link labelled with the landing page's keyword.
+2. **One contextual sentence-link** in the body, at the point the reader would
+   act — normally the close of the "should I move now or wait?" doubt. One
+   sentence, the landing page's keyword as anchor, the reader as subject.
+3. **The sign-off CTA**, set by the article's `cta` field: heading, a body that
+   carries a fact, and the transactional keyword on the button.
+
+Choosing the page: a Japan–UK story goes to `/import-japanese-cars/uk` (or its
+personal-buyer or dealership page if the story is single-reader); an Ireland
+story to `/import-japanese-cars-to-ireland`; a source-country story to that
+country's `/import-cars-from` page; a Sri Lanka story to the dealer inquiry
+page (`business-context.md` §14 — never say why). A story with no matching
+page uses the market-neutral default in `NewsShell`, never another country's
+form.
+
+The Five Doubts still run in full, including Doubt 5. A touchpoint that
+contradicts the article's own honest answer — a "buy now" link under a story
+whose answer is "wait" — is worse than none: point it at the guide instead.
 
 ---
 

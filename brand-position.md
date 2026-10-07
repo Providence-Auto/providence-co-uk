@@ -239,6 +239,7 @@ assumption and flag it — the rule protects the document, not the schedule.
 | 2026-09-28 | `page-types.md` | `/ireland-cost-calculator` (2,166 lines) is a working landed-cost tool built on a deep bed of general Irish tax mechanics. It converts like a landing page and teaches like a guide, so the two-type taxonomy cannot file it without distorting one of the definitions. The same tension, less acutely, applies to any future tool page. | Decide whether a **tool** is a third type with its own rules, or a landing page that is permitted an explainer because the explainer *is* the product. Recommendation: name it a third type — the calculator's numbers are its whole value, so they should be held to §2's primary-source standard, while its conversion path is held to §3's. `page-types.md` §5 records it as an unresolved hybrid under exactly that dual standard in the meantime, so nothing is blocked. | **Answered 2026-09-29 — make it a third page type.** Applied: `page-types.md` gains §1.3 (the tool type), §1.4 (the test routes three ways), §3A (its rules) and a reclassified §8 register row; the two-type framing swept from `CLAUDE.md`, `business-context.md` §9, `writing-angle.md` §7/§8 and the SEO guide's Phase 1. Reasoning logged in `business-context.md` §11. |
 | 2026-09-29 | `business-context.md` | The business asked for a dealer sign-up page for requesting cars; it now exists at `/car-sourcing-for-dealers`, with its inquiries in their own table and admin panel, assigned round-robin across Sales with **Chathuranga excluded** from that rotation. §6's offers table still gives `/b2b` as the only route for "Dealer sourcing (B2B)", and §11 records none of the three decisions: the new route, the exclusion, and that dealer inquiries keep a rotation of their own (separate from B2C leads) while still honouring the country-owner rule (Cyprus → its owner). | Add `/car-sourcing-for-dealers` beside `/b2b` in §6's "Dealer sourcing (B2B)" row, and a §11 row for 2026-09-29 recording the page, the exclusion and the separate rotation. Confirm whether the country-owner rule should apply to dealer inquiries at all — the build assumes it does, because `COUNTRY_LEAD_OWNERS` says an inquiry to import to an owned market goes to its owner. | **Partly answered 2026-09-30.** Decisions: every Cyprus inquiry goes to Shaq; the exclusion is keyed on `chathuranga@providenceauto.uk.com`; `/b2b` stays exactly as it is, and the *new* page lives at `/b2b-inquiry`, framed on the inquiry rather than on dealer car sourcing. Document answers: §14.2 — **yes**, applied (the `/b2b-inquiry` market check named as a dealer surface); §6 route change as first proposed (moving `/b2b`) — **no**; `page-types.md` §1.2 list — **no**. **Answered in full 2026-09-30:** §11 rows — **yes**, applied (the page, the assignment rules, the §14.2 edit); adding `/b2b-inquiry` to §6's "Dealer sourcing (B2B)" row — **no**, §6 stays as it is. Closed. |
 | 2026-10-03 | `sourcing-analyzer-methodology.md` | The business asked for the analyzer to take a manual estimated sale price **without running the crawl**. It now does: whenever there are no comparables (no crawl yet, or a crawl that matched nothing), the summary panel shows an "Estimated sale price" field that drives net resale, profit, ROI and the ceiling bid. §4's "Manual median override" still describes the override as reached only "under the stat tiles, prefilled with the scraped median", i.e. after a crawl has returned listings. The verdict, PDF and saved run still need crawled comparables, so the "everything that consumes a median" list is true only once a crawl has run. | Extend §4's override paragraph: the same operator figure can be entered before any crawl, from the summary panel, and is labelled "Estimated resale" / "manual estimate"; the honesty rules stand unchanged (operator input, VAT-inclusive ÷ 1.2, a new crawl clears it); with no comparables it drives the P&L and the ceiling bid only — the written verdict, the PDF and the saved run still require a crawl. | **Answered 2026-10-03 — update.** Applied to §4 ("Estimated sale price, before any crawl") and to the §9 "none matched" row. Reasoning logged in `business-context.md` §11. |
+| 2026-10-07 | `brand-position.md`, `page-types.md`, `writing-angle.md`, `news-editorial-playbook.md`, `seo-aeo-optimization-guide.md` | The business asked that every blog and news article bring the reader to a Providence landing page, or carry a brand association strong enough that someone who reads one article knows who published it — as a branding, writing and SEO rule. `page-types.md` §2.6 and the news playbook §4.3 said the body does not sell and the commercial ask lives only at the end, so a mid-article mention needed a decided limit. | Three fixed touchpoints on every article: a one-line publisher note under the byline linking the matching landing page; at most one contextual sentence-link in the body, at the point where the reader would act; and the closing CTA to that landing page. No paragraph of offer copy anywhere in the body. | **Answered 2026-10-07 — three fixed touchpoints.** Applied as §12 of this document, `page-types.md` §2.6, `writing-angle.md` §9, `news-editorial-playbook.md` §4.4 and the SEO guide's Phase 3; enforced in `ArticleShell`, `NewsShell` and a config test. Reasoning logged in `business-context.md` §11. |
 
 Resolved and closed:
 
@@ -246,6 +247,40 @@ Resolved and closed:
   source-of-truth change; a content decision, closed.
 - *`layout.tsx` `AutoDealer` JSON-LD still says "physical offices"*
   (raised 2026-08-25) — **leave as-is**, deliberate divergence.
+
+---
+
+## 12. Brand presence on informational pages — the three touchpoints
+
+Decided 2026-10-07 (business instruction). **Every blog post and every news
+article carries Providence in three fixed places, and links the reader to the
+one landing page that matches what they were reading.** A reader who lands on a
+single article from search should leave knowing who published it, what that
+publisher does, and where to go to act.
+
+The rule exists because an informational page that never names its publisher
+builds rankings for nobody in particular. It is bounded because an explainer
+that turns into a pitch loses the credibility that made it rank
+(`page-types.md` §2.6). So the brand appears in three places, and nowhere else:
+
+| # | Touchpoint | Where | What it is | What it is not |
+|---|---|---|---|---|
+| 1 | **Publisher note** | Directly under the byline | One factual line about who publishes the page — our own teams, the seven countries — and a link to the matching landing page, labelled with that page's keyword | A tagline, a promise, a discount, a second sentence |
+| 2 | **One contextual link** | In the body, at the point the reader would act — usually the end of the "what to do next" or "how to start" section | A single sentence that names the next step and links the landing page with its keyword as anchor text | A paragraph about our service, a feature list, a "why choose us" box |
+| 3 | **Closing CTA** | After the FAQs (`BlogCTA`, or the news sign-off) | The primary call to action, its button labelled with the landing page's transactional keyword | A CTA pointing at an unrelated market's form |
+
+**Matching, not generic.** The landing page is the one the reader's intent
+belongs to: a guide about importing Japanese cars into Britain goes to
+`/import-japanese-cars/uk` (or its personal-buyer or dealership page when the
+guide is written for one reader); a guide about buying in Australia goes to
+`/import-cars-from/australia`; a Sri Lanka story goes to the dealer route, because
+§14 of `business-context.md` rules out consumer acquisition there — without the
+page ever saying so. A news article whose subject has no matching landing page
+uses the market-neutral default, never another country's form.
+
+**The rest of the body still does not pitch.** Touchpoint 2 is one sentence. The
+Landed Desk voice, the sourcing standard and the Five Doubts are unchanged —
+including the doubt that tells the reader when importing does not make sense.
 
 ---
 

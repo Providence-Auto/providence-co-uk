@@ -141,10 +141,16 @@ constraint.
    cheaper, a weak *destination* currency makes everything dearer
    (`news-editorial-playbook.md` Lens 2).
 
-6. **The body does not pitch.** Selling is confined to the closing CTA —
-   `BlogCTA` on the blog, the standard sign-off on news. A paragraph of our
-   offer in the middle of an explainer is the mixing this document exists to
-   stop, and it costs the page the credibility that made it rank.
+6. **The body does not pitch — but every article names its publisher.**
+   Selling is confined to the closing CTA — `BlogCTA` on the blog, the standard
+   sign-off on news. A paragraph of our offer in the middle of an explainer is
+   the mixing this document exists to stop, and it costs the page the
+   credibility that made it rank. Since 2026-10-07 every informational page
+   also carries the **three brand touchpoints** in `brand-position.md` §12: a
+   one-line publisher note under the byline, at most one contextual
+   sentence-link to the matching landing page at the point the reader would
+   act, and the closing CTA to that same page. Those three are the whole of the
+   brand's presence on an informational page; anything beyond them is pitching.
 
 7. **Angle, not volume.** "The best information at the angle that matches our
    audience's need and taste" is the brief. The two readers and the relevance

@@ -164,3 +164,37 @@ Five questions for any customer-facing page:
 If the work shows a source-of-truth document is wrong or contradicts another,
 do not edit it on your own authority: raise it, log it in `brand-position.md`
 §11.3, and keep raising it until answered (`brand-position.md` §11.2).
+
+## 9. Writing the three brand touchpoints on articles
+
+Every blog post and news article carries Providence in three places
+(`brand-position.md` §12, decided 2026-10-07). How each one is phrased:
+
+1. **The publisher note** (under the byline) is one factual sentence plus a link.
+   The fact is about who publishes the page, stated as something the reader can
+   check — "Published by Providence Auto: our own teams buy and ship cars from
+   seven countries." The link label is the landing page's keyword — "Import
+   Japanese cars to the UK" — never "Click here", never a superlative, never a
+   price.
+
+2. **The contextual link** is one sentence in the body, placed where the reader
+   would act, with the landing page's keyword as its anchor text. The reader is
+   still the subject:
+
+   > ✓ *When you have a car in mind, you can [import a Japanese car to the UK]
+   > with a landed quote worked out before you commit.*
+   >
+   > ✗ *At Providence we handle every step of your import, with our expert team
+   > and a seamless process — get in touch today.*
+
+   The second fails three ways: we are the subject, it promises what we do not
+   do (`business-context.md` §4), and it is a paragraph of offer in an
+   explainer. **One sentence, one link, once per article.**
+
+3. **The closing CTA** heading is one sentence that says the next step; its body
+   carries a real fact (who quotes, what the quote contains, when you see it);
+   its button is the transactional keyword. It points at the landing page that
+   matches the article — the same page as touchpoints 1 and 2.
+
+The banned-phrase list in §2 applies to all three. So does the CNF boundary: a
+touchpoint may say "shipped to a UK port", never "delivered to your door".
