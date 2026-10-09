@@ -86,7 +86,7 @@ export default function Body() {
           specification and the service record matter more than the price.
         </CheckLI>
       </UL>
-      <Callout title="Where we buy, and why" tone="sky">
+      <Callout title="Where we export from, and why" tone="sky">
         <p>
           Our UAE team weights heavily toward main-dealer trade-ins and
           specialists for exactly one reason: those cars come with a documented
@@ -100,7 +100,7 @@ export default function Body() {
         This is the section that matters. Any market with this much turnover
         accumulates damaged stock, and the region has seen significant flooding
         events. Pretending otherwise would not help you. Screening is what makes
-        the market safe to buy in, and it runs in this order:
+        the market safe to import from, and it runs in this order:
       </P>
       <OL>
         <LI>
@@ -156,7 +156,7 @@ export default function Body() {
 
       <H2 id="clearance">Free-zone export clearance</H2>
       <P>
-        This is where the UAE is genuinely fast. Vehicles bought for export move
+        This is where the UAE is genuinely fast. Vehicles destined for export move
         through an established free-zone customs regime designed for the
         purpose. The steps:
       </P>

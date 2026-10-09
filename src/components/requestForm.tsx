@@ -1488,7 +1488,7 @@ export default function RequestForm({
                         animate={{ opacity: 1 }}
                         className="text-zinc-500 italic text-center py-4 text-sm"
                       >
-                        New vehicles will be sourced with 2025/2026 factory
+                        New vehicles will be exported with 2025/2026 factory
                         specifications.
                       </motion.p>
                     )}
@@ -1670,7 +1670,7 @@ export default function RequestForm({
                         Give us the most you're ready to spend on the car. If it
                         sits well below the market range for the{" "}
                         <strong>{budgetVehicleLabel}</strong>, your inquiry may
-                        be disqualified — it can't be sourced under the range.
+                        be disqualified — it can't be found under the range.
                       </span>
                     </p>
                   </div>

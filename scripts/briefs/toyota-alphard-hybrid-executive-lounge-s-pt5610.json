@@ -1,0 +1,66 @@
+{
+  "_comment": "Toyota Alphard Hybrid Executive Lounge S, black, stock reference PT5610. Grade is read off the car's own Toyota build plate: model 6AA-AYH30W-PFXZB, engine 2AR-FXE 2,493 cc, colour 202, which Toyota's Alphard/Vellfire spec sheet (toyota.jp alphard_spec_202204.pdf) lists as the hybrid Executive Lounge S; the S carries the same 'Executive Lounge' rear badge. Engine, motor, transmission, drive, seating, dimensions, kerb weight and fuel tank are from that sheet. The model year is not on the plate and is left blank rather than guessed. Condition, mileage and price are deliberately left off the page (business instruction 2026-10-09), which is also why there are no destinations: the per-destination heading names the car new or used. Photographs are of this car, cropped to 16:10 and stored under public/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/; the odometer and build-plate photos are left out. Recreate on another environment with node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/toyota-alphard-hybrid-executive-lounge-s-pt5610.json --env staging --publish (or --env production), once the images have been deployed there.",
+
+  "make": "Toyota",
+  "model": "Alphard",
+  "year": "",
+  "trim": "Executive Lounge S Hybrid",
+  "slug": "toyota-alphard-hybrid-executive-lounge-s-pt5610",
+  "countryOfOrigin": "Japan",
+  "steeringOptions": ["RHD"],
+
+  "engineConfig": "2.5-litre inline-4 petrol (2AR-FXE) with front and rear electric motors",
+  "displacement": "2,493 cc",
+  "maxPower": "Engine 112 kW (152 PS) @ 5,700 rpm; front motor 105 kW; rear motor 50 kW",
+  "maxTorque": "Engine 206 Nm @ 4,400–4,800 rpm; front motor 270 Nm; rear motor 139 Nm",
+  "transmission": "Electric continuously variable transmission, E-Four electric all-wheel drive",
+  "fuelSystem": "Hybrid",
+
+  "upholstery": "Black leather",
+  "infotainment": "Touchscreen navigation display",
+
+  "features": [
+    "E-Four electric all-wheel drive",
+    "Toyota hybrid system with front and rear electric motors",
+    "Seven seats, with Executive Lounge captain's chairs in the second row",
+    "Third-row bench seat",
+    "Regenerative braking",
+    "LED headlights",
+    "Woodgrain interior trim"
+  ],
+
+  "searchTags": ["alphard", "executive-lounge", "hybrid", "mpv", "japan", "toyota", "pt5610"],
+
+  "exteriorColors": [{ "name": "Black", "hex": "#0e0e10" }],
+  "interiorColors": [{ "name": "Black", "hex": "#1c1c1c" }],
+
+  "customData": [
+    { "label": "Stock reference", "value": "PT5610" },
+    { "label": "Model code", "value": "AYH30W" },
+    { "label": "Seats", "value": "7" },
+    { "label": "Length × width × height", "value": "4,950 × 1,850 × 1,950 mm" },
+    { "label": "Wheelbase", "value": "3,000 mm" },
+    { "label": "Kerb weight", "value": "2,240 kg" },
+    { "label": "Fuel tank", "value": "65 L" }
+  ],
+
+  "notes": "This Toyota Alphard Executive Lounge S Hybrid is a seven-seat, right-hand-drive Japanese-market MPV in black, with E-Four electric all-wheel drive. A 2.5-litre petrol engine works with front and rear electric motors through an electric CVT, and the second row is a pair of Executive Lounge captain's chairs. The cabin is black leather with woodgrain trim. Stock reference PT5610.",
+
+  "images": [
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/01-front-three-quarter.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/02-front-three-quarter-close.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/03-side-three-quarter.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/04-rear-three-quarter.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/05-rear-three-quarter-right.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/06-front-detail.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/07-grille.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/08-executive-lounge-badge.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/09-tail-light.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/10-steering-wheel.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/11-dashboard.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/12-centre-console.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/13-second-row.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/14-executive-lounge-seat.webp",
+    "/cars/toyota-alphard-hybrid-executive-lounge-s-pt5610/15-third-row.webp"
+  ]
+}

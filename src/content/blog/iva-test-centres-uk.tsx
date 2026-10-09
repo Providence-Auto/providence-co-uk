@@ -326,15 +326,13 @@ export default function Body() {
         </p>
       </Callout>
 
-      <H2 id="where-we-fit">Where this sits in an import we handle</H2>
       <P>
-        The approval route and the testable-location question belong in the
-        decision before you buy, not after the vessel discharges. We confirm
-        which route a specific car falls into and what it implies, and for
-        UK-bound cars we file the NOVA declaration and prepare the DVLA
-        registration pack. The choice of port and the choice of test centre are
-        worth making together, and you can make them on real numbers rather than
-        after the fact.
+        When you are choosing a car now, you can{" "}
+        <InlineLink href="/import-japanese-cars/uk">
+          import a Japanese car to the UK
+        </InlineLink>{" "}
+        with its approval route settled and the NOVA and DVLA paperwork prepared
+        before you commit.
       </P>
 
       <Disclaimer>

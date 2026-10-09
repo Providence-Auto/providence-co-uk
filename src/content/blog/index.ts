@@ -29,22 +29,32 @@ import HowToImportACarFromTheUae from "./how-to-import-a-car-from-the-uae";
 import HowToImportACarFromTheUk from "./how-to-import-a-car-from-the-uk";
 import HowToImportANissanPatrol from "./how-to-import-a-nissan-patrol";
 import ImportCarFromJapanOrUkToIreland from "./import-car-from-japan-or-uk-to-ireland";
+import ImportJapaneseCarsToUk from "./import-japanese-cars-to-uk";
 import ImportingACarToSriLanka from "./importing-a-car-to-sri-lanka";
 import ImportingAUsedEvFromNewZealand from "./importing-a-used-ev-from-new-zealand";
 import ImportingAUteOr4x4FromAustralia from "./importing-a-ute-or-4x4-from-australia";
 import ImportingCarsFromIndiaForDealers from "./importing-cars-from-india-for-dealers";
 import ImportingCarsToIreland from "./importing-cars-to-ireland";
 import ImportingHybridsAndEvsToSriLanka from "./importing-hybrids-and-evs-to-sri-lanka";
+import ImportingJapaneseCarsForUkDealers from "./importing-japanese-cars-for-uk-dealers";
 import IndiaCarExportDocumentsExplained from "./india-car-export-documents-explained";
+import InsuringAJapaneseImportUk from "./insuring-a-japanese-import-uk";
 import IvaTestCentresUk from "./iva-test-centres-uk";
 import IvaTestCost from "./iva-test-cost";
 import IvaTestExplained from "./iva-test-explained";
 import IvaTestRequirements from "./iva-test-requirements";
 import JapanCarExportDocumentsExplained from "./japan-car-export-documents-explained";
 import JapaneseAuctionGradesExplained from "./japanese-auction-grades-explained";
+import JapaneseCarImportDutyUk from "./japanese-car-import-duty-uk";
+import JapaneseImportAgeRulesUk from "./japanese-import-age-rules-uk";
+import JapaneseImportConditionExplained from "./japanese-import-condition-explained";
+import JapaneseImportPartsUk from "./japanese-import-parts-uk";
+import JapaneseImportRoadTaxUk from "./japanese-import-road-tax-uk";
 import NewZealandVsJapanForUsedImports from "./new-zealand-vs-japan-for-used-imports";
 import NissanPatrolY63GradesExplained from "./nissan-patrol-y63-grades-explained";
+import PayingForACarFromJapan from "./paying-for-a-car-from-japan";
 import RegisteringAnImportedCarInTheUk from "./registering-an-imported-car-in-the-uk";
+import ShippingACarFromJapanToTheUk from "./shipping-a-car-from-japan-to-the-uk";
 import SriLankaCarImportDocumentsExplained from "./sri-lanka-car-import-documents-explained";
 import SriLankaVehicleImportRulesForDealers from "./sri-lanka-vehicle-import-rules-for-dealers";
 import SriLankaVehicleImportTaxesExplained from "./sri-lanka-vehicle-import-taxes-explained";
@@ -73,6 +83,18 @@ export const BLOG_BODIES: Record<string, ComponentType> = {
   // ── Model guides ───────────────────────────────────────────────────────────
   "how-to-import-a-nissan-patrol": HowToImportANissanPatrol,
   "nissan-patrol-y63-grades-explained": NissanPatrolY63GradesExplained,
+
+  // ── Japan to UK ────────────────────────────────────────────────────────────
+  "import-japanese-cars-to-uk": ImportJapaneseCarsToUk,
+  "importing-japanese-cars-for-uk-dealers": ImportingJapaneseCarsForUkDealers,
+  "insuring-a-japanese-import-uk": InsuringAJapaneseImportUk,
+  "japanese-car-import-duty-uk": JapaneseCarImportDutyUk,
+  "japanese-import-age-rules-uk": JapaneseImportAgeRulesUk,
+  "japanese-import-condition-explained": JapaneseImportConditionExplained,
+  "japanese-import-parts-uk": JapaneseImportPartsUk,
+  "japanese-import-road-tax-uk": JapaneseImportRoadTaxUk,
+  "paying-for-a-car-from-japan": PayingForACarFromJapan,
+  "shipping-a-car-from-japan-to-the-uk": ShippingACarFromJapanToTheUk,
 
   // ── UK registration & IVA ──────────────────────────────────────────────────
   "iva-test-explained": IvaTestExplained,

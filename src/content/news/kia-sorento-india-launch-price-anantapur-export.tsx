@@ -256,7 +256,7 @@ export default function KiaSorentoIndiaLaunchPriceAnantapurExport() {
         tone="emerald"
       >
         <p>
-          We source from Indian dealer networks and quote one landed figure to
+          We export from Indian dealer networks and quote one landed figure to
           your port, with the documentation prepared and explained. Send us the
           model, variant and destination:{" "}
           <InlineLink href="/request">start here</InlineLink>. Our{" "}

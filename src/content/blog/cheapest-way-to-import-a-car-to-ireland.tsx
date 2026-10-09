@@ -25,7 +25,7 @@ export default function Body() {
       <KeyTakeaways
         items={[
           <>
-            Buy a car that qualifies for <Strong>0% duty</Strong> — and insist
+            Import a car that qualifies for <Strong>0% duty</Strong> — and insist
             on the origin document that proves it.
           </>,
           <>
@@ -66,10 +66,10 @@ export default function Body() {
         seller. On a €20,000 landed value, that document is worth €2,000 in duty
         — plus the knock-on VAT saving, because VAT is charged on the duty too.
       </P>
-      <Callout title="Get it in writing — before you buy" tone="amber">
+      <Callout title="Get it in writing — before you import" tone="amber">
         <p>
           Without documentary proof of origin, Revenue defaults to 10%. A Toyota
-          built in Japan but bought in Britain still needs that paperwork.
+          built in Japan but imported from Britain still needs that paperwork.
           Confirm it in writing before paying a deposit, not after the car has
           shipped.
         </p>
@@ -98,7 +98,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        Avoid EU-built cars bought in Great Britain — they pay the full 10%.{" "}
+        Avoid EU-built cars imported from Great Britain — they pay the full 10%.{" "}
         <InlineLink href="/blog/import-car-from-japan-or-uk-to-ireland">
           See the full Japan vs UK comparison →
         </InlineLink>
@@ -174,7 +174,7 @@ export default function Body() {
       <P>
         Doing it yourself saves a service fee but exposes you to exactly the
         mistakes that make imports expensive — paying 10% duty for want of one
-        document, mis-judging the VRT band, or buying a car that fails the Irish
+        document, mis-judging the VRT band, or importing a car that fails the Irish
         NCT. A good importer prices the full landed cost up front and handles
         customs, VRT and registration, which usually protects more than it
         costs. Either way, the golden rule holds: model the full landed cost

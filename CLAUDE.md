@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `page-types.md` — **settle this one first.** Is the page *informational* (how something works in the world, for the reader's benefit — `/blog`, `/latest-news`), a *landing page* (what something is in the context of Providence Auto, selling one service into the funnel — most of the rest), or a *tool* (it computes an answer from the reader's own input — `/ireland-cost-calculator`)? The answer changes where the facts must come from and what may be written without asking. An informational page is fact-checked like journalism; a landing page carries **no section that was not asked for**; a tool answers to both — sourced rates with the working shown, and an ask-first conversion path.
 - `business-context.md` — the central source of truth for the business itself (identity, the presence/source/destination geography split, the customs-clearance and CNF-delivery boundaries, values, offers). It also indexes every other standing doc.
-- `brand-position.md` — the position: Providence gives you **direct access** to the world's auctions plus the tools, documentation and people to use it. **You buy the car; we make it possible.** Not a concierge, not "we handle everything".
-- `writing-angle.md` — how to phrase it: the customer is the subject of the sentence. Bans "so you don't have to", "we handle everything", "hassle-free", blanket "door-to-door".
+- `brand-position.md` — the position: Providence gives you **direct access** to the world's auctions plus the tools, documentation and people to use it. **You import the car; we make it possible.** Not a concierge, not "we handle everything".
+- `writing-angle.md` — how to phrase it: the customer is the subject of the sentence. Bans "so you don't have to", "we handle everything", "hassle-free", blanket "door-to-door". **The customer imports and we export** (§10, decided 2026-10-09): never *buy*/*sell* for those two acts, and *source* as a verb becomes *import* (the reader) or *export* (us); the noun stays.
 
 These are about *what the site should say*; this file is about *how the site is built*.
 
@@ -143,6 +143,10 @@ Feeds and discovery, all automatic: `/news-sitemap.xml` (Google News, 48-hour wi
 
 **Before writing any news article, read `news-editorial-playbook.md` at the repo root.** It defines the target market (all RHD destinations, plus LHD for luxury only), the two reader segments, the relevance gate, the seven landed-cost lenses, the "Landed Desk" voice, the SEO/AEO spec and the mandatory fact-checking protocol. The repeatable weekly run — 20 publish-ready stories — is the `news-desk` skill (`/news-desk`).
 
+**Every article carries three brand touchpoints** (`brand-position.md` §12, decided 2026-10-07): a publisher note under the byline, at most one contextual sentence-link in the body, and the closing CTA — all pointing at the one landing page that matches the article. They are wired through `src/config/article-ctas.ts`: a blog post sets its CTA with `blogCtaFields(ARTICLE_CTAS.<preset>)`, a news article with its `cta` field; `ArticleShell` and `NewsShell` render the publisher note and CTA from it. `src/config/__tests__/japan-uk.test.ts` fails any article whose CTA points outside `ARTICLE_CTA_ROUTES`.
+
+**Japan → UK cluster.** Research base `japanese-car-import-uk-research.md` (every rule sourced and dated); guides in `src/config/blog-japan-uk.ts`; landing-page copy in `src/config/japan-uk.ts`. The landing pages state **no duty rate** (business decision 2026-10-07).
+
 Three standing editorial rules: **never invent a tax, duty or registration-tax figure** — cite the revenue authority, date the check and add `<Disclaimer />`; **never forecast a currency** — name the pair, date the level, and say which side of the trade it lands on (a weak *source* currency makes the car cheaper; a weak *destination* currency makes everything dearer); and **a missing number is not a failure, a wrong number is.**
 
 ### Heading language: one heading says the whole thing
@@ -177,6 +181,12 @@ The rules:
 
 This governs every marketing page, campaign page, car page, blog post and news
 article written from now on, not just the page where it was introduced.
+
+**A two-tone heading is allowed** (decided 2026-10-09): one heading, one
+sentence, the second clause set in muted ink (`zinc-400` on white) —
+"You choose the exact car, *and see the landed figure first.*" It is still
+one heading with no eyebrow, so every rule above applies to it. Never on the
+`/import-cars-from` keyword H1s. See `landing-page-playbook.md` recipe R1.
 
 ### Secondary CTAs: one style, and always below the primary
 
@@ -226,6 +236,8 @@ This is additive to, not a replacement for, the per-content-type rules above —
 ### Landing pages: one keyword, one simple template
 
 **First, the process gate — `page-types.md` §3.** Nothing goes on a landing page by default. When a landing page is requested: research the SEO for the exact phrase first, come back with **the content sections needed to rank for it**, and ask your questions **before** writing any claim or any passage of prose. General copy about what Providence offers or handles is allowed on a landing page **only when the business asks for it on that page** — never reached for to fill a section. The section list below is the *agreed outcome* of that process for the `/import-cars-from` country pages, not a default to apply to the next page.
+
+**When proposing sections, draw them from `landing-page-playbook.md`** — the pattern library (hero diagram, audience tabs, the tools demonstrated, the landed-quote structure, the five steps, the form), the copy constructions, the motion tokens and the build recipes, from a teardown of surge.cloud. It ranks below every source-of-truth document and is never a default section list.
 
 Every landing page is built for **the phrase a buyer types**, and nothing
 else. The keyword goes in the URL slug, the title tag, the H1, the first
@@ -327,6 +339,9 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 /latest-news/category/*    News category archives
 /latest-news/rss.xml       RSS feed
 /news-sitemap.xml          Google News sitemap
+/import-japanese-cars/uk   Japanese cars into the UK (main landing page)
+/import-japanese-cars/uk/personal-buyer   B2C: one car, for yourself
+/import-japanese-cars/dealership          B2B: UK dealerships buying Japanese stock
 /import-cars-from          Import-from hub (was /source-cars-from, which 301s)
 /import-cars-from/[country] One page per country we buy in
 /b2b-inquiry               B2B inquiry landing page: market check + 4-step dealer form

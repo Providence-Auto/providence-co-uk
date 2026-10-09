@@ -105,7 +105,7 @@ export default function JapaneseLuxuryCarsLhdPage() {
   const brandListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Left-hand drive luxury marques sourced from Japan",
+    name: "Left-hand drive luxury marques exported from Japan",
     itemListElement: BRAND_NAMES.map((name, i) => ({
       "@type": "ListItem",
       position: i + 1,

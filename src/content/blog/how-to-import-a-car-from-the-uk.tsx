@@ -37,7 +37,7 @@ export default function Body() {
           <>
             Customs preference depends on{" "}
             <Strong>where the car was manufactured</Strong>, not where you
-            bought it.
+            imported it from.
           </>,
           <>
             Freight to Ireland and Europe is days, not weeks — the fastest
@@ -46,7 +46,7 @@ export default function Body() {
         ]}
       />
 
-      <H2 id="why-uk">Why buy in the UK at all</H2>
+      <H2 id="why-uk">Why import from the UK at all</H2>
       <P>
         Three reasons, and they are quite different from each other. First,{" "}
         <Strong>record-keeping</Strong>: no other market lets you reconstruct a
@@ -149,7 +149,7 @@ export default function Body() {
       </Callout>
       <P>
         So establish build origin <em>before</em> you shortlist, not after you
-        buy. Which cars are actually made in Britain is covered in{" "}
+        commit. Which cars are actually made in Britain is covered in{" "}
         <InlineLink href="/blog/best-cars-to-import-from-the-uk">
           the best cars to import from the UK
         </InlineLink>
@@ -212,7 +212,7 @@ export default function Body() {
         <InlineLink href="/import-cars-from/united-kingdom">
           UK office
         </InlineLink>{" "}
-        is buying.
+        is exporting.
       </P>
 
       <Disclaimer>

@@ -201,7 +201,7 @@ export default async function LatestNewsIndexPage() {
           >
             New model launches, manufacturer moves, auction records, market data
             and the tax changes that decide what a car really costs &mdash;
-            covered by people who buy cars for a living, with the numbers
+            covered by people who export cars for a living, with the numbers
             checked and the sources shown.
           </Reveal>
           {latestDate && (
@@ -438,7 +438,7 @@ export default async function LatestNewsIndexPage() {
                   Looking for the how-to?
                 </p>
                 <p className="text-lg font-bold tracking-tight text-black">
-                  Our import guides cover every country we source from
+                  Our import guides cover every country we export from
                 </p>
               </div>
               <span className="inline-flex shrink-0 items-center gap-2 text-sm font-bold text-sky-600">

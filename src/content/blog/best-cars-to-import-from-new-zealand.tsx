@@ -15,11 +15,11 @@ export default function Body() {
   return (
     <>
       <Lead>
-        Almost everything worth buying in New Zealand came from Japan in the
+        Almost everything worth importing from New Zealand came from Japan in the
         first place. So the interesting question is not what is available — it
         is{" "}
         <Strong>
-          which cars are better bought here than at their original source
+          which cars are better imported from here than from their original source
         </Strong>
         . There are four answers, and one of them is a category most of the
         world cannot supply at all.
@@ -86,7 +86,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        Buy these here rather than in Japan when the extra verification is worth
+        Import these from here rather than from Japan when the extra verification is worth
         the retail premium to you.{" "}
         <InlineLink href="/blog/new-zealand-vs-japan-for-used-imports">
           That trade-off is worked through properly here
@@ -170,7 +170,7 @@ export default function Body() {
         case in the whole market.
       </P>
 
-      <H2 id="avoid">When to buy from Japan instead</H2>
+      <H2 id="avoid">When to import from Japan instead</H2>
       <UL>
         <CheckLI>
           <Strong>When price is the priority.</Strong> New Zealand prices are

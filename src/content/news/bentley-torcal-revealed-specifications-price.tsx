@@ -231,7 +231,7 @@ export default function BentleyTorcalRevealedSpecificationsPrice() {
         , never as one figure.
       </P>
 
-      <H3>You are buying in sterling</H3>
+      <H3>You are paying in sterling</H3>
 
       <P>
         Every one of these cars is built at Crewe and sold from Britain, so the
@@ -264,7 +264,7 @@ export default function BentleyTorcalRevealedSpecificationsPrice() {
 
       <P>
         <Strong>
-          It applies to you if you buy at this level and want the car new.
+          It applies to you if you import at this level and want the car new.
         </Strong>{" "}
         Right-hand drive is the standard British specification, so Ireland, East
         Africa, the Indian Ocean markets, the Caribbean, New Zealand and the
@@ -303,7 +303,7 @@ export default function BentleyTorcalRevealedSpecificationsPrice() {
       <P>
         There is no deadline attached to this car, and we are not going to
         invent one. The configurator is open, production is roughly seven months
-        away, and the only thing a very early order buys is build-slot position
+        away, and the only thing a very early order gets is build-slot position
         in the first year &mdash; which on a launch specification with a fixed
         run is worth something and on the core car is worth less.
       </P>
@@ -401,14 +401,14 @@ export default function BentleyTorcalRevealedSpecificationsPrice() {
           carries the confirmed specification and the Torcal, Torcal S and First
           Edition ladder, so you can register interest against a specification,
           a paint and a hide rather than a general enquiry. The United Kingdom
-          is one of the seven countries our own team buys in.{" "}
+          is one of the seven countries our own team exports from.{" "}
           <InlineLink href="/request">
             Tell us where the car is going
           </InlineLink>{" "}
           and we will build the landed figure against your port, with the VAT
           position and the duty line shown separately &mdash; and tell you
           plainly if the charging answer in your market means you should be
-          buying the Bentayga instead.
+          importing the Bentayga instead.
         </p>
       </Callout>
     </>

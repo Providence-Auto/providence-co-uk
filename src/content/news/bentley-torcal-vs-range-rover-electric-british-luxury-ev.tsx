@@ -51,7 +51,7 @@ export default function BentleyTorcalVsRangeRoverElectricBritishLuxuryEv() {
             to 60 mph against as little as 4.3.
           </>,
           <>
-            <Strong>Only one of them can be bought today.</Strong> The Range
+            <Strong>Only one of them can be imported today.</Strong> The Range
             Rover Electric has been orderable since 2 September 2026. Torcal
             production starts in the second quarter of 2027.
           </>,
@@ -271,7 +271,7 @@ export default function BentleyTorcalVsRangeRoverElectricBritishLuxuryEv() {
       <H2 id="dealers">The dealer read</H2>
 
       <P>
-        For anyone committing capital rather than buying one car, four points.
+        For anyone committing capital rather than importing one car, four points.
       </P>
 
       <UL>
@@ -283,7 +283,7 @@ export default function BentleyTorcalVsRangeRoverElectricBritishLuxuryEv() {
         </LI>
         <LI>
           <Strong>Days-to-turn will differ sharply.</Strong> The Range Rover
-          Electric can be bought and shipped now. The Torcal cannot be shipped
+          Electric can be imported now. The Torcal cannot be shipped
           until 2027, so a unit committed today is capital parked for the better
           part of a year before it can be invoiced on.
         </LI>
@@ -307,13 +307,13 @@ export default function BentleyTorcalVsRangeRoverElectricBritishLuxuryEv() {
       <H2 id="applies">Does this apply to you?</H2>
 
       <P>
-        <Strong>Buy the Torcal</Strong> if you want the performance car, the
+        <Strong>Import the Torcal</Strong> if you want the performance car, the
         faster charge and the launch specification, and you can wait until 2027.
         It is the more powerful car by a wide margin and the quicker to refill.
       </P>
 
       <P>
-        <Strong>Buy the Range Rover Electric</Strong> if you want the car now,
+        <Strong>Import the Range Rover Electric</Strong> if you want the car now,
         if you need wading depth or any off-road capability, or if the towing
         figure &mdash; such as it is &mdash; matters to you. It is also roughly
         &pound;60,000 cheaper before tax, which on a fleet is the whole
@@ -321,7 +321,7 @@ export default function BentleyTorcalVsRangeRoverElectricBritishLuxuryEv() {
       </P>
 
       <P>
-        <Strong>Buy neither, yet,</Strong> if your destination has no rapid
+        <Strong>Import neither, yet,</Strong> if your destination has no rapid
         charging or no electric-capable service. Both cars are excellent and
         both depend on infrastructure that is not evenly distributed across the
         right-hand-drive world. We have written the charging question up in{" "}
@@ -404,7 +404,7 @@ export default function BentleyTorcalVsRangeRoverElectricBritishLuxuryEv() {
           &mdash; each with the confirmed specification and the grade ladder, so
           you can register against a specification rather than a general
           enquiry. The United Kingdom is one of the seven countries our own team
-          buys in.{" "}
+          exports from.{" "}
           <InlineLink href="/request">Tell us the destination port</InlineLink>{" "}
           and we will build both landed figures side by side, with the VAT
           position and the duty line shown separately.

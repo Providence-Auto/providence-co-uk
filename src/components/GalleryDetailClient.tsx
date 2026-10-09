@@ -561,7 +561,7 @@ export default function GalleryDetailClient({
             {car.isUpcoming && (
               <div className="mt-3 rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
                 <p className="text-sm text-zinc-600 font-light leading-relaxed">
-                  Announced but not yet available to buy. Register your interest
+                  Announced but not yet available to import. Register your interest
                   and we&rsquo;ll come back with a landed cost for your country
                   once specification and pricing are confirmed.
                 </p>
@@ -733,7 +733,7 @@ export default function GalleryDetailClient({
 
                     <p className="mt-3 text-[11px] text-zinc-400 font-light leading-relaxed">
                       Your destination country decides which hand you can
-                      register, and we source this model in both.
+                      register, and we export this model from both.
                     </p>
                   </div>
                 )}

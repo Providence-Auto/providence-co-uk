@@ -28,7 +28,7 @@ export const DEALER_SOURCING_H1 = "B2B Inquiry for Dealerships";
  * before commitment (`brand-position.md` §4, pillar 2).
  */
 export const DEALER_SOURCING_ANSWER =
-  "You can send a B2B inquiry for your dealership and source cars directly from Japan, the UK, Australia, New Zealand, Thailand, India and the UAE, shipped to your own port. Our own teams find and inspect each car before your money moves, and you see the full landed cost before you commit.";
+  "You can send a B2B inquiry for your dealership and import cars directly from Japan, the UK, Australia, New Zealand, Thailand, India and the UAE, shipped to your own port. Our own teams find and inspect each car before your money moves, and you see the full landed cost before you commit.";
 
 /** Title tag. 58 characters — keep it under 60 (tested). */
 export const DEALER_SOURCING_TITLE =

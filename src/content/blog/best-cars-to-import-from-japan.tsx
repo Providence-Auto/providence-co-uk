@@ -160,7 +160,7 @@ export default function Body() {
           category in the market. On these, the auction sheet, service history
           and a physical inspection are not optional extras — they are the
           difference between an appreciating asset and somebody else&rsquo;s
-          abandoned project. We do not buy a performance car without all three.
+          abandoned project. We do not export a performance car without all three.
         </p>
       </Callout>
 
@@ -196,8 +196,8 @@ export default function Body() {
           live. Confirm first.
         </CheckLI>
         <CheckLI>
-          <Strong>Very low-grade cars bought on price.</Strong> Below Grade 3.5
-          you are buying somebody else&rsquo;s deferred maintenance, and freight
+          <Strong>Very low-grade cars chosen on price.</Strong> Below Grade 3.5
+          you are importing somebody else&rsquo;s deferred maintenance, and freight
           costs the same either way.
         </CheckLI>
       </UL>
@@ -209,7 +209,7 @@ export default function Body() {
         </InlineLink>
         . If you want to skip to the stock our{" "}
         <InlineLink href="/import-cars-from/japan">Japan team</InlineLink> is
-        buying right now, that page lists it.
+        exporting right now, that page lists it.
       </P>
 
       <Disclaimer>

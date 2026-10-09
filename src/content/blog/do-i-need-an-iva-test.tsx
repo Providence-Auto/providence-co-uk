@@ -62,7 +62,7 @@ export default function Body() {
       <P>
         Nothing about the cars differs. The age does. That is the whole reason
         this page exists, and it is why the approval question belongs in the
-        buying decision rather than after it.
+        import decision rather than after it.
       </P>
 
       <H2 id="exempt">The exemption list in full</H2>
@@ -104,7 +104,7 @@ export default function Body() {
       </UL>
       <P>
         The third line is the one that matters to nearly every private importer,
-        and it is the reason so much Japanese and Gulf stock is bought
+        and it is the reason so much Japanese and Gulf stock is imported
         deliberately on the far side of ten years.
       </P>
 
@@ -224,7 +224,7 @@ export default function Body() {
         <Strong>seriously damaged</Strong> vehicle, and if you pay for vehicle
         approval and then try, you will not be refunded.
       </P>
-      <H3>How to spot one before you buy</H3>
+      <H3>How to spot one before you import</H3>
       <P>
         For a UK car, serious damage means a Category A or B insurance
         write-off. For an imported car, GOV.UK says the registration certificate
@@ -233,7 +233,7 @@ export default function Body() {
         authority in the country the vehicle came from — and if it is not
         seriously damaged, to ask them for evidence of that in writing.
       </P>
-      <Callout title="This is a buying check, not a shipping check" tone="sky">
+      <Callout title="This is a selection check, not a shipping check" tone="sky">
         <p>
           A car with a non-repairable marker on its home registration is worth
           exactly its parts value in Britain, and you will find that out after

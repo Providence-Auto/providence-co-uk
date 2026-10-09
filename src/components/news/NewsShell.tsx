@@ -3,11 +3,13 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import BlogCTA from "@/components/blog/BlogCTA";
 import Breadcrumbs from "@/components/blog/Breadcrumbs";
+import PublisherNote from "@/components/blog/PublisherNote";
 import TableOfContents from "@/components/blog/TableOfContents";
 import FAQSection from "@/components/faqSection";
 import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
+import { ARTICLE_CTAS, type ArticleCta } from "@/config/article-ctas";
 import { BLOG_BASE_PATH, getPost } from "@/config/blog";
 import type { NewsArticle } from "@/config/news";
 import {
@@ -48,6 +50,10 @@ export default function NewsShell({
 
   const categoryMeta = getCategoryMetaByLabel(article.category);
   const wasUpdated = article.updatedDate > article.publishDate;
+  // One destination for all three brand touchpoints (brand-position.md §12,
+  // news-editorial-playbook.md §4.4). A story with no matching landing page
+  // uses the market-neutral default — never another country's form.
+  const cta: ArticleCta = article.cta ?? ARTICLE_CTAS.neutral;
 
   return (
     <main className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
@@ -136,6 +142,8 @@ export default function NewsShell({
             {article.readingTimeMins} min read
           </span>
         </Reveal>
+
+        <PublisherNote href={cta.href} label={cta.label} />
       </header>
 
       {/* ── HERO IMAGE ─────────────────────────────────── */}
@@ -248,7 +256,13 @@ export default function NewsShell({
             </div>
           </section>
         )}
-        <BlogCTA />
+        <BlogCTA
+          href={cta.href}
+          heading={cta.heading}
+          body={cta.body}
+          label={cta.label}
+          showCalculator={cta.calculator ?? false}
+        />
         {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
         <PreferredSourceCallout />
       </div>

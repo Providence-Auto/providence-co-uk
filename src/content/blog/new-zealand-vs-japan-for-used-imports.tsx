@@ -17,7 +17,7 @@ export default function Body() {
     <>
       <Lead>
         Most of New Zealand&rsquo;s used stock came from Japan in the first
-        place. So why would anyone buy the second-hand version at a retail price
+        place. So why would anyone import the second-hand version at a retail price
         instead of going to the source? There are three good answers, one bad
         one, and a clear rule for telling which situation you are in.
       </Lead>
@@ -174,12 +174,12 @@ export default function Body() {
 
       <H2 id="verdict">The verdict</H2>
       <P>
-        <Strong>Buy from Japan</Strong> when price is the priority, when your
+        <Strong>Import from Japan</Strong> when price is the priority, when your
         requirement is specific, when you want the newest possible car, or when
         you are shipping to Africa or Europe.
       </P>
       <P>
-        <Strong>Buy from New Zealand</Strong> when the extra verification is
+        <Strong>Import from New Zealand</Strong> when the extra verification is
         worth paying for, when you want a used electric or plug-in vehicle, when
         English documentation matters to your registration process, or when you
         are shipping into Oceania or the Pacific.

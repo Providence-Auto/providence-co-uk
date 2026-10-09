@@ -4,11 +4,13 @@ import FAQSection from "@/components/faqSection";
 import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
+import { resolveBlogCta } from "@/config/article-ctas";
 import type { BlogPost } from "@/config/blog";
 import { BLOG_BASE_PATH } from "@/config/blog";
 import { creditForImage } from "@/config/car-photo-credits";
 import BlogCTA from "./BlogCTA";
 import Breadcrumbs from "./Breadcrumbs";
+import PublisherNote from "./PublisherNote";
 import RelatedPosts from "./RelatedPosts";
 import TableOfContents from "./TableOfContents";
 
@@ -30,6 +32,8 @@ export default function ArticleShell({
   children: ReactNode;
 }) {
   const heroCredit = creditForImage(post.heroImage);
+  // One destination for all three brand touchpoints (brand-position.md §12).
+  const cta = resolveBlogCta(post);
 
   return (
     <main className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
@@ -85,6 +89,8 @@ export default function ArticleShell({
             {post.readingTimeMins} min read
           </span>
         </Reveal>
+
+        <PublisherNote href={cta.href} label={cta.label} />
       </header>
 
       {/* ── HERO IMAGE ─────────────────────────────────── */}
@@ -142,11 +148,11 @@ export default function ArticleShell({
       <div className="px-6 pb-20 max-w-3xl mx-auto">
         <RelatedPosts slug={post.slug} />
         <BlogCTA
-          href={post.ctaHref}
-          heading={post.ctaHeading}
-          body={post.ctaBody}
-          label={post.ctaLabel}
-          showCalculator={post.ctaCalculator}
+          href={cta.href}
+          heading={cta.heading}
+          body={cta.body}
+          label={cta.label}
+          showCalculator={cta.calculator ?? false}
         />
         {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
         <PreferredSourceCallout />

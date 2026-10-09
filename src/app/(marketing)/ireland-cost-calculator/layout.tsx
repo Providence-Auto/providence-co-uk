@@ -106,7 +106,7 @@ const faqSchema = {
       name: "How much does it cost to import a car to Ireland in 2026?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The total landed cost is the purchase price plus shipping, customs duty (0% or 10%), VAT (23% where it applies), Vehicle Registration Tax (VRT, 7%–41% of the car's OMSP based on CO₂ emissions) and a NOx levy on petrol and diesel cars. Use the calculator for an exact estimate based on your car and where you're buying it.",
+        text: "The total landed cost is the purchase price plus shipping, customs duty (0% or 10%), VAT (23% where it applies), Vehicle Registration Tax (VRT, 7%–41% of the car's OMSP based on CO₂ emissions) and a NOx levy on petrol and diesel cars. Use the calculator for an exact estimate based on your car and where you're importing it from.",
       },
     },
     {

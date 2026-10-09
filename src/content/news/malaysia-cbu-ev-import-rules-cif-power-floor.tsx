@@ -129,7 +129,7 @@ export default function MalaysiaCbuEvImportRulesCifPowerFloor() {
         <p>
           Where a free trade agreement lowers import duty from 30% to 5%, two
           otherwise identical electric cars land at materially different prices
-          purely because of where they were built. If you are sourcing for
+          purely because of where they were built. If you are importing for
           Malaysia, country of manufacture stopped being a footnote and became a
           pricing input.
         </p>
@@ -259,11 +259,11 @@ export default function MalaysiaCbuEvImportRulesCifPowerFloor() {
       </Disclaimer>
 
       <Callout
-        title="Sourcing into Malaysia and need the corridor priced?"
+        title="Importing into Malaysia and need the corridor priced?"
         tone="emerald"
       >
         <p>
-          We buy in Japan, the United Kingdom, the UAE, India, Thailand,
+          We export from Japan, the United Kingdom, the UAE, India, Thailand,
           Australia and New Zealand, which means when one route closes on rules
           we can price the same car out of another. Send us the specification
           and destination and we will quote one landed figure &mdash;{" "}

@@ -218,7 +218,7 @@ export default function MarutiBalenoFacelift2026PriceIndiaExport() {
       <P>
         For a dealer, there is no urgency and a good reason to pause: a facelift
         launched five days ago has not reached export allocation, and the
-        outgoing car will be available at a discount while it clears. Buying the
+        outgoing car will be available at a discount while it clears. Importing the
         run-out at the right number is frequently the better trade in this
         segment, and it is a duller answer than being told to secure early
         allocation.
@@ -228,8 +228,8 @@ export default function MarutiBalenoFacelift2026PriceIndiaExport() {
         For a private buyer, the honest position is that a &#8377;6.10 lakh
         hatchback is not a car that survives an import bill in most of our
         markets unless your destination taxes small engines lightly. Check your
-        own band first. If it does not, do not buy this car from abroad &mdash;
-        buy it locally or buy something else.
+        own band first. If it does not, do not import this car &mdash;
+        buy it locally or import something else.
       </P>
 
       <Disclaimer>
@@ -245,7 +245,7 @@ export default function MarutiBalenoFacelift2026PriceIndiaExport() {
         tone="emerald"
       >
         <p>
-          We source from Indian dealer networks every week and quote one landed
+          We export from Indian dealer networks every week and quote one landed
           figure with duty and local tax shown as separate lines, so you can see
           whether the band works before you commit. Send us the model and
           destination: <InlineLink href="/request">start here</InlineLink>. Our{" "}

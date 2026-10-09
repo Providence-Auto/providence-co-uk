@@ -10,9 +10,9 @@ import B2CClient from "./B2CClient";
 // page to /b2c and de-index the entire gallery. A page-level export cannot
 // leak downward, so this is the safe shape for any route that has children.
 const PATH = "/b2c";
-const TITLE = "Buy Your Dream Car from Any Market — Direct Import";
+const TITLE = "Import Your Dream Car from Any Market";
 const DESCRIPTION =
-  "Buy direct from the markets the trade buys from. You choose the car; our teams in seven countries give you the access, the documentation and the shipping to your port.";
+  "Import your dream car anywhere in the world, direct from the markets the trade imports from. Our teams in seven countries export it to your port.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

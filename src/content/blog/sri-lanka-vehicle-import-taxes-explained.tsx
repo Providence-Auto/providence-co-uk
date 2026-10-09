@@ -119,7 +119,7 @@ export default function Body() {
         The important caveat is that this treatment has been revised more than
         once. What was favourable three years ago may not be favourable now, and
         the reverse is equally true. This is one of the specific things we
-        confirm before sourcing rather than assuming. More on the practical
+        confirm before ordering rather than assuming. More on the practical
         implications in{" "}
         <InlineLink href="/blog/importing-hybrids-and-evs-to-sri-lanka">
           importing hybrids and EVs to Sri Lanka
@@ -151,10 +151,10 @@ export default function Body() {
         theme of this article.
       </P>
 
-      <H2 id="modelling">How we model it before you buy</H2>
+      <H2 id="modelling">How we model it before you commit</H2>
       <P>
         Because the tax structure dominates the outcome, we model the landed
-        figure before recommending a vehicle rather than after sourcing one. The
+        figure before recommending a vehicle rather than after ordering one. The
         sequence:
       </P>
       <UL>

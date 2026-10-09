@@ -154,10 +154,10 @@ export default function RangeRoverElectricRevealedSpecificationsPrice() {
         Divide by 1.2 and the car is <Strong>&pound;128,337.50</Strong> before
         tax, with <Strong>&pound;25,667.50</Strong> of VAT sitting on top. That
         VAT figure is the single largest number in this article for anyone
-        buying the car to send somewhere else, and we have set out how it
+        importing the car into another market, and we have set out how it
         behaves on an export sale in our{" "}
         <InlineLink href="/latest-news/range-rover-electric-uk-sourcing-export-vat">
-          read on sourcing the car out of the United Kingdom
+          read on importing the car from the United Kingdom
         </InlineLink>
         .
       </P>
@@ -239,7 +239,7 @@ export default function RangeRoverElectricRevealedSpecificationsPrice() {
       <H2 id="applies">Does this apply to you, and can you register it?</H2>
 
       <P>
-        It applies to you if you buy or sell luxury SUVs into a right-hand-drive
+        It applies to you if you import or sell luxury SUVs into a right-hand-drive
         market, or into a left-hand-drive market at the luxury end. The Range
         Rover is sold in 121 countries on JLR&rsquo;s own figure, in both hands,
         so this is not a car you have to argue into existence in the correct
@@ -358,7 +358,7 @@ export default function RangeRoverElectricRevealedSpecificationsPrice() {
         </CheckLI>
         <CheckLI>
           <Strong>If you tow more than 2,500 kg:</Strong> wait for JLR to
-          publish a towing figure, and if it confirms 2,500 kg, buy the
+          publish a towing figure, and if it confirms 2,500 kg, import the
           combustion or plug-in hybrid car instead. No amount of range makes a
           tow rating stretch.
         </CheckLI>
@@ -451,13 +451,13 @@ export default function RangeRoverElectricRevealedSpecificationsPrice() {
           carries the confirmed specification and the six-specification range,
           so you can register against a specification and a colour rather than a
           general enquiry. The United Kingdom is one of the seven countries our
-          own team buys in.{" "}
+          own team exports from.{" "}
           <InlineLink href="/request">
             Tell us where the car is going
           </InlineLink>{" "}
           and we will build the landed figure against your port, with the VAT
           position and the duty line shown separately &mdash; and tell you
-          plainly if the charging answer in your market means you should buy the
+          plainly if the charging answer in your market means you should import the
           combustion car instead.
         </p>
       </Callout>
