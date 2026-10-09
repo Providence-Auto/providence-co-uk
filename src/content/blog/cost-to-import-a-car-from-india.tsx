@@ -78,7 +78,7 @@ export default function Body() {
         <CheckLI>
           <Strong>Inland transport</Strong> to Nhava Sheva, Chennai, Mundra or
           Kolkata. India is large, so this varies with where the vehicle was
-          sourced.
+          found.
         </CheckLI>
         <CheckLI>
           <Strong>Export documentation</Strong> — invoice, shipping bill,
@@ -153,7 +153,7 @@ export default function Body() {
           <Strong>Consolidate freight</Strong> wherever the volume allows.
         </CheckLI>
         <CheckLI>
-          <Strong>Buy new where the gap to used is small.</Strong> You capture
+          <Strong>Import new where the gap to used is small.</Strong> You capture
           the manufacturing advantage cleanly and avoid used-condition risk in a
           market where history is harder to verify.
         </CheckLI>

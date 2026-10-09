@@ -19,7 +19,7 @@ export default function Body() {
         Thailand builds pickups new. Japan sells them used with an independent
         condition grade attached. Framed that way the comparison almost answers
         itself — but it is worth working through properly, because the honest
-        answer depends on whether you are buying one vehicle or ten, and on how
+        answer depends on whether you are importing one vehicle or ten, and on how
         much verification you need before committing.
       </Lead>
 
@@ -57,7 +57,7 @@ export default function Body() {
       <H2 id="new-vs-used">New versus used</H2>
       <P>
         If you want a new pickup, Thailand is the only realistic route and the
-        saving is substantial — you are buying at the production source rather
+        saving is substantial — you are importing direct from the production source rather
         than through a destination-market distributor and dealer.
       </P>
       <P>
@@ -125,7 +125,7 @@ export default function Body() {
       </P>
       <P>
         For an older Japanese-market vehicle, some model-specific parts can be
-        harder to source outside Japan than the badge suggests — particularly on
+        harder to import from outside Japan than the badge suggests — particularly on
         JDM-only variants that were never sold in your market.
       </P>
 
@@ -160,22 +160,22 @@ export default function Body() {
       <H2 id="verdict">The verdict</H2>
       <UL>
         <CheckLI>
-          <Strong>Buying new? Thailand.</Strong> No real competition — it is the
+          <Strong>Importing new? Thailand.</Strong> No real competition — it is the
           source.
         </CheckLI>
         <CheckLI>
-          <Strong>Buying used on a budget? Japan.</Strong> Wholesale auction
+          <Strong>Importing used on a budget? Japan.</Strong> Wholesale auction
           pricing plus an independent grade is a combination Thailand cannot
           offer.
         </CheckLI>
         <CheckLI>
-          <Strong>Buying for a fleet? Thailand.</Strong> Identical units,
+          <Strong>Importing for a fleet? Thailand.</Strong> Identical units,
           specified accessories, factory condition — exactly what fleet
           operation wants, and what a used market cannot deliver at volume.
         </CheckLI>
         <CheckLI>
           <Strong>
-            Buying a 4x4 wagon rather than a pickup? Compare carefully.
+            Importing a 4x4 wagon rather than a pickup? Compare carefully.
           </Strong>{" "}
           Japan&rsquo;s Land Cruiser and Prado pool is deeper; Thailand&rsquo;s
           Fortuner and MU-X are cheaper new.

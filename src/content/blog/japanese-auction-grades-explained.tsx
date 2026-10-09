@@ -16,7 +16,7 @@ export default function Body() {
   return (
     <>
       <Lead>
-        The auction sheet is the reason buying a car in Japan, sight unseen,
+        The auction sheet is the reason importing a car from Japan, sight unseen,
         from the other side of the world, is a rational thing to do. It is
         written by an inspector who works for the auction house rather than the
         seller, it follows a standard format, and the entire Japanese motor
@@ -89,7 +89,7 @@ export default function Body() {
           ],
           [
             <Strong key="g2">2 and below</Strong>,
-            "Significant damage, corrosion or wear. Project territory. We do not buy at this level.",
+            "Significant damage, corrosion or wear. Project territory. We do not export at this level.",
           ],
           [
             <Strong key="gr">R / RA</Strong>,
@@ -99,7 +99,7 @@ export default function Body() {
         caption="Grades follow a national convention but are applied by individual inspectors; treat half-point differences as indicative rather than absolute."
       />
       <P>
-        We buy Grade 4 and above as standard, and we tell you the grade before
+        We export Grade 4 and above as standard, and we tell you the grade before
         we bid rather than after we have won.
       </P>
 
@@ -128,7 +128,7 @@ export default function Body() {
       </UL>
       <Callout title="Our position on Grade R" tone="amber">
         <p>
-          We will buy a Grade R car where the repair is documented, cosmetic and
+          We will export a Grade R car where the repair is documented, cosmetic and
           confirmed on our own physical inspection — and we disclose it every
           time, in writing, before you pay. What we will not do is quietly ship
           one as if the marking were not there.

@@ -29,7 +29,7 @@ export default function NissanPatrolY63RightHandDriveMarkets() {
         <Strong>New Zealand in the first quarter of 2027</Strong>; and{" "}
         <Strong>Japan in the first half of fiscal 2027</Strong>, which returns
         Nissan to the large-SUV segment at home for the first time since the
-        Safari ended production in 2007. If you are buying for Nairobi,
+        Safari ended production in 2007. If you are importing for Nairobi,
         Kingston, Auckland or Hong Kong, that sequence decides your corridor and
         your calendar.
       </Lead>
@@ -54,7 +54,7 @@ export default function NissanPatrolY63RightHandDriveMarkets() {
           </>,
           <>
             <Strong>The dirham is pegged to the US dollar</Strong>, so there is
-            no independent currency advantage to sourcing a Patrol out of Dubai
+            no independent currency advantage to importing a Patrol from Dubai
             &mdash; the UAE competes on stock and specification, never on
             exchange rate.
           </>,
@@ -148,7 +148,7 @@ export default function NissanPatrolY63RightHandDriveMarkets() {
       </P>
 
       <PullQuote>
-        The dirham is pegged to the US dollar. Sourcing out of Dubai never gets
+        The dirham is pegged to the US dollar. Importing from Dubai never gets
         cheaper because of a currency move &mdash; it gets cheaper because of
         stock, and only because of stock.
       </PullQuote>
@@ -196,7 +196,7 @@ export default function NissanPatrolY63RightHandDriveMarkets() {
         The caveat is timing. First-half fiscal 2027 means April to September
         2027 for the domestic launch, and a Japanese-registered car cannot be
         exported until it has been registered and traded. Anyone who needs a
-        Patrol on the ground in 2027 is buying an Australian one, and our{" "}
+        Patrol on the ground in 2027 is importing an Australian one, and our{" "}
         <InlineLink href="/latest-news/nissan-patrol-y63-australia-pricing-confirmed">
           Australian pricing report
         </InlineLink>{" "}
@@ -211,7 +211,7 @@ export default function NissanPatrolY63RightHandDriveMarkets() {
         No. Nothing in the Y63&rsquo;s launch schedule changes any
         country&rsquo;s import rules, and the age limits that govern used
         imports do not apply to a new car in its first year. What changes is
-        what exists to buy.
+        what exists to import.
       </P>
 
       <P>
@@ -297,7 +297,7 @@ export default function NissanPatrolY63RightHandDriveMarkets() {
         tone="emerald"
       >
         <p>
-          We buy in both markets, which is the only reason this comparison is
+          We export from both markets, which is the only reason this comparison is
           worth anything &mdash; the{" "}
           <InlineLink href="/b2c/gallery/nissan-patrol-y63">
             Y63 Patrol page

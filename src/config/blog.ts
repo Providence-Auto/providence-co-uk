@@ -118,7 +118,7 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "importing-cars-to-ireland",
     isPillar: true,
     title: "Importing a Car to Ireland in 2026: The Complete Guide",
-    h1: "Importing a Car to Ireland in 2026: Costs, Tax & the Best Cars to Buy",
+    h1: "Importing a Car to Ireland in 2026: Costs, Tax & the Best Cars to Import",
     seoTitle:
       "Importing Cars to Ireland in 2026: The Complete Guide (Costs, Tax & Best Cars)",
     description:
@@ -169,7 +169,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "What is the first step to importing a car to Ireland?",
-        a: "Model the full landed cost before you buy anything. Pick a low-emission, right-hand-drive car with proof of origin, run it through a VRT and customs estimate, and only then commit. The headline foreign price is never the real price.",
+        a: "Model the full landed cost before you commit to anything. Pick a low-emission, right-hand-drive car with proof of origin, run it through a VRT and customs estimate, and only then commit. The headline foreign price is never the real price.",
       },
     ],
   },
@@ -221,7 +221,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "Are Japanese imports cheaper than UK imports in Ireland now?",
-        a: "Since 1 February 2026 Japanese-built cars enter at 0% customs duty, matching UK-built cars. Japan wins on low-mileage condition and price for hybrids; the UK wins on cheap, fast shipping. Both beat EU-built premium cars bought in Britain, which still pay 10% duty.",
+        a: "Since 1 February 2026 Japanese-built cars enter at 0% customs duty, matching UK-built cars. Japan wins on low-mileage condition and price for hybrids; the UK wins on cheap, fast shipping. Both beat EU-built premium cars imported from Britain, which still pay 10% duty.",
       },
       {
         q: "Do cheap imported cars still have to pay VRT in Ireland?",
@@ -276,7 +276,7 @@ const IRELAND_POSTS: BlogPost[] = [
     faqs: [
       {
         q: "What is the cheapest way to import a car to Ireland?",
-        a: "Buy a low-CO₂, right-hand-drive car that qualifies for 0% customs duty (Japanese- or UK-built) with a valid statement of origin, aged 3–8 years with average mileage to keep VRT moderate, and claim any relief you're entitled to (EV VRT relief before end-2026, the 30-year classic rate, or Transfer of Residence relief). Always model the full landed cost before bidding.",
+        a: "Import a low-CO₂, right-hand-drive car that qualifies for 0% customs duty (Japanese- or UK-built) with a valid statement of origin, aged 3–8 years with average mileage to keep VRT moderate, and claim any relief you're entitled to (EV VRT relief before end-2026, the 30-year classic rate, or Transfer of Residence relief). Always model the full landed cost before bidding.",
       },
       {
         q: "How can I legally reduce VRT when importing a car to Ireland?",
@@ -284,7 +284,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "Is it cheaper to import a car yourself or use an import service?",
-        a: "Doing it yourself saves a service fee but exposes you to the expensive mistakes — paying 10% duty for want of an origin document, mis-judging the VRT band, or buying a car that fails the NCT. A good importer prices the full landed cost up front and prepares the customs, VRT and registration paperwork, which usually protects more than it costs.",
+        a: "Doing it yourself saves a service fee but exposes you to the expensive mistakes — paying 10% duty for want of an origin document, mis-judging the VRT band, or importing a car that fails the NCT. A good importer prices the full landed cost up front and prepares the customs, VRT and registration paperwork, which usually protects more than it costs.",
       },
     ],
   },
@@ -450,11 +450,11 @@ const IRELAND_POSTS: BlogPost[] = [
     faqs: [
       {
         q: "Is it cheaper to import a car from Japan or the UK to Ireland?",
-        a: "It depends on the car. Since February 2026 both Japanese-built and UK-built cars enter at 0% customs duty, and both pay 23% VAT. Japan is best for low-mileage hybrids at auction prices; the UK is best for UK-built models where cheap, fast ferry shipping wins. EU-built cars bought in Britain are the trap — they still pay 10% duty.",
+        a: "It depends on the car. Since February 2026 both Japanese-built and UK-built cars enter at 0% customs duty, and both pay 23% VAT. Japan is best for low-mileage hybrids at auction prices; the UK is best for UK-built models where cheap, fast ferry shipping wins. EU-built cars imported from Britain are the trap — they still pay 10% duty.",
       },
       {
         q: "Do I pay customs duty importing a car from the UK to Ireland after Brexit?",
-        a: "Only UK-manufactured cars qualify for 0% duty under the EU–UK Trade and Cooperation Agreement, and only with a valid statement of origin. A BMW, Audi, Mercedes or VW bought in Britain was built in the EU and pays the full 10% duty. VAT at 23% applies to every GB import regardless.",
+        a: "Only UK-manufactured cars qualify for 0% duty under the EU–UK Trade and Cooperation Agreement, and only with a valid statement of origin. A BMW, Audi, Mercedes or VW imported from Britain was built in the EU and pays the full 10% duty. VAT at 23% applies to every GB import regardless.",
       },
       {
         q: "Why import a car from Japan to Ireland in 2026?",
@@ -519,7 +519,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "Is it safe to import a car manufactured in India?",
-        a: "Yes, with proper checks. Buy through a sourcing partner that verifies provenance and inspects every car before export. Providence inspects each India-built car against a multi-point standard — structure, brakes, engine, electronics and safety spec — and shares the report before you pay, so the lower price never means a compromised car.",
+        a: "Yes, with proper checks. Import through a sourcing partner that verifies provenance and inspects every car before export. Providence inspects each India-built car against a multi-point standard — structure, brakes, engine, electronics and safety spec — and shares the report before you pay, so the lower price never means a compromised car.",
       },
     ],
   },
@@ -572,7 +572,7 @@ const MODEL_POSTS: BlogPost[] = [
     faqs: [
       {
         q: "Can you import a Nissan Patrol to Ireland or the UK?",
-        a: "You can buy and ship one, but registering it is the hard part. The Patrol is not sold new in Ireland or the United Kingdom, so there is no EU or UK type approval attached to the car. Registration runs through individual vehicle approval — in Ireland an NSAI Individual Vehicle Approval assessed against Irish legislation and inspected at an approved test centre. Revenue will not register a new vehicle without a valid Certificate of Conformity, an EU IVA or an Irish national IVA.",
+        a: "You can import one, but registering it is the hard part. The Patrol is not sold new in Ireland or the United Kingdom, so there is no EU or UK type approval attached to the car. Registration runs through individual vehicle approval — in Ireland an NSAI Individual Vehicle Approval assessed against Irish legislation and inspected at an approved test centre. Revenue will not register a new vehicle without a valid Certificate of Conformity, an EU IVA or an Irish national IVA.",
       },
       {
         q: "Which country is best to import a Nissan Patrol from?",
@@ -596,7 +596,7 @@ const MODEL_POSTS: BlogPost[] = [
       },
     ],
     toc: [
-      { id: "which-patrol", label: "Which Patrol are you buying?" },
+      { id: "which-patrol", label: "Which Patrol are you importing?" },
       { id: "corridors", label: "The four corridors" },
       { id: "cost-stack", label: "What makes up the landed cost" },
       { id: "engine-tax", label: "Why the engine is the expensive decision" },
@@ -819,7 +819,7 @@ const UK_IVA_POSTS: BlogPost[] = [
       },
       {
         q: "Can a written-off or salvage car be imported and registered?",
-        a: "Not if it counts as seriously damaged. GOV.UK is explicit that a seriously damaged vehicle cannot be registered or taxed, and that money spent on vehicle approval will not be refunded if you try. For imports, look for wording like statutory write-off, scrapped or non-repairable on the foreign registration certificate, and check with the issuing authority before you buy rather than after.",
+        a: "Not if it counts as seriously damaged. GOV.UK is explicit that a seriously damaged vehicle cannot be registered or taxed, and that money spent on vehicle approval will not be refunded if you try. For imports, look for wording like statutory write-off, scrapped or non-repairable on the foreign registration certificate, and check with the issuing authority before you commit rather than after.",
       },
     ],
   },

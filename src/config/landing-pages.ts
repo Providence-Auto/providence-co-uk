@@ -51,19 +51,19 @@ export const lhdCampaignConfig: LandingPageConfig = {
   meta: {
     title: "Left-Hand Drive Luxury Cars from Japan | Providence Auto",
     description:
-      "Source left-hand drive (LHD) luxury cars — Rolls-Royce, Ferrari, Lamborghini, Porsche, Bentley and more — direct from Japan's grade-verified auctions. Shipped to your port across Europe, the Middle East and the Americas.",
+      "Import left-hand drive (LHD) luxury cars — Rolls-Royce, Ferrari, Lamborghini, Porsche, Bentley and more — direct from Japan's grade-verified auctions. Shipped to your port across Europe, the Middle East and the Americas.",
   },
   hero: {
     tagline: "Providence Auto · Left-Hand Drive Specialists",
     title: "Japanese Luxury,\nLeft-Hand Drive.",
     subtitle:
-      "Buy grade-verified LHD supercars and luxury saloons direct from Japan's auctions and certified dealers — genuine factory left-hand drive, landed at your port. No conversions, no compromise.",
+      "Import grade-verified LHD supercars and luxury saloons direct from Japan's auctions and certified dealers — genuine factory left-hand drive, landed at your port. No conversions, no compromise.",
     backgroundImage:
       "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=3000&auto=format&fit=cover",
   },
   intro: {
     highlight: "No conversions. No compromise.",
-    text: "Every car we source is genuine factory left-hand drive, hand-picked from Japan's most reputable auctions, certified dealers, and private collections. Native LHD means simpler registration, no engineering sign-off, and stronger long-term resale value than a converted car ever holds.",
+    text: "Every car we export is genuine factory left-hand drive, hand-picked from Japan's most reputable auctions, certified dealers, and private collections. Native LHD means simpler registration, no engineering sign-off, and stronger long-term resale value than a converted car ever holds.",
   },
   valueProps: {
     title: "Why Import From Providence Auto",
@@ -98,7 +98,7 @@ export const lhdCampaignConfig: LandingPageConfig = {
   faqs: {
     title: "Left-Hand Drive Imports — Your Questions Answered",
     subtitle:
-      "Everything you need to know about sourcing an LHD luxury car from Japan with Providence.",
+      "Everything you need to know about importing an LHD luxury car from Japan with Providence.",
     categories: [
       {
         category: "Left-Hand Drive & Sourcing",
@@ -108,15 +108,15 @@ export const lhdCampaignConfig: LandingPageConfig = {
             a: "Yes. Every vehicle we offer on this page is native, factory-built left-hand drive — not a right-hand drive car converted after the fact. We confirm the configuration on the original auction sheet and export documents before you commit, so there is no engineering sign-off, no aftermarket steering conversion, and no hit to resale value.",
           },
           {
-            q: "Why buy a left-hand drive luxury car from Japan?",
+            q: "Why import a left-hand drive luxury car from Japan?",
             a: "Japan runs one of the world's largest, most transparent used-car auction networks, with strict independent grading and exceptional maintenance culture. Many premium marques were sold there in factory left-hand drive for export markets. That means grade-verified condition, wholesale auction pricing, and genuine LHD spec — ideal for buyers in Europe, the Middle East, and the Americas.",
           },
           {
-            q: "Which luxury brands can you source?",
+            q: "Which luxury brands can you export?",
             a: "Rolls-Royce, Bentley, Ferrari, Lamborghini, Aston Martin, McLaren, Bugatti, Porsche, Mercedes-Benz, BMW, Audi, Maserati, Lexus, Genesis, Lucid and Lotus, among others. If you have a specific model, spec, or colour in mind, tell us in your inquiry and we'll hunt it down at auction.",
           },
           {
-            q: "How do I know the car's true condition before I buy?",
+            q: "How do I know the car's true condition before I import it?",
             a: "You receive the original Japanese auction grade sheet, a full multi-point pre-export inspection, and detailed photographs before any payment is released. Japanese auction grades are independently assessed and widely trusted across the trade. If a car doesn't match its grade, we don't ship it.",
           },
         ],
@@ -134,7 +134,7 @@ export const lhdCampaignConfig: LandingPageConfig = {
           },
           {
             q: "How long does the whole process take?",
-            a: "Typically 8–12 weeks from confirmed inquiry to arrival at your port: 1–2 weeks to source and win the car at auction, then 4–8 weeks shipping depending on destination. Customs clearance and local registration follow, with our documents and support. You get live milestone updates the whole way.",
+            a: "Typically 8–12 weeks from confirmed inquiry to arrival at your port: 1–2 weeks to find and win the car at auction, then 4–8 weeks shipping depending on destination. Customs clearance and local registration follow, with our documents and support. You get live milestone updates the whole way.",
           },
           {
             q: "Is my payment protected?",
@@ -155,7 +155,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
   },
   hero: {
     tagline: "Providence Auto · Japan Import Specialists",
-    title: "Now You Can Buy Your Dream Car\nDirect from Japan.",
+    title: "Now You Can Import Your Dream Car\nDirect from Japan.",
     subtitle:
       "Tell us the car you want. We search dealers and auctions across Japan for a grade 4+ example, inspect it before your money moves, and ship it to your port with one landed price and the paperwork to import it.",
     // Self-hosted (unlike the other campaigns' remote heroes) so the hero has
@@ -173,7 +173,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
   },
   intro: {
     highlight: "You see the grade and our inspection before we spend a yen.",
-    text: "Every car we source is graded 4 or above and inspected by our own team in Japan, with its mileage checked against Japan's inspection records. You see the grade and our inspection before we spend a yen.",
+    text: "Every car we export is graded 4 or above and inspected by our own team in Japan, with its mileage checked against Japan's inspection records. You see the grade and our inspection before we spend a yen.",
   },
   valueProps: {
     title: "Why Import From Providence Auto",
@@ -182,7 +182,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
       {
         icon: FileSearch,
         title: "Grade 4 and Above, Verified",
-        desc: "We only source cars graded 4 or above. Japanese owners drive little and most cars never see a salted road, so they come to market clean and low-mileage. We check the odometer against Japan's inspection records, and if a car doesn't match its grade, we don't buy it.",
+        desc: "We only export cars graded 4 or above. Japanese owners drive little and most cars never see a salted road, so they come to market clean and low-mileage. We check the odometer against Japan's inspection records, and if a car doesn't match its grade, we don't export it.",
         glowColor: "group-hover:bg-blue-500/15",
       },
       {
@@ -208,26 +208,26 @@ export const japanImportCampaignConfig: LandingPageConfig = {
   faqs: {
     title: "Importing From Japan — Your Questions Answered",
     subtitle:
-      "Everything you need to know about sourcing a Japanese car and landing it in your country with Providence.",
+      "Everything you need to know about importing a Japanese car and landing it in your country with Providence.",
     categories: [
       {
-        category: "Buying From Japan",
+        category: "Importing From Japan",
         items: [
           {
-            q: "Why buy a used car from Japan?",
-            a: "Japanese owners drive little and sell young, because the shaken inspection regime makes older cars expensive to keep. Cars come to market with low, verifiable mileage, and most never see a salted road. We source grade 4 and above only, and buying direct means you pay a Japanese price, not a local dealer's markup.",
+            q: "Why import a used car from Japan?",
+            a: "Japanese owners drive little and sell young, because the shaken inspection regime makes older cars expensive to keep. Cars come to market with low, verifiable mileage, and most never see a salted road. We export grade 4 and above only, and importing direct means you pay a Japanese price, not a local dealer's markup.",
           },
           {
             q: "How does the Japanese auction grading system work?",
-            a: "Independent inspectors grade every auction car on a standard scale: Grade 5 is near-new, Grade 4 is excellent, Grade 3.5 is very good with minor cosmetic marks, and accident-repaired cars are flagged separately as Grade R. The grade, panel-by-panel condition map and inspector's notes all appear on the auction sheet. We source Grade 4 and above only. Where a car comes through auction, you get the original sheet with a translation before we bid, and if a car doesn't match its grade on our own inspection, we don't ship it.",
+            a: "Independent inspectors grade every auction car on a standard scale: Grade 5 is near-new, Grade 4 is excellent, Grade 3.5 is very good with minor cosmetic marks, and accident-repaired cars are flagged separately as Grade R. The grade, panel-by-panel condition map and inspector's notes all appear on the auction sheet. We export Grade 4 and above only. Where a car comes through auction, you get the original sheet with a translation before we bid, and if a car doesn't match its grade on our own inspection, we don't ship it.",
           },
           {
             q: "Is the mileage on Japanese import cars genuine?",
-            a: "Yes — and it's verifiable. Japan records odometer readings at every shaken inspection and at auction, and auction houses flag any inconsistency directly on the sheet. Before export, the mileage is certified again on the official export certificate. We cross-check all three records on every car we buy, and we walk away from any vehicle where the history doesn't line up perfectly.",
+            a: "Yes — and it's verifiable. Japan records odometer readings at every shaken inspection and at auction, and auction houses flag any inconsistency directly on the sheet. Before export, the mileage is certified again on the official export certificate. We cross-check all three records on every car we export, and we walk away from any vehicle where the history doesn't line up perfectly.",
           },
           {
             q: "How much does it cost to import a car from Japan?",
-            a: "The total is the car's price (plus auction fees if it's bought at auction), inland transport in Japan, ocean freight, marine insurance, and your country's import duties and taxes — which vary widely by destination and vehicle. We work out the whole landed figure for your specific car and country before you commit anything, itemised so you can see which part you pay us — the car, fees, freight and marine cover to your port — and which part you pay your own customs authority when it lands. What you pay us is fixed before you commit, and there are no surprise charges from us on arrival.",
+            a: "The total is the car's price (plus auction fees if it's won at auction), inland transport in Japan, ocean freight, marine insurance, and your country's import duties and taxes — which vary widely by destination and vehicle. We work out the whole landed figure for your specific car and country before you commit anything, itemised so you can see which part you pay us — the car, fees, freight and marine cover to your port — and which part you pay your own customs authority when it lands. What you pay us is fixed before you commit, and there are no surprise charges from us on arrival.",
           },
           {
             q: "How long does it take to import a car from Japan?",
@@ -252,7 +252,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What is the age limit for importing a car to Kenya?",
-            a: "Kenya only accepts vehicles under 8 years old from the year of first registration, right-hand drive only, and every car must pass a mandatory pre-export roadworthiness inspection in Japan for KEBS compliance. We source age-compliant stock, arrange the inspection, and ship into Mombasa with the duty calculated up front and payable by you on clearance — the Toyota Harrier, Fielder, Vitz and Land Cruiser Prado are the perennial fast movers.",
+            a: "Kenya only accepts vehicles under 8 years old from the year of first registration, right-hand drive only, and every car must pass a mandatory pre-export roadworthiness inspection in Japan for KEBS compliance. We export age-compliant stock, arrange the inspection, and ship into Mombasa with the duty calculated up front and payable by you on clearance — the Toyota Harrier, Fielder, Vitz and Land Cruiser Prado are the perennial fast movers.",
           },
           {
             q: "Can I import an older Japanese car to Tanzania?",
@@ -260,7 +260,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
           },
           {
             q: "What are Uganda's rules for Japanese car imports?",
-            a: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot: think Harrier, Premio, Wish or Hiace. Tell us the car you want and we will confirm Uganda's rules for it and give you the full landed figure before you buy — what you pay us, and what you pay at the border, itemised.",
+            a: "Uganda sets an age limit on imported vehicles, so a younger Japanese car is the sweet spot: think Harrier, Premio, Wish or Hiace. Tell us the car you want and we will confirm Uganda's rules for it and give you the full landed figure before you commit — what you pay us, and what you pay at the border, itemised.",
           },
           {
             q: "Do you ship to other right-hand-drive countries?",
@@ -276,7 +276,7 @@ export const japanImportCampaignConfig: LandingPageConfig = {
             a: "Yes — you get a local warranty, provided by our partner dealer in your own region rather than by an exporter on the other side of the world. Cover is whatever that dealer offers in your market, so if something needs attention after delivery you book it in with a garage you can drive to. We confirm in writing which partner is covering your car, what the warranty includes and how long it runs, as part of your landed-cost quote — before you commit.",
           },
           {
-            q: "Is my payment protected when buying a car from Japan?",
+            q: "Is my payment protected when importing a car from Japan?",
             a: "Yes. Funds are held securely until your vehicle is confirmed, inspected and cleared for shipment, and every car is covered by marine insurance for the voyage. Providence is an established international sourcing and export group with its own people in seven countries, including a team on the ground in Japan, so you always know exactly where your car and your money are.",
           },
           {
@@ -304,13 +304,13 @@ export const indianCampaignConfig: LandingPageConfig = {
     tagline: "Providence Auto · India-Built Specialists",
     title: "Built in India,\nDriven by Value.",
     subtitle:
-      "Buy the badges you already trust — Suzuki, Toyota, Kia, Nissan — direct from India's most efficient factories for around 30% less. Safety-inspected by our own team before your money moves, and quoted as one landed price.",
+      "Import the badges you already trust — Suzuki, Toyota, Kia, Nissan — direct from India's most efficient factories for around 30% less. Safety-inspected by our own team before your money moves, and quoted as one landed price.",
     backgroundImage:
       "https://images.unsplash.com/photo-1663852408695-f57f4d75a536?q=80&w=3000&auto=format&fit=cover",
   },
   intro: {
     highlight: "The saving never comes at the cost of safety.",
-    text: "Every car we source is built in India by the world's biggest manufacturers, in some of the most efficient factories on earth — same badge, smarter price. Our team inspects every car before it ships, because we'd rather lose a sale than ship a car we wouldn't put our own families in. The saving never comes at the cost of safety.",
+    text: "Every car we export is built in India by the world's biggest manufacturers, in some of the most efficient factories on earth — same badge, smarter price. Our team inspects every car before it ships, because we'd rather lose a sale than ship a car we wouldn't put our own families in. The saving never comes at the cost of safety.",
   },
   valueProps: {
     title: "Why Import From Providence Auto",
@@ -319,7 +319,7 @@ export const indianCampaignConfig: LandingPageConfig = {
       {
         icon: Handshake,
         title: "Direct India Network",
-        desc: "We've spent years building direct relationships with India's largest dealer networks. Buying closer to the source means we find your car faster, negotiate harder, and land it cheaper.",
+        desc: "We've spent years building direct relationships with India's largest dealer networks. Exporting from closer to the source means we find your car faster, negotiate harder, and land it cheaper.",
         glowColor: "group-hover:bg-blue-500/15",
       },
       {
@@ -345,7 +345,7 @@ export const indianCampaignConfig: LandingPageConfig = {
   faqs: {
     title: "India-Built Imports — Your Questions Answered",
     subtitle:
-      "Everything you need to know about sourcing an Indian-manufactured car with Providence.",
+      "Everything you need to know about importing an Indian-manufactured car with Providence.",
     categories: [
       {
         category: "Indian-Built Cars & Quality",
@@ -359,8 +359,8 @@ export const indianCampaignConfig: LandingPageConfig = {
             a: "No — and the gap that once existed has closed fast. Modern Indian plants build for Suzuki, Toyota, Hyundai, Kia, Honda and the Volkswagen Group on the same global platforms sold worldwide, manufacturers now export India-built cars back to markets as demanding as Japan and Europe, and the Bharat NCAP crash-test programme holds new models to independent safety standards. On top of that, every car we ship passes our own multi-point pre-export inspection — if it doesn't pass, it doesn't ship.",
           },
           {
-            q: "Which brands and models can you source from India?",
-            a: "Suzuki, Toyota, Kia, Nissan, Hyundai, Honda, Tata, Mahindra, Renault, Volkswagen, Skoda and MG, among others — from the Swift and Creta to the Fortuner, Seltos and Nexon. If you have a specific model, trim or colour in mind, tell us in your inquiry and we'll source it through our dealer network.",
+            q: "Which brands and models can you export from India?",
+            a: "Suzuki, Toyota, Kia, Nissan, Hyundai, Honda, Tata, Mahindra, Renault, Volkswagen, Skoda and MG, among others — from the Swift and Creta to the Fortuner, Seltos and Nexon. If you have a specific model, trim or colour in mind, tell us in your inquiry and we'll find it through our dealer network.",
           },
           {
             q: "How do you make sure my car is safe before it ships?",
@@ -376,8 +376,8 @@ export const indianCampaignConfig: LandingPageConfig = {
             a: "Yes. Before you pay anything, you get the whole landed figure for your destination, itemised so you can see which part you pay us — the car, freight and marine cover to your port — and which part you pay your own customs authority as the importer. The saving you see is the saving you keep, and there are no surprise charges from us on arrival.",
           },
           {
-            q: "How does Providence source cars from India?",
-            a: "Directly. Our team has built relationships with India's largest dealer networks, which lets us buy closer to the source than a traditional importer. That's how we bring cars in faster, at better prices, and with the provenance of every car verified before we commit your money.",
+            q: "How does Providence export cars from India?",
+            a: "Directly. Our team has built relationships with India's largest dealer networks, which lets us export from closer to the source than a traditional importer. That's how we bring cars in faster, at better prices, and with the provenance of every car verified before we commit your money.",
           },
           {
             q: "Can you supply more than one car at a time?",

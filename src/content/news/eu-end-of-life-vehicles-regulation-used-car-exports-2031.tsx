@@ -156,7 +156,7 @@ export default function EuEndOfLifeVehiclesRegulationUsedCarExports2031() {
             "This is the flow the Regulation is aimed at. Expect it to narrow from 1 September 2031.",
           ],
           [
-            "Source from Japan, the UK, UAE, India, Thailand, Australia or New Zealand",
+            "Import from Japan, the UK, UAE, India, Thailand, Australia or New Zealand",
             "Not covered. This is an EU export rule and does not travel.",
           ],
           [
@@ -164,7 +164,7 @@ export default function EuEndOfLifeVehiclesRegulationUsedCarExports2031() {
             "You are inside the EU, so both the design and the export provisions apply to you.",
           ],
           [
-            "Buy new cars",
+            "Import new cars",
             "The recycled-content requirements apply to manufacturers from 2032 and 2036, not to you directly.",
           ],
         ]}

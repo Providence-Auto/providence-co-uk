@@ -15,7 +15,7 @@ import {
 // availability, so the page names its secondary sources (Parkers, Cuvva) and
 // makes no model-by-model claim it could not verify. Sources:
 // japanese-car-import-uk-research.md §8.1. The contextual landing-page link
-// sits at the end of "How to check before you buy" (brand-position.md §12).
+// sits at the end of "How to check before you import" (brand-position.md §12).
 
 export default function Body() {
   return (
@@ -125,7 +125,7 @@ export default function Body() {
         ordered from Japan for the rest. Cuvva makes the insurer&rsquo;s version
         of the same point — parts that are harder and dearer to find, and a car
         that may need a specialist mechanic. None of that makes the car a bad
-        buy. It makes the parts question one to answer before you buy, along
+        buy. It makes the parts question one to answer before you import, along
         with the premium that follows from it, set out in{" "}
         <InlineLink href="/blog/insuring-a-japanese-import-uk">
           insuring a Japanese import
@@ -133,7 +133,7 @@ export default function Body() {
         .
       </P>
 
-      <H2 id="check">How to check parts before you buy a Japanese import</H2>
+      <H2 id="check">How to check parts before you import a Japanese car</H2>
       <UL>
         <CheckLI>
           <Strong>Get the model code</Strong>, from the export certificate or
@@ -170,7 +170,7 @@ export default function Body() {
         reports the observations of Parkers (updated 25 March 2026) and Cuvva
         (updated 15 August 2024), accessed on 7 October 2026; it does not list
         or endorse any supplier. Check prices for your exact model code before
-        you buy.
+        you import.
       </Disclaimer>
     </>
   );

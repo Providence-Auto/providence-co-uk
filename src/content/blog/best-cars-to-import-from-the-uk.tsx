@@ -17,7 +17,7 @@ export default function Body() {
   return (
     <>
       <Lead>
-        There are two separate reasons to buy a Japanese car in Britain, and
+        There are two separate reasons to import a Japanese car from Britain, and
         confusing them is how people lose money. One is that some Japanese cars
         are <Strong>built</Strong> there, which can change your duty bill. The
         other is that the British used market runs deep enough in Toyota, Lexus,
@@ -46,7 +46,7 @@ export default function Body() {
         ]}
       />
 
-      <H2 id="two-reasons">Two different reasons to buy in Britain</H2>
+      <H2 id="two-reasons">Two different reasons to import from Britain</H2>
       <P>
         <Strong>Reason one: origin.</Strong> If your destination grants
         preferential tariff treatment to UK-manufactured goods, a Japanese car
@@ -118,8 +118,8 @@ export default function Body() {
       <H2 id="enthusiast">Enthusiast cars and 4x4s</H2>
       <P>
         British owners keep enthusiast cars serviced, garaged and on record, and
-        the MOT history shows it. That makes the UK a good place to buy the cars
-        where condition is most of the value.
+        the MOT history shows it. That makes the UK a good place to import from
+        for the cars where condition is most of the value.
       </P>
       <UL>
         <CheckLI>

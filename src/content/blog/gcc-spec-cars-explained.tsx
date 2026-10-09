@@ -95,7 +95,7 @@ export default function Body() {
           A GCC-spec Land Cruiser or Patrol going to East Africa, South Asia or
           the Middle East arrives better suited to the destination than a
           European-specification equivalent would be. It is the clearest case
-          where buying from Dubai is an engineering decision rather than a price
+          where importing from Dubai is an engineering decision rather than a price
           one.
         </p>
       </Callout>
@@ -179,7 +179,7 @@ export default function Body() {
 
       <H2 id="decision">When GCC spec is right for you</H2>
       <P>
-        <Strong>Buy GCC spec</Strong> if your destination is hot, your
+        <Strong>Import GCC spec</Strong> if your destination is hot, your
         registration requirements are not emissions-strict, and you want a
         nearly new, highly specified car at a used price. For much of Africa,
         South Asia, the Middle East and Central Asia this is the correct answer,
@@ -194,7 +194,7 @@ export default function Body() {
       <P>
         <Strong>Look elsewhere</Strong> if you are in a cold climate. The
         omitted cold-weather equipment is genuinely missed, and the cooling
-        advantage buys you nothing.{" "}
+        advantage gains you nothing.{" "}
         <InlineLink href="/import-cars-from/japan">Japan</InlineLink> or{" "}
         <InlineLink href="/import-cars-from/united-kingdom">the UK</InlineLink>{" "}
         will serve you better.

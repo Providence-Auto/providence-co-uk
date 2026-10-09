@@ -16,7 +16,7 @@ pages, blog, news, sales profiles, emails, form microcopy, FAQ answers.
 sentence possible.**
 
 > ✗ *We buy your car at Japanese auction and deliver it to your door.*
-> ✓ *Now you can buy your dream car direct from Japanese auction.*
+> ✓ *Now you can import your dream car direct from Japan.*
 
 Both sentences describe the same transaction. The first makes the reader a
 passenger; the second makes them the buyer and us the reason they can be.
@@ -27,7 +27,7 @@ often than "you" across a section, the section is off-position.
 
 This is not a ban on "we". Providence does real things and should say so —
 *we inspect it before your money moves*, *we bid to your instruction*. The
-rule is about **who the outcome belongs to**. We act; you buy.
+rule is about **who the outcome belongs to**. We act; you import.
 
 ## 2. Never sell the removal of effort
 
@@ -38,7 +38,7 @@ customs clearance rather than performing it) and capability is one we can.
 
 | Banned | Why | Use instead |
 |---|---|---|
-| "so you don't have to" | Sells ignorance as a benefit; inverts the position exactly. | "so you can", "so you know exactly what you're buying" |
+| "so you don't have to" | Sells ignorance as a benefit; inverts the position exactly. | "so you can", "so you know exactly what you're importing" |
 | "we handle everything" / "we take care of it all" | Untrue at the destination port, in every market. | "we prepare the file, and support you through clearance" |
 | "leave it to us" / "sit back" | Passenger framing. | "you decide, on real numbers" |
 | "hassle-free" / "zero paperwork for you" | The paperwork exists. Denying it reads as a sales line and loses trust the first time a form appears. | "the paperwork, prepared and explained" |
@@ -62,6 +62,8 @@ Reach for these. They are load-bearing, not decoration.
 - **support / prepare / confirm / explain** — the documentation pillar. Honest
   verbs for what we do with paperwork.
 - **your call / your decision / you choose** — agency, returned explicitly.
+- **import / export** — the reader imports; we export. Never *buy* or *sell*
+  for those two acts, and never *source* as a verb (§10).
 
 ## 4. Rewrite patterns
 
@@ -69,7 +71,7 @@ Worked examples. The left column is real copy that was on the site.
 
 | Before | After | What moved |
 |---|---|---|
-| "We Buy Your Car at Japanese Auction and Deliver It to Your Door." | "Now You Can Buy Your Dream Car Direct from Japanese Auction." | Subject: we → you. |
+| "We Buy Your Car at Japanese Auction and Deliver It to Your Door." | "Now You Can Import Your Dream Car Direct from Japan." | Subject: we → you; buy → import (§10). |
 | "We navigate complex international tax codes and import duties so you don't have to." | "We map the tax and duty position for your country before you commit, so you can see the real number and decide on it." | Relief → visibility. Adds the sequencing. |
 | "Your Country's Rules, Handled" | "Your Country's Rules, Confirmed First" | "Handled" (we absorb it) → "confirmed" (you know it). |
 | "Door-to-Door Logistics" | "Shipping and Paperwork Support" | Fixes the CNF over-claim and names the real service. |
@@ -79,14 +81,14 @@ Worked examples. The left column is real copy that was on the site.
 ## 5. B2B and B2C open the same way
 
 The first thing a dealer reads and the first thing a private buyer reads is
-the **same sentence**: you can source cars directly from the market they come
+the **same sentence**: you can import cars directly from the market they come
 from and ship them to your own country, and we give you the access, tools and
 documentation support to do it. See `brand-position.md` §5.
 
 Only the *second* line differs:
 
-- **B2C** adds the price advantage of cutting the dealership out — you buy at
-  the price a dealer buys at, and that margin stays with you. Where destination
+- **B2C** adds the price advantage of cutting the dealership out — you import
+  at the price a dealer pays at source, and that margin stays with you. Where destination
   taxes narrow the gap (Ireland), lead on the car instead — lower mileage,
   graded 4.0 or above, inspected first — and keep the price as a supporting
   point. Never write that importing is *not* cheaper (`brand-position.md` §5).
@@ -139,7 +141,7 @@ writing or changing any public copy, any outbound message, or building
 anything that carries copy.** Every time — see `brand-position.md` §11.1 for
 why that is stated so bluntly.
 
-Five questions for any customer-facing page:
+Seven questions for any customer-facing page:
 
 1. **Subject test.** In the hero and the value props, is the reader doing the
    verbs, or watching us do them?
@@ -160,6 +162,10 @@ Five questions for any customer-facing page:
    what Providence offers or handles, which goes on only when the business
    asks for it on that page. A tool is held to both: sourced, dated rates with
    the working shown, and an ask-first conversion path.
+7. **Import and export.** Is there a *buy*, a *sell* or a verb *source* left
+   where the reader imports or where we export? (§10;
+   `grep -inE "\b(buy|buying|bought|sell|selling|sourc(e|es|ed|ing))\b"`, then
+   read each hit in context — most nouns and third-party uses stay.)
 
 If the work shows a source-of-truth document is wrong or contradicts another,
 do not edit it on your own authority: raise it, log it in `brand-position.md`
@@ -172,8 +178,8 @@ Every blog post and news article carries Providence in three places
 
 1. **The publisher note** (under the byline) is one factual sentence plus a link.
    The fact is about who publishes the page, stated as something the reader can
-   check — "Published by Providence Auto: our own teams buy and ship cars from
-   seven countries." The link label is the landing page's keyword — "Import
+   check — "Published by Providence Auto: our own teams export cars from seven
+   countries." The link label is the landing page's keyword — "Import
    Japanese cars to the UK" — never "Click here", never a superlative, never a
    price.
 
@@ -198,3 +204,51 @@ Every blog post and news article carries Providence in three places
 
 The banned-phrase list in §2 applies to all three. So does the CNF boundary: a
 touchpoint may say "shipped to a UK port", never "delivered to your door".
+
+## 10. Import and export, not buy and sell
+
+Decided 2026-10-09 (business instruction). The two acts in every Providence
+transaction have their own verbs, and they are the trade's verbs, not a shop's:
+
+- **The reader imports.** When the customer brings a car in from another
+  market, the verb is *import*: "Import a car from Japan", never "buy a car
+  from Japan". It is what the customer actually does (the import entry is made
+  in their name, `business-context.md` §4), and it is the phrase they search.
+- **We export.** When the copy describes Providence's side of the transaction,
+  the verb is *export*: "we export cars to 34 destinations", never "we sell".
+  Our own office is the exporter of record in every source country
+  (`business-context.md` §2 step 3).
+- **"Source" as a verb follows the same split.** Where the reader does it, it
+  becomes *import* ("Import your next car directly from Japan"); where we do
+  it, *export* ("our team in Japan exports only cars graded 4.0 or above").
+  Never write *we import*: the import is the customer's.
+- **Nouns stay.** Source market, source country, car sourcing, a sourcing
+  inquiry, the Sourcing & Profit Analyzer, a primary source, a buyer, the
+  seller, a sale.
+
+What the rule does not touch:
+
+- **Other people's transactions.** A collector who bought a Ferrari at auction,
+  a manufacturer selling new cars in its home market, a dealership selling
+  stock to its own customers.
+- **A purchase that is not an import.** Buying a new car in the UK; the price a
+  dealer pays at source.
+- **URLs and slugs, the titles of other publications, and code identifiers.** A
+  slug is never renamed for vocabulary: renaming one breaks links and rankings.
+
+Where neither *import* nor *export* reads naturally, rephrase rather than fall
+back on the old verb: "before anything is bought" becomes "before you commit".
+
+| Before | After |
+|---|---|
+| Buy a car from Japan | Import a car from Japan |
+| You can now buy the exact vehicle you want | You can now import the exact vehicle you want |
+| Source cars directly from the market they come from | Import cars directly from the market they come from |
+| Most of the stock we buy is one to three years old | Most of the stock we export is one to three years old |
+| Buy at source, not from a middleman's stock | Import direct from source, not from a middleman's stock |
+
+**The repeated line** (decided 2026-10-09): *Import your dream car anywhere in
+the world.* It is the footer line on every page, the opening line of the home
+page's lead paragraph, and part of the meta description on the four brand pages
+(`/`, `/b2c`, `/b2b`, `/about-us`). Keyword landing pages and articles keep
+their keyword-led descriptions (`brand-position.md` §10).

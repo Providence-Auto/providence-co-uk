@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Providence Auto",
   },
   description:
-    "Source any car from 40+ global markets with Providence Auto. Our own teams in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand — shipped to your port, with clearance support and the full document pack.",
+    "Import your dream car anywhere in the world, from 40+ markets. Our teams in seven countries export it to your port, with clearance support. Get a quote.",
   keywords: [
     "Global car sourcing",
     "direct car import service",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     "borderless car showroom",
     "international car exporter",
     "car sourcing teams worldwide",
-    "buy cars from overseas",
+    "import cars from overseas",
     "7-seater family SUVs",
     "luxury executive sedans",
     "premium electric vehicles",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: "World’s Largest Borderless Showroom | Global Car Sourcing",
     description:
-      "Seven countries, our own people in every one. Save on luxury SUVs, sedans and performance cars by buying direct. Shipped to your port, with clearance support.",
+      "Seven countries, our own people in every one. Save on luxury SUVs, sedans and performance cars by importing direct. Shipped to your port, with clearance support.",
     // 1200x630 is the card size every scraper crops to. This used to be
     // /logo.png at 1007x967 — a near-square logo, which Slack, LinkedIn, X and
     // iMessage all letterbox or centre-crop into something that reads as a
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Providence Auto | Global Car Sourcing & Direct Import",
     description:
-      "Source premium vehicles from 40+ global markets tax-efficiently.",
+      "Import your dream car anywhere in the world, from 40+ global markets.",
     // `summary_large_image` crops to 1200x630; the square logo was being
     // letterboxed. Same card as Open Graph above.
     images: ["/og/default.jpg"],
@@ -125,7 +125,7 @@ export default function RootLayout({
     url: "https://www.providenceauto.co.uk/",
     logo: "https://www.providenceauto.co.uk/logo.png",
     description:
-      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand, sourcing premium vehicles from 40+ markets.",
+      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand, exporting premium vehicles from 40+ markets.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "468 Church Lane, Kingsbury",

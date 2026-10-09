@@ -30,18 +30,18 @@ const PILLARS = [
   },
   {
     icon: Globe2,
-    title: "We source far beyond them",
-    desc: "These seven countries are where we buy, with our own people on the ground. We source across many more markets than these, and we add new ones as the volume justifies it.",
+    title: "We export from far beyond them",
+    desc: "These seven countries are where we export from, with our own people on the ground. We search many more markets than these, and we add new ones as the volume justifies it.",
   },
   {
     icon: Users,
     title: "One team handles your car all the way to your port",
-    desc: "The team that buys your vehicle stays with it. Inspection reports, photographs and shipping milestones come from the people who physically handled it.",
+    desc: "The team that exports your vehicle stays with it. Inspection reports, photographs and shipping milestones come from the people who physically handled it.",
   },
   {
     icon: Ship,
     title: "One landed price, wherever it comes from",
-    desc: "We compare the total landed cost across our source countries for the specification you want, then buy where it lands cheapest — and quote you a single all-in figure before you commit.",
+    desc: "We compare the total landed cost across our source countries for the specification you want, then export from where it lands cheapest — and quote you a single all-in figure before you commit.",
   },
 ];
 
@@ -357,7 +357,7 @@ export default function ImportCarsFromPage() {
           <Reveal y={24} duration={0.7}>
             <SectionRule />
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-              Not sure which country is the cheapest to source from?
+              Not sure which country is the cheapest to import from?
             </h2>
             <p className="text-lg text-zinc-500 font-light mb-8">
               Tell us the car. We will compare the landed cost from every

@@ -122,7 +122,7 @@ export default function TeamProfileClient({
                 delay={0.05}
                 className="text-4xl md:text-6xl font-bold tracking-tighter mb-5 whitespace-pre-line"
               >
-                {profile.headline || `Sourced by ${firstName}.`}
+                {profile.headline || `Imported with ${firstName}.`}
               </Reveal>
               <Reveal
                 immediate
@@ -144,7 +144,7 @@ export default function TeamProfileClient({
                 {profile.yearsExperience ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-black/5 px-4 py-2 text-sm font-semibold">
                     <Award size={14} className="text-sky-500" />{" "}
-                    {profile.yearsExperience}+ years sourcing
+                    {profile.yearsExperience}+ years exporting
                   </span>
                 ) : null}
                 {profile.languages && profile.languages.length > 0 && (
@@ -292,7 +292,7 @@ export default function TeamProfileClient({
               y={20}
               className="text-2xl md:text-3xl font-bold tracking-tight mb-3"
             >
-              Where I source from
+              Where I export from
             </Reveal>
             <Reveal
               as="p"
@@ -353,7 +353,7 @@ export default function TeamProfileClient({
               y={20}
               className="text-2xl md:text-3xl font-bold tracking-tight mb-3"
             >
-              Cars I'm sourcing right now
+              Cars I'm exporting right now
             </Reveal>
             <Reveal
               as="p"

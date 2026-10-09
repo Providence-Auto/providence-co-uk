@@ -243,9 +243,9 @@ export default function SriLankaVehicleImportSurchargeExtended2026() {
       />
 
       <P>
-        A car bought at auction in Japan in late September, consolidated,
+        A car won at auction in Japan in late September, consolidated,
         cleared for export and loaded, is comfortably inside the window. A car
-        bought in late October is not, because the constraint is not the sailing
+        won in late October is not, because the constraint is not the sailing
         &mdash; it is the queue for a sailing. Roll-on roll-off space out of
         Japan tightens in the fourth quarter, and a vessel that slips by a week
         moves your bill of lading past 15 November and reprices the unit.
@@ -355,11 +355,11 @@ export default function SriLankaVehicleImportSurchargeExtended2026() {
 
       <P>
         Yes, but less than the headline implies, and possibly not at all if you
-        are not buying this year.
+        are not importing this year.
       </P>
 
       <P>
-        A private importer buying one car now is inside the surcharge, because
+        A private importer bringing in one car now is inside the surcharge, because
         no private buyer holds an LC dated before 15 May 2026. What you are
         paying is an extra slice of duty &mdash; roughly 10% of CIF at a 20%
         duty rate &mdash; on top of an excise bill that is very probably larger
@@ -404,7 +404,7 @@ export default function SriLankaVehicleImportSurchargeExtended2026() {
             reported for 2026 imports but we could not find it in a primary
             gazette or a Sri Lanka Customs publication, so we are not stating it
             as a rule. Confirm the emission standard for your unit before you
-            buy it.
+            import it.
           </>,
         ]}
       />
@@ -417,9 +417,9 @@ export default function SriLankaVehicleImportSurchargeExtended2026() {
         Letter of Credit.
       </P>
 
-      <Callout title="Sourcing into Colombo?" tone="emerald">
+      <Callout title="Importing into Colombo?" tone="emerald">
         <p>
-          We ship into Sri Lanka and buy at auction in Japan, the UK, the UAE,
+          We ship into Sri Lanka and export from Japan, the UK, the UAE,
           India, Thailand, Australia and New Zealand every week, so when one
           corridor reprices we can quote the same specification out of another.{" "}
           <InlineLink href="/request">Send us the specification</InlineLink> and

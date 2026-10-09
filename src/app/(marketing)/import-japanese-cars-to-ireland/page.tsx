@@ -40,7 +40,7 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
         },
         {
           q: "Why is a Japanese hybrid the best value import right now?",
-          a: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan Economic Partnership Agreement, hybrids sit in the low VRT bands, and every car is right-hand drive. You buy direct from Japan, and you get a lower-mileage car graded 4 or above, inspected before your money moves.",
+          a: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan Economic Partnership Agreement, hybrids sit in the low VRT bands, and every car is right-hand drive. You import direct from Japan, and you get a lower-mileage car graded 4 or above, inspected before your money moves.",
         },
         {
           q: "Will I pay VAT twice — once in Japan and again on arrival?",
@@ -81,7 +81,7 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
       category: "Safety & Quality",
       items: [
         {
-          q: "What condition grade do you source?",
+          q: "What condition grade do you export?",
           a: "Grade 4 and above only, on Japan's independent auction grading scale, where Grade 5 is close to new and Grade 4 is excellent. You see the grade and our inspection report before we ship anything.",
         },
         {
@@ -114,7 +114,7 @@ const JAPAN_ADVANTAGES = [
     icon: ShieldCheck,
     title: "Exceptional Quality",
     subtitle: "Low Mileage · Grade 4 and Above",
-    desc: "Japanese owners drive far less than Irish ones, so cars come to market at low mileage. Most never see a salted road, and we check the underbody on every car. We only source grade 4 and above.",
+    desc: "Japanese owners drive far less than Irish ones, so cars come to market at low mileage. Most never see a salted road, and we check the underbody on every car. We only export grade 4 and above.",
     glowColor: "group-hover:bg-emerald-500/15",
     accentColor: "text-emerald-500",
   },
@@ -122,7 +122,7 @@ const JAPAN_ADVANTAGES = [
     icon: Compass,
     title: "RHD & Hybrid Range",
     subtitle: "No Conversion Needed",
-    desc: "Japan drives on the left — every car is right-hand drive and compliant for Irish roads with no conversion. Toyota Aqua, Prius, Corolla, Honda Jazz: hybrids in the low VRT bands, bought direct from Japan.",
+    desc: "Japan drives on the left — every car is right-hand drive and compliant for Irish roads with no conversion. Toyota Aqua, Prius, Corolla, Honda Jazz: hybrids in the low VRT bands, imported direct from Japan.",
     glowColor: "group-hover:bg-amber-500/15",
     accentColor: "text-amber-500",
   },
@@ -132,7 +132,7 @@ const PROCESS_STEPS = [
   {
     number: "01",
     icon: Search,
-    title: "Source",
+    title: "Find",
     desc: "We search dealers and auctions across Japan for your car, grade 4 and above, and inspect it before your money moves.",
   },
   {
@@ -370,7 +370,7 @@ export default function ImportJapaneseCarsIreland() {
             For 15 years, we supplied the top car dealers around the world. Now
             we're going direct —{" "}
             <span className="text-black drop-shadow-sm">
-              offering you that experience to source a top-quality car from
+              offering you that experience to import a top-quality car from
               Japan
             </span>{" "}
             and ship it to Ireland.
@@ -454,9 +454,9 @@ export default function ImportJapaneseCarsIreland() {
               8–12 Weeks · Japan to Irish Port
             </p>
             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-6">
-              We source it, inspect it and
+              We find it, inspect it and
               <br />
-              ship it to an Irish port.
+              export it to an Irish port.
             </h2>
             <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-light">
               Need help with clearance? We guide you at every step and support

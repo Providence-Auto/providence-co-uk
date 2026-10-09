@@ -45,7 +45,7 @@ export default function CollectorCarMarket15YearLow2026NotABuySignal() {
           </>,
           "The weakness is in the middle of the market. The very top has held, which is why headline auction records keep appearing alongside a falling index.",
           <>
-            A collector car bought abroad still meets your destination&rsquo;s
+            A collector car imported from abroad still meets your destination&rsquo;s
             tax and registration regime in full. The index does not reduce that.
           </>,
         ]}

@@ -302,7 +302,7 @@ export default function NissanPatrolY63VsLandcruiser300DealerRead() {
 
       <Callout title="Pricing a Y63 order for your market" tone="emerald">
         <p>
-          We buy at auction and from franchised dealers in Australia every week,
+          We export from franchised dealers and fleet disposals in Australia every week,
           and the{" "}
           <InlineLink href="/b2c/gallery/nissan-patrol-y63">
             Y63 Patrol page

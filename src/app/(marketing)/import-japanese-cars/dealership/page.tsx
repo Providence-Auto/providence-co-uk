@@ -187,7 +187,7 @@ export default function JapaneseCarsForDealershipsPage() {
             <Reveal y={30} className="max-w-3xl">
               <SectionRule align="left" />
               <h2 className="text-3xl font-bold tracking-tighter text-black md:text-5xl">
-                You can source Japanese cars straight from Japan for your
+                You can import Japanese cars straight from Japan for your
                 forecourt.
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">

@@ -232,7 +232,7 @@ export default function SriLankaVehicleFinanceLoanToValueCap2026() {
         tone="emerald"
       >
         <p>
-          We buy in Japan and India every week and quote one landed figure to
+          We export from Japan and India every week and quote one landed figure to
           Colombo before you commit. If you want a specific model, year band and
           volume priced,{" "}
           <InlineLink href="/request">send us the specification</InlineLink>.

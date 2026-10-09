@@ -557,7 +557,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   {
     slug: "monterey-car-week-2026-new-car-debuts",
     title: "Every significant new car revealed at Monterey Car Week 2026",
-    h1: "Every Significant New Car Revealed at Monterey Car Week 2026 — And Which Ones You Can Actually Buy",
+    h1: "Every Significant New Car Revealed at Monterey Car Week 2026 — And Which Ones You Can Actually Import",
     seoTitle:
       "Monterey Car Week 2026 New Car Debuts: Every Reveal, Spec & Price | Providence Auto",
     description:
@@ -812,7 +812,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "Should the tariff gap change what I import?",
-        a: "It should at least be in the calculation. A Chinese-brand EV bought used in the UK carries no EU countervailing duty in its history, but importing it into an EU member state means paying that state's registration tax on arrival — VRT in Ireland's case — on an OMSP the Revenue sets. The tariff story affects new-car list prices; your landed cost is driven by registration tax and residuals, and those are the numbers to model.",
+        a: "It should at least be in the calculation. A Chinese-brand EV imported used from the UK carries no EU countervailing duty in its history, but importing it into an EU member state means paying that state's registration tax on arrival — VRT in Ireland's case — on an OMSP the Revenue sets. The tariff story affects new-car list prices; your landed cost is driven by registration tax and residuals, and those are the numbers to model.",
       },
     ],
     sources: [
@@ -1057,7 +1057,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       { id: "co2", label: "Why 69 g/km matters" },
       { id: "landed", label: "The price is not your CIF base" },
       { id: "rhd-lhd", label: "Can you import one?" },
-      { id: "who-should-not", label: "Who should not buy it new" },
+      { id: "who-should-not", label: "Who should not import it new" },
       { id: "timing", label: "Order now or wait?" },
       { id: "faqs", label: "FAQs" },
     ],
@@ -1279,7 +1279,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "How many grades does the Nissan Patrol Y63 have?",
-        a: "Six in Australia: Ti, Ti+, Ti-L, Ti-L+, PRO-4X and Ti-L Reserve. The Ti-L+ and PRO-4X are new names in the Australian Patrol range. All six use the same 3.5-litre twin-turbo V6 with 317 kW and 700 Nm, the same nine-speed automatic and the same dual-range four-wheel-drive hardware, so the ladder buys comfort and suspension rather than capability.",
+        a: "Six in Australia: Ti, Ti+, Ti-L, Ti-L+, PRO-4X and Ti-L Reserve. The Ti-L+ and PRO-4X are new names in the Australian Patrol range. All six use the same 3.5-litre twin-turbo V6 with 317 kW and 700 Nm, the same nine-speed automatic and the same dual-range four-wheel-drive hardware, so the ladder adds comfort and suspension rather than capability.",
       },
       {
         q: "What is the Nissan Patrol Y63 towing capacity?",
@@ -1486,8 +1486,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
         a: "No, and it is the most common wasted enquiry on this model. Gulf-market Patrols are left-hand drive, which rules them out for Kenya, Uganda, Tanzania, Mauritius, Jamaica, Trinidad and Tobago, Guyana, Australia, New Zealand, Hong Kong, Malaysia, Sri Lanka, Ireland and the United Kingdom. UAE sourcing is for left-hand-drive luxury destinations.",
       },
       {
-        q: "Is it cheaper to buy a Patrol in the UAE because of the exchange rate?",
-        a: "No. The UAE dirham is pegged to the US dollar, so there is no independent currency advantage to sourcing out of Dubai — the corridor competes on stock and specification instead. Verify that the peg is still in place with the Central Bank of the UAE before relying on it, because peg arrangements do change, rarely and abruptly.",
+        q: "Is it cheaper to import a Patrol from the UAE because of the exchange rate?",
+        a: "No. The UAE dirham is pegged to the US dollar, so there is no independent currency advantage to importing from Dubai — the corridor competes on stock and specification instead. Verify that the peg is still in place with the Central Bank of the UAE before relying on it, because peg arrangements do change, rarely and abruptly.",
       },
       {
         q: "When will the Nissan Patrol Y63 be available in New Zealand?",
@@ -1647,7 +1647,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     cta: importFromCta("thailand", "Thailand"),
     title:
       "Two corridors for one Pajero: what Thailand and Australia each put in the price",
-    h1: "Sourcing the New Mitsubishi Pajero: What the Thailand and Australia Corridors Actually Contain",
+    h1: "Importing the New Mitsubishi Pajero: What the Thailand and Australia Corridors Actually Contain",
     seoTitle: "Pajero Sourcing: Thailand or Australia, the Dealer Read",
     description:
       "Mitsubishi builds the new Pajero in Thailand and sells it in Australia. Two corridors, 4 Australian grades, 10% GST inside the list price, and no price yet.",
@@ -1679,7 +1679,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       { id: "comparison", label: "The two corridors, side by side" },
       { id: "freight", label: "The freight risk in the numbers" },
       { id: "which-corridor", label: "Which corridor to commit to" },
-      { id: "dont-buy", label: "The case for not buying yet" },
+      { id: "dont-buy", label: "The case for not importing yet" },
     ],
     faqs: [
       {
@@ -1856,8 +1856,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   {
     slug: "range-rover-electric-uk-sourcing-export-vat",
     cta: importFromCta("united-kingdom", "the UK"),
-    title: "Sourcing the Range Rover Electric: the 20% inside a £154,070 price",
-    h1: "Sourcing the Range Rover Electric Out of the UK: What the Corridor Actually Contains",
+    title: "Importing the Range Rover Electric: the 20% inside a £154,070 price",
+    h1: "Importing the Range Rover Electric From the UK: What the Corridor Actually Contains",
     seoTitle: "Importing a Range Rover Electric from the UK",
     description:
       "The Range Rover Electric is built only at Solihull. About £25,700 of its £154,070 price is UK VAT — here is when that comes out, and when it does not.",
@@ -1906,7 +1906,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
         a: "No. The Personal Export Scheme under VAT Notice 707 lets a qualifying private individual take delivery of a new vehicle in Britain and use it before export. It needs pre-approval on form VAT410, with HMRC's VAT412 issued before the vehicle is released, and export within 12 months for an overseas visitor or six months for an entitled UK resident. Breaking the conditions makes the VAT payable and the vehicle liable to seizure.",
       },
       {
-        q: "Is there anywhere other than the UK to source a Range Rover Electric?",
+        q: "Is there anywhere other than the UK to import a Range Rover Electric from?",
         a: "Not at the point of manufacture. JLR builds every Range Rover Electric at Solihull. You can buy one through a retailer in another market, but you would be buying the same British car after that market's import duty, consumption tax and retail margin had been added, and paying freight on it a second time.",
       },
       {
@@ -1915,7 +1915,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "Should you import a Range Rover Electric into a market with little charging infrastructure?",
-        a: "No. The car's 22-minute rapid-charge claim depends on a 350 kW charger being within range of where it lives, and JLR's own frame of reference is the United Kingdom, Europe and the Tesla Supercharger network in North America. If your market cannot support DC rapid charging or a reliable home charger, buy the plug-in hybrid or combustion Range Rover instead — same plant, same corridor, a drivetrain your market can actually run.",
+        a: "No. The car's 22-minute rapid-charge claim depends on a 350 kW charger being within range of where it lives, and JLR's own frame of reference is the United Kingdom, Europe and the Tesla Supercharger network in North America. If your market cannot support DC rapid charging or a reliable home charger, import the plug-in hybrid or combustion Range Rover instead — same plant, same corridor, a drivetrain your market can actually run.",
       },
     ],
     sources: [
@@ -2645,7 +2645,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
         a: "No. Duty and VAT or GST are assessed on a value converted at your customs authority's published rate, which in most regimes is fixed for a period rather than tracking spot. A currency move changes what you pay the seller almost immediately, and reaches your duty calculation only when the customs rate next resets. Confirm the mechanism for your own destination.",
       },
       {
-        q: "Is there an FX story when sourcing from the UAE?",
+        q: "Is there an FX story when importing from the UAE?",
         a: "No. The dirham is pegged to the US dollar at 3.6725, so you cannot get a currency discount out of Dubai independent of the dollar. UAE sourcing competes on stock, specification and speed rather than on exchange rates. The same is broadly true of the Bahamian and Barbadian dollars and the Hong Kong dollar's linked band.",
       },
       {
@@ -2780,7 +2780,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     description:
       "Toyota launched the Land Cruiser FJ in Japan on 14 May 2026 at ¥4,500,100, built at Toyota Motor Thailand's Ban Pho plant. Can you import one, and at what cost?",
     excerpt:
-      "One grade, one price, one named sales market. The production line is in Rayong province and the showroom is in Japan — which is a routing question before it is a buying one.",
+      "One grade, one price, one named sales market. The production line is in Rayong province and the showroom is in Japan — which is a routing question before it is an import one.",
     category: "Releases",
     dateline: "Toyota City, Aichi",
     keywords: [
@@ -3262,7 +3262,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "Does this change anything about importing a used Land Rover from the UK?",
-        a: "No. Admissibility, VAT treatment and the NOVA and DVLA processes are unchanged. This is a corporate story rather than a regulatory one. If a specific derivative becomes hard to source out of Britain, the alternatives are a Japanese-market equivalent or a Gulf-specification car from the UAE — neither of which is a like-for-like substitute.",
+        a: "No. Admissibility, VAT treatment and the NOVA and DVLA processes are unchanged. This is a corporate story rather than a regulatory one. If a specific derivative becomes hard to import from Britain, the alternatives are a Japanese-market equivalent or a Gulf-specification car from the UAE — neither of which is a like-for-like substitute.",
       },
     ],
     sources: [
@@ -3301,7 +3301,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     cta: importFromCta("thailand", "Thailand"),
     title:
       "Changan builds right-hand drive in Rayong, and that changes your options",
-    h1: "A Chinese Manufacturer Is Building Right-Hand-Drive Cars in a Market We Buy In",
+    h1: "A Chinese Manufacturer Is Building Right-Hand-Drive Cars in a Market We Export From",
     seoTitle: "Chinese Cars Built Right-Hand Drive in Thailand",
     description:
       "Changan's Rayong plant has been building right-hand-drive cars since May 2025, with capacity rising to 200,000 by 2027. What a new RHD source corridor means.",
@@ -3349,7 +3349,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "Should a dealer stock Thai-built Chinese electric cars?",
-        a: "The buy case is specification per pound and a well-served freight route. The risk is residual, and it is not measurable yet, because these brands have no depreciation history in most of our destination markets. Settle the parts, battery service and software support questions before committing stock, not afterwards.",
+        a: "The import case is specification per pound and a well-served freight route. The risk is residual, and it is not measurable yet, because these brands have no depreciation history in most of our destination markets. Settle the parts, battery service and software support questions before committing stock, not afterwards.",
       },
       {
         q: "Does this compete with Thai-built pickups?",
@@ -3572,7 +3572,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     description:
       "Kenya assesses imported used cars on a depreciated CRSP schedule. The 2025 revision was suspended by the High Court. We could not confirm which list is live.",
     excerpt:
-      "It would be straightforward to produce a plausible Kenyan duty calculation and present it confidently. A wrong tax figure on a car someone is about to buy is worse than no figure.",
+      "It would be straightforward to produce a plausible Kenyan duty calculation and present it confidently. A wrong tax figure on a car someone is about to import is worse than no figure.",
     category: "Policy & Tax",
     dateline: "Nairobi",
     keywords: [
@@ -3800,7 +3800,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "Is the Bentley Torcal available in right-hand drive?",
-        a: "Yes. It is built at Crewe in both hands, and Bentley's UK configurator prices a right-hand-drive Torcal First Edition directly. Right-hand drive is the standard specification for the British home market rather than a special order, which is what makes the car straightforward to source for Ireland, East Africa, the Indian Ocean markets and the Caribbean.",
+        a: "Yes. It is built at Crewe in both hands, and Bentley's UK configurator prices a right-hand-drive Torcal First Edition directly. Right-hand drive is the standard specification for the British home market rather than a special order, which is what makes the car straightforward to export to Ireland, East Africa, the Indian Ocean markets and the Caribbean.",
       },
       {
         q: "When can you buy a Bentley Torcal?",
@@ -3887,7 +3887,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
         label: "What a 113 kWh battery does to the freight line",
       },
       { id: "applies", label: "Does this apply to you?" },
-      { id: "substitute", label: "When to buy something else instead" },
+      { id: "substitute", label: "When to import something else instead" },
       { id: "unknowns", label: "What we could not confirm" },
     ],
     faqs: [
@@ -3913,7 +3913,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       },
       {
         q: "Is a new Bentley Torcal easier to import than a used luxury car?",
-        a: "In several respects, yes. There is no age bar to clear, no auction grade to interpret, no mileage or service-history risk, and the documentation comes from the manufacturer rather than from a previous owner. What you give up is the price advantage of buying used, and you take on a delivery date in 2027 rather than a car that exists today.",
+        a: "In several respects, yes. There is no age bar to clear, no auction grade to interpret, no mileage or service-history risk, and the documentation comes from the manufacturer rather than from a previous owner. What you give up is the price advantage of importing used, and you take on a delivery date in 2027 rather than a car that exists today.",
       },
     ],
     sources: [

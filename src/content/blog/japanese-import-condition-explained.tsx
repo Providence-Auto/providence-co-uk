@@ -16,7 +16,7 @@ import {
 // mileage and rust. The rust section corrects a common claim (that Japan does
 // not salt its roads) from an MLIT research-institute source. Sources:
 // japanese-car-import-uk-research.md §8.1 and §10. The contextual
-// landing-page link sits at the end of "What to ask for before you buy"
+// landing-page link sits at the end of "What to ask for before you import"
 // (brand-position.md §12).
 
 export default function Body() {
@@ -89,7 +89,7 @@ export default function Body() {
         shows how to read one.
       </P>
       <P>
-        Cars bought from Japanese dealers rather than at auction do not always
+        Cars that come from Japanese dealers rather than auction do not always
         come with a sheet, which is when an independent physical inspection does
         the same job.
       </P>
@@ -166,11 +166,11 @@ export default function Body() {
         .
       </P>
 
-      <H2 id="ask-for">What to ask for before you buy a Japanese import</H2>
+      <H2 id="ask-for">What to ask for before you import a Japanese car</H2>
       <UL>
         <CheckLI>
           <Strong>The original auction sheet with a translation</Strong>, where
-          the car was bought at auction — with the auction house, lot number and
+          the car was won at auction — with the auction house, lot number and
           date visible.
         </CheckLI>
         <CheckLI>

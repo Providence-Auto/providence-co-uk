@@ -19,14 +19,14 @@ export default function Body() {
         On a used electric car, the battery is most of the value and none of it
         is visible. Two identical-looking vehicles with similar mileage can be
         worth very different money, because one has 90% of its original capacity
-        and the other has 65%. Everything else about buying a used EV is
+        and the other has 65%. Everything else about importing a used EV is
         secondary — and, unlike the battery, obvious.
       </Lead>
 
       <KeyTakeaways
         items={[
           <>
-            <Strong>State of health is the number.</Strong> Never buy a used EV
+            <Strong>State of health is the number.</Strong> Never import a used EV
             without a measured reading.
           </>,
           <>
@@ -36,7 +36,7 @@ export default function Body() {
           </>,
           <>
             <Strong>Check the charging standard</Strong> against your local
-            network before buying.
+            network before importing.
           </>,
           <>Reliable home charging changes the calculation completely.</>,
         ]}
@@ -105,7 +105,7 @@ export default function Body() {
           We will not export an electric or plug-in hybrid vehicle without a
           measured state-of-health reading, and the reading goes to you before
           payment is released. A seller who cannot or will not provide one is
-          asking you to buy the single most expensive component in the car
+          asking you to pay for the single most expensive component in the car
           unseen.
         </p>
       </Callout>
@@ -162,7 +162,7 @@ export default function Body() {
         Adapters exist but are not universally supported and not always
         sanctioned.
       </P>
-      <P>Before buying, establish three things about your own market:</P>
+      <P>Before importing, establish three things about your own market:</P>
       <UL>
         <CheckLI>
           <Strong>Which fast-charging standard</Strong> your public network
@@ -237,7 +237,7 @@ export default function Body() {
         <InlineLink href="/import-cars-from/new-zealand">
           New Zealand team
         </InlineLink>{" "}
-        is sourcing.
+        is exporting.
       </P>
 
       <Disclaimer>

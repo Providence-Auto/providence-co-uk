@@ -57,7 +57,7 @@ const STEP_TITLES = [
   "Where does your dealership import cars into?",
   "Tell us about your dealership.",
   "Who should your consultant contact?",
-  "Which cars do you want to source?",
+  "Which cars do you want to import?",
 ];
 
 /** Which step owns each server-side error key, so a rejected submit lands there. */

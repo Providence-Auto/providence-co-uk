@@ -16,7 +16,7 @@ import VoyageTrack, { type VoyageStage } from "@/components/VoyageTrack";
 // slogan. Kept to four so the row stays one line on desktop.
 const STATS = [
   { value: 40, suffix: "+", label: "Sourcing markets" },
-  { value: 7, label: "Countries we buy in" },
+  { value: 7, label: "Countries we export from" },
   // The length of DESTINATION_REGIONS in /about-us, the canonical list
   // (business-context.md §3). A Next page file cannot export it, so keep this
   // in step by hand when a destination is added.
@@ -29,7 +29,7 @@ const STATS = [
 // two pips are stated at that level. Same treatment as /about-us.
 const IMPORT_STAGES: VoyageStage[] = [
   { label: "You choose", at: 0 },
-  { label: "We source", at: 0.18 },
+  { label: "We find it", at: 0.18 },
   { label: "Inspected", at: 0.36 },
   { label: "At sea", at: 0.62 },
   { label: "At your port", at: 0.84 },
@@ -64,7 +64,7 @@ export default function B2CClient() {
             duration={1}
             className="pa-headline-gradient text-4xl md:text-8xl lg:text-12xl font-bold tracking-tighter mb-6 leading-[1.1] drop-shadow-[0_0_15px_rgba(255,255,255,1)]"
           >
-            Buy Your Dream Car
+            Import Your Dream Car
             <br /> from Any Market.
           </Reveal>
           <Reveal
@@ -75,8 +75,8 @@ export default function B2CClient() {
             duration={0.8}
             className="text-xl md:text-3xl text-zinc-600 font-medium tracking-tight mb-12 max-w-2xl drop-shadow-[0_0_10px_rgba(255,255,255,1)]"
           >
-            Wherever you live, you can now buy direct from the markets the trade
-            buys in — and keep the dealership's margin for yourself.
+            Wherever you live, you can now import direct from the markets the
+            trade imports from — and keep the dealership's margin for yourself.
           </Reveal>
           <Reveal immediate y={20} delay={0.6} duration={0.8}>
             <a
@@ -195,7 +195,7 @@ export default function B2CClient() {
             Never compromise again.
           </h2>
           <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-light">
-            We buy in seven countries and source across forty more, so we know
+            We export from seven countries and search forty more, so we know
             where your exact specification lands cheapest — and we show you the
             comparison rather than asking you to take our word for it.
           </p>
@@ -205,8 +205,8 @@ export default function B2CClient() {
           {[
             {
               icon: Compass,
-              title: "Buy Where It Is Cheapest, Today",
-              desc: "The same car has a different price in every market, and the exchange rate moves it again. We price your exact specification across all of them and show you the comparison, so you buy from the country that is cheapest the week you buy — not the one we happen to prefer.",
+              title: "Import From Where It Is Cheapest, Today",
+              desc: "The same car has a different price in every market, and the exchange rate moves it again. We price your exact specification across all of them and show you the comparison, so you import from the country that is cheapest the week you commit — not the one we happen to prefer.",
               glowColor: "group-hover:bg-blue-500/15",
             },
             {

@@ -10,7 +10,7 @@ const URL = `${SITE}${PATH}`;
 // iMessage render no preview at all. Cropped from this page's hero photograph.
 const OG_IMAGE = `${SITE}/import-cars/og/import-japanese-cars.jpg`;
 const OG_ALT =
-  "A Toyota Land Cruiser FJ62 in desert terrain — Japanese cars sourced and shipped by Providence Auto";
+  "A Toyota Land Cruiser FJ62 in desert terrain — Japanese cars exported by Providence Auto";
 
 // Models promoted on this page — kept in sync with the client grid for the
 // ItemList schema so AI search engines can enumerate our stock.
@@ -141,7 +141,7 @@ export default function ImportJapaneseCarsPage() {
   const modelListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Fast-moving Japanese models sourced by Providence Auto",
+    name: "Fast-moving Japanese models exported by Providence Auto",
     itemListElement: MODEL_NAMES.map((name, i) => ({
       "@type": "ListItem",
       position: i + 1,

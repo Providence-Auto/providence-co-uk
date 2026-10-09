@@ -142,7 +142,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "United Kingdom",
     headline:
       "India builds right-hand drive as standard, so nothing needs converting.",
-    body: "India drives on the left, which means an India-built car arrives in the specification the DVLA already expects — no conversion, no engineering sign-off, no hit to resale. There is no age limit on UK imports. We source the exact model and trim through our Indian dealer network, notify NOVA within 14 days of arrival and prepare your DVLA registration pack, with duty, VAT and freight all inside the single landed price you approve before we buy.",
+    body: "India drives on the left, which means an India-built car arrives in the specification the DVLA already expects — no conversion, no engineering sign-off, no hit to resale. There is no age limit on UK imports. We find the exact model and trim through our Indian dealer network, notify NOVA within 14 days of arrival and prepare your DVLA registration pack, with duty, VAT and freight all inside the single landed price you approve before you commit.",
     facts: [
       { icon: Gauge, label: "No import age limit" },
       { icon: Wrench, label: "Factory right-hand drive" },
@@ -160,7 +160,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Ireland",
     headline:
       "Duty, VAT and VRT priced per car — before you commit to anything.",
-    body: "An India-built car does not enter Ireland on the zero-duty terms a Japan-built one enjoys, so we never work off a rate card: we confirm the tariff that applies to your exact model and country of build, calculate your VRT and VAT alongside it, and give you one landed figure before we buy. The saving is still substantial, because India builds the same cars for a fraction of what European plants do. We prepare the declarations and the NCTS pack for your registration.",
+    body: "An India-built car does not enter Ireland on the zero-duty terms a Japan-built one enjoys, so we never work off a rate card: we confirm the tariff that applies to your exact model and country of build, calculate your VRT and VAT alongside it, and give you one landed figure before you commit. The saving is still substantial, because India builds the same cars for a fraction of what European plants do. We prepare the declarations and the NCTS pack for your registration.",
     facts: [
       { icon: Gauge, label: "Tariff confirmed for your exact model" },
       { icon: ShieldCheck, label: "VRT calculated before you commit" },
@@ -177,7 +177,7 @@ const DESTINATIONS: Destination[] = [
     label: "Sri Lanka",
     formCountry: "Sri Lanka",
     headline: "Sri Lanka already runs on India-built cars.",
-    body: "Suzuki, Toyota, Hyundai and Tata models built in India have been on Sri Lankan roads for decades, so parts, mechanics and resale value are all established before your car even lands. Vehicle taxes are the dominant part of the landed cost here and the regime changes, so we confirm the rules in force for your exact model and engine size at the time we buy — never from an old rate sheet — and quote one all-in price to Colombo.",
+    body: "Suzuki, Toyota, Hyundai and Tata models built in India have been on Sri Lankan roads for decades, so parts, mechanics and resale value are all established before your car even lands. Vehicle taxes are the dominant part of the landed cost here and the regime changes, so we confirm the rules in force for your exact model and engine size before you commit — never from an old rate sheet — and quote one all-in price to Colombo.",
     facts: [
       { icon: Wrench, label: "Factory right-hand drive" },
       { icon: ShieldCheck, label: "Current tax regime confirmed per model" },
@@ -194,7 +194,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Kenya",
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
-    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection. India-built cars satisfy the drive-side requirement by default, and we handle the rest: age-compliant stock sourced through our Indian dealer network, the pre-export inspection booked before the car ships, and delivery at Mombasa with every duty inside the quote you already approved.",
+    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection. India-built cars satisfy the drive-side requirement by default, and we arrange the rest: age-compliant stock exported through our Indian dealer network, the pre-export inspection booked before the car ships, and delivery at Mombasa with every duty inside the quote you already approved.",
     facts: [
       { icon: Gauge, label: "8-year age rule — compliant stock only" },
       { icon: Wrench, label: "Factory right-hand drive" },
@@ -230,9 +230,9 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Uganda",
     headline:
       "Uganda is landlocked, so we support clearance at Mombasa and run overland to Kampala.",
-    body: "Your car lands at Mombasa and travels overland to Kampala under a bonded transit we arrange — one quote, one team, no handoffs at the border. Uganda's 15-year age ban and environmental levy make a newer India-built car the sensible buy, and that is exactly what our dealer network supplies, with URA taxes included in the single price you approve up front.",
+    body: "Your car lands at Mombasa and travels overland to Kampala under a bonded transit we arrange — one quote, one team, no handoffs at the border. Uganda's 15-year age ban and environmental levy make a newer India-built car the sensible choice, and that is exactly what our dealer network supplies, with URA taxes included in the single price you approve up front.",
     facts: [
-      { icon: Gauge, label: "15-year rule — compliant stock sourced" },
+      { icon: Gauge, label: "15-year rule — compliant stock exported" },
       { icon: ShieldCheck, label: "URA taxes in your up-front quote" },
       { icon: Wrench, label: "Factory right-hand drive" },
       { icon: Anchor, label: "Bonded transit Mombasa → Kampala" },
@@ -248,13 +248,13 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Mauritius",
     headline:
       "Mauritius taxes by engine size — which is exactly how India builds.",
-    body: "Mauritian excise duty is set in bands by engine capacity, so the compact, efficient engines India specialises in land in the lower brackets rather than the punitive ones — and that saving stacks on top of the lower factory price. Second-hand imports are permit-controlled and age-restricted, so we confirm the conditions in force with the authorities before we buy rather than working off an old rate sheet, then quote one landed price into Port Louis with excise, VAT and clearance already inside it.",
+    body: "Mauritian excise duty is set in bands by engine capacity, so the compact, efficient engines India specialises in land in the lower brackets rather than the punitive ones — and that saving stacks on top of the lower factory price. Second-hand imports are permit-controlled and age-restricted, so we confirm the conditions in force with the authorities before you commit rather than working off an old rate sheet, then quote one landed price into Port Louis with excise, VAT and clearance already inside it.",
     facts: [
       { icon: Gauge, label: "Excise banded by engine capacity" },
       { icon: Wrench, label: "Factory right-hand drive" },
       {
         icon: ShieldCheck,
-        label: "Import permit rules confirmed before we buy",
+        label: "Import permit rules confirmed before you commit",
       },
       { icon: Anchor, label: "Clearance support at Port Louis" },
     ],
@@ -269,10 +269,10 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Seychelles",
     headline:
       "Seychelles all but closes the door on used imports — a new India-built car walks straight through.",
-    body: "Second-hand vehicles enter Seychelles only under narrow concessions — chiefly returning residents and graduates, and only for very recent cars — so for most buyers a new car is the realistic route. That suits an India-built order precisely: we buy new through our dealer network in your exact model, trim and colour, and price duty, levies and clearance into Port Victoria inside the single figure you approve before we commit. Right-hand drive is standard, so nothing needs converting.",
+    body: "Second-hand vehicles enter Seychelles only under narrow concessions — chiefly returning residents and graduates, and only for very recent cars — so for most buyers a new car is the realistic route. That suits an India-built order precisely: we order new through our dealer network in your exact model, trim and colour, and price duty, levies and clearance into Port Victoria inside the single figure you approve before we commit. Right-hand drive is standard, so nothing needs converting.",
     facts: [
       { icon: ShieldCheck, label: "Used-import concessions checked for you" },
-      { icon: Boxes, label: "Bought new, to your specification" },
+      { icon: Boxes, label: "Ordered new, to your specification" },
       { icon: Wrench, label: "Factory right-hand drive" },
       { icon: Anchor, label: "Clearance support at Port Victoria" },
     ],
@@ -287,7 +287,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Trinidad and Tobago",
     headline:
       "Trinidad widened its used-car age limit to eight years — the range India builds in.",
-    body: "A 2025 revision of the Foreign Used Car Policy raised the permissible age of imported private cars from three years to eight, and light diesel commercials to ten, which puts most of our India-built stock comfortably inside the rule. Used right-hand-drive vehicles still need an import licence, and quota rules govern dealer volume, so we confirm the licence and the age rule in force at the time we buy — then land the car at Port of Spain with tariff, VAT and charges inside the quote you already approved.",
+    body: "A 2025 revision of the Foreign Used Car Policy raised the permissible age of imported private cars from three years to eight, and light diesel commercials to ten, which puts most of our India-built stock comfortably inside the rule. Used right-hand-drive vehicles still need an import licence, and quota rules govern dealer volume, so we confirm the licence and the age rule in force before you commit — then land the car at Port of Spain with tariff, VAT and charges inside the quote you already approved.",
     facts: [
       { icon: Gauge, label: "Eight-year age rule for private cars" },
       { icon: ShieldCheck, label: "Import licence arranged before shipping" },
@@ -305,7 +305,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Jamaica",
     headline:
       "Jamaica caps motor cars at six years, and wants the licence first.",
-    body: "The Trade Board import licence has to be in hand before the car ships, motor cars and station wagons must be no more than six years old, and every used import needs a pre-shipment inspection certificate from the country of export. All three are ours to handle: age-compliant stock sourced through our Indian dealer network, the inspection booked in India before loading, and clearance into Kingston supported by our team, with duty and GCT already inside the price you approved.",
+    body: "The Trade Board import licence has to be in hand before the car ships, motor cars and station wagons must be no more than six years old, and every used import needs a pre-shipment inspection certificate from the country of export. All three are ours to handle: age-compliant stock exported through our Indian dealer network, the inspection booked in India before loading, and clearance into Kingston supported by our team, with duty and GCT already inside the price you approved.",
     facts: [
       { icon: Gauge, label: "Six-year rule for motor cars" },
       { icon: ShieldCheck, label: "Trade Board licence arranged first" },
@@ -323,7 +323,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Grenada",
     headline:
       "In Grenada the environmental levy climbs with age, so the newer car is the cheaper car.",
-    body: "Grenada admits right-hand-drive imports and charges the CARICOM common external tariff and VAT alongside an environmental levy that steps up sharply once a vehicle is a few years old — which is why a newer India-built car routinely lands cheaper than an older one bought for less. An age ceiling applies as well, so we confirm the rules in force with Grenada Customs before we buy and quote one landed figure into St George's with every charge inside it.",
+    body: "Grenada admits right-hand-drive imports and charges the CARICOM common external tariff and VAT alongside an environmental levy that steps up sharply once a vehicle is a few years old — which is why a newer India-built car routinely lands cheaper than an older one with a lower price tag. An age ceiling applies as well, so we confirm the rules in force with Grenada Customs before you commit and quote one landed figure into St George's with every charge inside it.",
     facts: [
       { icon: Gauge, label: "Environmental levy rises with vehicle age" },
       { icon: ShieldCheck, label: "Current rules confirmed with Customs" },
@@ -340,7 +340,7 @@ const DESTINATIONS: Destination[] = [
     label: "Other",
     formCountry: null,
     headline: "We ship India-built cars to right-hand-drive markets worldwide.",
-    body: "Beyond our core markets we ship to right-hand-drive countries across Africa, South Asia, the Caribbean and the Pacific — and India builds for most of them already. Every destination gets the same treatment: the specification confirmed before we buy, your country's rules checked before you commit, and one all-in landed price. Tell us your country in the form and we will come back with the exact rules, route and cost.",
+    body: "Beyond our core markets we ship to right-hand-drive countries across Africa, South Asia, the Caribbean and the Pacific — and India builds for most of them already. Every destination gets the same treatment: the specification confirmed before we order, your country's rules checked before you commit, and one all-in landed price. Tell us your country in the form and we will come back with the exact rules, route and cost.",
     facts: [
       { icon: Globe2, label: "RHD markets worldwide" },
       { icon: ShieldCheck, label: "Local rules confirmed before you pay" },
@@ -483,8 +483,8 @@ export default function IndianCarsLanding() {
       {/* ── DESTINATION PANEL ────────────────────────── */}
       <DestinationPanel
         destination={destination}
-        emptyHeadline="Buy India-built cars at source — inspected before your money moves, quoted as one landed price."
-        emptyBody="Providence Auto buys direct from India's dealer and export network — the same plants that build for Suzuki, Hyundai, Kia, Toyota, Tata and Mahindra — at prices no forecourt in your country can match. You tell us the model and specification you want. We source it, inspect it before it ships, and quote one landed price that already includes the car, freight, marine insurance, duty and every local tax that applies at your destination. Choose your destination above and we will show you exactly how the rules, taxes and route work for your country."
+        emptyHeadline="Import India-built cars direct from source — inspected before your money moves, quoted as one landed price."
+        emptyBody="Providence Auto exports direct through India's dealer and export network — the same plants that build for Suzuki, Hyundai, Kia, Toyota, Tata and Mahindra — at prices no forecourt in your country can match. You tell us the model and specification you want. We find it, inspect it before it ships, and quote one landed price that already includes the car, freight, marine insurance, duty and every local tax that applies at your destination. Choose your destination above and we will show you exactly how the rules, taxes and route work for your country."
       />
 
       {/* ── BRAND CARDS ──────────────────────────────── */}
@@ -557,7 +557,7 @@ export default function IndianCarsLanding() {
               >
                 Tell us what you're after
               </a>{" "}
-              — if it's built in India, we'll source it.
+              — if it's built in India, we'll export it.
             </p>
           </Reveal>
         </div>
@@ -571,7 +571,7 @@ export default function IndianCarsLanding() {
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
             title="Indian-Manufactured Cars"
-            subtitle="India-built cars sourced through our dealer network, safety-inspected before export, and shipped to your port — each sourced to your exact specification."
+            subtitle="India-built cars exported through our dealer network, safety-inspected before export, and shipped to your port — each found to your exact specification."
           />
         </div>
       </div>
@@ -762,7 +762,7 @@ export default function IndianCarsLanding() {
           <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
             Your car,{" "}
             <span className="text-black font-medium">built in India</span> —
-            we'll source the exact spec through our dealer network and come back
+            we'll find the exact spec through our dealer network and come back
             with a full landed-cost quote before you commit.
           </p>
         </Reveal>

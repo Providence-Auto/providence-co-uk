@@ -156,7 +156,7 @@ export default function Body() {
       <H2 id="worked-example">A real landed-cost example</H2>
       <P>
         Here&rsquo;s what one of the cheapest options actually looks like on
-        paper — a 3-year-old Japanese hybrid bought at auction:
+        paper — a 3-year-old Japanese hybrid won at auction:
       </P>
       <CostTable
         title="Japan-built hybrid (e.g. Toyota Aqua)"

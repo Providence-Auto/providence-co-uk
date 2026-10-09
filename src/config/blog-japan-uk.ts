@@ -157,7 +157,7 @@ export const JAPAN_UK_POSTS: BlogPost[] = [
       { id: "vat", label: "VAT, and the value it is charged on" },
       { id: "exchange-rate", label: "The exchange rate HMRC uses" },
       { id: "reliefs", label: "Reliefs: classics, movers and businesses" },
-      { id: "before-you-buy", label: "What to ask before you buy" },
+      { id: "before-you-buy", label: "What to ask before you import" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
@@ -519,7 +519,7 @@ export const JAPAN_UK_POSTS: BlogPost[] = [
       { id: "spectrum", label: "Shared models and Japan-only models" },
       { id: "what-differs", label: "What differs on a shared model" },
       { id: "japan-only", label: "Keeping a Japan-only car running" },
-      { id: "check", label: "How to check before you buy" },
+      { id: "check", label: "How to check before you import" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
@@ -529,7 +529,7 @@ export const JAPAN_UK_POSTS: BlogPost[] = [
       },
       {
         q: "Can a normal UK garage service a Japanese import?",
-        a: "For routine work on a model with a UK equivalent, usually yes, because the consumables are shared. A Japan-only model, a hybrid with Japan-specific software, or a heavily modified car is better taken to a specialist who knows it. Ask before you buy rather than after the first warning light, and keep the service history translated.",
+        a: "For routine work on a model with a UK equivalent, usually yes, because the consumables are shared. A Japan-only model, a hybrid with Japan-specific software, or a heavily modified car is better taken to a specialist who knows it. Ask before you import rather than after the first warning light, and keep the service history translated.",
       },
       {
         q: "Do parts costs affect insurance on a Japanese import?",
@@ -577,7 +577,7 @@ export const JAPAN_UK_POSTS: BlogPost[] = [
       { id: "mileage", label: "Mileage you can check" },
       { id: "rust", label: "Rust: the honest map" },
       { id: "transit", label: "What the voyage can do" },
-      { id: "ask-for", label: "What to ask for before you buy" },
+      { id: "ask-for", label: "What to ask for before you import" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
@@ -587,7 +587,7 @@ export const JAPAN_UK_POSTS: BlogPost[] = [
       },
       {
         q: "Do Japanese imports rust?",
-        a: "Less often than many cars from salted roads, but not never. A research paper from Japan's National Institute for Land and Infrastructure Management records that about 60% of Japan's land is in snowy regions where chloride de-icing salts are spread. Where the car lived matters, so look at the underbody and the auction sheet's notes before you buy.",
+        a: "Less often than many cars from salted roads, but not never. A research paper from Japan's National Institute for Land and Infrastructure Management records that about 60% of Japan's land is in snowy regions where chloride de-icing salts are spread. Where the car lived matters, so look at the underbody and the auction sheet's notes before you import.",
       },
       {
         q: "Can you check the mileage on a Japanese import?",

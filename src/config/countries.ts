@@ -107,7 +107,7 @@ const OG = (name: string) => `/source-cars/og/${name}.jpg`;
 // Japan, the PPSR in Australia…) — the standard itself never varies, so the
 // pages cannot drift into seven different promises about the same step.
 export const INSPECTION_STANDARD =
-  "Every car gets the same multi-point physical inspection from our own team, whichever country it is bought in — engine, transmission, underbody, electronics, bodywork and interior — photographed and sent to you before your payment is released. If it does not match the description you approved, it does not ship, and you are not charged.";
+  "Every car gets the same multi-point physical inspection from our own team, whichever country it is exported from — engine, transmission, underbody, electronics, bodywork and interior — photographed and sent to you before your payment is released. If it does not match the description you approved, it does not ship, and you are not charged.";
 
 /** Added to every country's export documents on the page. */
 export const SHIPPING_DOCUMENTS = [
@@ -189,7 +189,7 @@ const japan: CountryPageConfig = {
   faqs: [
     {
       q: "Will I see the auction sheet before you bid?",
-      a: "Yes. We send you the original auction sheet with an English translation and our own photographs before we bid, and we bid only up to the maximum you approve. If the car goes above it, we do not buy, and you move on to the next one.",
+      a: "Yes. We send you the original auction sheet with an English translation and our own photographs before we bid, and we bid only up to the maximum you approve. If the car goes above it, we stop bidding, and you move on to the next one.",
     },
   ],
   blogSlugs: [
@@ -226,7 +226,7 @@ const unitedKingdom: CountryPageConfig = {
   },
   hero: {
     answer:
-      "You can import a car from the UK with its history checked before you buy. Our UK team finds the car at dealers, specialist retailers or private sellers, checks its MOT, mileage and finance record, inspects it before your money moves and ships it to your port on one all-in landed price.",
+      "You can import a car from the UK with its history checked before you commit. Our UK team finds the car at dealers, specialist retailers or private sellers, checks its MOT, mileage and finance record, inspects it before your money moves and ships it to your port on one all-in landed price.",
     backgroundImage: HERO("jazz"),
     imageAlt:
       "A white Honda Jazz Crosstar parked on a London street, number plate removed",
@@ -453,7 +453,7 @@ const newZealand: CountryPageConfig = {
   faqs: [
     {
       q: "Will I get a battery report on a used EV from New Zealand?",
-      a: "Yes. Every electric or plug-in hybrid we buy in New Zealand gets a battery state-of-health test, and you receive the reading with the inspection report before your payment is released. We do not export an EV without one.",
+      a: "Yes. Every electric or plug-in hybrid we export from New Zealand gets a battery state-of-health test, and you receive the reading with the inspection report before your payment is released. We do not export an EV without one.",
     },
   ],
   blogSlugs: [
@@ -487,7 +487,7 @@ const uae: CountryPageConfig = {
   },
   hero: {
     answer:
-      "You can import a car from Dubai and the wider UAE, where most of the stock we buy is one to three years old and left-hand drive to GCC specification. Our UAE team screens each car's history, inspects it before your money moves and ships it from Jebel Ali on one landed price.",
+      "You can import a car from Dubai and the wider UAE, where most of the stock we export is one to three years old and left-hand drive to GCC specification. Our UAE team screens each car's history, inspects it before your money moves and ships it from Jebel Ali on one landed price.",
     backgroundImage: HERO("lc300"),
     imageAlt: "A white Toyota Land Cruiser 300, number plate removed",
     ogImage: OG("lc300"),
@@ -538,7 +538,7 @@ const uae: CountryPageConfig = {
   },
   faqs: [
     {
-      q: "Will you confirm a GCC-spec car suits my country before I buy?",
+      q: "Will you confirm a GCC-spec car suits my country before I commit?",
       a: "Yes. GCC specification differs from European and Japanese cars on cooling and, on some models, on emissions and lighting equipment, so we check the exact car against your country's requirements before purchase — not after it has shipped.",
     },
   ],
@@ -802,7 +802,7 @@ export function countryFaqs(c: CountryPageConfig): { q: string; a: string }[] {
   return [
     {
       q: `Can I import a car from ${c.country}?`,
-      a: `Yes. You choose the car, and our own team in ${c.country} finds it, inspects it before your money moves, clears it for export and ships it to your port. Whether it can be registered is set by your own country — its age limit, drive side and inspection rules — and we confirm those before anything is bought.`,
+      a: `Yes. You choose the car, and our own team in ${c.country} finds it, inspects it before your money moves, clears it for export and ships it to your port. Whether it can be registered is set by your own country — its age limit, drive side and inspection rules — and we confirm those before you commit.`,
     },
     {
       q: `How do I get a quote to import a car from ${c.country}?`,

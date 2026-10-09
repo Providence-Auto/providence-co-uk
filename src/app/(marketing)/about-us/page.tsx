@@ -34,7 +34,7 @@ const PATH = "/about-us";
 const URL = `${SITE}${PATH}`;
 const TITLE = "About Providence Auto | Global Vehicle Sourcing Group";
 const DESCRIPTION =
-  "A global vehicle sourcing group with our own people on the ground in seven countries and 200+ dealership clients. See how we source, verify and ship cars.";
+  "Import your dream car anywhere in the world. A vehicle sourcing and export group with our own people in seven countries and 200+ dealership clients.";
 // Cropped to the 1200×630 size link-preview crawlers (Facebook, LinkedIn,
 // X, Slack…) expect. Self-hosted so the preview can't break when a
 // third-party CDN rewrites a URL.
@@ -210,14 +210,14 @@ const AUDIENCES = [
   {
     icon: MapPin,
     title: "Direct buyers",
-    desc: "Skip the dealer markup. Source the exact spec yourself.",
+    desc: "Skip the dealer markup. Import the exact spec yourself.",
     href: "/b2c",
     cta: "For direct buyers",
   },
   {
     icon: Store,
     title: "Dealerships",
-    desc: "Sell inventory you don't hold. We source and ship on request.",
+    desc: "Sell inventory you don't hold. We export it to you on request.",
     href: "/b2b",
     cta: "For dealerships",
   },
@@ -331,7 +331,7 @@ export default function AboutUsPage() {
       alternateName: "Providence Trading Limited",
       url: `${SITE}/`,
       logo: { "@type": "ImageObject", url: `${SITE}/logo.png` },
-      description: `Providence Auto is a global vehicle sourcing and export group that buys, inspects and ships cars through its own teams on the ground in ${OFFICE_COUNTRY_NAMES.length} countries, to ${DESTINATION_COUNT} destination markets and 200+ dealership clients worldwide.`,
+      description: `Providence Auto is a global vehicle sourcing and export group that finds, inspects and exports cars through its own teams on the ground in ${OFFICE_COUNTRY_NAMES.length} countries, to ${DESTINATION_COUNT} destination markets and 200+ dealership clients worldwide.`,
       foundingLocation: "London, United Kingdom",
       areaServed: "Worldwide",
       sameAs: ["https://www.instagram.com/providenceautouk/"],
@@ -404,8 +404,8 @@ export default function AboutUsPage() {
                 <span className="text-black font-medium">
                   {OFFICE_COUNTRIES_SENTENCE}
                 </span>
-                . You choose the car; we buy it, inspect it and ship it to your
-                port, then support your clearance with the full document pack.
+                . You choose the car; we find it, inspect it and export it to
+                your port, then support your clearance with the full document pack.
               </Reveal>
 
               <Reveal
@@ -576,7 +576,7 @@ export default function AboutUsPage() {
               <p className="text-lg text-zinc-700 font-light leading-relaxed">
                 Providence Auto is a global vehicle sourcing and export group
                 serving 200+ dealership clients. Our own teams in{" "}
-                {OFFICE_COUNTRIES_SENTENCE} buy, inspect and ship cars to{" "}
+                {OFFICE_COUNTRIES_SENTENCE} find, inspect and export cars to{" "}
                 {DESTINATION_COUNT} destination markets, and support each buyer
                 through clearance at their port.
               </p>
@@ -672,7 +672,7 @@ export default function AboutUsPage() {
                 </h2>
                 <p className="text-lg text-zinc-500 font-light">
                   Providence Auto is the trading name of Providence Trading
-                  Limited. For 15+ years we've bought, inspected and shipped
+                  Limited. For 15+ years we've found, inspected and exported
                   every car ourselves — through our own people in the source
                   country, never a chain of intermediaries who never see the
                   vehicle.
@@ -691,12 +691,12 @@ export default function AboutUsPage() {
               >
                 <SectionRule />
                 <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-                  Here's how it works — you request it, we source it, it ships.
+                  Here's how it works — you request it, we export it, it ships.
                 </h2>
                 <p className="text-lg text-zinc-500 font-light">
                   Tell us the exact car — a full sourcing quote comes back in 24
-                  hours. We buy it through our own team in the source country,
-                  verify it and ship it to your port, where we support your
+                  hours. We find it through our own team in the source country,
+                  verify it and export it to your port, where we support your
                   clearance with the documents. Every import tracks the same
                   way:
                 </p>
@@ -792,7 +792,7 @@ export default function AboutUsPage() {
                   {DESTINATION_COUNT} destination markets.
                 </h2>
                 <p className="text-lg text-zinc-500 font-light">
-                  Our own teams buy in seven countries and source from many
+                  Our own teams export from seven countries and search many
                   more. Every route below is a real shipping lane — drag to spin
                   it.
                 </p>
@@ -809,7 +809,7 @@ export default function AboutUsPage() {
               <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <div>
                   <p className="text-xs font-bold tracking-[0.2em] text-sky-600 uppercase mb-4">
-                    Where we source
+                    Where we export from
                   </p>
                   <ul className="flex flex-col divide-y divide-black/5 rounded-[1.5rem] border border-black/5 bg-white overflow-hidden">
                     {SOURCE_COUNTRY_PAGES.map((c) => (
@@ -873,7 +873,7 @@ export default function AboutUsPage() {
                     ))}
                   </div>
                   <p className="mt-5 text-sm text-zinc-500 font-light">
-                    Buying a left-hand-drive luxury marque?{" "}
+                    Importing a left-hand-drive luxury marque?{" "}
                     <Link
                       href="/japanese-luxury-cars-lhd"
                       className="font-bold text-black hover:text-sky-600 transition-colors"

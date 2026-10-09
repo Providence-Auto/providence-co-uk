@@ -27,15 +27,15 @@ const FAQ_DATA = [
       },
       {
         q: "Is Providence Auto a registered and licensed business?",
-        a: "Yes. We are a registered vehicle sourcing and export group with over 15 years of trading history and our own teams across Europe, Asia, the Middle East and Oceania, operating under all applicable international trade and export regulations in every market where we buy and sell.",
+        a: "Yes. We are a registered vehicle sourcing and export group with over 15 years of trading history and our own teams across Europe, Asia, the Middle East and Oceania, operating under all applicable international trade and export regulations in every market we export from and to.",
       },
       {
         q: "Can I speak to someone in person?",
         a: "Absolutely. Our head office is in London and you're welcome to arrange a visit, and we have our own teams in Japan, the UAE, India, Thailand, Australia and New Zealand — with more markets added as our volumes grow. Wherever your car is coming from, we can jump on a video call so you can put a face to the name. We're real people, not a faceless website.",
       },
       {
-        q: "Which countries do you source vehicles from?",
-        a: "We buy directly in the seven countries where we have our own sourcing teams — the UK, Japan, the UAE, India, Thailand, Australia and New Zealand — and we source from many more markets besides. For any given specification we compare the total landed cost across every country that can supply it, then buy where it lands cheapest for you.",
+        q: "Which countries do you export vehicles from?",
+        a: "We export directly from the seven countries where we have our own sourcing teams — the UK, Japan, the UAE, India, Thailand, Australia and New Zealand — and we search many more markets besides. For any given specification we compare the total landed cost across every country that can supply it, then export from where it lands cheapest for you.",
       },
     ],
   },
@@ -44,7 +44,7 @@ const FAQ_DATA = [
     items: [
       {
         q: "How do you verify the condition of the car?",
-        a: "Every vehicle gets the same multi-point physical inspection from our own team, whichever country it is bought in — mechanical condition, bodywork, underbody, electronics, interior, service history and mileage. You receive the full report and photographs before your payment is released.",
+        a: "Every vehicle gets the same multi-point physical inspection from our own team, whichever country it is exported from — mechanical condition, bodywork, underbody, electronics, interior, service history and mileage. You receive the full report and photographs before your payment is released.",
       },
       {
         q: "Can I request additional photos or a video walkaround?",
@@ -55,8 +55,8 @@ const FAQ_DATA = [
         a: "We stand behind our sourcing. If there is a discrepancy between the documentation and the arrival condition, we work with you to resolve it. Our reputation is built on 15 years of trust.",
       },
       {
-        q: "Are the cars you source accident-free?",
-        a: "We do not buy cars with accident histories. We provide full vehicle history, including service and ownership records. We'd rather lose a sale than deliver a surprise.",
+        q: "Are the cars you export accident-free?",
+        a: "We do not export cars with accident histories. We provide full vehicle history, including service and ownership records. We'd rather lose a sale than deliver a surprise.",
       },
       {
         q: "Do the cars come with valid service history?",
@@ -69,7 +69,7 @@ const FAQ_DATA = [
     items: [
       {
         q: "How long does the whole process take?",
-        a: "Typically 1 week to source and confirm, then 3–4 weeks for transit to your destination port. We provide a specific timeline at the quote stage.",
+        a: "Typically 1 week to find and confirm, then 3–4 weeks for transit to your destination port. We provide a specific timeline at the quote stage.",
       },
       {
         q: "Do I need to handle any paperwork or customs forms?",

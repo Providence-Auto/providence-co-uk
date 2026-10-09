@@ -156,8 +156,8 @@ export default function ThailandVehicleProductionExports2026DealerRead() {
       <H3>Does this apply to you?</H3>
 
       <P>
-        If you buy Thai-built pickups or SUVs for Australia, New Zealand,
-        southern and eastern Africa or the Caribbean, yes. If you source
+        If you import Thai-built pickups or SUVs for Australia, New Zealand,
+        southern and eastern Africa or the Caribbean, yes. If you import
         exclusively from Japan or the United Kingdom, this is context rather
         than a change to your position &mdash; though a tighter Thai export book
         eventually shows up as competition for the same Japanese stock.
@@ -228,7 +228,7 @@ export default function ThailandVehicleProductionExports2026DealerRead() {
         tone="emerald"
       >
         <p>
-          We buy in both, which means we can price the same pickup out of either
+          We export from both, which means we can price the same pickup out of either
           corridor and show you the difference itemised rather than argued. Send
           us the specification and destination port:{" "}
           <InlineLink href="/request">start here</InlineLink>. Our{" "}

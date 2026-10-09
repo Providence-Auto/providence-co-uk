@@ -238,7 +238,7 @@ export default function Body() {
         <InlineLink href="/import-cars-from/japan">
           Japan sourcing page
         </InlineLink>{" "}
-        lists what our team buys most, and{" "}
+        lists what our team exports most, and{" "}
         <InlineLink href="/blog/best-cars-to-import-from-japan">
           the best cars to import from Japan
         </InlineLink>{" "}

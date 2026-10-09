@@ -53,7 +53,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Indian-manufactured cars sourced by Providence Auto",
+        alt: "Indian-manufactured cars exported by Providence Auto",
       },
     ],
   },
@@ -126,7 +126,7 @@ export default function IndianManufacturedCarsPage() {
   const brandListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Indian-manufactured car brands sourced by Providence Auto",
+    name: "Indian-manufactured car brands exported by Providence Auto",
     itemListElement: BRAND_NAMES.map((name, i) => ({
       "@type": "ListItem",
       position: i + 1,

@@ -251,7 +251,7 @@ export default function Body() {
 
       <H2 id="worked">A worked total for a Japanese import</H2>
       <P>
-        A nine-year-old Japanese car, so approval is required, bought at auction
+        A nine-year-old Japanese car, so approval is required, won at auction
         and shipped to a UK port. The purchase and freight figures below are
         placeholders to make the arithmetic legible — the fees, rates and
         statutory charges are the published ones.

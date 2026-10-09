@@ -21,7 +21,7 @@ export default function Body() {
         Importing a car to Ireland can save you thousands — or quietly cost you
         thousands — depending on three taxes, where the car was built, and which
         model you choose. This guide pulls the whole picture together: what you
-        pay, where to buy, and the cars that land cheapest in 2026.
+        pay, where to import from, and the cars that land cheapest in 2026.
       </Lead>
 
       <KeyTakeaways
@@ -72,25 +72,25 @@ export default function Body() {
         Customs duty applies to cars entering Ireland from outside the EU
         customs union — which, since Brexit, includes Great Britain. The
         decisive factor is the <Strong>country of manufacture</Strong>, not
-        where you bought the car.
+        where you imported the car from.
       </P>
       <Table
-        head={["Where the car was built / bought", "Customs duty"]}
+        head={["Where the car was built / imported from", "Customs duty"]}
         rows={[
           ["Built in Japan, with a statement of origin", "0% (EU–Japan EPA)"],
           [
             "Built in the UK, imported from GB (proof of origin)",
             "0% (EU–UK TCA)",
           ],
-          ["Built in the EU but bought in Great Britain", "10%"],
+          ["Built in the EU but imported from Great Britain", "10%"],
           ["Built elsewhere (Korea, USA…), from a non-EU country", "10%"],
           ["Imported from another EU member state", "0% (single market)"],
         ]}
       />
       <Callout title="The most expensive mistake" tone="amber">
         <p>
-          A BMW or VW bought in Britain was built in Germany — it pays the full
-          10%. A Toyota bought in Britain but built in Japan can claim 0%{" "}
+          A BMW or VW imported from Britain was built in Germany — it pays the full
+          10%. A Toyota imported from Britain but built in Japan can claim 0%{" "}
           <em>only</em> with a valid Statement of Origin. Without documentary
           proof, Revenue charges 10% by default. See{" "}
           <InlineLink href="/blog/import-car-from-japan-or-uk-to-ireland">
@@ -259,7 +259,7 @@ export default function Body() {
       </P>
       <UL>
         <CheckLI>
-          <Strong>Source</Strong> — confirm the car, its condition grade and
+          <Strong>Choose</Strong> — confirm the car, its condition grade and
           origin documents before any money moves.
         </CheckLI>
         <CheckLI>

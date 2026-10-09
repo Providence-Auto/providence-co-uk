@@ -128,7 +128,7 @@ export default function ChineseEvBrandsRecordEuropeMarketShare2026() {
           A market absorbing a quarter of a continent&rsquo;s Chinese EV supply,
           at prices unburdened by countervailing duty, is a market where those
           cars will be plentiful and cheap in the used channel three years
-          later. For anyone sourcing used EVs out of the UK, that is a supply
+          later. For anyone importing used EVs from the UK, that is a supply
           story worth watching &mdash; and a residual-value risk worth pricing.
         </p>
       </Callout>
@@ -148,7 +148,7 @@ export default function ChineseEvBrandsRecordEuropeMarketShare2026() {
         It also has a second-order consequence that matters to the import trade:
         Japanese manufacturers under pressure in Europe reallocate production
         and specification decisions, and those decisions eventually determine
-        what is available in the Japanese domestic market we buy from.
+        what is available in the Japanese domestic market we export from.
       </P>
 
       <H2 id="residuals">What it means for values, and for you</H2>
@@ -197,7 +197,7 @@ export default function ChineseEvBrandsRecordEuropeMarketShare2026() {
 
       <Callout title="Weighing up an EV import?" tone="emerald">
         <p>
-          We source EVs and hybrids from the UK, Japan, New Zealand and the UAE,
+          We export EVs and hybrids from the UK, Japan, New Zealand and the UAE,
           and we will tell you plainly when the numbers do not work. Send us the
           model you are considering and we will come back with a full landed
           cost and an honest view on the residual.{" "}
