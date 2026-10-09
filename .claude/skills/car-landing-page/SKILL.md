@@ -42,7 +42,7 @@ Fill these fields where the sources support them:
 
 **Do not invent numbers.** A missing figure is fine — leave the field out and the page simply doesn't render that row. A wrong figure is a problem: customers quote these back at us. If a source disagrees with another, prefer the manufacturer and note the discrepancy in `notes`.
 
-**Never state a price you haven't sourced.** `pricing` is a landed/CIF matrix per country and drives the "From £X" badge. If pricing isn't confirmed (which is normal for an upcoming car), omit `pricing` entirely rather than estimating.
+**Never mention a price unless the request gives one.** A car landing page carries no price — no figure, no range, no "from", no manufacturer RRP/MSRP, not even one the manufacturer has confirmed — **unless the request itself supplies a specific price or a price range**. That covers every field that renders: `notes` (the page description), `valuePoints`, grade `summary`/`highlights`, `customData`, and the per-grade and dossier `pricing` matrix (which drives the "From £X" badge). Finding a price in your research is not permission to print it; leave `pricing` out and keep the figure out of the copy. When the request does give a price or range, use exactly what was given — don't convert it, round it, or extend it to other grades or markets.
 
 ### Colours
 
@@ -250,7 +250,8 @@ Default to leaving the page as a Draft and telling the user it's ready for revie
 
 ## House rules
 
-- **Never invent a specification, price, tax or duty figure.** Cite or omit. This is the same standard the news desk works to — see `news-editorial-playbook.md`.
+- **Never mention a price** — no figure, range or RRP, sourced or not — unless the request gives a specific price or price range; then use only that. See Phase 1.
+- **Never invent a specification, tax or duty figure.** Cite or omit. This is the same standard the news desk works to — see `news-editorial-playbook.md`.
 - **Never present stock imagery as the actual car** without saying so in `notes`.
 - **Never publish a model that does not exist, a photo of a different model, or a plate from the wrong country** — `car-imagery-checklist.md`.
 - Colour hexes are approximations of real paint; don't describe them as exact matches.
