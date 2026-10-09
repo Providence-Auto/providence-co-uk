@@ -143,13 +143,9 @@ export default function B2CClient() {
             duration={0.7}
             className="text-center mb-12 max-w-3xl mx-auto"
           >
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-5">
-              Any market you can name, and the route to get it home.
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black text-balance">
+              Import your car from any country, shipped to your port.
             </h2>
-            <p className="text-lg text-zinc-500 font-light">
-              Every arc below is a real shipping lane we run, not a claim — drag
-              to spin it.
-            </p>
           </Reveal>
 
           <Reveal
@@ -170,8 +166,8 @@ export default function B2CClient() {
             duration={0.7}
             className="text-center mb-12 max-w-2xl mx-auto"
           >
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-5">
-              You pick the car, and you can see exactly where it is.
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black text-balance mb-5">
+              You choose the car, then track every stage until it's yours.
             </h2>
             <p className="text-lg text-zinc-500 font-light">
               Nothing is bid on until you have the inspection and the full

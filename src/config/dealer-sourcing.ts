@@ -17,18 +17,24 @@ import type { CountryCode } from "libphonenumber-js";
 
 export const DEALER_SOURCING_PATH = "/b2b-inquiry";
 
-/** The H1 names the action the page exists for. */
-export const DEALER_SOURCING_H1 = "B2B Inquiry for Dealerships";
+/**
+ * The H1 (business instruction 2026-10-10; it was "B2B Inquiry for
+ * Dealerships"). "B2B inquiry" stays in the title tag and the description,
+ * which still carry the page's keyword.
+ */
+export const DEALER_SOURCING_H1 =
+  "Automobile Importing Solutions for Dealerships";
 
 /**
  * The direct answer under the H1 — the BLUF paragraph and the likeliest AI
- * extract. 40–55 words, starts "You can" (tested). Every claim in it is
- * already on the site: the seven source countries, our own teams, the
- * inspection before payment (`INSPECTION_STANDARD`) and the landed cost shown
- * before commitment (`brand-position.md` §4, pillar 2).
+ * extract. Wording by business instruction (2026-10-10); it opens on the
+ * dealership as the subject (tested). Every claim in it is already on the
+ * site: the seven source countries plus the 100+ dealer sourcing markets
+ * (`brand-position.md` §4, pillar 1), our own teams, and the inspection before
+ * payment (`INSPECTION_STANDARD`).
  */
 export const DEALER_SOURCING_ANSWER =
-  "You can send a B2B inquiry for your dealership and import cars directly from Japan, the UK, Australia, New Zealand, Thailand, India and the UAE, shipped to your own port. Our own teams find and inspect each car before your money moves, and you see the full landed cost before you commit.";
+  "Your dealership can import cars directly from Japan, the UK, Australia, New Zealand, Thailand, India, the UAE, and many other countries, shipped to your own port. Our own teams find and inspect each car before your money moves.";
 
 /** Title tag. 58 characters — keep it under 60 (tested). */
 export const DEALER_SOURCING_TITLE =
