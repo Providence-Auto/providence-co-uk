@@ -16,7 +16,7 @@ import {
 
 // Duty and VAT on a Japanese car imported to the UK. Sources and check dates:
 // japanese-car-import-uk-research.md §3. The contextual landing-page link sits
-// at the end of "What to ask before you buy" (brand-position.md §12).
+// at the end of "What to ask before you import" (brand-position.md §12).
 
 export default function Body() {
   return (
@@ -184,7 +184,7 @@ export default function Body() {
         Japan&rsquo;s Ministry of Finance and Japan Customs repeated the point
         at an exporters&rsquo; seminar on 24 June 2026: if origin cannot be
         proved, the EPA rate may be denied. None of this makes 0% impossible on
-        a used Japanese car. It makes it a question to ask before you buy,
+        a used Japanese car. It makes it a question to ask before you import,
         rather than an assumption to discover was wrong after an HMRC letter.
       </P>
 
@@ -297,7 +297,7 @@ export default function Body() {
         .
       </P>
 
-      <H2 id="before-you-buy">What to ask before you buy a car from Japan</H2>
+      <H2 id="before-you-buy">What to ask before you import a car from Japan</H2>
       <UL>
         <CheckLI>
           <Strong>Where was this car built?</Strong> Not the brand — the

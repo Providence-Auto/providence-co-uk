@@ -37,7 +37,7 @@ export default function Body() {
             ferry shipping.
           </>,
           <>
-            The trap: <Strong>EU-built cars bought in Britain</Strong> still pay
+            The trap: <Strong>EU-built cars imported from Britain</Strong> still pay
             the full 10% duty.
           </>,
         ]}
@@ -55,10 +55,10 @@ export default function Body() {
       <H2 id="duty">Customs duty — the Brexit trap</H2>
       <P>
         Duty is decided by where the car was <Strong>built</Strong>, not where
-        you bought it:
+        you imported it from:
       </P>
       <Table
-        head={["Car", "Bought in", "Customs duty"]}
+        head={["Car", "Imported from", "Customs duty"]}
         rows={[
           ["Toyota (built in Japan)", "Japan", "0% (EPA, with origin proof)"],
           [
@@ -85,7 +85,7 @@ export default function Body() {
       />
       <Callout title="This is where money is lost" tone="amber">
         <p>
-          A German premium car bought in Britain was built in the EU, so it pays
+          A German premium car imported from Britain was built in the EU, so it pays
           the full 10% — there&rsquo;s no way around it. And any 0% claim,
           Japanese or British, needs a valid{" "}
           <Strong>Statement of Origin</Strong>; without it Revenue defaults to

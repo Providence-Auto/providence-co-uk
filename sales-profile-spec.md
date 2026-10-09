@@ -34,14 +34,14 @@ Abdallah launch content.
 ### 2.3 Expertise — "What I'm good at"
 - 4 icon cards (same visual grammar as `valueProps` in `src/config/landing-pages.ts`)
 
-### 2.4 Sourcing countries — "Where I source from"
+### 2.4 Sourcing countries — "Where I export from"
 - Card/flag grid: country, flag, one-sentence note on the member's edge in that market
 
 ### 2.5 Track-record strip (public vanity stats — manually entered, NOT live DB numbers)
 - e.g. "120+ cars delivered · 14 countries · <1 hr avg. response" — three editable stat fields
 - These are marketing claims the member maintains themselves; do not wire to live data
 
-### 2.6 Featured vehicles — "Cars I'm sourcing right now"
+### 2.6 Featured vehicles — "Cars I'm exporting right now"
 - Grid of SpecDossier cards chosen by the member from the gallery list (picker in the editor)
 - Each card links to the existing `/b2c/gallery/[id]` detail page
 - Empty state: hide the section entirely
@@ -184,7 +184,7 @@ per-lead landing-page data; the member's own page appears as **"My Profile Page"
 
 ### Hero
 - Tagline chip: `Providence Auto · Sales Consultant`
-- H1: `Your car, sourced by someone\nwho picks up the phone.`
+- H1: `Your car, exported by someone\nwho picks up the phone.`
 - Sub: `I'm Abdallah. I find, verify and land cars from Japan, India and the UK for clients who want a specialist on their side — not a ticket number.`
 - Chips: `7+ years in vehicle sourcing` ⚠️ · `English · Arabic` ⚠️ · 🇯🇵 🇮🇳 🇬🇧 🇦🇪
 - CTA 1: `Message me on WhatsApp` · CTA 2: `Start an inquiry`

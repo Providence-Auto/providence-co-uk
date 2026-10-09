@@ -239,7 +239,7 @@ export function briefHeading(
 
 export function briefBody(vehicle: string, destinationName: string): string {
   const car = vehicle.trim() || "car";
-  return `Before you buy the ${car}, you see the rules ${destinationName} sets for it — which hand it can be registered in, the age limit, the duty and the taxes — confirmed for your exact model and priced into one landed figure, so you decide on the real number. Your quote covers the car and the freight to your port of arrival, with marine cover on the voyage, the document pack prepared and clearance support at the port.`;
+  return `Before you import the ${car}, you see the rules ${destinationName} sets for it — which hand it can be registered in, the age limit, the duty and the taxes — confirmed for your exact model and priced into one landed figure, so you decide on the real number. Your quote covers the car and the freight to your port of arrival, with marine cover on the voyage, the document pack prepared and clearance support at the port.`;
 }
 
 export function DestinationBrief({

@@ -182,7 +182,7 @@ export default function BonhamsGoodwoodRevival2026AuctionPreview() {
       <H2 id="applies">Does this apply to you?</H2>
 
       <P>
-        Directly, only if you buy historic cars. Indirectly, to any dealer using
+        Directly, only if you import historic cars. Indirectly, to any dealer using
         classic values as a read on where discretionary money is going: a
         catalogue with four lots above &pound;350,000 and little underneath them
         is consistent with what the broader indices have been reporting all year
@@ -241,7 +241,7 @@ export default function BonhamsGoodwoodRevival2026AuctionPreview() {
         valuation, a result, or advice to bid.
       </Disclaimer>
 
-      <Callout title="Bought at a UK sale and need it moved?" tone="emerald">
+      <Callout title="Won at a UK sale and need it moved?" tone="emerald">
         <p>
           We handle UK export clearance, marine cover and the paperwork on
           historic vehicles as well as modern ones, and we quote one landed

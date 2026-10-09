@@ -121,7 +121,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
 
   const facts: { label: string; value: string }[] = [
     { label: "Drive side", value: config.facts.steering },
-    { label: "Where we buy", value: config.facts.buyFrom },
+    { label: "Where we export from", value: config.facts.buyFrom },
     { label: "History check", value: config.facts.historyCheck },
     { label: "Export ports", value: config.logistics.ports.join(", ") },
     { label: "Typical sea transit", value: config.logistics.transit },
@@ -131,7 +131,7 @@ export default function CountryLanding({ slug }: { slug: string }) {
   const steps: { title: string; desc: string }[] = [
     {
       title: "Tell us the car and your country",
-      desc: "Send the make, model, year and budget, and the country it is going to. We confirm that country's import rules — age limit, drive side, any pre-shipment inspection — before anything is bought.",
+      desc: "Send the make, model, year and budget, and the country it is going to. We confirm that country's import rules — age limit, drive side, any pre-shipment inspection — before you commit.",
     },
     { title: `We find it in ${country}`, desc: config.find },
     {

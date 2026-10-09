@@ -61,7 +61,7 @@ export default function Body() {
 
       <H2 id="short-answer">How importing a Japanese car to the UK works</H2>
       <P>
-        You buy the car in Japan — from a dealer, or at auction through a
+        You import the car from Japan — from a dealer, or at auction through a
         licensed member — and it is deregistered there, which produces the
         export certificate. It sails to a UK port, where a customs agent makes
         the import declaration and the duty and VAT are paid. Within 14 days
@@ -93,7 +93,7 @@ export default function Body() {
           ],
           [
             "2",
-            <Strong key="2">Buy from a dealer or at auction</Strong>,
+            <Strong key="2">Import from a dealer or at auction</Strong>,
             "Japan",
             "Ownership — auctions are trade-only, so a licensed member bids for you",
           ],
@@ -235,7 +235,7 @@ export default function Body() {
       </P>
       <P>
         The car-side costs — the purchase price, auction fees where it was
-        bought at auction, transport inside Japan, freight and marine insurance
+        won at auction, transport inside Japan, freight and marine insurance
         — are laid out in{" "}
         <InlineLink href="/blog/cost-to-import-a-car-from-japan">
           what it really costs to import a car from Japan
@@ -256,7 +256,7 @@ export default function Body() {
         Japan Customs warns that a used product only qualifies if it was
         originating when built and can be proved so, and that the manufacturer
         is not obliged to give an exporter that proof. The full mechanics, and
-        what to ask before you buy, are in{" "}
+        what to ask before you import, are in{" "}
         <InlineLink href="/blog/japanese-car-import-duty-uk">
           import duty on Japanese cars in the UK
         </InlineLink>
@@ -391,7 +391,7 @@ export default function Body() {
         head={["Route", "What it saves", "The condition"]}
         rows={[
           [
-            <Strong key="a">Buy over 10 years old</Strong>,
+            <Strong key="a">Import over 10 years old</Strong>,
             "The IVA test, its wait and its prep",
             "Age you can evidence; MOT and fog lamp still needed",
           ],

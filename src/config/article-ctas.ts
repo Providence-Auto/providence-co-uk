@@ -40,7 +40,7 @@ export const ARTICLE_CTAS = {
     href: "/import-japanese-cars/uk/personal-buyer#inquiry",
     label: "Import a Japanese car for yourself",
     heading:
-      "Buying one Japanese car for yourself? See the whole figure first.",
+      "Importing one Japanese car for yourself? See the whole figure first.",
     body: "Tell us the car you want. You see the grade, our inspection photographs and the landed figure — what you pay us to a UK port, and what you pay HMRC and the DVLA in your own name — before any money moves.",
   },
   /** /import-japanese-cars/dealership — UK dealerships buying stock. */
@@ -48,7 +48,7 @@ export const ARTICLE_CTAS = {
     href: "/import-japanese-cars/dealership#inquiry-form",
     label: "Import Japanese cars for your dealership",
     heading: "Stocking a UK forecourt from Japan? Send a dealer inquiry.",
-    body: "Name up to five cars, or just tell us to buy in Japan. Your first quote comes back within 24 hours, landed per unit to a UK port, with each car inspected by our own team before you pay for it.",
+    body: "Name up to five cars, or just tell us to find stock in Japan. Your first quote comes back within 24 hours, landed per unit to a UK port, with each car inspected by our own team before you pay for it.",
   },
   /** /import-japanese-cars — Japan to any destination. */
   japan: {
@@ -76,8 +76,8 @@ export const ARTICLE_CTAS = {
   dealer: {
     href: "/b2b-inquiry#inquiry-form",
     label: "Send a dealer inquiry",
-    heading: "Buying stock for a dealership? Send a sourcing inquiry.",
-    body: "Name up to five cars, or just the market you want to buy in. Your first quote comes back within 24 hours, landed per unit to your port.",
+    heading: "Importing stock for a dealership? Send a sourcing inquiry.",
+    body: "Name up to five cars, or just the market you want to import from. Your first quote comes back within 24 hours, landed per unit to your port.",
   },
   /** /b2c — market-neutral default for a story with no matching page. */
   neutral: {

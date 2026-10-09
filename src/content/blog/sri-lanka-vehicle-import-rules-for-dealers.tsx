@@ -18,7 +18,7 @@ export default function Body() {
     <>
       <Lead>
         Most guides to importing vehicles into Sri Lanka are written for someone
-        buying one car. A dealer has a different problem. You are not asking
+        importing one car. A dealer has a different problem. You are not asking
         whether a car can come in, you are asking how much capital it ties up,
         for how long, and what happens if it does not sell on schedule. Sri
         Lanka has written a specific answer to that last question into
@@ -98,7 +98,7 @@ export default function Body() {
       <H2 id="registration-clock">The 90-day registration clock</H2>
 
       <P>
-        This is the rule that should shape a dealer&rsquo;s buying, and it is
+        This is the rule that should shape what a dealer imports, and it is
         buried in the Imports and Exports (Control) Regulations published at
         Gazette Extraordinary No. 2421/04.
       </P>
@@ -144,9 +144,9 @@ export default function Body() {
         whether the delay was your fault.
       </P>
 
-      <Callout title="The buying rule this implies" tone="amber">
+      <Callout title="The import rule this implies" tone="amber">
         <p>
-          Do not buy stock you cannot register inside a quarter. Registering a
+          Do not import stock you cannot register inside a quarter. Registering a
           car and holding it registered is almost always cheaper than holding it
           unregistered, because the late fee accrues faster than depreciation on
           most of the models that move here. If a specification historically
@@ -211,7 +211,7 @@ export default function Body() {
       <Callout title="Where this bites" tone="sky">
         <p>
           A car manufactured in November is, by this convention, manufactured on
-          15 November. Buy it at auction three years later in early November and
+          15 November. Win it at auction three years later in early November and
           you have days, not weeks, to get a bill of lading issued. A single
           missed sailing turns an admissible car into a re-export problem. The
           year-only convention is worse: a car whose certificate shows only the
@@ -280,7 +280,7 @@ export default function Body() {
       </P>
 
       <H2 id="duty-timing">
-        Duty is a moving target, so buy on the gate not the rate
+        Duty is a moving target, so import on the gate not the rate
       </H2>
 
       <P>
@@ -384,14 +384,14 @@ export default function Body() {
 
       <P>
         Sri Lanka rewards dealers who are conservative about volume and
-        disciplined about dates, and it punishes dealers who buy on landed cost
+        disciplined about dates, and it punishes dealers who import on landed cost
         alone. The margin is not made at the auction. It is made by not owning
         an unregistered car in month five.
       </P>
 
       <Callout title="Working the Sri Lankan corridor" tone="emerald">
         <p>
-          We ship into Sri Lanka and buy at auction in Japan, the UK, the UAE,
+          We ship into Sri Lanka and export from Japan, the UK, the UAE,
           India, Thailand, Australia and New Zealand, so when one source market
           reprices we can quote the same specification out of another. If you
           want the duty, excise and registration-clock position modelled against

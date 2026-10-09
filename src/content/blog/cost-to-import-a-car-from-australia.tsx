@@ -74,7 +74,7 @@ export default function Body() {
         </CheckLI>
         <CheckLI>
           <Strong>PPSR check.</Strong> Trivial in cost and the best-value spend
-          in the entire process — it is what prevents buying a vehicle with
+          in the entire process — it is what prevents importing a vehicle with
           finance owing against it.
         </CheckLI>
         <CheckLI>
@@ -161,7 +161,7 @@ export default function Body() {
         </CheckLI>
         <CheckLI>
           <Strong>Southern and eastern Africa:</Strong> moderate to high, but
-          often still worthwhile for equipped 4x4s that are hard to source
+          often still worthwhile for equipped 4x4s that are hard to import
           locally.
         </CheckLI>
         <CheckLI>
@@ -205,10 +205,10 @@ export default function Body() {
       />
       <P>
         The inland-transport line is the distinctively Australian one, and on a
-        vehicle sourced from a remote area it can be considerably larger than
+        vehicle collected from a remote area it can be considerably larger than
         shown. The offsetting argument is in the purchase line: an
         already-equipped tourer includes equipment that would cost far more to
-        fit at destination, which is the whole case for buying here rather than
+        fit at destination, which is the whole case for importing from here rather than
         building one at home. That reasoning is developed in{" "}
         <InlineLink href="/blog/importing-a-ute-or-4x4-from-australia">
           importing a ute or 4x4 from Australia

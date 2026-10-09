@@ -153,7 +153,7 @@ export default function Body() {
           advice — and declare the essential ones.
         </CheckLI>
         <CheckLI>
-          <Strong>Get quotes before you buy</Strong>, on the exact model code,
+          <Strong>Get quotes before you import</Strong>, on the exact model code,
           so the premium is part of the decision rather than a surprise after
           it.
         </CheckLI>
@@ -188,7 +188,7 @@ export default function Body() {
         Cuvva (updated 15 August 2024) and Parkers (updated 25 March 2026) say,
         accessed on 7 October 2026, and GOV.UK&rsquo;s requirement to insure
         before driving. Naming a company is not a recommendation. Get quotes for
-        your exact car before you buy it.
+        your exact car before you import it.
       </Disclaimer>
     </>
   );

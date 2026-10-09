@@ -227,7 +227,7 @@ export default function MitsubishiPajeroRevealedSpecificationsLaunchMarkets() {
       <H2 id="applies">Does this apply to you, and is it legal to import?</H2>
 
       <P>
-        It applies to you if you buy or sell right-hand-drive SUVs. All three
+        It applies to you if you import or sell right-hand-drive SUVs. All three
         first-launch markets &mdash; Thailand, Japan and Australia &mdash; are
         right-hand drive, so the Pajero arrives in the hand most of our
         destinations register. Mitsubishi names Latin America and the Middle
@@ -440,7 +440,7 @@ export default function MitsubishiPajeroRevealedSpecificationsLaunchMarkets() {
           carries the confirmed specification and the Australian grade
           structure, so you can register interest against a grade and a
           destination rather than a general enquiry. Thailand and Australia are
-          both countries our own team buys in &mdash;{" "}
+          both countries our own team exports from &mdash;{" "}
           <InlineLink href="/request">
             tell us where the car is going
           </InlineLink>{" "}

@@ -102,9 +102,9 @@ const SECTIONS: { id: string; label: string }[] = [
   { id: "cost-summary", label: "What an import actually costs" },
   { id: "charges", label: "The four charges" },
   { id: "order", label: "How the charges stack" },
-  { id: "where-to-buy", label: "Where to buy from" },
+  { id: "where-to-buy", label: "Where to import from" },
   { id: "sweet-spot", label: "Age, mileage and condition" },
-  { id: "what-to-buy", label: "What to buy, what to avoid" },
+  { id: "what-to-buy", label: "What to import, what to avoid" },
   { id: "reliefs", label: "Reliefs you can legally claim" },
   { id: "process", label: "The process and its deadlines" },
   { id: "tools", label: "Tools" },
@@ -267,7 +267,7 @@ const SOURCE_COUNTRIES: {
     transit: "Days",
     steering: "Right-hand drive",
     verdict:
-      "Best logistics by far, but duty depends entirely on where the car was built — not where you bought it.",
+      "Best logistics by far, but duty depends entirely on where the car was built — not where you import it from.",
     strong: true,
   },
   {
@@ -327,7 +327,7 @@ const SOURCE_COUNTRIES: {
     transit: "6 – 10 weeks",
     steering: "Right-hand drive",
     verdict:
-      "Its used fleet is largely ex-Japan anyway. Buying the same car directly from Japan is cheaper and faster.",
+      "Its used fleet is largely ex-Japan anyway. Importing the same car directly from Japan is cheaper and faster.",
     strong: false,
   },
 ];
@@ -353,7 +353,7 @@ const RELIEFS: { title: string; body: string; caveat: string }[] = [
   },
   {
     title: "A valid statement of origin",
-    body: "The single biggest avoidable cost is paying 10% duty on a car that qualified for 0%. Insisting on a statement of origin before you buy converts the charge on a Japan-built or UK-built car to zero.",
+    body: "The single biggest avoidable cost is paying 10% duty on a car that qualified for 0%. Insisting on a statement of origin before you commit converts the charge on a Japan-built or UK-built car to zero.",
     caveat:
       "On a €20,000 landed value that is €2,000 of duty, plus the knock-on VAT — because VAT is charged on the duty too.",
   },
@@ -387,7 +387,7 @@ const BUY: { title: string; body: string }[] = [
     body: "Suzuki Swift, Mazda 2 and Mazda 3. Cheap at auction, low emissions, and strong Irish resale because they are familiar models rather than grey-import curiosities.",
   },
   {
-    title: "UK-built models, bought in Britain",
+    title: "UK-built models, imported from Britain",
     body: "MINI hatch and Cooper (Oxford), Nissan Qashqai, Juke and Leaf (Sunderland), Toyota Corolla (Burnaston), older Honda Civic (Swindon). These are the cars that actually earn the 0% TCA rate on a ferry-length journey.",
   },
   {
@@ -402,7 +402,7 @@ const AVOID: { title: string; body: string }[] = [
     body: "The worst combination on the board: a 35–41% VRT band and the heaviest NOx levy, which is capped at €4,850 for diesels rather than €600 for petrol.",
   },
   {
-    title: "German premium brands bought in Great Britain",
+    title: "German premium brands imported from Great Britain",
     body: "A BMW, Audi, Mercedes or VW sold in Britain was almost certainly built in the EU. EU-origin cars in use in the UK do not qualify for the TCA rate, so they pay the full 10% duty — and 23% VAT on top of it.",
   },
   {
@@ -425,7 +425,7 @@ const PROCESS: { title: string; body: string }[] = [
     body: "Get the seller to state where the car was built and to supply a statement of origin. Without one, Revenue defaults to 10% duty even on a car that genuinely qualified for zero.",
   },
   {
-    title: "Buy, ship and clear customs",
+    title: "Ship and clear customs",
     body: "Customs duty and import VAT are settled at the point of entry, on the CIF value — the cost of the car plus insurance plus freight.",
   },
   {
@@ -465,7 +465,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "What is OMSP and why does it matter more than what I paid?",
-    a: "OMSP is the Open Market Selling Price — Revenue's own estimate of what the car would sell for at Irish retail. VRT is charged on the OMSP, not on the price you paid abroad, so buying cheaply abroad does not reduce your VRT. Revenue derives it from the price when new, depreciated by age against model-specific tables and adjusted for month of registration, condition and mileage.",
+    a: "OMSP is the Open Market Selling Price — Revenue's own estimate of what the car would sell for at Irish retail. VRT is charged on the OMSP, not on the price you paid abroad, so a low purchase price abroad does not reduce your VRT. Revenue derives it from the price when new, depreciated by age against model-specific tables and adjusted for month of registration, condition and mileage.",
   },
   {
     q: "What is the NOx levy and how much is it?",
@@ -528,7 +528,7 @@ const TOOLS: {
   {
     href: "/import-cars-from/japan",
     title: "Our source-country network",
-    body: "The seven countries where we have our own teams and buy directly. Each page covers what that market is genuinely good for.",
+    body: "The seven countries where we have our own teams and export directly. Each page covers what that market is genuinely good for.",
     icon: Globe2,
   },
   {
@@ -540,7 +540,7 @@ const TOOLS: {
   {
     href: "/request",
     title: "Request a specific car",
-    body: "Tell us the model and specification you want. We compare the total landed cost across every market that can supply it, then buy where it lands cheapest.",
+    body: "Tell us the model and specification you want. We compare the total landed cost across every market that can supply it, then export from where it lands cheapest.",
     icon: CheckCircle2,
   },
   {
@@ -1179,8 +1179,8 @@ export default function ImportCarsToIrelandPage() {
                   VRT = OMSP × CO₂ rate (7% – 41%) &nbsp;+&nbsp; NOx levy
                 </p>
                 <p>
-                  Because it is a percentage of Irish retail value, buying
-                  cheaply abroad does not reduce your VRT. Choosing a lower-CO₂
+                  Because it is a percentage of Irish retail value, a low
+                  purchase price abroad does not reduce your VRT. Choosing a lower-CO₂
                   car does — and it is the single biggest lever on the page.
                 </p>
               </div>
@@ -1390,7 +1390,7 @@ export default function ImportCarsToIrelandPage() {
                 <>
                   Because each charge compounds on the last, that €1,545 duty
                   bill really costs about <strong>€1,900</strong> once the VAT
-                  charged on top of it is counted. Proving origin before you buy
+                  charged on top of it is counted. Proving origin before you commit
                   is worth more than anything you will win haggling over the
                   purchase price.
                 </>
@@ -1403,7 +1403,7 @@ export default function ImportCarsToIrelandPage() {
             <SectionHeading
               id="where-to-buy"
               index="04"
-              title="Where to buy from"
+              title="Where to import from"
               standfirst="Four factors decide a source market: customs treatment, shipping cost and time, steering side, and whether the stock you want actually exists there."
             />
 
@@ -1512,9 +1512,9 @@ export default function ImportCarsToIrelandPage() {
               point={
                 <>
                   The right market depends on the car, not the other way round.
-                  We buy directly in seven countries and compare the{" "}
+                  We export directly from seven countries and compare the{" "}
                   <strong>total landed cost across every one</strong> that can
-                  supply your specification — then buy where it lands cheapest,
+                  supply your specification — then export from where it lands cheapest,
                   which is not always where you expected.
                 </>
               }
@@ -1598,7 +1598,7 @@ export default function ImportCarsToIrelandPage() {
                   <strong>Three to eight years old, average mileage</strong>{" "}
                   beats both the newer car and the lower-mileage one — OMSP, the
                   VAT trap and the NEDC conversion all turn against you outside
-                  that band. Tell us the model and we will source inside it.
+                  that band. Tell us the model and we will find one inside it.
                 </>
               }
             />
@@ -1609,7 +1609,7 @@ export default function ImportCarsToIrelandPage() {
             <SectionHeading
               id="what-to-buy"
               index="06"
-              title="What to buy, what to avoid"
+              title="What to import, what to avoid"
               standfirst="The ideal import qualifies for 0% duty, sits low in the CO₂ table, produces little NOx, is right-hand drive, and has a real price gap between the source market and Irish retail. Very few cars tick all five."
             />
 
@@ -1658,7 +1658,7 @@ export default function ImportCarsToIrelandPage() {
             <p className="mt-8 text-sm text-zinc-600 leading-relaxed max-w-3xl">
               These are starting points, not verdicts. Whether a specific car
               works depends on its exact CO₂ figure, its OMSP and what you can
-              buy it for —{" "}
+              get it for at source —{" "}
               <Link
                 href="/ireland-cost-calculator"
                 className="font-semibold text-[#4da8da] hover:underline"
@@ -1734,7 +1734,7 @@ export default function ImportCarsToIrelandPage() {
               id="process"
               index="08"
               title="The process and its deadlines"
-              standfirst="Two deadlines carry penalties, and both start from the day the car arrives in the State — not from the day you bought it."
+              standfirst="Two deadlines carry penalties, and both start from the day the car arrives in the State — not from the day you paid for it."
             />
 
             <ol className="space-y-4">
@@ -1769,7 +1769,7 @@ export default function ImportCarsToIrelandPage() {
               point={
                 <>
                   Both deadlines start the day the car lands, not the day you
-                  buy it. We prepare the customs declaration, calculate your VRT
+                  pay for it. We prepare the customs declaration, calculate your VRT
                   and assemble the NCTS pack before the car arrives, so{" "}
                   <strong>
                     the 30-day clock starts with your paperwork already done
@@ -1939,7 +1939,7 @@ export default function ImportCarsToIrelandPage() {
               <p className="text-base md:text-lg text-zinc-600 font-light leading-relaxed">
                 Give us the make, model and rough specification you are after
                 and we will come back with the full landed cost — purchase
-                price, shipping, duty, VAT, VRT and NOx — sourced from whichever
+                price, shipping, duty, VAT, VRT and NOx — exported from whichever
                 of our seven source countries lands it cheapest. No cost, and no
                 obligation to proceed.
               </p>

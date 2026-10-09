@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `page-types.md` — **settle this one first.** Is the page *informational* (how something works in the world, for the reader's benefit — `/blog`, `/latest-news`), a *landing page* (what something is in the context of Providence Auto, selling one service into the funnel — most of the rest), or a *tool* (it computes an answer from the reader's own input — `/ireland-cost-calculator`)? The answer changes where the facts must come from and what may be written without asking. An informational page is fact-checked like journalism; a landing page carries **no section that was not asked for**; a tool answers to both — sourced rates with the working shown, and an ask-first conversion path.
 - `business-context.md` — the central source of truth for the business itself (identity, the presence/source/destination geography split, the customs-clearance and CNF-delivery boundaries, values, offers). It also indexes every other standing doc.
-- `brand-position.md` — the position: Providence gives you **direct access** to the world's auctions plus the tools, documentation and people to use it. **You buy the car; we make it possible.** Not a concierge, not "we handle everything".
-- `writing-angle.md` — how to phrase it: the customer is the subject of the sentence. Bans "so you don't have to", "we handle everything", "hassle-free", blanket "door-to-door".
+- `brand-position.md` — the position: Providence gives you **direct access** to the world's auctions plus the tools, documentation and people to use it. **You import the car; we make it possible.** Not a concierge, not "we handle everything".
+- `writing-angle.md` — how to phrase it: the customer is the subject of the sentence. Bans "so you don't have to", "we handle everything", "hassle-free", blanket "door-to-door". **The customer imports and we export** (§10, decided 2026-10-09): never *buy*/*sell* for those two acts, and *source* as a verb becomes *import* (the reader) or *export* (us); the noun stays.
 
 These are about *what the site should say*; this file is about *how the site is built*.
 
@@ -182,6 +182,12 @@ The rules:
 This governs every marketing page, campaign page, car page, blog post and news
 article written from now on, not just the page where it was introduced.
 
+**A two-tone heading is allowed** (decided 2026-10-09): one heading, one
+sentence, the second clause set in muted ink (`zinc-400` on white) —
+"You choose the exact car, *and see the landed figure first.*" It is still
+one heading with no eyebrow, so every rule above applies to it. Never on the
+`/import-cars-from` keyword H1s. See `landing-page-playbook.md` recipe R1.
+
 ### Secondary CTAs: one style, and always below the primary
 
 A page has **one primary CTA** — the thing it exists to drive. On editorial
@@ -230,6 +236,8 @@ This is additive to, not a replacement for, the per-content-type rules above —
 ### Landing pages: one keyword, one simple template
 
 **First, the process gate — `page-types.md` §3.** Nothing goes on a landing page by default. When a landing page is requested: research the SEO for the exact phrase first, come back with **the content sections needed to rank for it**, and ask your questions **before** writing any claim or any passage of prose. General copy about what Providence offers or handles is allowed on a landing page **only when the business asks for it on that page** — never reached for to fill a section. The section list below is the *agreed outcome* of that process for the `/import-cars-from` country pages, not a default to apply to the next page.
+
+**When proposing sections, draw them from `landing-page-playbook.md`** — the pattern library (hero diagram, audience tabs, the tools demonstrated, the landed-quote structure, the five steps, the form), the copy constructions, the motion tokens and the build recipes, from a teardown of surge.cloud. It ranks below every source-of-truth document and is never a default section list.
 
 Every landing page is built for **the phrase a buyer types**, and nothing
 else. The keyword goes in the URL slug, the title tag, the H1, the first

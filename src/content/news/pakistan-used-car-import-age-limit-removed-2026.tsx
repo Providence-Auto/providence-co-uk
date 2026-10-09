@@ -64,7 +64,7 @@ export default function PakistanUsedCarImportAgeLimitRemoved2026() {
         entirely through personal channels &mdash; the baggage, gift and
         transfer-of-residence schemes, which require an individual overseas
         Pakistani to stand behind each unit. A commercial dealer could not
-        simply buy a container of stock and clear it in the company&rsquo;s
+        simply import a container of stock and clear it in the company&rsquo;s
         name.
       </P>
 
@@ -201,7 +201,7 @@ export default function PakistanUsedCarImportAgeLimitRemoved2026() {
         On a ten-unit container that is a US$10,000 swing on one line of the
         bill. It is real money, and it is also the smaller half of the story
         &mdash; the age cap is the change that alters what you are allowed to
-        buy at all.
+        import at all.
       </P>
 
       <H2 id="applies">Does this apply to you?</H2>
@@ -241,7 +241,7 @@ export default function PakistanUsedCarImportAgeLimitRemoved2026() {
 
       <P>
         Removing an age cap changes the shape of what a Pakistani dealer can
-        buy, not just how much of it. A five-year limit confines you to the
+        import, not just how much of it. A five-year limit confines you to the
         newest and most expensive end of the Japanese auction halls. Without it,
         the seven-to-ten-year band opens &mdash; which is where the volume, and
         most of the value, has always been.
@@ -293,7 +293,7 @@ export default function PakistanUsedCarImportAgeLimitRemoved2026() {
         For a dealer, the argument for moving is that regulatory duty is on a
         published downward path, which means every year you wait, the same car
         lands cheaper. The argument against waiting is that the cars themselves
-        do not stand still: a 2019 unit bought in 2029 is a ten-year-old car
+        do not stand still: a 2019 unit imported in 2029 is a ten-year-old car
         being taxed at zero regulatory duty and sold into a market that has had
         four more years of legal commercial supply arriving.
       </P>
@@ -308,7 +308,7 @@ export default function PakistanUsedCarImportAgeLimitRemoved2026() {
       <UL>
         <CheckLI>
           <Strong>The age cap is the change worth acting on.</Strong> It widens
-          your buying band immediately, and unlike the duty taper it is not
+          your import band immediately, and unlike the duty taper it is not
           scheduled to widen further.
         </CheckLI>
         <CheckLI>
@@ -356,14 +356,14 @@ export default function PakistanUsedCarImportAgeLimitRemoved2026() {
         tone="emerald"
       >
         <p>
-          We buy at auction in Japan every week and quote one landed figure
+          We export from Japanese auctions every week and quote one landed figure
           before you commit anything. If you want a specific grade, year band
           and volume priced against what is actually running through the halls
           this month,{" "}
           <InlineLink href="/request">send us the specification</InlineLink> and
           we will build the number. Our{" "}
           <InlineLink href="/blog/how-to-buy-a-car-at-japanese-auction">
-            guide to buying at Japanese auction
+            guide to importing from a Japanese auction
           </InlineLink>{" "}
           explains how the bidding actually works.
         </p>

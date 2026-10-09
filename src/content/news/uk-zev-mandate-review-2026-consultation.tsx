@@ -246,9 +246,9 @@ export default function UkZevMandateReview2026Consultation() {
         different.
       </P>
 
-      <Callout title="Sourcing from the UK?" tone="emerald">
+      <Callout title="Importing from the UK?" tone="emerald">
         <p>
-          We buy from UK auctions and trade sources every week and handle export
+          We export from UK dealers and trade sources every week and handle export
           documentation, shipping and destination registration. The{" "}
           <InlineLink href="/blog/how-to-import-a-car-from-the-uk">
             UK import guide

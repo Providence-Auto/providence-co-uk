@@ -136,8 +136,8 @@ export default function Body() {
           certificate stating CO₂, and a Japanese-market car&rsquo;s first
           registration was in Japan. Whether the DVLA then applies the bands or
           the general rate is not covered by any guidance it publishes. If you
-          are buying a young car whose IVA certificate will carry a CO₂ figure,
-          ask the DVLA before you buy.
+          are importing a young car whose IVA certificate will carry a CO₂ figure,
+          ask the DVLA before you import.
         </p>
       </Callout>
       <P>
@@ -210,7 +210,7 @@ export default function Body() {
         manufacturer&rsquo;s homologation department stating the Euro standard,
         or a manufacturer certificate of conformity. Japanese-market cars often
         have neither, so if the car will be driven in London, find out whether
-        that evidence exists before you buy. Other English cities run their own
+        that evidence exists before you import. Other English cities run their own
         clean air zones with their own rules.
       </P>
       <UL>
@@ -238,7 +238,7 @@ export default function Body() {
         (Schedule 1), GOV.UK&rsquo;s vehicle tax rates and historic vehicles
         guidance, the MOT inspection manual, the Road Vehicles (Construction and
         Use) Regulations 1986 and Transport for London. Rates change each April.
-        Confirm the rate for your car with the DVLA before you buy:{" "}
+        Confirm the rate for your car with the DVLA before you import:{" "}
         <a
           href="https://www.gov.uk/vehicle-tax-rate-tables"
           target="_blank"

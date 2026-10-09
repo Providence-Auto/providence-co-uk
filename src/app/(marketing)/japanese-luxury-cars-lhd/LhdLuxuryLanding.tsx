@@ -267,7 +267,7 @@ export default function LhdLuxuryLanding() {
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
             title="Japanese Luxury LHD Cars"
-            subtitle="Genuine factory left-hand drive luxury cars sourced from Japan and ready to commission — each sourced to your exact specification."
+            subtitle="Genuine factory left-hand drive luxury cars exported from Japan and ready to commission — each found to your exact specification."
           />
         </div>
       </div>
@@ -357,7 +357,7 @@ export default function LhdLuxuryLanding() {
           <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
             Your dream in{" "}
             <span className="text-black font-medium">left-hand drive</span> —
-            we'll source the exact spec from Japan and come back with a full
+            we'll find the exact spec in Japan and come back with a full
             landed-cost quote before you commit.
           </p>
         </Reveal>

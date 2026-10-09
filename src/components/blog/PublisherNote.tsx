@@ -30,7 +30,7 @@ export default function PublisherNote({
   return (
     <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-zinc-500 font-light">
       <span>
-        Published by Providence Auto: our own teams buy and ship cars from{" "}
+        Published by Providence Auto: our own teams export cars from{" "}
         {WORDS[count] ?? count} countries.
       </span>
       <Link

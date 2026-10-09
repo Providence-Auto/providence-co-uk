@@ -142,7 +142,7 @@ export default function JapanUkLanding({
                 className="inline-flex items-center justify-center gap-2 px-8 py-5 text-lg font-medium text-black bg-white/80 backdrop-blur border border-black/10 rounded-full hover:bg-black hover:text-white transition-colors"
               >
                 <Store size={18} />
-                Buying for a dealership
+                Importing for a dealership
               </Link>
             ) : (
               <a
@@ -180,7 +180,7 @@ export default function JapanUkLanding({
                     Import a Japanese car for yourself
                   </h3>
                   <p className="mt-3 text-zinc-600 font-light leading-relaxed flex-1">
-                    One car, bought at the price a dealer pays in Japan, graded
+                    One car, imported at the price a dealer pays in Japan, graded
                     4.0 or above and inspected before your money moves.
                   </p>
                   <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-black group-hover:text-sky-600 transition-colors">
@@ -529,7 +529,7 @@ export default function JapanUkLanding({
           </p>
           {variant === "main" && (
             <p className="mt-4 text-base text-zinc-500 font-light">
-              Buying stock for a dealership?{" "}
+              Importing stock for a dealership?{" "}
               <Link
                 href={`${JAPAN_UK_PATHS.dealer}#inquiry-form`}
                 className="font-medium text-black underline decoration-black/20 underline-offset-4 hover:decoration-black"

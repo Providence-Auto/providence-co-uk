@@ -43,7 +43,7 @@ export default function ToyotaLandCruiserFjJapanPriceThailandBuilt() {
           <>
             Production is at the{" "}
             <Strong>Ban Pho plant, Toyota Motor Thailand</Strong> &mdash; a
-            Japanese-market Land Cruiser assembled in a source market we buy in.
+            Japanese-market Land Cruiser assembled in a source market we export from.
           </>,
           <>
             At <Strong>4,575 mm long</Strong> on a 2,580 mm wheelbase, this is a
@@ -289,7 +289,7 @@ export default function ToyotaLandCruiserFjJapanPriceThailandBuilt() {
         tone="emerald"
       >
         <p>
-          We buy in both markets, inspect before your money moves, and quote one
+          We export from both markets, inspect before your money moves, and quote one
           landed figure to your port. Send us the grade, the colour and the
           destination and we will build the number:{" "}
           <InlineLink href="/request">start here</InlineLink>. Our{" "}

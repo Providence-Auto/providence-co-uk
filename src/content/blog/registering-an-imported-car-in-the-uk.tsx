@@ -371,7 +371,7 @@ export default function Body() {
       </P>
 
       <P>
-        When you are ready to buy, you can{" "}
+        When you are ready, you can{" "}
         <InlineLink href="/import-japanese-cars/uk">
           import a Japanese car to the UK
         </InlineLink>{" "}

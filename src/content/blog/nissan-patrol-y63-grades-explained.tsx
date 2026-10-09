@@ -36,7 +36,7 @@ export default function Body() {
           </>,
           <>
             <Strong>The Ti already has the off-road hardware.</Strong> Paying up
-            the ladder buys comfort, screens and suspension sophistication, not
+            the ladder adds comfort, screens and suspension sophistication, not
             capability.
           </>,
           <>
@@ -133,7 +133,7 @@ export default function Body() {
         14.3-inch displays with a head-up display and 12-speaker Klipsch audio.
         The Ti-L Reserve adds two 12.8-inch screens for the second row. These
         are the features that photograph well and the ones a used buyer values
-        least three years later, which is worth knowing if you are buying for
+        least three years later, which is worth knowing if you are importing for
         resale rather than for yourself.
       </P>
 
@@ -229,7 +229,7 @@ export default function Body() {
       </P>
 
       <P>
-        The practical rule is the same as for any import: buy against a chassis
+        The practical rule is the same as for any import: import against a chassis
         number and a specification document, not against a grade name. Two cars
         badged Ti-L in two markets are not necessarily the same car. The wider
         process is in our guide to{" "}

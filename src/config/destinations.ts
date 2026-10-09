@@ -168,7 +168,7 @@ const unitedKingdom: DestinationConfig = {
   focusList: true,
   base: {
     headline: "The United Kingdom sets no age limit on an imported car.",
-    body: "Nothing about a car's age closes the door here, so the whole of the market you are buying from is open to you. You get the duty and VAT position confirmed for your exact car before you commit, the NOVA notification and the DVLA registration file prepared within the fourteen days the notification allows, and — where the car needs an IVA test before it can go on the road — you know that before you buy rather than after it lands.",
+    body: "Nothing about a car's age closes the door here, so the whole of the market you are importing from is open to you. You get the duty and VAT position confirmed for your exact car before you commit, the NOVA notification and the DVLA registration file prepared within the fourteen days the notification allows, and — where the car needs an IVA test before it can go on the road — you know that before you commit rather than after it lands.",
     facts: [
       { icon: Gauge, label: "No import age limit" },
       { icon: FileCheck2, label: "NOVA and DVLA file prepared for you" },
@@ -180,7 +180,7 @@ const unitedKingdom: DestinationConfig = {
     india: {
       headline:
         "India builds right-hand drive as standard, so nothing needs converting for the UK.",
-      body: "India drives on the left, which means an India-built car arrives in the specification the DVLA already expects — no conversion, no engineering sign-off, no hit to resale. There is no age limit on UK imports, and duty, VAT and freight sit inside the single landed figure you approve before anything is bought.",
+      body: "India drives on the left, which means an India-built car arrives in the specification the DVLA already expects — no conversion, no engineering sign-off, no hit to resale. There is no age limit on UK imports, and duty, VAT and freight sit inside the single landed figure you approve before you commit.",
       facts: [
         { icon: Gauge, label: "No import age limit" },
         { icon: Wrench, label: "Factory right-hand drive" },
@@ -236,7 +236,7 @@ const ireland: DestinationConfig = {
     india: {
       headline:
         "An India-built car does not enter Ireland duty-free, so the tariff is confirmed per car.",
-      body: "An India-built car does not enter Ireland on the zero-duty terms a Japan-built one enjoys, so nothing is worked off a rate card: the tariff that applies to your exact model and country of build is confirmed, the VRT and VAT are calculated alongside it, and you get one landed figure before anything is bought. The entry and the payments are still made in your name, because Revenue charges the registered owner.",
+      body: "An India-built car does not enter Ireland on the zero-duty terms a Japan-built one enjoys, so nothing is worked off a rate card: the tariff that applies to your exact model and country of build is confirmed, the VRT and VAT are calculated alongside it, and you get one landed figure before you commit. The entry and the payments are still made in your name, because Revenue charges the registered owner.",
       facts: [
         { icon: Gauge, label: "Tariff confirmed for your exact model" },
         { icon: ShieldCheck, label: "VRT calculated before you commit" },
@@ -271,7 +271,7 @@ const kenya: DestinationConfig = {
   base: {
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
-    body: "Kenya's rules are strict — under eight years old, right-hand drive, and a mandatory pre-export roadworthiness inspection — and that is precisely why buying at source pays. You see age-compliant stock only, the inspection is booked before the car ships, and every duty sits inside the quote you approve. The car is quoted to Mombasa, with clearance support at the port.",
+    body: "Kenya's rules are strict — under eight years old, right-hand drive, and a mandatory pre-export roadworthiness inspection — and that is precisely why importing direct from source pays. You see age-compliant stock only, the inspection is booked before the car ships, and every duty sits inside the quote you approve. The car is quoted to Mombasa, with clearance support at the port.",
     facts: [
       { icon: Gauge, label: "Eight-year age rule — compliant stock only" },
       { icon: ShieldCheck, label: "Pre-export inspection arranged" },
@@ -318,7 +318,7 @@ const uganda: DestinationConfig = {
   base: {
     headline:
       "Uganda is landlocked, so your car clears at Mombasa and runs overland to Kampala.",
-    body: "The car lands at Mombasa and travels to Kampala under a bonded transit we arrange — one quote, one team, no handoff at the border. Uganda's fifteen-year age ban and environmental levy make a newer car the sensible buy, and that is what gets sourced, with URA taxes inside the single price you approve up front.",
+    body: "The car lands at Mombasa and travels to Kampala under a bonded transit we arrange — one quote, one team, no handoff at the border. Uganda's fifteen-year age ban and environmental levy make a newer car the sensible choice, and that is what gets exported, with URA taxes inside the single price you approve up front.",
     facts: [
       { icon: Gauge, label: "Fifteen-year age rule" },
       { icon: ShieldCheck, label: "URA taxes in your up-front quote" },
@@ -342,12 +342,12 @@ const mauritius: DestinationConfig = {
   base: {
     headline:
       "Mauritius taxes by engine size, so the smaller engine lands in the cheaper band.",
-    body: "Mauritian excise duty is set in bands by engine capacity, so a compact, efficient engine lands in a lower bracket rather than a punitive one. Second-hand imports are permit-controlled and age-restricted, so the conditions in force are confirmed with the authorities before anything is bought rather than read off an old rate sheet — then quoted as one landed figure into Port Louis, with excise, VAT and clearance support already inside it.",
+    body: "Mauritian excise duty is set in bands by engine capacity, so a compact, efficient engine lands in a lower bracket rather than a punitive one. Second-hand imports are permit-controlled and age-restricted, so the conditions in force are confirmed with the authorities before you commit rather than read off an old rate sheet — then quoted as one landed figure into Port Louis, with excise, VAT and clearance support already inside it.",
     facts: [
       { icon: Gauge, label: "Excise banded by engine capacity" },
       {
         icon: ShieldCheck,
-        label: "Import permit rules confirmed before we buy",
+        label: "Import permit rules confirmed before you commit",
       },
       RHD_REQUIRED,
       { icon: Anchor, label: "Clearance support at Port Louis" },
@@ -369,10 +369,10 @@ const seychelles: DestinationConfig = {
   base: {
     headline:
       "Seychelles admits second-hand imports only under narrow concessions.",
-    body: "Used vehicles enter Seychelles under limited concessions — chiefly returning residents and graduates, and only for very recent cars — so whether you qualify decides the route, and it is checked with the authorities before anything is bought rather than after. Either way you get duty, levies and clearance support into Port Victoria priced into the single figure you approve up front.",
+    body: "Used vehicles enter Seychelles under limited concessions — chiefly returning residents and graduates, and only for very recent cars — so whether you qualify decides the route, and it is checked with the authorities before you commit rather than after. Either way you get duty, levies and clearance support into Port Victoria priced into the single figure you approve up front.",
     facts: [
       { icon: ShieldCheck, label: "Used-import concessions checked for you" },
-      { icon: Boxes, label: "Bought to your exact specification" },
+      { icon: Boxes, label: "Exported to your exact specification" },
       RHD_REQUIRED,
       { icon: Anchor, label: "Clearance support at Port Victoria" },
     ],
@@ -392,7 +392,7 @@ const trinidadAndTobago: DestinationConfig = {
   rhdOnly: true,
   base: {
     headline: "Trinidad widened its used-car age limit to eight years.",
-    body: "A 2025 revision of the Foreign Used Car Policy raised the permissible age of imported private cars from three years to eight, and light diesel commercials to ten, which puts most of the stock we source comfortably inside the rule. Used right-hand-drive vehicles still need an import licence, and quota rules govern dealer volume — so the licence and the age rule in force are confirmed at the time we buy, and the car is landed at Port of Spain with tariff, VAT and charges inside the quote you already approved.",
+    body: "A 2025 revision of the Foreign Used Car Policy raised the permissible age of imported private cars from three years to eight, and light diesel commercials to ten, which puts most of the stock we export comfortably inside the rule. Used right-hand-drive vehicles still need an import licence, and quota rules govern dealer volume — so the licence and the age rule in force are confirmed before you commit, and the car is landed at Port of Spain with tariff, VAT and charges inside the quote you already approved.",
     facts: [
       { icon: Gauge, label: "Eight-year age rule for private cars" },
       { icon: ShieldCheck, label: "Import licence arranged before shipping" },
@@ -440,7 +440,7 @@ const grenada: DestinationConfig = {
   base: {
     headline:
       "In Grenada the environmental levy climbs with age, so the newer car is the cheaper car.",
-    body: "Grenada admits right-hand-drive imports and charges the CARICOM common external tariff and VAT alongside an environmental levy that steps up sharply once a vehicle is a few years old — which is why a newer car routinely lands cheaper than an older one bought for less. An age ceiling applies as well, so the rules in force are confirmed with Grenada Customs before anything is bought, and quoted as one landed figure into St George's with every charge inside it.",
+    body: "Grenada admits right-hand-drive imports and charges the CARICOM common external tariff and VAT alongside an environmental levy that steps up sharply once a vehicle is a few years old — which is why a newer car routinely lands cheaper than an older one with a lower price tag. An age ceiling applies as well, so the rules in force are confirmed with Grenada Customs before you commit, and quoted as one landed figure into St George's with every charge inside it.",
     facts: [
       { icon: Gauge, label: "Environmental levy rises with vehicle age" },
       { icon: ShieldCheck, label: "Current rules confirmed with Customs" },
@@ -462,9 +462,9 @@ const newZealand: DestinationConfig = {
   focusList: true,
   base: {
     headline: "New Zealand certifies an imported car before the plates go on.",
-    body: "Entry certification comes before registration, GST is charged once on the landed value, and a biosecurity clean happens before the car is loaded — and used vehicles carry no customs duty on top of that. The car is bought to the standard the certifier will accept and the steam clean is arranged at source, so what lands is ready to comply rather than something you then have to make compliant.",
+    body: "Entry certification comes before registration, GST is charged once on the landed value, and a biosecurity clean happens before the car is loaded — and used vehicles carry no customs duty on top of that. The car is exported to the standard the certifier will accept and the steam clean is arranged at source, so what lands is ready to comply rather than something you then have to make compliant.",
     facts: [
-      { icon: ShieldCheck, label: "Bought to entry-certification standards" },
+      { icon: ShieldCheck, label: "Exported to entry-certification standards" },
       { icon: Gauge, label: "No customs duty on used vehicles" },
       { icon: Boxes, label: "MPI biosecurity clean arranged at source" },
       { icon: Anchor, label: "Clearance support at the port of arrival" },
@@ -474,7 +474,7 @@ const newZealand: DestinationConfig = {
     japan: {
       headline:
         "New Zealand imports more used cars from Japan than from anywhere else.",
-      body: "More used cars reach New Zealand from Japan than from anywhere else, and the route is well worn: no customs duty on used vehicles, GST charged once on the landed value, a biosecurity clean before the ship, and entry certification before the plates go on. The car is bought to the standards the certifier will accept, the steam clean is arranged in Japan, and what lands is ready to comply.",
+      body: "More used cars reach New Zealand from Japan than from anywhere else, and the route is well worn: no customs duty on used vehicles, GST charged once on the landed value, a biosecurity clean before the ship, and entry certification before the plates go on. The car is exported to the standards the certifier will accept, the steam clean is arranged in Japan, and what lands is ready to comply.",
     },
   },
   guideSlugs: [],
@@ -494,7 +494,7 @@ const sriLanka: DestinationConfig = {
   rhdOnly: true,
   base: {
     headline:
-      "Sri Lanka's vehicle taxes move, so they are confirmed for your exact car at the time we buy.",
+      "Sri Lanka's vehicle taxes move, so they are confirmed for your exact car before you commit.",
     body: "Vehicle taxes are the dominant part of the landed cost in Sri Lanka and the regime changes, so the rules in force for your exact model and engine size are confirmed at the time of purchase rather than read off an old rate sheet. You get one all-in price to Colombo, with clearance support at the port and the document pack prepared before the vessel docks.",
     facts: [
       { icon: ShieldCheck, label: "Current tax regime confirmed per model" },
@@ -564,7 +564,7 @@ function listed(input: {
     focusList: false,
     base: {
       headline: `You can ship this car to ${input.name}.`,
-      body: `${input.name} drives on the ${input.drives}. Before anything is bought, the import rules in force for your exact model — the hand it has to be registered in, the age limits, the duty and the taxes — are confirmed with the authorities there and priced into a single landed figure, so what you decide on is the real number rather than a rate card. The quote covers the car and the freight to your port of arrival, with marine cover on the voyage, the document pack prepared, and clearance support at the port.`,
+      body: `${input.name} drives on the ${input.drives}. Before you commit, the import rules in force for your exact model — the hand it has to be registered in, the age limits, the duty and the taxes — are confirmed with the authorities there and priced into a single landed figure, so what you decide on is the real number rather than a rate card. The quote covers the car and the freight to your port of arrival, with marine cover on the voyage, the document pack prepared, and clearance support at the port.`,
       facts: [
         {
           icon: Wrench,

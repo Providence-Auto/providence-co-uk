@@ -26,7 +26,7 @@ export default function Body() {
         take different roads to a number plate. The eleven-year-old one goes
         straight to its MOT and the DVLA. The nine-year-old one waits for an
         inspection slot first. Nothing about the cars differs except the date on
-        their paperwork — which is why the year you buy is a decision about
+        their paperwork — which is why the year you choose is a decision about
         process and tax, not only about mileage.
       </Lead>
 
@@ -209,7 +209,7 @@ export default function Body() {
         Basic IVA, with lighter evidence, is open to personal imports — but DVSA
         defines a personal import narrowly: a car imported by someone who has
         lived in the country of export for at least 12 months and owned and used
-        the car for at least six. A UK resident buying a car in Japan normally
+        the car for at least six. A UK resident importing a car from Japan normally
         takes normal IVA. DVSA does accept a compliant Japanese export
         certificate as evidence for cars with up to eight passenger seats, which
         takes much of the paperwork out of it.
@@ -271,7 +271,7 @@ export default function Body() {
         DVSA dropped its old requirement that a car be registered in Japan for
         six months, but kept a timing rule in its place: an IVA application
         using the Japanese comparable-standards route must be made at least six
-        months after the car&rsquo;s first registration in Japan. A car bought
+        months after the car&rsquo;s first registration in Japan. A car imported
         within weeks of its Japanese registration can therefore arrive before it
         can be approved.
       </P>
@@ -279,7 +279,7 @@ export default function Body() {
         Road tax deserves a check on a young car too. The CO₂ bands, with their
         first-year rates, apply only where a car is registered on a certificate
         stating a CO₂ figure. If a car&rsquo;s IVA certificate records one, ask
-        the DVLA which table it will apply before you buy — it publishes no
+        the DVLA which table it will apply before you import — it publishes no
         guidance on imports. How the rate is set is in{" "}
         <InlineLink href="/blog/japanese-import-road-tax-uk">
           road tax on a Japanese import
@@ -330,7 +330,7 @@ export default function Body() {
           [
             "A collectors' car",
             "30+ years, original",
-            "HMRC's classification before you buy",
+            "HMRC's classification before you import",
           ],
         ]}
       />
@@ -349,7 +349,7 @@ export default function Body() {
         IVA guidance notes and its bulletin on vehicles imported from Japan, the
         MOT inspection manual, the UK Integrated Online Tariff and the Vehicle
         Excise and Registration Act 1994. They change; confirm the position for
-        your car with DVSA or the DVLA before buying, starting at{" "}
+        your car with DVSA or the DVLA before importing, starting at{" "}
         <a
           href="https://www.gov.uk/vehicle-approval"
           target="_blank"

@@ -18,8 +18,8 @@ export default function Body() {
         Let us start with the thing most articles on this subject avoid saying:{" "}
         <Strong>Australia does not make cars any more</Strong>. Ford stopped in
         2016, Holden and Toyota in 2017. Everything sold new there today is
-        imported. And Australia is still one of the best places on earth to buy
-        a 4x4 — for reasons that have nothing to do with manufacturing.
+        imported. And Australia is still one of the best places on earth to
+        import a 4x4 from — for reasons that have nothing to do with manufacturing.
       </Lead>
 
       <KeyTakeaways
@@ -119,7 +119,7 @@ export default function Body() {
         tone="emerald"
       >
         <p>
-          No Australian vehicle should be bought without a PPSR check, and it
+          No Australian vehicle should be imported without a PPSR check, and it
           should happen before the deposit rather than before the shipment. We
           run it on every car and reject anything that comes back flagged, full
           stop.

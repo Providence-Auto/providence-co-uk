@@ -24,7 +24,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         Australia is the only one of the three with a published grade structure
         &mdash; four grades across six variants, from Australian government
         approval documents. For a dealer outside those markets, Thailand and
-        Australia are the two corridors that can actually be bought today, and
+        Australia are the two corridors that can actually be imported through today, and
         they are not interchangeable. This is what each one will contain once a
         price exists, why Japan is not yet a third option, and why committing
         floor-plan before then is the wrong trade.
@@ -122,7 +122,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
 
       <P>
         Japan gets the Pajero inside the same fiscal year and is the largest of
-        the seven source markets we buy in, so the question is fair. The answer
+        the seven source markets we export from, so the question is fair. The answer
         is timing and stock. Mitsubishi has not said where inside fiscal 2026
         the Japanese launch falls, only that it follows Thailand, and a
         just-launched model has no used-auction stock behind it &mdash; which is
@@ -137,7 +137,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
 
       <P>
         Australia is a retail market for this car, not a production one, so the
-        Australian corridor buys a finished domestic unit at domestic retail.
+        Australian corridor delivers a finished domestic unit at domestic retail.
         The offsetting advantage is that Australian pricing is unusually
         legible: a manufacturer&rsquo;s list price carries{" "}
         <Strong>10% GST</Strong> inside it and excludes registration, stamp duty
@@ -331,7 +331,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         variable in the Thai corridor and not in the Australian one. It does not
         make Thailand the wrong answer. It makes lead time a thing you confirm
         per sailing rather than assume from a schedule, and it is a reason to
-        price the Australian route even if you expect to buy Thai.
+        price the Australian route even if you expect to import Thai.
       </P>
 
       <H2 id="which-corridor">Which corridor should a dealer commit to?</H2>
@@ -358,7 +358,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         <CheckLI>
           <Strong>Australia is the better first unit.</Strong> If you are
           landing one car to learn the model &mdash; the paperwork, the parts
-          position, what your market makes of it &mdash; buy the corridor with
+          position, what your market makes of it &mdash; choose the corridor with
           the fewest unknowns and take the cost penalty once.
         </CheckLI>
         <CheckLI>
@@ -375,10 +375,10 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         </CheckLI>
       </UL>
 
-      <H2 id="dont-buy">The case for not buying this yet</H2>
+      <H2 id="dont-buy">The case for not importing this yet</H2>
 
       <P>
-        We source cars for a living and we would still tell you to wait, for
+        We export cars for a living and we would still tell you to wait, for
         three reasons that have nothing to do with the car being any good.
       </P>
 
@@ -393,7 +393,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         <Strong>There is no residual history.</Strong> The Pajero nameplate was
         discontinued in overseas markets in 2021 and this is its first return in
         five years. A five-year gap means no recent depreciation curve in any of
-        our destination markets. Dealers buy on exit value, and the exit value
+        our destination markets. Dealers import on exit value, and the exit value
         here is genuinely unknown &mdash; not conservatively estimated, unknown.
       </P>
 
@@ -416,7 +416,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         . For how the two corridors work in practice beyond this model, our
         guides to{" "}
         <InlineLink href="/blog/best-pickups-to-import-from-thailand">
-          buying out of Thailand
+          importing from Thailand
         </InlineLink>{" "}
         and{" "}
         <InlineLink href="/blog/cost-to-import-a-car-from-australia">
@@ -493,7 +493,7 @@ export default function MitsubishiPajeroThailandAustraliaSourcingCorridors() {
         tone="emerald"
       >
         <p>
-          Thailand and Australia are both countries our own team buys in, so we
+          Thailand and Australia are both countries our own team exports from, so we
           can quote the same Pajero out of either and show you the two landed
           figures side by side rather than one.{" "}
           <InlineLink href="/b2c/gallery/mitsubishi-pajero-2026">

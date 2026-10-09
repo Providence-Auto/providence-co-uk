@@ -57,7 +57,7 @@ export const JAPAN_PORTS = ["Yokohama", "Nagoya", "Osaka", "Kobe", "Hakata"];
 export const JAPAN_UK_FACTS: { label: string; value: string }[] = [
   { label: "Drive side", value: "Right-hand drive, as UK roads need" },
   {
-    label: "Where we buy",
+    label: "Where we export from",
     value:
       "Dealers and auctions across Japan; auction bids only to the maximum you approve",
   },
@@ -81,7 +81,7 @@ export const JAPAN_UK_FACTS: { label: string; value: string }[] = [
 export const JAPAN_UK_STEPS: { title: string; desc: string }[] = [
   {
     title: "Tell us the car you want",
-    desc: "Make, model, year and budget. Before anything is bought, we confirm whether the car needs an IVA test and work out what the UK will charge you to import it.",
+    desc: "Make, model, year and budget. Before you commit, we confirm whether the car needs an IVA test and work out what the UK will charge you to import it.",
   },
   {
     title: "We find it in Japan",
@@ -104,7 +104,7 @@ export const JAPAN_UK_STEPS: { title: string; desc: string }[] = [
 /** What the landed figure is made of — components, never a rate. */
 export const JAPAN_UK_QUOTE: { item: string; payee: string }[] = [
   {
-    item: "The car's price in Japan, plus auction fees where it is bought at auction",
+    item: "The car's price in Japan, plus auction fees where it is won at auction",
     payee: "Paid to us",
   },
   {
@@ -209,8 +209,8 @@ const FAQ_IVA = {
 };
 
 const FAQ_DEALERS = {
-  q: "Do you only buy at Japanese auctions?",
-  a: "No. Most cars our private buyers import are bought from dealers across Japan. We also bid at the graded auctions, only up to the maximum you approve, and send you the auction sheet with an English translation before we bid. Either way, the car is graded 4.0 or above and inspected before you pay.",
+  q: "Do you only export from Japanese auctions?",
+  a: "No. Most cars our private buyers import come from dealers across Japan. We also bid at the graded auctions, only up to the maximum you approve, and send you the auction sheet with an English translation before we bid. Either way, the car is graded 4.0 or above and inspected before you pay.",
 };
 
 export const JAPAN_UK_PAGES: Record<JapanUkVariant, JapanUkPage> = {
@@ -228,7 +228,7 @@ export const JAPAN_UK_PAGES: Record<JapanUkVariant, JapanUkPage> = {
     ],
     h1: "Import Japanese cars to the UK",
     answer:
-      "You can import a Japanese car to the UK through our own team in Japan, who buy from dealers and auctions and source only cars graded 4.0 or above. You see our inspection before your money moves, and one landed figure — to a UK port, plus the UK charges — before you commit.",
+      "You can import a Japanese car to the UK through our own team in Japan, who find cars at dealers and auctions and export only cars graded 4.0 or above. You see our inspection before your money moves, and one landed figure — to a UK port, plus the UK charges — before you commit.",
     ogImage: "/import-cars/og/import-japanese-cars.jpg",
     ogAlt: "A classic Toyota Land Cruiser in a desert landscape",
     heroImage: "/import-cars/hero-land-cruiser.webp",
@@ -249,7 +249,7 @@ export const JAPAN_UK_PAGES: Record<JapanUkVariant, JapanUkPage> = {
     ],
     h1: "Import a Japanese car to the UK for yourself",
     answer:
-      "You can buy one Japanese car for yourself at the price a dealer pays in Japan. Our team there finds it at dealers and auctions, graded 4.0 or above, and inspects it before your money moves. You get one landed figure to a UK port, with the NOVA and DVLA paperwork prepared.",
+      "You can import one Japanese car for yourself at the price a dealer pays in Japan. Our team there finds it at dealers and auctions, graded 4.0 or above, and inspects it before your money moves. You get one landed figure to a UK port, with the NOVA and DVLA paperwork prepared.",
     ogImage: "/source-cars/blog/og/registering-an-imported-car-in-the-uk.jpg",
     ogAlt: "A Toyota Vellfire",
     heroImage: "/source-cars/blog/registering-an-imported-car-in-the-uk.webp",
@@ -278,7 +278,7 @@ export const JAPAN_UK_DEALER = {
   ogImage: "/source-cars/blog/og/japanese-auction-grades-explained.jpg",
   ogAlt: "A Toyota Harrier",
   facts: [
-    { label: "Where we buy", value: "Dealers and auctions across Japan" },
+    { label: "Where we export from", value: "Dealers and auctions across Japan" },
     { label: "Minimum grade", value: "4.0 and above" },
     { label: "First quote", value: "Within 24 hours of your inquiry" },
     {
@@ -297,7 +297,7 @@ export const JAPAN_UK_DEALER = {
   steps: [
     {
       title: "Send your inquiry",
-      desc: "Confirm your market, tell us about the dealership, and name up to five cars — or just ask us to buy in Japan.",
+      desc: "Confirm your market, tell us about the dealership, and name up to five cars — or just ask us to find stock in Japan.",
     },
     {
       title: "Get your first quote within 24 hours",
@@ -318,8 +318,8 @@ export const JAPAN_UK_DEALER = {
   ],
   pillars: [
     {
-      title: "Buy at source, not from a middleman's stock.",
-      body: "Dealers and auctions across Japan, bought through our own team there — never subcontracted to an exporter you never speak to.",
+      title: "Import direct from source, not from a middleman's stock.",
+      body: "Dealers and auctions across Japan, exported by our own team there — never subcontracted to an exporter you never speak to.",
     },
     {
       title: "See every car before your money moves.",
@@ -355,7 +355,7 @@ export const JAPAN_UK_DEALER = {
     },
     {
       q: "How many cars can I ask for in one inquiry?",
-      a: "Up to five cars in one inquiry, each with its own make, model, year range and budget. If you would rather we found the stock, tell us you want to buy in Japan and leave the cars blank; your consultant comes back with what is available.",
+      a: "Up to five cars in one inquiry, each with its own make, model, year range and budget. If you would rather we found the stock, tell us you want stock from Japan and leave the cars blank; your consultant comes back with what is available.",
     },
     {
       q: "Is every car inspected before my dealership pays?",

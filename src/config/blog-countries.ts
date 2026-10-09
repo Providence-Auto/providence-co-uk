@@ -73,16 +73,16 @@ function post(
 const japanPosts: BlogPost[] = [
   post({
     slug: "how-to-buy-a-car-at-japanese-auction",
-    title: "How to Buy a Car at a Japanese Auction",
-    h1: "How to Buy a Car at a Japanese Auction Without Being in the Room",
+    title: "How to Import a Car From a Japanese Auction",
+    h1: "How to Import a Car From a Japanese Auction Without Being in the Room",
     seoTitle:
-      "How to Buy a Car at a Japanese Auction (Step by Step, From Abroad)",
+      "How to Import a Car From a Japanese Auction (Step by Step)",
     description:
       "How the Japanese used-car auction system actually works, who is allowed to bid, what a proxy bid costs you, and the seven steps between choosing a car and having it loaded on a vessel.",
     excerpt:
       "You cannot bid at a Japanese auction yourself. Here is exactly how the system works, and what a good agent does on the floor that a broker cannot.",
     cluster: "Japan",
-    primaryKeyword: "how to buy a car at japanese auction",
+    primaryKeyword: "how to import a car from a japanese auction",
     keywords: [
       "how to buy a car at japanese auction",
       "japanese car auction for foreigners",
@@ -121,7 +121,7 @@ const japanPosts: BlogPost[] = [
       },
       {
         q: "What happens if I lose the bid?",
-        a: "Nothing, other than moving to the next car. A lost auction costs you no fee with us: you are quoted a landed cost for a specific vehicle at a specific maximum bid, and if the car goes above it we do not buy. The deposit position is stated in writing before bidding starts so there is no ambiguity about what happens either way.",
+        a: "Nothing, other than moving to the next car. A lost auction costs you no fee with us: you are quoted a landed cost for a specific vehicle at a specific maximum bid, and if the car goes above it we stop bidding. The deposit position is stated in writing before bidding starts so there is no ambiguity about what happens either way.",
       },
     ],
   }),
@@ -171,7 +171,7 @@ const japanPosts: BlogPost[] = [
       },
       {
         q: "Should I avoid a Grade R car?",
-        a: "Not automatically, but you need to know what was repaired. Grade R means the car has had accident repair recorded — which in Japan can mean anything from a replaced bumper skin to structural work. The panel map and inspector's notes tell you which. If you are considering one, ask for photographs of the repaired area and have it inspected in person before you buy.",
+        a: "Not automatically, but you need to know what was repaired. Grade R means the car has had accident repair recorded — which in Japan can mean anything from a replaced bumper skin to structural work. The panel map and inspector's notes tell you which. If you are considering one, ask for photographs of the repaired area and have it inspected in person before you import it.",
       },
       {
         q: "Can an auction sheet be faked?",
@@ -351,7 +351,7 @@ const ukPosts: BlogPost[] = [
     h1: "How to Import a Japanese Car From the UK: The Complete Process",
     seoTitle: "How to Import a Japanese Car From the UK (2026 Guide)",
     description:
-      "How to buy and export a Japanese car from the UK — where the stock is, how to verify its history, what permanent export involves, and how build origin decides your duty.",
+      "How to import a Japanese car from the UK — where the stock is, how to verify its history, what permanent export involves, and how build origin decides your duty.",
     excerpt:
       "Britain has the most checkable used cars in the world and one of the easiest export routes. Here is the process in order.",
     cluster: "United Kingdom",
@@ -375,7 +375,7 @@ const ukPosts: BlogPost[] = [
       "uk-car-export-documents-explained",
     ],
     toc: [
-      { id: "why-uk", label: "Why buy in the UK at all" },
+      { id: "why-uk", label: "Why import from the UK at all" },
       { id: "where-stock-is", label: "Where the stock actually is" },
       { id: "verify", label: "Verifying the car before you commit" },
       { id: "origin", label: "The origin rule that decides your duty" },
@@ -385,7 +385,7 @@ const ukPosts: BlogPost[] = [
     ],
     faqs: [
       {
-        q: "Can I buy a car in the UK if I do not live there?",
+        q: "Can I import a car from the UK if I do not live there?",
         a: "Yes. There is no residency requirement to buy a vehicle in the UK, and buying for immediate export is routine. What you cannot easily do from abroad is verify the car, handle the export notification and arrange freight — which is the practical reason overseas buyers work through a UK-based buyer rather than dealing with vendors directly.",
       },
       {
@@ -404,9 +404,9 @@ const ukPosts: BlogPost[] = [
     h1: "The Best Japanese Cars to Import From the UK (And Why Origin Matters)",
     seoTitle: "The Best Japanese Cars to Import From the UK in 2026",
     description:
-      "Which Japanese cars to buy in Britain — the UK-built Corolla, Qashqai, Juke and Leaf, the hybrids and enthusiast cars — and why build origin changes duty.",
+      "Which Japanese cars to import from Britain — the UK-built Corolla, Qashqai, Juke and Leaf, the hybrids and enthusiast cars — and why build origin changes duty.",
     excerpt:
-      "Some Japanese cars are worth buying in Britain because they were built there. Others because Britain keeps them so well.",
+      "Some Japanese cars are worth importing from Britain because they were built there. Others because Britain keeps them so well.",
     cluster: "United Kingdom",
     primaryKeyword: "best cars to import from the uk",
     keywords: [
@@ -427,7 +427,7 @@ const ukPosts: BlogPost[] = [
       "uk-car-export-documents-explained",
     ],
     toc: [
-      { id: "two-reasons", label: "Two different reasons to buy in Britain" },
+      { id: "two-reasons", label: "Two different reasons to import from Britain" },
       { id: "uk-built", label: "The Japanese cars built in Britain" },
       { id: "hybrids", label: "Toyota and Lexus hybrids" },
       { id: "enthusiast", label: "Enthusiast cars and 4x4s" },
@@ -440,7 +440,7 @@ const ukPosts: BlogPost[] = [
         a: "Toyota builds the Corolla hatchback and Touring Sports at Burnaston in Derbyshire, and Nissan builds the Qashqai, Juke and Leaf at Sunderland. Honda built the Civic, including the FK8 Type R, at Swindon until 2021. Most other Japanese models sold in Britain are built in Japan or elsewhere in Europe, and the distinction can change your duty bill.",
       },
       {
-        q: "Is a Japanese car bought in the UK treated as British for customs?",
+        q: "Is a Japanese car imported from the UK treated as British for customs?",
         a: "Only if it was built in Britain. Customs origin follows the factory, not the sale: a Burnaston-built Corolla is UK-origin, a Japan-built RAV4 bought in London is Japan-origin, and a Yaris built in France is EU-origin. We confirm the build origin from the car's own documentation before you commit, because the duty assumption is where people lose money.",
       },
       {
@@ -452,11 +452,11 @@ const ukPosts: BlogPost[] = [
   post({
     slug: "uk-car-history-checks-explained",
     title: "UK Car History Checks Explained",
-    h1: "UK Car History Checks Explained: What You Can Verify Before You Buy",
+    h1: "UK Car History Checks Explained: What You Can Verify Before You Import",
     seoTitle:
       "UK Car History Checks Explained: MOT History, Provenance and Mileage",
     description:
-      "How to verify a used Japanese car in Britain before buying it from abroad — the public MOT and mileage record, provenance checks for finance, write-offs and theft.",
+      "How to verify a used Japanese car in Britain before importing it — the public MOT and mileage record, provenance checks for finance, write-offs and theft.",
     excerpt:
       "Britain publishes more about its used cars than any market on earth. Here is how to read all of it — and what still needs human eyes.",
     cluster: "United Kingdom",
@@ -497,7 +497,7 @@ const ukPosts: BlogPost[] = [
         a: "Plot the mileage recorded at each MOT. Genuine cars produce a broadly rising line; a clocked car produces a step backwards, an implausibly flat stretch, or a sudden change of slope. Any inconsistency is a hard stop rather than a negotiating point — and it is the check we run on every UK car before purchase.",
       },
       {
-        q: "Should I buy a Category N or Category S car?",
+        q: "Should I import a Category N or Category S car?",
         a: "Only knowingly, and only at the right price. Category N means non-structural damage was recorded and Category S means structural damage was — both are legally repairable and re-registerable in the UK, but both affect value and some destination markets will not register them at all. We disclose any recorded write-off marker and check your country's position before proceeding.",
       },
     ],
@@ -712,7 +712,7 @@ const uaePosts: BlogPost[] = [
         a: "It is a different vehicle for a different buyer. The Dubai car is likely newer, higher-specification and GCC-built for heat, and is left-hand drive. The Japanese car is likely right-hand drive, cheaper, and comes with an independently graded auction sheet. For hot left-hand-drive markets Dubai usually wins; for right-hand-drive markets Japan usually does.",
       },
       {
-        q: "What should I not buy from the UAE?",
+        q: "What should I not import from the UAE?",
         a: "Right-hand-drive vehicles, since the market is left-hand drive and RHD stock is thin. Cars destined for cold-climate or emissions-strict registration, where GCC specification creates homologation problems. And anything where you need a fully independent condition grade of the kind the Japanese auction system produces — the UAE has no direct equivalent, so inspection has to do that work instead.",
       },
     ],
@@ -870,7 +870,7 @@ const uaePosts: BlogPost[] = [
       },
       {
         q: "What if there is finance outstanding on the car?",
-        a: "Then it cannot lawfully be exported until the finance is cleared and the lender's interest released, and any deregistration attempt will fail. This is a routine check rather than an exotic one: ownership and encumbrance status are verified before purchase, and a car with an unresolved finance interest is not bought.",
+        a: "Then it cannot lawfully be exported until the finance is cleared and the lender's interest released, and any deregistration attempt will fail. This is a routine check rather than an exotic one: ownership and encumbrance status are verified before purchase, and a car with an unresolved finance interest is not exported.",
       },
     ],
   }),
@@ -885,9 +885,9 @@ const indiaPosts: BlogPost[] = [
     h1: "How to Import a Car From India: The Complete Process",
     seoTitle: "How to Import a Car From India (Step-by-Step Process, 2026)",
     description:
-      "How to source and export a vehicle from India — new versus used, buying through dealer networks, pre-export safety inspection, export documentation, and which ports serve which destinations.",
+      "How to import a vehicle from India — new versus used, importing through dealer networks, pre-export safety inspection, export documentation, and which ports serve which destinations.",
     excerpt:
-      "India's price advantage is real. Capturing it depends entirely on buying through a network that can verify what it sells you.",
+      "India's price advantage is real. Capturing it depends entirely on importing through a network that can verify what it sells you.",
     cluster: "India",
     primaryKeyword: "how to import a car from india",
     keywords: [
@@ -908,9 +908,9 @@ const indiaPosts: BlogPost[] = [
       "india-car-export-documents-explained",
     ],
     toc: [
-      { id: "why-india", label: "Why buy in India" },
+      { id: "why-india", label: "Why import from India" },
       { id: "new-vs-used", label: "New or used: a real decision" },
-      { id: "network", label: "Buying through a dealer network" },
+      { id: "network", label: "Importing through a dealer network" },
       { id: "inspection", label: "Pre-export inspection" },
       { id: "documents", label: "Export documentation" },
       { id: "shipping", label: "Ports and shipping" },
@@ -919,11 +919,11 @@ const indiaPosts: BlogPost[] = [
     faqs: [
       {
         q: "Can you export new cars from India?",
-        a: "Yes, and for many buyers new is the better route. India is a manufacturing country, so buying new through the dealer network avoids the used-vehicle condition risk entirely while still capturing the price advantage. Availability of export-market variants and left-hand-drive configurations is model-specific, so it is confirmed before you commit.",
+        a: "Yes, and for many buyers new is the better route. India is a manufacturing country, so importing new through the dealer network avoids the used-vehicle condition risk entirely while still capturing the price advantage. Availability of export-market variants and left-hand-drive configurations is model-specific, so it is confirmed before you commit.",
       },
       {
         q: "Are India-built cars available in left-hand drive?",
-        a: "Many are. India produces left-hand-drive variants specifically for export markets across Africa, Latin America and the Middle East alongside right-hand-drive domestic production. Which configuration is available depends on the model and the plant, so tell us your destination and we will confirm before sourcing.",
+        a: "Many are. India produces left-hand-drive variants specifically for export markets across Africa, Latin America and the Middle East alongside right-hand-drive domestic production. Which configuration is available depends on the model and the plant, so tell us your destination and we will confirm before we order.",
       },
       {
         q: "How long does an India export take?",
@@ -1082,7 +1082,7 @@ const indiaPosts: BlogPost[] = [
         a: "The Gulf and Sri Lanka are short, cheap sailings; East and West Africa are moderate; Europe and Latin America are the expensive end. Because India's advantage is a percentage of a relatively low vehicle price, freight is a larger share of the total than it would be on a luxury import — which makes container consolidation on multi-unit orders unusually worthwhile.",
       },
       {
-        q: "Should I buy new or used from India to get the best value?",
+        q: "Should I import new or used from India to get the best value?",
         a: "For most buyers, new. India's price advantage is a manufacturing advantage, so you capture it most cleanly at the factory gate, and you avoid used-vehicle condition risk in a market where verifying an individual car's history is harder than it is in the UK or Japan. Used makes sense mainly where budget is the binding constraint.",
       },
     ],
@@ -1151,9 +1151,9 @@ const thailandPosts: BlogPost[] = [
     h1: "How to Import a Car From Thailand: The Complete Process",
     seoTitle: "How to Import a Car From Thailand (Step-by-Step Process, 2026)",
     description:
-      "How Thai vehicle export works — ordering new export-specification pickups through the dealer network, buying used through Thai auctions, accessory fitment before loading, and shipping from Laem Chabang.",
+      "How Thai vehicle export works — ordering new export-specification pickups through the dealer network, importing used through Thai auctions, accessory fitment before loading, and shipping from Laem Chabang.",
     excerpt:
-      "Thailand is where most of the world's pickups are made. Buying at the source removes every layer of margin between the plant and you.",
+      "Thailand is where most of the world's pickups are made. Importing direct from source removes every layer of margin between the plant and you.",
     cluster: "Thailand",
     primaryKeyword: "how to import a car from thailand",
     keywords: [
@@ -1185,7 +1185,7 @@ const thailandPosts: BlogPost[] = [
     faqs: [
       {
         q: "Why import a pickup from Thailand rather than locally?",
-        a: "Because Thailand is where it was built. Toyota, Isuzu, Ford, Mitsubishi, Mazda and Nissan all produce their global one-tonne pickups there and export them worldwide, so buying at source removes the distributor and dealer margins that a destination showroom adds. You also get the full range of trims and drivetrains rather than the subset your local importer chose to stock.",
+        a: "Because Thailand is where it was built. Toyota, Isuzu, Ford, Mitsubishi, Mazda and Nissan all produce their global one-tonne pickups there and export them worldwide, so importing direct from source removes the distributor and dealer margins that a destination showroom adds. You also get the full range of trims and drivetrains rather than the subset your local importer chose to stock.",
       },
       {
         q: "Can I order a brand-new vehicle from Thailand?",
@@ -1241,8 +1241,8 @@ const thailandPosts: BlogPost[] = [
         a: "The Hilux and the D-Max have the strongest reputations across the widest range of markets, and both are chosen by fleets and aid organisations for exactly that reason. The Ranger is more capable and better equipped in higher trims but more complex; the Triton and BT-50 offer the best value. Reliability at this level is more about maintenance and specification than about badge.",
       },
       {
-        q: "Should I buy 2WD or 4WD?",
-        a: "4WD if the vehicle will actually leave sealed roads, work in mud or sand, or tow on loose surfaces. 2WD is meaningfully cheaper to buy, cheaper to run and adequate for road and light-site use, and it makes up a large share of Thai production. Buying 4WD you never engage is one of the more common ways to overspend on a pickup.",
+        q: "Should I choose 2WD or 4WD?",
+        a: "4WD if the vehicle will actually leave sealed roads, work in mud or sand, or tow on loose surfaces. 2WD is meaningfully cheaper to buy, cheaper to run and adequate for road and light-site use, and it makes up a large share of Thai production. Choosing 4WD you never engage is one of the more common ways to overspend on a pickup.",
       },
       {
         q: "Are the SUV versions as tough as the pickups?",
@@ -1296,7 +1296,7 @@ const thailandPosts: BlogPost[] = [
       },
       {
         q: "Which source gives better condition verification?",
-        a: "Japan, clearly, and it is the single strongest argument for buying used from there. The auction system produces an independent inspector's grade with a panel-by-panel damage map before anyone bids. Thailand has no direct equivalent, so on used Thai stock the verification work has to be done by physical inspection instead.",
+        a: "Japan, clearly, and it is the single strongest argument for importing used from there. The auction system produces an independent inspector's grade with a panel-by-panel damage map before anyone bids. Thailand has no direct equivalent, so on used Thai stock the verification work has to be done by physical inspection instead.",
       },
       {
         q: "Which is better for a working fleet?",
@@ -1423,9 +1423,9 @@ const australiaPosts: BlogPost[] = [
     h1: "How to Import a Car From Australia: The Complete Process",
     seoTitle: "How to Import a Car From Australia (Step-by-Step Process, 2026)",
     description:
-      "How to buy and export a vehicle from Australia — where the stock is, running a PPSR provenance check, state deregistration, the biosecurity clean nobody warns you about, and shipping from five ports.",
+      "How to import a vehicle from Australia — where the stock is, running a PPSR provenance check, state deregistration, the biosecurity clean nobody warns you about, and shipping from five ports.",
     excerpt:
-      "Australia stopped making cars in 2017. It is still one of the best places on earth to buy a 4x4 — for entirely different reasons.",
+      "Australia stopped making cars in 2017. It is still one of the best places on earth to import a 4x4 from — for entirely different reasons.",
     cluster: "Australia",
     primaryKeyword: "how to import a car from australia",
     keywords: [
@@ -1457,7 +1457,7 @@ const australiaPosts: BlogPost[] = [
     faqs: [
       {
         q: "Are cars still made in Australia?",
-        a: "No. Ford ceased Australian manufacturing in 2016 and Holden and Toyota followed in 2017, ending mass vehicle production in the country. Every new car sold in Australia today is imported. The reason to source from Australia is the specification, condition and provenance record of the vehicles already there — not manufacturing.",
+        a: "No. Ford ceased Australian manufacturing in 2016 and Holden and Toyota followed in 2017, ending mass vehicle production in the country. Every new car sold in Australia today is imported. The reason to import from Australia is the specification, condition and provenance record of the vehicles already there — not manufacturing.",
       },
       {
         q: "What is a PPSR check?",
@@ -1503,16 +1503,16 @@ const australiaPosts: BlogPost[] = [
       { id: "touring", label: "Touring 4x4s, already equipped" },
       { id: "performance", label: "The cars only Australia had" },
       { id: "climate", label: "The dry-climate argument" },
-      { id: "avoid", label: "What not to buy from Australia" },
+      { id: "avoid", label: "What not to import from Australia" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
       {
         q: "Why import a 4x4 from Australia specifically?",
-        a: "Because of how Australians specify and equip them. The market buys touring 4x4s at a scale that distorts the model range and fits them from new with bull bars, snorkels, long-range tanks, dual batteries and upgraded suspension — kit that costs a fortune to add later and adds far less than that to resale value. Buying the already-equipped vehicle is usually cheaper than building one.",
+        a: "Because of how Australians specify and equip them. The market buys touring 4x4s at a scale that distorts the model range and fits them from new with bull bars, snorkels, long-range tanks, dual batteries and upgraded suspension — kit that costs a fortune to add later and adds far less than that to resale value. Importing the already-equipped vehicle is usually cheaper than building one.",
       },
       {
-        q: "Can I still buy a Holden Commodore or Ford Falcon?",
+        q: "Can I still import a Holden Commodore or Ford Falcon?",
         a: "Yes, from the used market — and Australia is the only place you can. Large rear-drive V8 saloons in HSV and FPV form were never sold in this configuration anywhere else, which is why they are becoming genuinely collectable. Condition and provenance vary widely on cars of this age, so the PPSR check and physical inspection matter more here than anywhere.",
       },
       {
@@ -1524,10 +1524,10 @@ const australiaPosts: BlogPost[] = [
   post({
     slug: "importing-a-ute-or-4x4-from-australia",
     title: "Importing a Ute or 4x4 From Australia",
-    h1: "Importing a Ute or 4x4 From Australia: What to Check Before You Buy",
+    h1: "Importing a Ute or 4x4 From Australia: What to Check Before You Import",
     seoTitle: "Importing a Ute or 4x4 From Australia: The Buyer's Checklist",
     description:
-      "A practical checklist for buying an Australian ute or touring 4x4 for export — reading fitted equipment, judging outback wear, mining-fleet stock, and whether your destination will register the modifications.",
+      "A practical checklist for importing an Australian ute or touring 4x4 — reading fitted equipment, judging outback wear, mining-fleet stock, and whether your destination will register the modifications.",
     excerpt:
       "A well-set-up Australian tourer is a bargain. A hard-worked one is a liability. Here is how to tell them apart from 10,000 miles away.",
     cluster: "Australia",
@@ -1565,7 +1565,7 @@ const australiaPosts: BlogPost[] = [
       },
       {
         q: "Will my country register a modified Australian 4x4?",
-        a: "It depends on the modification and the country, and it must be checked before purchase rather than after arrival. Bull bars, lift kits, long-range tanks and roof racks are accepted without comment in some markets and require engineering approval or removal in others. We check your destination's position on the specific vehicle before we buy it.",
+        a: "It depends on the modification and the country, and it must be checked before purchase rather than after arrival. Bull bars, lift kits, long-range tanks and roof racks are accepted without comment in some markets and require engineering approval or removal in others. We check your destination's position on the specific vehicle before we export it.",
       },
       {
         q: "How do I judge wear on a vehicle I cannot see?",
@@ -1676,7 +1676,7 @@ const australiaPosts: BlogPost[] = [
       },
       {
         q: "Do I need the PPSR certificate after purchase?",
-        a: "Keep it. It is the documentary evidence that the vehicle was free of security interests at the time of purchase, and it can matter if ownership is ever questioned at your end. We run the check before buying and include the certificate in the document set that travels with the car.",
+        a: "Keep it. It is the documentary evidence that the vehicle was free of security interests at the time of purchase, and it can matter if ownership is ever questioned at your end. We run the check before exporting and include the certificate in the document set that travels with the car.",
       },
     ],
   }),
@@ -1734,7 +1734,7 @@ const newZealandPosts: BlogPost[] = [
       },
       {
         q: "Does New Zealand restrict vehicle exports?",
-        a: "Used private vehicles can generally be exported once ownership is clear and the vehicle is deregistered. The practical constraints are on the receiving side rather than the New Zealand side — your destination's age limits, emissions standards and biosecurity requirements are what determine whether a given car is worth buying, and those are checked before purchase.",
+        a: "Used private vehicles can generally be exported once ownership is clear and the vehicle is deregistered. The practical constraints are on the receiving side rather than the New Zealand side — your destination's age limits, emissions standards and biosecurity requirements are what determine whether a given car is worth importing, and those are checked before purchase.",
       },
     ],
   }),
@@ -1772,7 +1772,7 @@ const newZealandPosts: BlogPost[] = [
       { id: "evs", label: "The used-EV pool" },
       { id: "utes", label: "NZ-new utes and wagons" },
       { id: "vans", label: "Fleet-maintained vans" },
-      { id: "avoid", label: "When to buy from Japan instead" },
+      { id: "avoid", label: "When to import from Japan instead" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
@@ -1793,13 +1793,13 @@ const newZealandPosts: BlogPost[] = [
   post({
     slug: "new-zealand-vs-japan-for-used-imports",
     title: "New Zealand vs Japan for Used Imports",
-    h1: "New Zealand vs Japan: Where Should You Buy Your Used Import?",
+    h1: "New Zealand vs Japan: Where Should You Import Your Used Car From?",
     seoTitle:
       "New Zealand vs Japan for Used Car Imports: The Honest Comparison",
     description:
       "A direct comparison of New Zealand and Japan as sources for used right-hand-drive cars — price, choice, condition verification, documentation, freight and which one suits your requirement.",
     excerpt:
-      "New Zealand's stock came from Japan in the first place. So why would you ever buy the second-hand version? There are three good answers.",
+      "New Zealand's stock came from Japan in the first place. So why would you ever import the second-hand version? There are three good answers.",
     cluster: "New Zealand",
     primaryKeyword: "new zealand vs japan car import",
     keywords: [
@@ -1831,8 +1831,8 @@ const newZealandPosts: BlogPost[] = [
     ],
     faqs: [
       {
-        q: "Is it cheaper to buy from Japan or New Zealand?",
-        a: "Japan, more often than not, because the auction system produces wholesale prices and volume is vastly larger. New Zealand's prices reflect a retail market that has already paid to import and comply the car. What you buy with the difference is verification, English documentation and a local service history.",
+        q: "Is it cheaper to import from Japan or New Zealand?",
+        a: "Japan, more often than not, because the auction system produces wholesale prices and volume is vastly larger. New Zealand's prices reflect a retail market that has already paid to import and comply the car. What the difference pays for is verification, English documentation and a local service history.",
       },
       {
         q: "Which has more choice?",
@@ -2044,7 +2044,7 @@ const sriLankaPosts: BlogPost[] = [
       { id: "engine", label: "Engine capacity bands" },
       { id: "drivetrain", label: "Drivetrain treatment" },
       { id: "age", label: "Age and depreciation" },
-      { id: "modelling", label: "How we model it before you buy" },
+      { id: "modelling", label: "How we model it before you commit" },
       { id: "faqs", label: "FAQs" },
     ],
     faqs: [
@@ -2213,8 +2213,8 @@ const sriLankaPosts: BlogPost[] = [
         a: "Tax structure first, fuel prices second. Duty and excise treatment has historically favoured small-capacity hybrid vehicles, which pushed buyers decisively toward the Toyota Aqua, Prius and Axio and the Honda Fit and Vezel. Fuel costs and congested urban driving reinforced it, and the resulting volume created deep local parts availability that keeps the cycle going.",
       },
       {
-        q: "How do I check a used hybrid battery before buying?",
-        a: "Have it tested, not described. A hybrid battery diagnostic reads individual module voltages and can show imbalance long before a warning light appears, which is the difference between a car that needs nothing and one that needs a pack. Any hybrid we source is tested at origin and the result is included in the report you see before payment is released.",
+        q: "How do I check a used hybrid battery before importing?",
+        a: "Have it tested, not described. A hybrid battery diagnostic reads individual module voltages and can show imbalance long before a warning light appears, which is the difference between a car that needs nothing and one that needs a pack. Any hybrid we export is tested at origin and the result is included in the report you see before payment is released.",
       },
       {
         q: "Is a used electric car a good idea in Sri Lanka?",
@@ -2266,7 +2266,7 @@ const sriLankaPosts: BlogPost[] = [
       { id: "age-rule", label: "How age is measured" },
       { id: "lc-discipline", label: "Letter of credit discipline" },
       { id: "re-export", label: "The re-export penalty" },
-      { id: "duty-timing", label: "Buy on the gate, not the rate" },
+      { id: "duty-timing", label: "Import on the gate, not the rate" },
       { id: "checklist", label: "The pre-purchase checklist" },
       { id: "faqs", label: "FAQs" },
     ],

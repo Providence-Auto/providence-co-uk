@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 const PATH = "/b2b";
 const TITLE = "Dealer Car Sourcing — Inventory On Demand from 40+ Markets";
 const DESCRIPTION =
-  "Source stock direct from the auctions and trade channels of 40+ markets, with our own teams in seven countries. Tell us the spec; it ships to your port with the full document pack.";
+  "Import stock direct from 40+ markets, exported to your port by our own teams in seven countries. Import your dream car anywhere in the world.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

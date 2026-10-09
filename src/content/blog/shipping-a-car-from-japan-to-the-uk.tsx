@@ -128,7 +128,7 @@ export default function Body() {
           GOV.UK words the exemption as a car &ldquo;first registered or
           manufactured more than 10 years ago&rdquo; without saying on which day
           that is measured, so a car that only crosses the line during the
-          voyage is a gamble. If the plan depends on skipping the IVA, buy a car
+          voyage is a gamble. If the plan depends on skipping the IVA, import a car
           that is already clear of the line on its export certificate.
         </p>
       </Callout>

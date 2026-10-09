@@ -55,7 +55,7 @@ export default function Body() {
         ]}
       />
 
-      <H2 id="which-patrol">Which Patrol are you actually buying?</H2>
+      <H2 id="which-patrol">Which Patrol are you actually importing?</H2>
 
       <P>
         Three generations are in active circulation, and they are different
@@ -86,8 +86,8 @@ export default function Body() {
 
       <P>
         The mistake that costs money here is assuming the badge describes the
-        car. A Y63 bought in the Gulf and a Y63 bought in Australia can differ
-        in engine, cooling, equipment and even seat count. Always buy against a
+        car. A Y63 imported from the Gulf and a Y63 imported from Australia can
+        differ in engine, cooling, equipment and even seat count. Always import against a
         chassis number and a specification document, never against a brochure.
       </P>
 
@@ -181,7 +181,7 @@ export default function Body() {
       <P>
         Two things about this stack catch importers out repeatedly. The first is
         that in several markets the tax base is the authority&rsquo;s own
-        assessed value rather than your invoice, so buying cheaply does not
+        assessed value rather than your invoice, so a low purchase price does not
         reduce the tax proportionally. The second is that duty and tax are
         converted at your customs authority&rsquo;s published rate, which is
         usually fixed for a period rather than tracking the rate on your banking
@@ -253,7 +253,7 @@ export default function Body() {
         winches are common on Australian cars in particular, and every one of
         them is a registration question in the destination market. Some are
         accepted, some require engineering certification, and some must be
-        removed before shipment. Establish which before you buy, not after the
+        removed before shipment. Establish which before you import, not after the
         car lands &mdash; our guide to{" "}
         <InlineLink href="/blog/importing-a-ute-or-4x4-from-australia">
           importing a ute or 4x4 from Australia

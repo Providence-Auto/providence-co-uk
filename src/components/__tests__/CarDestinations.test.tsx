@@ -176,7 +176,7 @@ describe("DestinationBrief", () => {
     expect(briefHeading("", "Ireland")).toBe(
       "Import this car to Ireland with less friction.",
     );
-    expect(briefBody("", "Ireland")).toContain("Before you buy the car,");
+    expect(briefBody("", "Ireland")).toContain("Before you import the car,");
   });
 
   it("keeps the market's own facts, origin overrides included", () => {

@@ -20,7 +20,7 @@ export default function Body() {
         buyers and a middling one for everybody else, and the reason is simple
         geography. If you are in Ireland or mainland Europe, the freight leg is
         measured in hours. If you are in East Africa, it is measured in weeks.
-        Here is the whole bill for a Japanese car bought in Britain, and where
+        Here is the whole bill for a Japanese car imported from Britain, and where
         the line falls.
       </Lead>
 

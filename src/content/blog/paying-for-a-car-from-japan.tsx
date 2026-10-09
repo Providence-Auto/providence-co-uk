@@ -104,10 +104,10 @@ export default function Body() {
         <CheckLI>
           <Strong>A deposit, often.</Strong> Many exporters ask for one before
           bidding or reserving a car. Get in writing what happens to it if the
-          car is not bought.
+          car does not go through.
         </CheckLI>
         <CheckLI>
-          <Strong>The balance, once the car is bought</Strong> — ideally after
+          <Strong>The balance, once the car is secured</Strong> — ideally after
           you have seen its inspection and photographs.
         </CheckLI>
         <CheckLI>

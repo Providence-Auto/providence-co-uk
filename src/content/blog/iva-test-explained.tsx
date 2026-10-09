@@ -21,7 +21,7 @@ export default function Body() {
         A car with no approval attached to it is, as far as the DVLA is
         concerned, not a car yet. Individual Vehicle Approval is the inspection
         that turns an imported vehicle into a registrable one — and knowing
-        before you buy whether your car needs it, and which version of it, is
+        before you import whether your car needs it, and which version of it, is
         worth more than any other single piece of information in a UK import.
       </Lead>
 
@@ -177,7 +177,7 @@ export default function Body() {
       <P>
         Everything else. A more detailed inspection, extra standards to meet,
         and documentary evidence you have to supply rather than simply present
-        the car. A right-hand-drive Japanese import bought as trade stock rather
+        the car. A right-hand-drive Japanese import brought in as trade stock rather
         than as a personal import is the common case: it is not left-hand drive,
         not a personal import, and not any of the other basic categories, so it
         goes through the normal route.
