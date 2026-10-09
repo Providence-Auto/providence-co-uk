@@ -18,7 +18,7 @@ const PATH = "/blog";
 const TITLE =
   "Car Import Guides — Japan, the UK, the UAE, India, Thailand & More";
 const DESCRIPTION =
-  "Practical guides to importing a car from every country we source in — how each market works, what the paperwork proves, what it really costs to land, and the questions dealers and direct buyers ask us most.";
+  "Practical guides to importing a car from every country we export from — how each market works, what the paperwork proves, what it really costs to land, and the questions dealers and direct buyers ask us most.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -123,7 +123,7 @@ export default function BlogIndexPage() {
             duration={0.6}
             className="text-xl text-zinc-500 font-light max-w-2xl mx-auto"
           >
-            Clear, current guides to every country we source from — how each
+            Clear, current guides to every country we export from — how each
             market actually works, what the documents prove, what a car really
             costs to land, and where buyers get caught out.
           </Reveal>

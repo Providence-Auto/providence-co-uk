@@ -295,7 +295,7 @@ export default function NewZealandCleanCarStandard2026UsedImportCharges() {
         tone="emerald"
       >
         <p>
-          We buy in Japanese auction halls every week, inspect before your money
+          We export from Japanese auction halls every week, inspect before your money
           moves, and quote one landed figure to your port. Send us the model,
           grade and year band:{" "}
           <InlineLink href="/request">start here</InlineLink>. Our comparison of{" "}

@@ -3,12 +3,20 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Building, Globe, Ship, User } from "lucide-react";
 import Link from "next/link";
+import { Fragment } from "react";
 import GalleryPreview from "@/components/GalleryPreview";
 import GlobalPartnersStrip from "@/components/GlobalPartnersStrip";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import { appleEase, Reveal } from "@/components/Reveal";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
+
+// The hero tagline. `lead` is the word set in the accent colour.
+const TAGLINE = [
+  { lead: "Import", rest: "Any Car." },
+  { lead: "From", rest: "Any Country." },
+  { lead: "To", rest: "Any Port." },
+];
 
 const brandLogos = [
   { src: "audi-logo.webp", alt: "Audi Logo" },
@@ -199,7 +207,22 @@ export default function HomeClient() {
                 duration={0.8}
                 className="text-xl sm:text-2xl md:text-3xl text-zinc-700 font-medium tracking-tight mt-6 md:mt-8 mb-4 md:mb-6"
               >
-                Any Car. Any Country. Any Port.
+                {/* Business instruction 2026-10-09: "Import", "From" and
+                    "To" read in the accent colour, so the line says what the
+                    customer does — they import (writing-angle.md §10). Each
+                    phrase is kept on one line so a phone never strands "To"
+                    at the end of a line, away from "Any Port." */}
+                {TAGLINE.map((phrase, i) => (
+                  <Fragment key={phrase.lead}>
+                    {i > 0 && " "}
+                    <span className="whitespace-nowrap">
+                      <span className="bg-gradient-to-r from-sky-600 to-violet-600 bg-clip-text text-transparent">
+                        {phrase.lead}
+                      </span>{" "}
+                      {phrase.rest}
+                    </span>
+                  </Fragment>
+                ))}
               </Reveal>
             </div>
 
@@ -251,10 +274,12 @@ export default function HomeClient() {
                   reached it, which is what put LCP at 20.2s. */}
               <Reveal immediate className="max-w-4xl mx-auto px-4 text-center">
                 <p className="text-xl sm:text-2xl md:text-3xl font-light tracking-tight leading-relaxed text-zinc-700">
-                  Welcome to Providence Auto, the world’s largest borderless
-                  showroom. Whether you are a car enthusiast looking for your
-                  dream car or a dealership wanting to scale up, you can now buy
-                  the exact vehicle you want, direct from the most tax-efficient
+                  <span className="font-medium text-black">
+                    Import your dream car anywhere in the world.
+                  </span>{" "}
+                  Whether you are a car enthusiast or a dealership wanting to
+                  scale up, you can now import the exact vehicle you want,
+                  direct from the most tax-efficient
                   markets on earth — through our own teams in{" "}
                   <span className="text-black font-medium">
                     the UK, Japan, the UAE, India, Thailand, Australia and New
@@ -331,7 +356,7 @@ export default function HomeClient() {
                 className="mb-12 md:mb-20 text-center"
               >
                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tighter text-black">
-                  Here’s how it works — request, source, ship.
+                  Here’s how it works — request, export, ship.
                 </h2>
               </Reveal>
 
@@ -359,12 +384,12 @@ export default function HomeClient() {
                   },
                   {
                     step: "",
-                    title: "Source",
+                    title: "Export",
                     glowColor: "group-hover:bg-emerald-500/15",
                     icon: (
                       <Globe className="text-sky-500 h-7 w-7 md:h-8 md:w-8 group-hover:text-white transition-colors duration-500" />
                     ),
-                    desc: "We search 40+ global markets to find your exact spec at the most tax-efficient price, buying through our own teams in seven of them. Currency, supply, and timing all factored in. You see the comparison and approve the quote — nothing moves until you do.",
+                    desc: "We search 40+ global markets to find your exact spec at the most tax-efficient price, exporting through our own teams in seven of them. Currency, supply, and timing all factored in. You see the comparison and approve the quote — nothing moves until you do.",
                   },
                   {
                     step: "",
@@ -373,7 +398,7 @@ export default function HomeClient() {
                     icon: (
                       <Ship className="text-sky-500 h-7 w-7 md:h-8 md:w-8 group-hover:text-white transition-colors duration-500" />
                     ),
-                    desc: "Your car is purchased, inspected, documented and shipped to your destination port, with real-time updates at every stage. It arrives with the complete document pack, and our team supports you through clearance and registration.",
+                    desc: "Your car is inspected, documented, exported and shipped to your destination port, with real-time updates at every stage. It arrives with the complete document pack, and our team supports you through clearance and registration.",
                   },
                 ].map((item, index) => (
                   <Reveal
@@ -437,7 +462,7 @@ export default function HomeClient() {
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
                       For 15 years we have supplied 200+ dealerships worldwide.
-                      Now you can buy direct from the same markets they buy from
+                      Now you can import direct from the same markets they import from
                       — and keep the margin a forecourt would have added.
                     </p>
                   </div>
@@ -468,7 +493,7 @@ export default function HomeClient() {
                       For Dealerships
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
-                      Source stock direct from 100+ global markets, in the exact
+                      Import stock direct from 100+ global markets, in the exact
                       trims and specifications your customers ask for — and sell
                       it without floor-planning it first.
                     </p>

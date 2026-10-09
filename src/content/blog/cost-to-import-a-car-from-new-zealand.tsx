@@ -26,7 +26,7 @@ export default function Body() {
       <KeyTakeaways
         items={[
           <>
-            The premium over Japan buys{" "}
+            The premium over Japan pays for{" "}
             <Strong>
               entry certification, English records and a local history
             </Strong>
@@ -76,7 +76,7 @@ export default function Body() {
         </CheckLI>
         <CheckLI>
           <Strong>Compliance and registration record review.</Strong> Reading
-          the entry-certification file properly is the reason to buy here at
+          the entry-certification file properly is the reason to import from here at
           all, so it happens before anything else.
         </CheckLI>
         <CheckLI>
@@ -108,7 +108,7 @@ export default function Body() {
         and marketing it, plus their margin. It is not a markup being applied to
         you — it is work that has already been done.
       </P>
-      <P>What that work actually bought you:</P>
+      <P>What that work actually gets you:</P>
       <UL>
         <CheckLI>
           <Strong>A government entry inspection</Strong> covering structure,
@@ -185,7 +185,7 @@ export default function Body() {
         a quote:
       </P>
       <CostTable
-        title="Ex-Japan hybrid bought in New Zealand, RoRo to a Pacific destination"
+        title="Ex-Japan hybrid imported from New Zealand, RoRo to a Pacific destination"
         subtitle="Illustrative structure — proportions, not a quote"
         rows={[
           { label: "Retail purchase price", value: "≈ 62% of total" },

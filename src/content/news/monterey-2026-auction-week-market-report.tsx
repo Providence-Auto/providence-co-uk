@@ -269,7 +269,7 @@ export default function Monterey2026AuctionWeekMarketReport() {
 
       <Callout title="Bidding on something specific?" tone="emerald">
         <p>
-          We source from Japanese auctions and dealer networks in seven
+          We export from Japanese auctions and dealer networks in seven
           countries every week for dealers and private clients, and we quote the full landed cost &mdash;
           car, shipping, duty, VAT and registration tax &mdash; before anyone
           commits. Start with the{" "}

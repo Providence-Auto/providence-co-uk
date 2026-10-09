@@ -20,7 +20,7 @@ export default function Body() {
         tells you. In Britain it is a public record. Every annual roadworthiness
         test, every advisory note and every recorded mileage reading is
         published, and a commercial provenance check adds finance, theft and
-        write-off markers on top. If you are buying a Japanese car in Britain —
+        write-off markers on top. If you are importing a Japanese car from Britain —
         a Corolla, a RAV4, a Lexus — from 10,000 miles away, this is the reason
         you can.
       </Lead>
@@ -154,7 +154,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        It costs very little and no car should be bought without it. We run it
+        It costs very little and no car should be imported without it. We run it
         on every UK vehicle before purchase and include the certificate in the
         document set.
       </P>

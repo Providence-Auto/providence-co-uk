@@ -22,7 +22,7 @@ export default function ChanganRayongRightHandDriveThailandExportBase() {
         2025, was a <Strong>right-hand-drive Deepal S05</Strong>. That single
         detail is the story, and a year of output since then is what makes it
         worth writing now rather than then. A Chinese manufacturer has built a
-        plant in Thailand &mdash; one of the seven markets we buy in &mdash;
+        plant in Thailand &mdash; one of the seven markets we export from &mdash;
         with an initial capacity of <Strong>100,000 units a year</Strong> rising
         toward 200,000, explicitly aimed at ASEAN and the global
         right-hand-drive market. Thailand is becoming a Chinese export base, and
@@ -93,11 +93,11 @@ export default function ChanganRayongRightHandDriveThailandExportBase() {
       </P>
 
       <P>
-        The consequence for anyone sourcing vehicles is a new corridor. Cars
+        The consequence for anyone importing vehicles is a new corridor. Cars
         that were previously available only as Chinese-market left-hand-drive
         vehicles, or through a manufacturer&rsquo;s own distributor in your
-        country, now exist as right-hand-drive units built in a country we buy
-        in and ship from routinely.
+        country, now exist as right-hand-drive units built in a country we export
+        from routinely.
       </P>
 
       <Table
@@ -136,7 +136,7 @@ export default function ChanganRayongRightHandDriveThailandExportBase() {
 
       <UL>
         <CheckLI>
-          <Strong>The buy case is price and specification.</Strong> A Thai-built
+          <Strong>The import case is price and specification.</Strong> A Thai-built
           Chinese electric or hybrid SUV lands with equipment levels that
           typically sit a segment above its price, and freight from Laem Chabang
           is well-served. If your market rewards specification per pound, this
@@ -183,7 +183,7 @@ export default function ChanganRayongRightHandDriveThailandExportBase() {
       <H2 id="applies">Does this apply to you?</H2>
 
       <P>
-        If you buy right-hand-drive stock for Australia, New Zealand, the United
+        If you import right-hand-drive stock for Australia, New Zealand, the United
         Kingdom, Ireland, Malaysia, Sri Lanka or East Africa, yes &mdash; your
         available supply base has widened, and it will widen further as capacity
         doubles toward 2027.
@@ -191,7 +191,7 @@ export default function ChanganRayongRightHandDriveThailandExportBase() {
 
       <P>
         If you are a private buyer importing one car, this is background rather
-        than an opportunity. Buying a new Chinese electric vehicle privately
+        than an opportunity. Importing a new Chinese electric vehicle privately
         from a third country, without the manufacturer&rsquo;s distribution
         behind it, is the version of this trade that goes wrong most often.
       </P>
@@ -243,7 +243,7 @@ export default function ChanganRayongRightHandDriveThailandExportBase() {
         tone="emerald"
       >
         <p>
-          We buy in both and can quote the same segment out of either, itemised
+          We export from both and can quote the same segment out of either, itemised
           so you can see where the difference actually sits. Send us the
           specification and destination port:{" "}
           <InlineLink href="/request">start here</InlineLink>. Our{" "}

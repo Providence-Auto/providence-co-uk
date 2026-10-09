@@ -41,9 +41,13 @@ export default function Footer() {
               AUTO
             </div>
           </Link>
-          <p className="mt-4 text-sm font-light text-zinc-400 max-w-[22ch]">
-            A global vehicle sourcing group with our own people in seven
-            countries.
+          {/* The repeated line (writing-angle.md §10, decided 2026-10-09). */}
+          <p className="mt-4 text-sm font-medium text-white max-w-[22ch]">
+            Import your dream car anywhere in the world.
+          </p>
+          <p className="mt-2 text-sm font-light text-zinc-400 max-w-[22ch]">
+            A global vehicle sourcing and export group with our own people in
+            seven countries.
           </p>
         </div>
 

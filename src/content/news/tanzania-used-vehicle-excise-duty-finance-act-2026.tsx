@@ -172,7 +172,7 @@ export default function TanzaniaUsedVehicleExciseDutyFinanceAct2026() {
 
       <Callout title="The boundary is the strategy" tone="amber">
         <p>
-          If you are buying into Tanzania at the edge of the ten-year line, the
+          If you are importing into Tanzania at the edge of the ten-year line, the
           shipping schedule is part of the tax plan. Work backwards from the
           date the vehicle crosses ten years from manufacture, subtract the
           voyage, subtract the clearance queue, and only then decide what you
@@ -223,13 +223,13 @@ export default function TanzaniaUsedVehicleExciseDutyFinanceAct2026() {
 
       <Callout title="Pricing a Dar es Salaam consignment?" tone="emerald">
         <p>
-          We buy at auction in Japan every week, inspect before your money
+          We export from Japanese auctions every week, inspect before your money
           moves, and quote one landed figure to your port with clearance support
           at destination. Send us the specification, the year band and the
           volume and we will build the number &mdash;{" "}
           <InlineLink href="/request">start here</InlineLink>. Our{" "}
           <InlineLink href="/blog/how-to-buy-a-car-at-japanese-auction">
-            guide to buying at Japanese auction
+            guide to importing from a Japanese auction
           </InlineLink>{" "}
           explains how the halls actually work.
         </p>

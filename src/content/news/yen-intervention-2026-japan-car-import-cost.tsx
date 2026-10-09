@@ -270,7 +270,7 @@ export default function YenIntervention2026JapanCarImportCost() {
 
       <UL>
         <CheckLI>
-          <Strong>If you are buying in yen, yes.</Strong> Every reader importing
+          <Strong>If you are paying in yen, yes.</Strong> Every reader importing
           out of Japan is paying more per yen than they were on 30 July.
         </CheckLI>
         <CheckLI>
@@ -282,7 +282,7 @@ export default function YenIntervention2026JapanCarImportCost() {
         </CheckLI>
         <CheckLI>
           <Strong>
-            If you are sourcing from the United Kingdom, India, Thailand,
+            If you are importing from the United Kingdom, India, Thailand,
             Australia or New Zealand, this is not your pair.
           </Strong>{" "}
           Those corridors have their own currency stories and the yen is not one
@@ -290,7 +290,7 @@ export default function YenIntervention2026JapanCarImportCost() {
         </CheckLI>
         <CheckLI>
           <Strong>
-            If you are sourcing from the UAE, there is no FX story at all.
+            If you are importing from the UAE, there is no FX story at all.
           </Strong>{" "}
           The dirham is pegged to the US dollar, so Dubai sourcing competes on
           stock and specification rather than on currency.
@@ -361,7 +361,7 @@ export default function YenIntervention2026JapanCarImportCost() {
         The practical answer is to decide on the landed number rather than on
         the rate. If the car clears your target at today&rsquo;s figure,
         today&rsquo;s figure is the one you can act on. If it only clears on a
-        rate you are hoping for, you are trading currency, not buying a car.
+        rate you are hoping for, you are trading currency, not importing a car.
       </P>
 
       <Disclaimer>

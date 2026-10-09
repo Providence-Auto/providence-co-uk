@@ -394,7 +394,7 @@ export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
                 },
                 {
                   title: "Compliance, Confirmed First",
-                  desc: "Import rules differ on every route and are the usual reason an import goes wrong. We confirm what your country requires — homologation, emissions, age limits — before we buy, and prepare the documentation you need to clear and register it.",
+                  desc: "Import rules differ on every route and are the usual reason an import goes wrong. We confirm what your country requires — homologation, emissions, age limits — before you commit, and prepare the documentation you need to clear and register it.",
                 },
                 {
                   title: "Insured and Tracked, All the Way",

@@ -29,7 +29,7 @@ export default function UkEvedPayPerMile2028EvImportRead() {
         <Strong>1.5 pence a mile</Strong> from <Strong>1 April 2028</Strong>.
         For a reader outside the United Kingdom the interesting question is not
         what it costs a British driver. It is what a new annual running cost
-        does to the price of the used British electric cars you buy.
+        does to the price of the used British electric cars you import.
       </Lead>
 
       <KeyTakeaways
@@ -163,7 +163,7 @@ export default function UkEvedPayPerMile2028EvImportRead() {
         effect. A new annual running cost applied to a whole category of vehicle
         is, other things equal, a downward pressure on what British buyers will
         pay for that category. Used British electric cars are the stock our
-        readers buy out of the United Kingdom, and a market where owning one
+        readers import from the United Kingdom, and a market where owning one
         costs more is a market where buying one costs less.
       </P>
 
@@ -292,7 +292,7 @@ export default function UkEvedPayPerMile2028EvImportRead() {
       </Disclaimer>
 
       <Callout
-        title="Sourcing a used electric car out of Britain?"
+        title="Importing a used electric car from Britain?"
         tone="emerald"
       >
         <p>

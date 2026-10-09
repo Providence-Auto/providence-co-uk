@@ -20,7 +20,7 @@ export default function Body() {
         vehicle sourcing. A hard-worked one is a liability with a bull bar on
         it. They photograph identically. Here is how to tell them apart from ten
         thousand miles away — and what to establish about your own country
-        before you buy either.
+        before you import either.
       </Lead>
 
       <KeyTakeaways
@@ -194,7 +194,7 @@ export default function Body() {
       </UL>
       <P>
         We check your destination&rsquo;s position on the specific vehicle
-        before buying it. Where something will not be accepted, the choice is a
+        before exporting it. Where something will not be accepted, the choice is a
         different vehicle or removal before shipment — both far cheaper than
         discovering it at a registration office.
       </P>

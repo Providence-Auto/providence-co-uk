@@ -92,7 +92,7 @@ export default function ConfigurableLanding() {
             duration={0.5}
             className="text-xs font-bold tracking-[0.2em] text-zinc-400 uppercase mb-10"
           >
-            Sourcing the world's finest
+            Exporting the world's finest
           </Reveal>
 
           <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 lg:gap-24 opacity-60">

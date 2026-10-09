@@ -180,7 +180,7 @@ export default function Body() {
       <P>
         Which produces a slightly deflating but genuinely useful conclusion: on
         this market, the conventional choice is usually the financially correct
-        one. If you want something unusual, buy it knowing that the
+        one. If you want something unusual, import it knowing that the
         individuality has a price attached at both ends of the ownership.
       </P>
       <P>

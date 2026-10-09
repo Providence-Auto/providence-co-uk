@@ -63,7 +63,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
               The charging question should stop some buyers entirely.
             </Strong>{" "}
             A 226 kW average charge rate is worth nothing at a destination with
-            no DC charger. If that describes your market, buy the combustion or
+            no DC charger. If that describes your market, import the combustion or
             plug-in hybrid Range Rover instead.
           </>,
         ]}
@@ -72,7 +72,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
       <H2 id="source-market">Why there is only one corridor</H2>
 
       <P>
-        Most of what we source has alternatives. A Land Cruiser can be priced
+        Most of what we export has alternatives. A Land Cruiser can be priced
         out of Japan, the UAE or Australia in the same week, and when one market
         closes or gets expensive we move to another. That optionality is the
         thing that usually protects an importer from a bad month.
@@ -92,9 +92,9 @@ export default function RangeRoverElectricUkSourcingExportVat() {
         is not a different vehicle but a different tax and margin stack on top
         of it &mdash; that market&rsquo;s import duty, its consumption tax, and
         its retailer&rsquo;s margin, all of which you then pay freight on a
-        second time. Buying at the point of manufacture is the shortest version
+        second time. Importing from the point of manufacture is the shortest version
         of that chain, and the United Kingdom is one of the seven countries our
-        own team buys in.
+        own team exports from.
       </P>
 
       <PullQuote>
@@ -300,7 +300,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
         </CheckLI>
       </UL>
 
-      <Callout title="When the answer is to buy the other car" tone="amber">
+      <Callout title="When the answer is to import the other car" tone="amber">
         <p>
           If the charging answers come back badly, the Range Rover you want is
           the plug-in hybrid or the combustion car, both built on the same
@@ -352,7 +352,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
         The purchase side of this is unusually clean. There is a published
         price, a single source market, a manufacturer that supports most of our
         destinations, and a VAT mechanism that is well documented and
-        well-trodden. Compared with sourcing a car whose price does not yet
+        well-trodden. Compared with importing a car whose price does not yet
         exist, this is an easy unit to cost.
       </P>
 
@@ -372,7 +372,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
         is a queue position rather than a stock decision, and the queue formed
         on 2 September 2026. Second,{" "}
         <Strong>confirm what warranty transfers</Strong> to a privately imported
-        car in your market before you buy, because JLR states coverage varies
+        car in your market before you import, because JLR states coverage varies
         and an unsupported high-voltage system is a deterrent at resale as well
         as a risk in service. Third, <Strong>the battery is the asset</Strong>{" "}
         &mdash; JLR fits a Battery Digital Twin with over 900 diagnostic data
@@ -492,7 +492,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
 
       <Callout title="Costing the corridor properly" tone="emerald">
         <p>
-          The United Kingdom is one of the seven countries our own team buys in,
+          The United Kingdom is one of the seven countries our own team exports from,
           and this is a car we can quote from the point of manufacture rather
           than through somebody else&rsquo;s retail network. Register against a
           specification and a colour on our{" "}
@@ -504,7 +504,7 @@ export default function RangeRoverElectricUkSourcingExportVat() {
           and we will build the landed figure with the VAT position, the freight
           and the duty line shown separately, so you can see which part of the
           number is doing the damage &mdash; including, if the charging answer
-          in your market is the wrong one, the case for not buying it at all.
+          in your market is the wrong one, the case for not importing it at all.
         </p>
       </Callout>
     </>

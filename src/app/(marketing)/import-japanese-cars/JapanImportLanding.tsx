@@ -77,7 +77,7 @@ const MODEL_GROUPS: ModelGroup[] = [
         make: "Toyota",
         model: "Aqua",
         blurb:
-          "Japan's best-selling compact hybrid, and the cheapest hybrid we import.",
+          "Japan's best-selling compact hybrid, and the cheapest hybrid we export.",
         image: "/import-cars/aqua.webp",
       },
       {
@@ -239,7 +239,7 @@ const MODEL_GROUPS: ModelGroup[] = [
         name: "BMW 3 Series",
         make: "BMW",
         model: "3 Series",
-        blurb: "BMW's compact executive saloon, bought direct from Japan.",
+        blurb: "BMW's compact executive saloon, imported direct from Japan.",
         image: "/import-cars/bmw.webp",
       },
       {
@@ -247,7 +247,7 @@ const MODEL_GROUPS: ModelGroup[] = [
         make: "Nissan",
         model: "GT-R",
         blurb:
-          "Nissan's flagship performance car, sourced in the country that builds it.",
+          "Nissan's flagship performance car, exported from the country that builds it.",
         image: "/import-cars/gtr.webp",
       },
     ],
@@ -258,8 +258,8 @@ const MODEL_GROUPS: ModelGroup[] = [
 // One entry per country button. The UI lives in @/components/DestinationPicker
 // (shared with the India page); only the copy is page-specific, because the
 // duty and origin rules below are written for a Japan-built car.
-// `readMoreHref` points at the dedicated per-country guide — Ireland's is live;
-// the rest are planned pages.
+// `readMoreHref` points at the dedicated per-country page — Ireland's and the
+// UK's are live; the rest are planned pages.
 const DESTINATIONS: Destination[] = [
   {
     key: "uk",
@@ -275,7 +275,10 @@ const DESTINATIONS: Destination[] = [
     ],
     popular:
       "Most requested for the UK: Toyota Aqua, Prius and Alphard, the GR Yaris, and the Honda Vezel.",
-    readMoreHref: "/import-japanese-cars-to-uk",
+    // The UK has its own landing page (2026-10-07); the old
+    // /import-japanese-cars-to-uk target was never built and 404ed.
+    readMoreHref: "/import-japanese-cars/uk",
+    readMoreLabel: "Import Japanese cars to the UK",
   },
   {
     key: "ireland",
@@ -299,7 +302,7 @@ const DESTINATIONS: Destination[] = [
     formCountry: "Kenya",
     headline:
       "Kenya admits vehicles under eight years old, inspected before export.",
-    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why buying through us pays. We source age-compliant stock, book the KEBS-compliance inspection in Japan, and ship your car to Mombasa with every duty calculated in the quote you approved — payable by you when you clear it.",
+    body: "Kenya's rules are strict — under 8 years old, right-hand drive, mandatory pre-export roadworthiness inspection — and that's precisely why importing through us pays. We export age-compliant stock, book the KEBS-compliance inspection in Japan, and ship your car to Mombasa with every duty calculated in the quote you approved — payable by you when you clear it.",
     facts: [
       { icon: Gauge, label: "8-year age rule — compliant stock only" },
       { icon: ShieldCheck, label: "Pre-export inspection arranged in Japan" },
@@ -505,7 +508,7 @@ export default function JapanImportLanding() {
       {/* ── DESTINATION PANEL ────────────────────────── */}
       <DestinationPanel
         destination={destination}
-        emptyHeadline="Buy direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
+        emptyHeadline="Import direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
         emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and give you the whole landed figure itemised — the CNF price you pay us for the car, shipping and marine cover to your port, and the duty and taxes you pay on arrival. Choose your destination above to see the rules and timeline for your country."
       />
 
@@ -524,10 +527,10 @@ export default function JapanImportLanding() {
               Select a model to begin
             </p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-              Choose the car you want us to source.
+              Choose the car you want to import.
             </h2>
             <p className="text-lg text-zinc-500 font-light">
-              Every model below is one we buy regularly in Japan. Select one and
+              Every model below is one we export regularly from Japan. Select one and
               we will open the inquiry form with it filled in, or use the card
               at the end to tell us about something else.
             </p>
@@ -588,7 +591,7 @@ export default function JapanImportLanding() {
                           the previous fixed-height card cut the wheels off. */}
                       <img
                         src={model.image}
-                        alt={`${model.name} sourced in Japan by Providence Auto`}
+                        alt={`${model.name} exported from Japan by Providence Auto`}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 ease-out"
                       />
@@ -667,7 +670,7 @@ export default function JapanImportLanding() {
             tags={[CAMPAIGN_TAG]}
             eyebrow="In Stock"
             title="Available Now From Japan"
-            subtitle="Cars we have already sourced and graded in Japan, ready to ship to your country."
+            subtitle="Cars we have already found and graded in Japan, ready to ship to your country."
           />
         </div>
       </div>

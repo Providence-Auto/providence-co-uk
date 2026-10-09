@@ -17,8 +17,8 @@ export default function Body() {
       <Lead>
         Australia is worth shipping from in three categories, and it is the{" "}
         <em>only</em> country on earth worth shipping from in a fourth. Outside
-        those, Japan is cheaper and better documented and you should buy there
-        instead. Here is the honest breakdown.
+        those, Japan is cheaper and better documented and you should import from
+        there instead. Here is the honest breakdown.
       </Lead>
 
       <KeyTakeaways
@@ -106,8 +106,8 @@ export default function Body() {
       </P>
       <Callout title="The arithmetic that makes this work" tone="emerald">
         <p>
-          Buying an already-equipped tourer is usually cheaper than buying a
-          base vehicle and building it, often substantially. The equipment
+          Importing an already-equipped tourer is usually cheaper than importing
+          a base vehicle and building it, often substantially. The equipment
           depreciates faster than it costs to fit, and somebody else absorbed
           that. It is the single clearest value case in Australian sourcing.
         </p>
@@ -164,7 +164,7 @@ export default function Body() {
         the underbody on every vehicle instead of quoting the climate at you.
       </P>
 
-      <H2 id="avoid">What not to buy from Australia</H2>
+      <H2 id="avoid">What not to import from Australia</H2>
       <UL>
         <CheckLI>
           <Strong>Left-hand-drive vehicles.</Strong> The market is right-hand
@@ -189,7 +189,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        For the buying checklist on utes and tourers, see{" "}
+        For the import checklist on utes and tourers, see{" "}
         <InlineLink href="/blog/importing-a-ute-or-4x4-from-australia">
           importing a ute or 4x4 from Australia
         </InlineLink>

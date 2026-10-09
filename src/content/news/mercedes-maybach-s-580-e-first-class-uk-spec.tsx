@@ -285,10 +285,10 @@ export default function MercedesMaybachS580EFirstClassUkSpec() {
         </CheckLI>
       </UL>
 
-      <H2 id="who-should-not">Who should not buy this car new</H2>
+      <H2 id="who-should-not">Who should not import this car new</H2>
 
       <P>
-        We sell imports and we will still say it: for a large part of our
+        We export cars and we will still say it: for a large part of our
         destination list, importing this car new is the wrong trade.
       </P>
 
@@ -317,7 +317,7 @@ export default function MercedesMaybachS580EFirstClassUkSpec() {
       <P>
         If the requirement is a Maybach S-Class for a principal who will
         actually be driven in it, none of the above is an argument against
-        buying the car. If the requirement is a margin, look at three-year-old
+        importing the car. If the requirement is a margin, look at three-year-old
         RHD S-Class stock out of the UK or Japan instead.
       </P>
 

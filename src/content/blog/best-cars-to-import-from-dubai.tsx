@@ -16,7 +16,7 @@ export default function Body() {
     <>
       <Lead>
         Dubai is close to unbeatable at one thing and a poor choice at several
-        others. Knowing which is which is the entire skill of buying here. The
+        others. Knowing which is which is the entire skill of importing from here. The
         market runs deep in Japanese 4x4s — Land Cruisers, Lexus, Patrols — one
         to three years old, left-hand drive and high-specification, and if that
         describes what you want, nowhere else comes close.
@@ -146,7 +146,7 @@ export default function Body() {
       <UL>
         <CheckLI>
           <Strong>Right-hand-drive cars.</Strong> The market is LHD, so RHD
-          stock is thin, and thin stock means no negotiating position. Buy RHD
+          stock is thin, and thin stock means no negotiating position. Import RHD
           from <InlineLink href="/import-cars-from/japan">Japan</InlineLink>,{" "}
           <InlineLink href="/import-cars-from/united-kingdom">
             the UK
@@ -180,7 +180,7 @@ export default function Body() {
           what it costs to import a car from the UAE
         </InlineLink>
         , or see what our{" "}
-        <InlineLink href="/import-cars-from/uae">UAE team</InlineLink> is buying
+        <InlineLink href="/import-cars-from/uae">UAE team</InlineLink> is exporting
         now.
       </P>
 

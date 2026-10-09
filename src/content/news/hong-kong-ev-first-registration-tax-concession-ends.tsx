@@ -292,7 +292,7 @@ export default function HongKongEvFirstRegistrationTaxConcessionEnds() {
       </H2>
 
       <P>
-        We ship cars into Hong Kong, so we have an interest in you buying one.
+        We ship cars into Hong Kong, so we have an interest in you importing one.
         Here is the part that costs us: for most Hong Kong readers this
         announcement is a reason to import fewer electric private cars, not
         more. The concession was doing real work in the comparison, and it has
@@ -318,7 +318,7 @@ export default function HongKongEvFirstRegistrationTaxConcessionEnds() {
         tone="emerald"
       >
         <p>
-          We source right-hand-drive stock in Japan and the United Kingdom every
+          We export right-hand-drive stock from Japan and the United Kingdom every
           week and quote one landed figure to your port before you commit. If
           you want a specific car checked against the current Hong Kong
           position, <InlineLink href="/request">send us the details</InlineLink>

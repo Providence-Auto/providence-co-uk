@@ -146,7 +146,7 @@ export default function Body() {
         </CheckLI>
         <CheckLI>
           <Strong>
-            A European-built car bought in Britain never qualifies
+            A European-built car imported from Britain never qualifies
           </Strong>
           , no matter how long it was registered there or how British the plate
           looks.

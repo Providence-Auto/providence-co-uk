@@ -52,7 +52,7 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
             battery it is also what decides stowage and handling conditions.
           </>,
           <>
-            <Strong>Where the answer is no, buy the Bentayga.</Strong> A
+            <Strong>Where the answer is no, import the Bentayga.</Strong> A
             combustion or hybrid car does the same job in a market without rapid
             charging, and we would rather say so before the money moves.
           </>,
@@ -105,7 +105,7 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
       </P>
 
       <P>
-        What you give up in exchange is the price advantage of buying used, and
+        What you give up in exchange is the price advantage of importing used, and
         the certainty of a car that already exists. Confirm the current age,
         emissions and admissibility position with your own destination authority
         before ordering &mdash; those rules change, and a rule that does not
@@ -145,7 +145,7 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
       </P>
 
       <P>
-        What it does is change the product you are buying. Ask three questions
+        What it does is change the product you are importing. Ask three questions
         about the specific place the car will be kept, and answer them before
         ordering rather than after landing:
       </P>
@@ -230,7 +230,7 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
       <P>
         <Strong>
           Yes, if you are in a right-hand-drive market with rapid charging and
-          you buy new at this level.
+          you import new at this level.
         </Strong>{" "}
         Ireland and the United Kingdom are the clearest cases: the car is built
         in one of them, the hand is right, the infrastructure is there, and the
@@ -256,7 +256,7 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
         decides the purchase for you, it is not yet available to decide it.
       </P>
 
-      <H2 id="substitute">When to buy something else instead</H2>
+      <H2 id="substitute">When to import something else instead</H2>
 
       <P>
         This is the part a broker is not supposed to write, so here it is
@@ -270,14 +270,14 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
       <UL>
         <LI>
           <Strong>No rapid charging within normal driving distance</Strong> —
-          buy the combustion car. A 113 kWh battery is a liability where it
+          import the combustion car. A 113 kWh battery is a liability where it
           cannot be refilled quickly.
         </LI>
         <LI>
           <Strong>
             No authorised high-voltage service capability in the market
           </Strong>{" "}
-          — buy the combustion car, or accept that significant work means the
+          — import the combustion car, or accept that significant work means the
           car travels.
         </LI>
         <LI>
@@ -366,7 +366,7 @@ export default function BentleyTorcalRightHandDriveImportMarkets() {
             we will come back with the landed figure
           </InlineLink>{" "}
           and a straight answer on charging and service &mdash; including
-          &ldquo;buy the Bentayga instead&rdquo;, where that is the right
+          &ldquo;import the Bentayga instead&rdquo;, where that is the right
           answer.
         </p>
       </Callout>

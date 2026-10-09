@@ -200,7 +200,7 @@ export default function Body() {
         </InlineLink>
         , or see what our{" "}
         <InlineLink href="/import-cars-from/india">India team</InlineLink> is
-        sourcing now.
+        exporting now.
       </P>
 
       <Disclaimer>

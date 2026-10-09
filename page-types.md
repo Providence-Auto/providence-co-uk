@@ -31,7 +31,7 @@ appointment, the document that gets refused at the port. We are the publisher,
 not the topic. The page earns its closing call to action by being genuinely
 useful first, and it is useful whether or not the reader ever buys from us.
 
-Live informational surfaces: **`/blog` (57 posts)** and **`/latest-news` (42
+Live informational surfaces: **`/blog` (66 posts)** and **`/latest-news` (40
 articles)**, plus the news category archives and the RSS / Google News feeds.
 
 ### 1.2 A landing page
@@ -47,7 +47,9 @@ decided to act and now wants to know what happens if they act with us.
 
 Live landing surfaces: **`/`**, `/b2c`, `/b2b`, `/saas`, `/import-cars-from` and
 its **7 country pages**, `/import-cars-to-ireland`, `/import-japanese-cars`,
-`/import-japanese-cars-to-ireland`, `/indian-manufactured-cars`,
+`/import-japanese-cars-to-ireland`, the three Japan → UK pages
+(`/import-japanese-cars/uk`, `/import-japanese-cars/uk/personal-buyer`,
+`/import-japanese-cars/dealership`), `/indian-manufactured-cars`,
 `/japanese-luxury-cars-lhd`, the **3 `/campaigns/[slug]` pages**, the gallery,
 and every car page.
 
@@ -141,10 +143,16 @@ constraint.
    cheaper, a weak *destination* currency makes everything dearer
    (`news-editorial-playbook.md` Lens 2).
 
-6. **The body does not pitch.** Selling is confined to the closing CTA —
-   `BlogCTA` on the blog, the standard sign-off on news. A paragraph of our
-   offer in the middle of an explainer is the mixing this document exists to
-   stop, and it costs the page the credibility that made it rank.
+6. **The body does not pitch — but every article names its publisher.**
+   Selling is confined to the closing CTA — `BlogCTA` on the blog, the standard
+   sign-off on news. A paragraph of our offer in the middle of an explainer is
+   the mixing this document exists to stop, and it costs the page the
+   credibility that made it rank. Since 2026-10-07 every informational page
+   also carries the **three brand touchpoints** in `brand-position.md` §12: a
+   one-line publisher note under the byline, at most one contextual
+   sentence-link to the matching landing page at the point the reader would
+   act, and the closing CTA to that same page. Those three are the whole of the
+   brand's presence on an informational page; anything beyond them is pitching.
 
 7. **Angle, not volume.** "The best information at the angle that matches our
    audience's need and taste" is the brief. The two readers and the relevance
@@ -348,13 +356,14 @@ unclassified page is the state this document exists to prevent.
 
 | Surface | Count | Type | Notes |
 |---|---|---|---|
-| `/blog/[slug]` | 57 | Informational | `src/config/blog.ts` (15), `src/config/blog-countries.ts` (42) |
-| `/latest-news/[slug]` | 42 | Informational | `src/config/news.ts`; also the category archives, RSS and news sitemap |
+| `/blog/[slug]` | 66 | Informational | `src/config/blog.ts` (15), `src/config/blog-countries.ts` (41), `src/config/blog-japan-uk.ts` (10, added 2026-10-07). Counts recounted from the registries on 2026-10-07 |
+| `/latest-news/[slug]` | 40 | Informational | `src/config/news.ts`; also the category archives, RSS and news sitemap. Recounted 2026-10-07 |
 | `/import-cars-from/[country]` | 7 | Landing | Agreed section list in `CLAUDE.md`; enforced by `src/config/__tests__/countries.test.ts` |
 | `/import-cars-from` | 1 | Landing | Hub |
 | `/campaigns/[slug]` | 3 | Landing | `src/config/landing-pages.ts` |
 | `/b2b-inquiry` | 1 | Landing | Added 2026-09-29/30. Built around one action — a dealership sending a sourcing inquiry; sections as asked by the business (market check + dealer form, the value proposition without the dealer platform, each source market's ports and transit). Framed on the inquiry so it does not compete with `/b2b` for "dealer car sourcing" |
 | `/import-japanese-cars` | 1 | Landing | |
+| `/import-japanese-cars/uk`, `/uk/personal-buyer`, `/dealership` | 3 | Landing | Added 2026-10-07. The main Japan → UK page, the B2C page and the UK-dealership page; section lists proposed after SEO research and approved before copy. No duty-rate claims (business decision). Copy in `src/config/japan-uk.ts`, enforced by `src/config/__tests__/japan-uk.test.ts` |
 | `/indian-manufactured-cars` | 1 | Landing | |
 | `/japanese-luxury-cars-lhd` | 1 | Landing | |
 | `/import-japanese-cars-to-ireland` | 1 | Landing — **with a leak** | Structurally a landing page (hero, sections, form, FAQ, one secondary CTA). But its FAQ category "Irish Import Taxes" answers *informational*-intent questions — "What is VRT and how is it calculated?" — which the guides own and which `CLAUDE.md` restricts to pre-purchase questions. Move those answers to the guide and link them; keep the quote, payment, timing and delivery questions |

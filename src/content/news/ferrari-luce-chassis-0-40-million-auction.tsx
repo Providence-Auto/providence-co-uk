@@ -517,7 +517,7 @@ export default function FerrariLuceChassis040MillionAuction() {
         </CheckLI>
       </UL>
 
-      <H2 id="what-it-means">What it means if you actually buy cars</H2>
+      <H2 id="what-it-means">What it means if you actually import cars</H2>
 
       <P>
         Strip out the theatre and there are three durable lessons in this
@@ -558,15 +558,15 @@ export default function FerrariLuceChassis040MillionAuction() {
 
       <P>
         Final-year production runs, launch-edition trims and first-import
-        examples all attract money in the used market. If you are sourcing a car
+        examples all attract money in the used market. If you are importing a car
         with an eye on residuals, the sequence matters &mdash; and it is
         knowable in advance from the chassis number and build date, both of
         which appear on the export documents.
       </P>
 
-      <Callout title="Sourcing something rare?" tone="emerald">
+      <Callout title="Importing something rare?" tone="emerald">
         <p>
-          We source from Japanese auctions and dealer networks in seven
+          We export from Japanese auctions and dealer networks in seven
           countries on behalf of dealers and private clients every week, and we quote the full landed
           cost &mdash; car, shipping, duty, VAT and registration tax &mdash;
           before anyone commits. If there is a specific chassis you want,{" "}

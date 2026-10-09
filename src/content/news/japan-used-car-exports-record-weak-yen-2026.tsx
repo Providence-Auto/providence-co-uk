@@ -21,7 +21,7 @@ export default function JapanUsedCarExportsRecordWeakYen2026() {
         Japan exported roughly <Strong>1.7 million</Strong> used vehicles in
         2025, up 9.1% and a third consecutive record. The yen is trading near
         its weakest level since 1986. Both of those facts sound like good news
-        if you buy cars in Japan. The third fact &mdash; that constant-quality
+        if you import cars from Japan. The third fact &mdash; that constant-quality
         auction prices are up about 15% in yen &mdash; is the one that decides
         how much of the currency advantage you actually keep.
       </Lead>
@@ -273,13 +273,13 @@ export default function JapanUsedCarExportsRecordWeakYen2026() {
         </p>
       </Callout>
 
-      <Callout title="Buying from Japan this year?" tone="emerald">
+      <Callout title="Importing from Japan this year?" tone="emerald">
         <p>
           We bid in Japanese auctions every week and quote the full landed cost
           &mdash; car, shipping, duty, VAT and registration tax &mdash; before
           anyone commits. Start with{" "}
           <InlineLink href="/blog/how-to-buy-a-car-at-japanese-auction">
-            how to buy at a Japanese auction
+            how to import from a Japanese auction
           </InlineLink>
           , price it with the{" "}
           <InlineLink href="/ireland-cost-calculator">

@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 const PATH = "/saas";
 const TITLE = "Global Portal — Sourcing Software for Motor Dealers";
 const DESCRIPTION =
-  "Search live stock across 40+ markets, price a landed car and place an order from one portal. Built for dealers who buy abroad and want the numbers before they bid.";
+  "Search live stock across 40+ markets, price a landed car and place an order from one portal. Built for dealers who import from abroad and want the numbers before they bid.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

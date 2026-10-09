@@ -264,7 +264,7 @@ export default function Body() {
       <P>
         For a factory car this is usually about what has been added: bull bars,
         light bars, roof racks, aftermarket mirrors and towing eyes. If you are
-        buying a modified 4x4 at auction, the accessories are the risk, not the
+        importing a modified 4x4 from auction, the accessories are the risk, not the
         vehicle.
       </P>
 

@@ -62,7 +62,7 @@ export default function Body() {
       <Callout title="Why we verify per shipment" tone="amber">
         <p>
           We confirm the current position with Sri Lanka Customs before any
-          vehicle is sourced. Not from last year&rsquo;s rate card, and not from
+          vehicle is ordered. Not from last year&rsquo;s rate card, and not from
           a published table — including this article. Anything you read online
           about Sri Lankan import rules should be treated as background rather
           than as a basis for committing money.

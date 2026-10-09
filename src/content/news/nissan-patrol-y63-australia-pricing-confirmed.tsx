@@ -25,7 +25,7 @@ export default function NissanPatrolY63AustraliaPricingConfirmed() {
         same 3.5-litre twin-turbo V6 &mdash; 317 kW and 700 Nm &mdash; through a
         nine-speed automatic, with a braked towing capacity of 3,700 kg. Orders
         are open now and first customer deliveries are early 2027. For anyone
-        buying outside Australia, the interesting number is not A$98,990. It is
+        importing from Australia, the interesting number is not A$98,990. It is
         what is left of that figure once the Australian taxes inside it come
         out.
       </Lead>

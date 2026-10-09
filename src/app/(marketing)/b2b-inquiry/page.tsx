@@ -107,12 +107,12 @@ const PROOF = [
 const PILLARS = [
   {
     icon: Globe2,
-    title: "Buy at source, not from a middleman's stock.",
-    body: "Dealers and auctions across Japan, and dealer and fleet channels in six more countries — bought through our own teams, never subcontracted to an exporter you never speak to.",
+    title: "Import direct from source, not from a middleman's stock.",
+    body: "Dealers and auctions across Japan, and dealer and fleet channels in six more countries — exported by our own teams, never subcontracted to an exporter you never speak to.",
   },
   {
     icon: ScanSearch,
-    title: "See the car before your money moves.",
+    title: "You'll get to see the car before you make any payment.",
     body: "The inspection photographs, the Japanese auction sheet translated, and the landed cost itemised — the CNF price to your port, and the duty and taxes you pay on arrival — before you commit.",
   },
   {
@@ -280,7 +280,7 @@ export default function CarSourcingForDealersPage() {
             <Reveal y={30} className="max-w-3xl">
               <SectionRule align="left" />
               <h2 className="text-3xl font-bold tracking-tighter text-black md:text-5xl">
-                You can source cars straight from the market they come from.
+                You can import cars straight from the market they come from.
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
                 And ship them to your own country, with the access, the tools
@@ -325,7 +325,7 @@ export default function CarSourcingForDealersPage() {
                 className="mb-6 block h-px w-12 bg-gradient-to-r from-sky-400 to-violet-400"
               />
               <h2 className="text-3xl font-bold tracking-tighter md:text-5xl">
-                Source from seven markets, with your first quote in 24 hours.
+                Import from seven markets, with your first quote in 24 hours.
               </h2>
             </Reveal>
 

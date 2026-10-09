@@ -561,7 +561,7 @@ export default function IrelandCostCalculator() {
               onPointerCancel={handleSwipeEnd}
             >
               <span className="text-[9px] font-semibold tracking-normal sm:tracking-[0.1em] uppercase text-zinc-400 leading-none mb-[3px]">
-                <span className="sm:hidden">Buy</span>
+                <span className="sm:hidden">Price</span>
                 <span className="hidden sm:inline">Purchase</span>
               </span>
               <span className="text-[13px] sm:text-sm font-bold text-black leading-none">
@@ -909,7 +909,7 @@ export default function IrelandCostCalculator() {
                       ]}
                     />
                   </Field>
-                  <Field label="Source Country (where you're buying from)">
+                  <Field label="Source Country (where you're importing from)">
                     <SelectInput
                       value={form.sourceCountry}
                       onChange={(v) => set("sourceCountry", v)}
@@ -1515,7 +1515,7 @@ export default function IrelandCostCalculator() {
                 href="/import-cars-to-ireland#inquiry"
                 className="group flex items-center justify-between w-full px-7 py-5 bg-sky-500 hover:bg-sky-600 text-white rounded-2xl font-bold text-base transition-all duration-300 shadow-[0_10px_40px_rgba(14,165,233,0.25)]"
               >
-                <span>Source This Vehicle With Providence</span>
+                <span>Import This Vehicle With Providence</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <p className="text-center text-xs text-zinc-400">
@@ -1630,7 +1630,7 @@ export default function IrelandCostCalculator() {
             </h2>
             <p className="text-lg text-zinc-500 font-light max-w-xl mx-auto">
               Duty depends on two things: where the car was built and where
-              you're buying it. Change either below to see the rate — and your
+              you're importing it from. Change either below to see the rate — and your
               VAT — update.
             </p>
           </Reveal>
@@ -1975,7 +1975,7 @@ function DutyFlowchart() {
             ]}
           />
         </Field>
-        <Field label="Source country (buying from)">
+        <Field label="Source country (importing from)">
           <SelectInput
             value={src}
             onChange={setSrc}

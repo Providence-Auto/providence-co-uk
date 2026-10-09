@@ -33,7 +33,7 @@ export default function Body() {
             advantage is a manufacturing one.
           </>,
           <>
-            Buy through <Strong>direct dealer relationships</Strong>, not a
+            Import through <Strong>direct dealer relationships</Strong>, not a
             broker chain.
           </>,
           <>
@@ -47,7 +47,7 @@ export default function Body() {
         ]}
       />
 
-      <H2 id="why-india">Why buy in India</H2>
+      <H2 id="why-india">Why import from India</H2>
       <P>
         Five reinforcing reasons, none of which is corner-cutting: a tax code
         that rewards compact, efficient design; 90–95% of components sourced
@@ -70,7 +70,7 @@ export default function Body() {
       <H2 id="new-vs-used">New or used: a real decision</H2>
       <P>
         In Japan the answer is almost always used, because the auction system
-        makes used cars unusually safe to buy. In India the answer is usually{" "}
+        makes used cars unusually safe to import. In India the answer is usually{" "}
         <Strong>new</Strong>, and it is worth understanding why.
       </P>
       <UL>
@@ -98,11 +98,11 @@ export default function Body() {
         value in India specifically.
       </P>
 
-      <H2 id="network">Buying through a dealer network</H2>
+      <H2 id="network">Importing through a dealer network</H2>
       <P>
         This is the part that determines your price. India&rsquo;s automotive
         distribution runs through large dealer networks, and the difference
-        between buying through a relationship and buying through a broker chain
+        between importing through a relationship and importing through a broker chain
         shows up directly in the invoice.
       </P>
       <P>Working through relationships means:</P>
@@ -183,7 +183,7 @@ export default function Body() {
       <H2 id="shipping">Ports and shipping</H2>
       <P>
         Vehicles load from Mumbai (Nhava Sheva), Chennai, Mundra or Kolkata, and
-        the right port depends on where the car was sourced as much as where it
+        the right port depends on where the car comes from as much as where it
         is going. Transit runs roughly two to three weeks to the Gulf and Sri
         Lanka, three to five weeks to Africa, and five to seven weeks to Europe.
       </P>

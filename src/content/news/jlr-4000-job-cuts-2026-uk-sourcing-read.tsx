@@ -28,7 +28,7 @@ export default function Jlr4000JobCuts2026UkSourcingRead() {
         <Strong>&pound;1.7 billion</Strong> of savings. The cuts are understood
         to be non-production, with the United Kingdom head office most affected,
         and a voluntary redundancy window open until <Strong>4 October</Strong>.
-        If you buy Land Rovers out of Britain, the number that should interest
+        If you import Land Rovers from Britain, the number that should interest
         you is not 4,000. It is the breakeven volume underneath it.
       </Lead>
 
@@ -235,7 +235,7 @@ export default function Jlr4000JobCuts2026UkSourcingRead() {
           covers the process that has not changed.
         </CheckLI>
         <CheckLI>
-          <Strong>Anyone outside the UK sourcing elsewhere:</Strong> this does
+          <Strong>Anyone outside the UK importing from elsewhere:</Strong> this does
           not affect you, and it is background rather than news for your
           position.
         </CheckLI>
@@ -244,7 +244,7 @@ export default function Jlr4000JobCuts2026UkSourcingRead() {
       <H3>Where the substitution sits</H3>
 
       <P>
-        If a specific Land Rover derivative becomes hard to source out of
+        If a specific Land Rover derivative becomes hard to import from
         Britain, the alternatives are the same as they have always been: a
         Japanese-market equivalent from an auction hall, or a Gulf-specification
         car out of the UAE. Both carry different specification conventions,
@@ -292,7 +292,7 @@ export default function Jlr4000JobCuts2026UkSourcingRead() {
         investment advice.
       </Disclaimer>
 
-      <Callout title="Sourcing a Land Rover out of Britain?" tone="emerald">
+      <Callout title="Importing a Land Rover from Britain?" tone="emerald">
         <p>
           We clear cars for export in the United Kingdom ourselves, handle NOVA
           and DVLA where it applies, and quote one landed figure to your port.

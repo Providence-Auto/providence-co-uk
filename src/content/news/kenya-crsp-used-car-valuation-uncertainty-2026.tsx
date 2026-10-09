@@ -160,7 +160,7 @@ export default function KenyaCrspUsedCarValuationUncertainty2026() {
         <p>
           It would be straightforward to produce a plausible Kenyan duty
           calculation and present it confidently. Plenty of sites do. A wrong
-          tax figure on a vehicle someone is about to buy is worse than no
+          tax figure on a vehicle someone is about to import is worse than no
           figure at all, because a reader can act on it. The Kenya Revenue
           Authority is the authority here, and a licensed clearing agent working
           from the operative schedule is the only reliable route to a number.
@@ -277,7 +277,7 @@ export default function KenyaCrspUsedCarValuationUncertainty2026() {
         tone="emerald"
       >
         <p>
-          We buy at Japanese auction every week, send you the auction sheet and
+          We export from Japanese auctions every week, send you the auction sheet and
           the inspection before your money moves, and quote the source-side and
           freight legs precisely even where a destination tax base is unsettled.
           Send us the specification:{" "}

@@ -40,7 +40,7 @@ const TIMELINE_STEPS = [
     id: "Vehicle Selection",
     label: "Vehicle Selection",
     icon: Search,
-    desc: "Sourcing the perfect global match.",
+    desc: "Finding the perfect global match.",
   },
   {
     id: "Price Agreement",
@@ -58,7 +58,7 @@ const TIMELINE_STEPS = [
     id: "Vehicle Purchased",
     label: "Vehicle Purchased",
     icon: FileCheck,
-    desc: "Vehicle officially bought globally.",
+    desc: "Vehicle secured for export.",
   },
   {
     id: "Preparation",
