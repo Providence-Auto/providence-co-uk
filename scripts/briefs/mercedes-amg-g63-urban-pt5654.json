@@ -1,0 +1,90 @@
+{
+  "_comment": "Mercedes-AMG G 63 with Urban Automotive styling, stock reference PT5654. Right-hand drive, model year 2026, built in Austria (both read off the car's own Mercedes-Benz build plate). Condition, mileage and price are deliberately left off the page (business instruction 2026-10-09), which is also why the brief carries no destinations: the per-destination heading names the car new or used. Engine, gearbox, 0-100 km/h, top speed, differential locks and AMG RIDE CONTROL are from mercedes-amg.com/en/g-class-suv, checked 2026-10-09. Urban Automotive equipment is listed only as it is visible in the photographs; urban-automotive.co.uk could not be read to confirm part names. Colour names are descriptive, not paint codes. Photographs are of this car, cropped to 16:10 for the car-page viewer and stored under public/cars/mercedes-amg-g63-urban-pt5654/; the two build-plate photos are left out because they show the full VIN. Each environment has its own database: recreate with node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/mercedes-amg-g63-urban-pt5654.json --env staging --publish (or --env production).",
+
+  "make": "Mercedes-AMG",
+  "model": "G 63",
+  "year": "2026",
+  "trim": "Urban",
+  "slug": "mercedes-amg-g63-urban-pt5654",
+  "countryOfOrigin": "Austria",
+  "steeringOptions": ["RHD"],
+
+  "engineConfig": "4.0-litre V8 biturbo with integrated starter generator",
+  "displacement": "4.0-litre",
+  "maxPower": "430 kW (585 hp)",
+  "maxTorque": "850 Nm",
+  "transmission": "AMG SPEEDSHIFT TCT 9G, nine-speed automatic",
+  "fuelSystem": "Petrol",
+
+  "upholstery": "Black and tan leather, honeycomb-quilted with UA stitching",
+  "infotainment": "MBUX with widescreen digital cockpit",
+
+  "features": [
+    "Urban Automotive bronze multi-spoke wheels",
+    "Carbon-fibre wheel-arch extensions",
+    "Carbon-fibre bonnet vents with UA badge",
+    "UA badge in the AMG grille",
+    "Carbon-fibre front roof spoiler",
+    "Carbon-fibre rear roof spoiler",
+    "Carbon-fibre mirror caps",
+    "Carbon-fibre spare-wheel cover with UA logo",
+    "Urban seat badges and UA-embroidered headrests",
+    "Carbon-fibre interior trim",
+    "AMG RIDE CONTROL adaptive damping",
+    "Three selectable differential locks"
+  ],
+
+  "searchTags": ["g63", "g-class", "g-wagon", "urban-automotive", "amg", "pt5654"],
+
+  "exteriorColors": [{ "name": "Matt Black", "hex": "#2b2c2e" }],
+  "interiorColors": [
+    {
+      "name": "Black",
+      "hex": "#1a1a1a",
+      "isDualTone": true,
+      "hex2": "#b47a5e",
+      "secondaryName": "Tan"
+    }
+  ],
+
+  "valuePoints": [
+    {
+      "title": "The Urban Automotive styling is already on the car",
+      "description": "Carbon-fibre arches, bonnet vents, mirror caps, spoilers and spare-wheel cover, bronze Urban wheels and a UA-stitched cabin are all on the car in these photographs."
+    },
+    {
+      "title": "The full AMG drivetrain sits underneath",
+      "description": "The 4.0-litre V8 biturbo makes 430 kW and 850 Nm through the nine-speed AMG SPEEDSHIFT TCT 9G, with three selectable differential locks for off-road use."
+    },
+    {
+      "title": "Right-hand drive, from the 2026 model year",
+      "description": "This is a right-hand-drive G 63 from the 2026 model year, photographed as it stands under stock reference PT5654."
+    }
+  ],
+
+  "customData": [
+    { "label": "Stock reference", "value": "PT5654" },
+    { "label": "Model year", "value": "2026" },
+    { "label": "0–100 km/h", "value": "4.4 s" },
+    { "label": "Top speed", "value": "220 km/h" }
+  ],
+
+  "images": [
+    "/cars/mercedes-amg-g63-urban-pt5654/01-front-three-quarter.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/02-front-three-quarter-close.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/03-front.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/04-rear-three-quarter.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/05-front-detail.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/06-rear-detail.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/07-wheel.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/08-grille-badge.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/09-bonnet-vent.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/10-mirror.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/11-dashboard.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/12-cockpit.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/13-front-seats.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/14-seat.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/15-seat-badge.webp",
+    "/cars/mercedes-amg-g63-urban-pt5654/16-boot.webp"
+  ]
+}
