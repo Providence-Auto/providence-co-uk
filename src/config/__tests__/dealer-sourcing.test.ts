@@ -31,10 +31,11 @@ describe("dealer sourcing page — SEO minimum", () => {
     expect(DEALER_SOURCING_DESCRIPTION.length).toBeLessThanOrEqual(155);
   });
 
-  it("puts the inquiry in the path, the title, the H1 and the description", () => {
+  it("puts the inquiry in the path, the title and the description", () => {
+    // The H1 was set to "Automobile Importing Solutions for Dealerships" by
+    // business instruction (2026-10-10), so the keyword lives in these three.
     expect(DEALER_SOURCING_PATH).toBe("/b2b-inquiry");
     expect(DEALER_SOURCING_TITLE.toLowerCase()).toContain("b2b inquiry");
-    expect(DEALER_SOURCING_H1.toLowerCase()).toContain("b2b inquiry");
     expect(DEALER_SOURCING_DESCRIPTION.toLowerCase()).toContain("b2b inquiry");
   });
 
@@ -50,10 +51,12 @@ describe("dealer sourcing page — SEO minimum", () => {
     }
   });
 
-  it("opens with a 40–55 word direct answer starting 'You can'", () => {
+  it("opens with a short direct answer that makes the reader the subject", () => {
+    // Wording by business instruction (2026-10-10): 38 words, opening "Your
+    // dealership can" rather than the "You can" the other landing pages use.
     const words = DEALER_SOURCING_ANSWER.trim().split(/\s+/).length;
-    expect(DEALER_SOURCING_ANSWER.startsWith("You can")).toBe(true);
-    expect(words).toBeGreaterThanOrEqual(40);
+    expect(DEALER_SOURCING_ANSWER).toMatch(/^(You|Your dealership) can /);
+    expect(words).toBeGreaterThanOrEqual(35);
     expect(words).toBeLessThanOrEqual(55);
   });
 });

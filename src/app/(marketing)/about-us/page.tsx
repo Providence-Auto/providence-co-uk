@@ -637,7 +637,7 @@ export default function AboutUsPage() {
                 as="figure"
                 y={28}
                 duration={0.7}
-                className="order-2 lg:order-1"
+                className="order-2 lg:order-1 sm:pb-8"
               >
                 <div className="relative">
                   <div className="relative aspect-[3/4] overflow-hidden rounded-[2rem] ring-1 ring-black/5 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.5)]">
@@ -659,10 +659,6 @@ export default function AboutUsPage() {
                     />
                   </div>
                 </div>
-                <figcaption className="mt-6 sm:mt-14 text-sm font-light text-zinc-400">
-                  The same right-hand-drive Ferrari 296 GTB, inside and out —
-                  our mats, our plate.
-                </figcaption>
               </Reveal>
 
               <Reveal y={24} duration={0.6} className="order-1 lg:order-2">
@@ -671,8 +667,7 @@ export default function AboutUsPage() {
                   We are not a marketplace, and not a broker network.
                 </h2>
                 <p className="text-lg text-zinc-500 font-light">
-                  Providence Auto is the trading name of Providence Trading
-                  Limited. For 15+ years we've found, inspected and exported
+                  For 15+ years we've found, inspected and exported
                   every car ourselves — through our own people in the source
                   country, never a chain of intermediaries who never see the
                   vehicle.
