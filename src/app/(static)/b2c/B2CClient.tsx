@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Compass, Landmark, ShieldCheck, Ship } from "lucide-react";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 import DotGlobe, { GLOBE_PALETTE_LIGHT } from "@/components/DotGlobe";
 import FAQSection from "@/components/faqSection";
 import GradientMesh from "@/components/GradientMesh";
@@ -9,7 +9,8 @@ import MinimalHeader from "@/components/MinimalHeader";
 import OdometerCounter from "@/components/OdometerCounter";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
-import VoyageTrack, { type VoyageStage } from "@/components/VoyageTrack";
+import VoyageTrack from "@/components/VoyageTrack";
+import { IMPORT_STAGES } from "@/config/import-stages";
 
 // The hero counters. Same figures as /about-us, and the same reason for being
 // here: they are the scale that makes "any market" credible rather than a
@@ -24,19 +25,7 @@ const STATS = [
   { value: 24, suffix: " hrs", label: "To your first quote" },
 ];
 
-// The buyer-side view of an import. VoyageTrack's own defaults end at "Customs
-// cleared" → "Delivered"; we contract CNF to the destination port, so the last
-// two pips are stated at that level. Same treatment as /about-us.
-const IMPORT_STAGES: VoyageStage[] = [
-  { label: "You choose", at: 0 },
-  { label: "We find it", at: 0.18 },
-  { label: "Inspected", at: 0.36 },
-  { label: "At sea", at: 0.62 },
-  { label: "At your port", at: 0.84 },
-  { label: "Yours", at: 1 },
-];
-
-export default function B2CClient() {
+export default function B2CClient({ tools }: { tools?: ReactNode }) {
   return (
     <main className="min-h-screen bg-white text-black selection:bg-black/10 selection:text-black font-sans overflow-x-hidden">
       <MinimalHeader />
@@ -184,6 +173,9 @@ export default function B2CClient() {
           </Reveal>
         </div>
       </section>
+
+      {/* ── THE TOOLS, DEMONSTRATED (server-rendered, passed in) ── */}
+      {tools}
 
       <section className="py-32 px-6 max-w-7xl mx-auto bg-white relative z-10">
         <Reveal y={40} duration={0.8} className="text-center mb-24">

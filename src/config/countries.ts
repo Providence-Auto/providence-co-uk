@@ -109,6 +109,19 @@ const OG = (name: string) => `/source-cars/og/${name}.jpg`;
 export const INSPECTION_STANDARD =
   "Every car gets the same multi-point physical inspection from our own team, whichever country it is exported from — engine, transmission, underbody, electronics, bodywork and interior — photographed and sent to you before your payment is released. If it does not match the description you approved, it does not ship, and you are not charged.";
 
+/**
+ * The six areas `INSPECTION_STANDARD` names, as a list for the inspection demo.
+ * A test holds each one to the sentence above, so the two cannot drift.
+ */
+export const INSPECTION_POINTS = [
+  "Engine",
+  "Transmission",
+  "Underbody",
+  "Electronics",
+  "Bodywork",
+  "Interior",
+];
+
 /** Added to every country's export documents on the page. */
 export const SHIPPING_DOCUMENTS = [
   "Bill of lading",

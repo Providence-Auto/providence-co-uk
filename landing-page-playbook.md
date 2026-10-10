@@ -903,6 +903,15 @@ The seven questions raised on 2026-10-08, and the business's answers. Recorded i
 3. **The tools micro-demos (P3, R5): yes**, starting with the four that reuse
    existing components (`LandedCostBar`, `VoyageTrack`, the inspection
    checklist, the document pack) on `/b2c` and `/import-japanese-cars`.
+   **Shipped 2026-10-10** as `src/components/tool-demos/` (copy and data in
+   `src/config/tool-demos.ts`): the inspection, the landed quote and the
+   document pack on `/b2c` (whose process rail already draws the voyage), all
+   four on `/import-japanese-cars`. One change from the plan: the landed quote
+   shows its two parts and **no figures**, not `LandedCostBar`. That bar is the
+   UK engine, and its Japan example prints "Duty 0%", the rate the business
+   kept off landing pages on 2026-10-07; a UK rate would also be wrong on a page
+   for every destination. A destination-specific figure can come later, from
+   that destination's reviewed claims.
 4. **The import-plan builder (P11): yes, to be scoped** once P3 has shipped,
    from the destinations already marked `depth: "full"`.
 5. **A dark hero: no site-wide change.** If one is tried, it is a single A/B
