@@ -147,3 +147,51 @@ export function quadLength(
   }
   return length;
 }
+
+/**
+ * One cycle of a looping demo: it plays forward, holds on the finished state
+ * so it can be read, then fades back out before starting again.
+ */
+export type LoopTiming = { playMs: number; holdMs: number; fadeMs: number };
+
+/**
+ * Where a looping demo is. `progress` runs 0..1 over the play phase and stays
+ * at 1 through the hold and the fade; `fade` is 1 until the fade phase, then
+ * falls to 0 by the end of the cycle.
+ */
+export type LoopFrame = { progress: number; fade: number };
+
+/** The finished state: what the server renders and reduced motion keeps. */
+export const LOOP_FINISHED: LoopFrame = { progress: 1, fade: 1 };
+
+/** The frame `elapsedMs` into a loop, wrapping at the end of each cycle. */
+export function loopPhase(elapsedMs: number, timing: LoopTiming): LoopFrame {
+  const { playMs, holdMs, fadeMs } = timing;
+  const cycle = playMs + holdMs + fadeMs;
+  if (cycle <= 0) return LOOP_FINISHED;
+  const t = ((elapsedMs % cycle) + cycle) % cycle;
+  if (t < playMs) return { progress: t / playMs, fade: 1 };
+  if (t < playMs + holdMs || fadeMs <= 0) return LOOP_FINISHED;
+  return { progress: 1, fade: clamp01(1 - (t - playMs - holdMs) / fadeMs) };
+}
+
+/**
+ * How far along one step of a looping demo is, 0..1, faded with the loop.
+ *
+ * Multiplying by `fade` is what makes the restart seamless: every step eases
+ * back to its empty state during the fade, so when progress wraps from 1 to 0
+ * the picture is already empty and nothing jumps.
+ */
+export function stageLevel(frame: LoopFrame, window: Window): number {
+  return windowProgress(frame.progress, window) * frame.fade;
+}
+
+/**
+ * Opacity for a picture that cannot rewind gracefully (a route with a vessel on
+ * it): it dims to `floor` during the fade, and the next cycle brightens back up
+ * over its first `rampIn` of progress, so the restart happens while it is dim.
+ */
+export function loopOpacity(frame: LoopFrame, rampIn = 0.08, floor = 0.3) {
+  const level = frame.fade < 1 ? frame.fade : clamp01(frame.progress / rampIn);
+  return floor + (1 - floor) * level;
+}

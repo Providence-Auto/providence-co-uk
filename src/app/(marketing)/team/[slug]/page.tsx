@@ -83,6 +83,9 @@ export default async function TeamProfilePage({
     url: `${SITE}/team/${profile.slug}`,
     image: profile.photoUrl || undefined,
     knowsLanguage: profile.languages || undefined,
+    sameAs: Object.values(profile.socialLinks).length
+      ? Object.values(profile.socialLinks)
+      : undefined,
   };
 
   return (

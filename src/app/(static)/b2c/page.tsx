@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ToolDemos from "@/components/tool-demos/ToolDemos";
 import B2CClient from "./B2CClient";
 
 // The page body is a client component (framer-motion hero), and a client
@@ -34,5 +35,11 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <B2CClient />;
+  // The tracking demo is left out: the process rail above it already draws
+  // the voyage on this page.
+  return (
+    <B2CClient
+      tools={<ToolDemos cards={["inspection", "landed", "documents"]} />}
+    />
+  );
 }
