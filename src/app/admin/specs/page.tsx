@@ -60,6 +60,7 @@ import {
 } from "@/lib/vehicle-colors";
 import {
   cleanDestinationsForSave,
+  defaultDestinationSlugs,
   parseDestinationSlugs,
 } from "@/lib/vehicle-destinations";
 import {
@@ -605,7 +606,11 @@ function SpecBuilderContent() {
 
   // Destination markets this car is offered into. An ORDERED list of slugs —
   // the order is the ranking the car page renders, so it is never sorted here.
-  const [destinations, setDestinations] = useState<string[]>([]);
+  // A new listing starts on the default markets so no car page goes out
+  // without a country selector; the admin re-ranks or trims from there.
+  const [destinations, setDestinations] = useState<string[]>(() =>
+    defaultDestinationSlugs(["RHD"]),
+  );
 
   // Image Management State
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -660,10 +665,21 @@ function SpecBuilderContent() {
             setSteeringOptions(
               parseSteeringOptions(res.data.steeringOptions, res.data.steering),
             );
-            // Empty for every dossier authored before this column existed,
-            // which renders as no country selector at all rather than as a
-            // default set of markets nobody chose.
-            setDestinations(parseDestinationSlugs(res.data.destinations));
+            // A dossier saved with no markets is prefilled with the defaults,
+            // so saving it puts the country selector on its page.
+            const savedDestinations = parseDestinationSlugs(
+              res.data.destinations,
+            );
+            setDestinations(
+              savedDestinations.length > 0
+                ? savedDestinations
+                : defaultDestinationSlugs(
+                    parseSteeringOptions(
+                      res.data.steeringOptions,
+                      res.data.steering,
+                    ),
+                  ),
+            );
           } else {
             alert("Dossier not found or error fetching.");
           }
@@ -1123,6 +1139,16 @@ function SpecBuilderContent() {
                   onChange={(next) => {
                     setIsDirty(true);
                     setSteeringOptions(next);
+                    // While the markets are still the untouched defaults, keep
+                    // them in step with the hand: an LHD-only car drops the
+                    // markets that require right-hand drive.
+                    const untouched = defaultDestinationSlugs(steeringOptions);
+                    if (
+                      destinations.length === untouched.length &&
+                      destinations.every((slug, i) => slug === untouched[i])
+                    ) {
+                      setDestinations(defaultDestinationSlugs(next));
+                    }
                   }}
                 />
               </div>
