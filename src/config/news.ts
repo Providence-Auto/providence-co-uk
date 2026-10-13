@@ -478,7 +478,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     updatedDate: "2026-08-17",
     readingTimeMins: 8,
     heroImage:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2400&auto=format&fit=crop",
+      "/stock/classic-sports-car.webp",
     heroAlt:
       "A classic sports car at a concours event, illustrating collector car auction coverage",
     heroCaption:
@@ -695,7 +695,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     updatedDate: "2026-08-17",
     readingTimeMins: 8,
     heroImage:
-      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=2400&auto=format&fit=crop",
+      "/stock/classic-car.webp",
     heroAlt:
       "A car on a UK road, illustrating coverage of UK vehicle emissions policy",
     heroCaption: "Illustrative image.",
@@ -1046,11 +1046,11 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     updatedDate: "2026-08-18",
     readingTimeMins: 10,
     heroImage:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/MERCEDES_MAYBACH_S-CLASS_%28W223%29_China_%2826%29.jpg/1280px-MERCEDES_MAYBACH_S-CLASS_%28W223%29_China_%2826%29.jpg",
+      "/stock/maybach-s-class-w223.webp",
     heroAlt:
       "Mercedes-Maybach S-Class (W223) long-wheelbase saloon photographed in Shenzhen, China",
     heroCaption:
-      "Illustrative image — a Mercedes-Maybach S-Class (W223) photographed in Shenzhen on 15 January 2026, not the S 580 e First Class specification described here. Photo by Dinkun Chen, licensed under CC BY-SA 4.0 via Wikimedia Commons.",
+      "Illustrative image — a Mercedes-Maybach S-Class (W223) photographed in Shenzhen on 15 January 2026, not the S 580 e First Class specification described here. Photo by Dinkun Chen, licensed under CC BY-SA 4.0 via Wikimedia Commons; number plate blurred.",
     toc: [
       { id: "what-it-is", label: "What it actually is" },
       { id: "the-numbers", label: "The specification in full" },
@@ -2614,7 +2614,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     updatedDate: "2026-09-10",
     readingTimeMins: 11,
     heroImage:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2400&auto=format&fit=crop",
+      "/stock/classic-sports-car.webp",
     heroAlt:
       "A car photographed at dusk, illustrating the Japanese used vehicle export market",
     heroCaption:
@@ -3142,7 +3142,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     updatedDate: "2026-09-09",
     readingTimeMins: 9,
     heroImage:
-      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=2400&auto=format&fit=crop",
+      "/stock/classic-car.webp",
     heroAlt: "A classic car, illustrating the collector vehicle market",
     heroCaption:
       "Illustrative image. Not a photograph of any vehicle, index constituent or transaction referred to in this article.",
