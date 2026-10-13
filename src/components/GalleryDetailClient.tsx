@@ -533,7 +533,7 @@ export default function GalleryDetailClient({
                 <>
                   <br />
                   <span className="text-2xl md:text-3xl lg:text-4xl text-[#4da8da]">
-                    Imported to {selectedDestination.name}
+                    Import to {selectedDestination.name}
                   </span>
                 </>
               )}
