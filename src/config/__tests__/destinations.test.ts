@@ -16,6 +16,10 @@ import {
   splitDestinations,
 } from "@/config/destinations";
 import { COUNTRIES } from "@/lib/countries";
+import {
+  DEFAULT_DESTINATION_SLUGS,
+  defaultDestinationSlugs,
+} from "@/lib/vehicle-destinations";
 
 // The source countries a dossier's free-text `countryOfOrigin` can hold, as
 // src/config/countries.ts spells them.
@@ -373,5 +377,46 @@ describe("plain-node scripts", () => {
       expect(destination, `${slug} is not in the registry`).toBeTruthy();
       expect(destination?.rhdOnly === true, `${slug}`).toBe(rhdOnly === "true");
     }
+  });
+
+  // The default markets live in three places — the admin editor's helper, the
+  // backfill that wrote them onto every existing dossier and the
+  // create-car-page script — and all three must offer the same markets in the
+  // same order with the same hand rule.
+  it.each([
+    ["backfill-dossier-destinations.mjs", "MARKETS"],
+    ["create-car-page.mjs", "DEFAULT_DESTINATIONS"],
+  ])("%s agrees with DEFAULT_DESTINATION_SLUGS", (file, name) => {
+    const block = readScript(file).match(
+      new RegExp(`const ${name} = \\[([\\s\\S]*?)\\];`),
+    )?.[1];
+    expect(block, `${name} not found in ${file}`).toBeTruthy();
+
+    const entries = [
+      ...(block ?? "").matchAll(
+        /\{\s*slug:\s*"([a-z0-9-]+)"\s*,\s*rhdOnly:\s*(true|false)\s*\}/g,
+      ),
+    ];
+    expect(entries.map(([, slug]) => slug)).toEqual([
+      ...DEFAULT_DESTINATION_SLUGS,
+    ]);
+    for (const [, slug, rhdOnly] of entries) {
+      expect(getDestination(slug)?.rhdOnly === true, slug).toBe(
+        rhdOnly === "true",
+      );
+    }
+  });
+
+  it("drops the right-hand-drive-only markets for an LHD-only car", () => {
+    expect(defaultDestinationSlugs(["RHD"])).toEqual([
+      ...DEFAULT_DESTINATION_SLUGS,
+    ]);
+    expect(defaultDestinationSlugs(["RHD", "LHD"])).toEqual([
+      ...DEFAULT_DESTINATION_SLUGS,
+    ]);
+    const lhd = defaultDestinationSlugs(["LHD"]);
+    expect(lhd.length).toBeGreaterThan(0);
+    for (const slug of lhd)
+      expect(getDestination(slug)?.rhdOnly).not.toBe(true);
   });
 });

@@ -248,12 +248,36 @@ const DESTINATION_SLUGS = [
 ];
 
 /**
+ * The markets a car page is offered into when the brief names none, in the
+ * order they rank. Mirrors DEFAULT_DESTINATION_SLUGS in
+ * src/lib/vehicle-destinations.ts, and `rhdOnly` mirrors the registry —
+ * src/config/__tests__/destinations.test.ts fails the build if either drifts.
+ */
+const DEFAULT_DESTINATIONS = [
+  { slug: "ireland", rhdOnly: false },
+  { slug: "united-kingdom", rhdOnly: false },
+  { slug: "kenya", rhdOnly: true },
+  { slug: "tanzania", rhdOnly: true },
+  { slug: "sri-lanka", rhdOnly: true },
+];
+
+/**
  * The destination markets this car is offered into, in the brief's own order —
  * the order IS the ranking, so it is never sorted. An unknown slug is a typo
  * in the brief, and a typo that silently published a car into no markets would
  * be worse than a loud failure, so it stops the run.
+ *
+ * A brief with no `destinations` key gets the default markets, minus the
+ * right-hand-drive-only ones for a car sourced LHD only, so every car page
+ * carries a country selector. An explicit empty list is respected.
  */
-function normalizeDestinations(value) {
+function normalizeDestinations(value, steeringOptions) {
+  if (value === undefined) {
+    const canRhd = steeringOptions.includes("RHD");
+    return DEFAULT_DESTINATIONS.filter((m) => canRhd || !m.rhdOnly).map(
+      (m) => m.slug,
+    );
+  }
   const raw = Array.isArray(value) ? value : [];
   const seen = new Set();
   const slugs = [];
@@ -557,7 +581,10 @@ async function run() {
     exteriorColors: normalizeColors(brief.exteriorColors, "exteriorColors"),
     interiorColors: normalizeColors(brief.interiorColors, "interiorColors"),
     grades: normalizeGrades(brief.grades, images.length),
-    destinations: normalizeDestinations(brief.destinations),
+    destinations: normalizeDestinations(
+      brief.destinations,
+      normalizeSteeringOptions(brief.steeringOptions, brief.steering),
+    ),
     upholstery: String(brief.upholstery ?? ""),
     infotainment: String(brief.infotainment ?? ""),
     features: Array.isArray(brief.features) ? brief.features.map(String) : [],
