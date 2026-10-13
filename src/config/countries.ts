@@ -228,7 +228,7 @@ const unitedKingdom: CountryPageConfig = {
   meta: {
     title: "Import Cars from the UK: Get a Quote | Providence Auto",
     description:
-      "Import a car from the UK: MOT and finance history checked, inspected before you pay, shipped from Southampton or Tilbury to your port. Get a quote.",
+      "Import a car from the UK: MOT and finance history checked, inspected before you pay, shipped from Felixstowe or London Gateway to your port. Get a quote.",
     keywords: [
       "import cars from the uk",
       "import a car from the uk",
@@ -287,7 +287,7 @@ const unitedKingdom: CountryPageConfig = {
     ],
   },
   logistics: {
-    ports: ["Southampton", "Tilbury"],
+    ports: ["Felixstowe", "London Gateway"],
     shipsTo:
       "Ireland and mainland Europe by short-sea ferry; Africa, the Middle East, South Asia and the Caribbean by container or RoRo",
     transit: "Days to Ireland and Europe, roughly 3–6 weeks further afield",
