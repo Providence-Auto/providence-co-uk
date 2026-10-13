@@ -14,7 +14,8 @@
 // Three pieces, deliberately in this order on the page:
 //   1. DestinationChips  — the five buttons and the text-only overflow, in the
 //                          hero, because the destination decides the price.
-//   2. DestinationBrief  — the rules, the facts and a route to the form.
+//   2. DestinationBrief  — the rules, the facts and a route to the form,
+//                          directly under the chips so nothing scrolls.
 //   3. DestinationGuides — the reading list, as the page's ONE secondary CTA,
 //                          which is why it must be rendered *below* the inquiry
 //                          form and never above it (CLAUDE.md, secondary CTAs).
@@ -23,7 +24,6 @@
 import { ArrowRight, Globe2, MapPin } from "lucide-react";
 import Link from "next/link";
 import type { MouseEvent, ReactNode } from "react";
-import { Reveal } from "@/components/Reveal";
 import SecondaryCTA from "@/components/SecondaryCTA";
 import type {
   DestinationConfig,
@@ -258,66 +258,62 @@ export function DestinationBrief({
   id?: string;
   inquiryHref?: string;
 }) {
+  // Rendered inside the hero's choices card, directly under the country
+  // buttons, so a click opens the copy where the reader is already looking
+  // rather than scrolling them away from the buttons (business instruction
+  // 2026-10-13). Sized for the hero column, not for a full-width section.
   return (
     <section
       id={id}
-      className="mt-16 lg:mt-24 px-6 scroll-mt-24"
+      className="mt-5 pt-5 border-t border-black/5 scroll-mt-24 animate-in fade-in duration-300"
       aria-label={`Importing to ${destination.name}`}
     >
-      <Reveal
-        y={20}
-        duration={0.6}
-        className="max-w-[1400px] mx-auto rounded-[2rem] border border-black/8 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-7 md:p-11"
-      >
-        {/* A rule rather than an "Importing to Ireland" eyebrow: the heading
-            names the country, so the label would restate
-            the heading below it — CLAUDE.md, heading language. The rule does
-            the eyebrow's visual job of stepping down into the section, and
-            `aria-label` on the section carries the context for a screen
-            reader. */}
-        <span
-          aria-hidden
-          className="mb-6 block h-px w-12 bg-gradient-to-r from-sky-500 to-violet-500"
-        />
+      {/* A rule rather than an "Importing to Ireland" eyebrow: the heading
+          names the country, so the label would restate the heading below
+          it — CLAUDE.md, heading language. `aria-label` on the section
+          carries the context for a screen reader. */}
+      <span
+        aria-hidden
+        className="mb-4 block h-px w-10 bg-gradient-to-r from-sky-500 to-violet-500"
+      />
 
-        <h2 className="text-2xl md:text-4xl font-bold tracking-tighter text-black mb-4 max-w-4xl">
-          {briefHeading(vehicle, destination.name, isUsed)}
-        </h2>
-        <p className="text-base md:text-lg text-zinc-500 font-light leading-relaxed mb-8 max-w-3xl">
-          {briefBody(vehicle, destination.name)}
-        </p>
+      <h2 className="text-xl md:text-2xl font-bold tracking-tighter text-black mb-3">
+        {briefHeading(vehicle, destination.name, isUsed)}
+      </h2>
+      <p className="text-sm text-zinc-500 font-light leading-relaxed mb-5">
+        {briefBody(vehicle, destination.name)}
+      </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-          {copy.facts.map((fact) => (
-            <div
-              key={fact.label}
-              className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-zinc-50 border border-black/5 text-sm font-medium text-zinc-700"
-            >
-              <fact.icon size={17} className="text-black shrink-0" />
-              {fact.label}
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-4">
-          <a
-            href={inquiryHref}
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-black text-white text-sm font-bold hover:bg-zinc-800 transition-colors"
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+        {copy.facts.map((fact) => (
+          <div
+            key={fact.label}
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-zinc-50 border border-black/5 text-xs font-medium text-zinc-700"
           >
-            Start your {destination.name} inquiry
-            <ArrowRight size={16} />
-          </a>
-          {copy.landing && (
-            <Link
-              href={copy.landing.href}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-black/15 text-sm font-medium hover:bg-black hover:text-white transition-colors duration-300"
-            >
-              {copy.landing.label}
-              <ArrowRight size={16} />
-            </Link>
-          )}
-        </div>
-      </Reveal>
+            <fact.icon size={15} className="text-black shrink-0" />
+            {fact.label}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <a
+          href={inquiryHref}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black text-white text-xs font-bold hover:bg-zinc-800 transition-colors"
+        >
+          Start your {destination.name} inquiry
+          <ArrowRight size={14} />
+        </a>
+        {copy.landing && (
+          <Link
+            href={copy.landing.href}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-black/15 text-xs font-medium hover:bg-black hover:text-white transition-colors duration-300"
+          >
+            {copy.landing.label}
+            <ArrowRight size={14} />
+          </Link>
+        )}
+      </div>
     </section>
   );
 }
