@@ -47,14 +47,46 @@ export function parseDestinationSlugs(value: unknown): string[] {
 /**
  * The dossier's destinations, resolved to registry entries in the admin's
  * order. An empty list means the car page shows no destination selector at
- * all — which is the correct behaviour for every dossier written before this
- * column existed, rather than silently defaulting them into markets nobody
- * chose for them.
+ * all. Every car page is meant to carry one (business instruction
+ * 2026-10-13), so an empty list is filled from DEFAULT_DESTINATION_SLUGS at
+ * the point of authoring — the admin editor and the create-car-page script —
+ * never here, so an admin's deliberate ranking is the only thing a page reads.
  */
 export function parseDestinations(value: unknown): DestinationConfig[] {
   return parseDestinationSlugs(value)
     .map((slug) => getDestination(slug))
     .filter((d): d is DestinationConfig => d !== undefined);
+}
+
+/**
+ * The markets every car page is offered into unless an admin ranks it
+ * differently, in the order they rank. The same five that
+ * scripts/backfill-dossier-destinations.mjs wrote onto every existing dossier
+ * and scripts/create-car-page.mjs uses for a brief that names none —
+ * src/config/__tests__/destinations.test.ts fails the build if the three
+ * lists drift apart.
+ */
+export const DEFAULT_DESTINATION_SLUGS = [
+  "ireland",
+  "united-kingdom",
+  "kenya",
+  "tanzania",
+  "sri-lanka",
+] as const;
+
+/**
+ * The default markets for a car sourced in the given hands. A market flagged
+ * `rhdOnly` is dropped for a car that can only be sourced left-hand drive: a
+ * buyer there could not register it, so offering it would advertise a car
+ * nobody in that market can put on the road.
+ */
+export function defaultDestinationSlugs(steeringOptions: string[]): string[] {
+  const canRhd = steeringOptions.some(
+    (hand) => hand.trim().toUpperCase() === "RHD",
+  );
+  return DEFAULT_DESTINATION_SLUGS.filter(
+    (slug) => canRhd || !getDestination(slug)?.rhdOnly,
+  );
 }
 
 /**

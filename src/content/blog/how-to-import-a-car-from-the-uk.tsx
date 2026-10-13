@@ -194,7 +194,7 @@ export default function Body() {
         For Ireland, roll-on ferry crossings run daily and the paperwork is the
         constraint rather than the sailing. For mainland Europe, short-sea
         routes are similarly quick. Beyond Europe, container or RoRo sails from
-        Southampton or Tilbury, and the sailing frequency for your route matters
+        Felixstowe or London Gateway, and the sailing frequency for your route matters
         more than the port name.
       </P>
       <P>

@@ -2,6 +2,11 @@
 //
 //   node --env-file=.env.local scripts/backfill-dossier-destinations.mjs dev
 //   node --env-file=.env.local scripts/backfill-dossier-destinations.mjs dev --apply
+//   node --env-file=.env.local scripts/backfill-dossier-destinations.mjs dev --empty-only --apply
+//
+// --empty-only touches only the car pages with no markets at all, which is
+// what a newly created page looks like. A list someone has already curated —
+// a market taken out on purpose included — is left exactly as it is.
 //
 // Default is a read-only report. Nothing is written without --apply.
 //
@@ -103,6 +108,7 @@ async function run() {
   const args = process.argv.slice(2);
   const envName = args.find((a) => !a.startsWith("--"));
   const apply = args.includes("--apply");
+  const emptyOnly = args.includes("--empty-only");
 
   if (!envName || !ENVS[envName]) {
     fail(
@@ -163,7 +169,13 @@ async function run() {
 
     console.log("");
     for (const row of rows) {
-      const { added, skipped, next } = plan(row);
+      const { existing, added, skipped, next } = plan(row);
+
+      if (emptyOnly && existing.length > 0) {
+        unchanged += 1;
+        console.log(`  · ${label(row)} — already has markets, left as is`);
+        continue;
+      }
 
       if (added.length === 0) {
         unchanged += 1;

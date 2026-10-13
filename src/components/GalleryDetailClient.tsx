@@ -283,7 +283,6 @@ export default function GalleryDetailClient({
    */
   const pickDestination = (destination: DestinationConfig) => {
     setSelectedDestinationSlug(destination.slug);
-    setScrollToBrief(true);
 
     if (typeof window !== "undefined" && car.slug) {
       window.history.replaceState(
@@ -293,22 +292,6 @@ export default function GalleryDetailClient({
       );
     }
   };
-
-  // Scrolling has to wait for the panel to exist. On the base car page nothing
-  // is selected, so the panel is not mounted, and doing this inside the click
-  // handler meant the *first* chip click found nothing to scroll to and looked
-  // like a dead button — every click after it worked, which is worse than never
-  // working. The flag keeps it to a deliberate pick rather than firing on the
-  // selection a shared link arrives with, where the reader has not asked to be
-  // moved anywhere.
-  const [scrollToBrief, setScrollToBrief] = useState(false);
-  useEffect(() => {
-    if (!scrollToBrief || !selectedDestinationSlug) return;
-    setScrollToBrief(false);
-    document
-      .getElementById("destination")
-      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [scrollToBrief, selectedDestinationSlug]);
 
   const steeringOptions = useMemo(
     () => parseSteeringOptions(car.steeringOptions, car.steering),
@@ -561,9 +544,9 @@ export default function GalleryDetailClient({
             {car.isUpcoming && (
               <div className="mt-3 rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
                 <p className="text-sm text-zinc-600 font-light leading-relaxed">
-                  Announced but not yet available to import. Register your interest
-                  and we&rsquo;ll come back with a landed cost for your country
-                  once specification and pricing are confirmed.
+                  Announced but not yet available to import. Register your
+                  interest and we&rsquo;ll come back with a landed cost for your
+                  country once specification and pricing are confirmed.
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
                   {car.expectedAvailability && (
@@ -648,6 +631,19 @@ export default function GalleryDetailClient({
                       onSelect={pickDestination}
                       carSlug={car.slug}
                     />
+
+                    {/* What changes once the car has a destination, opened
+                        directly under the buttons so a click never moves the
+                        reader. Rendered only when one is chosen — the chips
+                        already ask the question. */}
+                    {selectedDestination && destinationBrief && (
+                      <DestinationBrief
+                        destination={selectedDestination}
+                        copy={destinationBrief}
+                        vehicle={formatVehicleTitle(car.make, car.model)}
+                        isUsed={isUsed}
+                      />
+                    )}
                   </div>
                 )}
 
@@ -856,18 +852,6 @@ export default function GalleryDetailClient({
           </Reveal>
         </div>
       </section>
-
-      {/* What changes once the car has a destination. Rendered only when one is
-          chosen — a placeholder card announcing that nothing has been chosen
-          yet would be filler, and the chips above already ask the question. */}
-      {selectedDestination && destinationBrief && (
-        <DestinationBrief
-          destination={selectedDestination}
-          copy={destinationBrief}
-          vehicle={formatVehicleTitle(car.make, car.model)}
-          isUsed={isUsed}
-        />
-      )}
 
       {/* Details */}
       <section className="mt-16 lg:mt-24 px-6 max-w-[1400px] mx-auto">
