@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { db, requests, salesProfiles, specDossiers } from "@/db";
 import { pathnameToSource } from "@/lib/leadSource";
+import { cleanSocialLinksForSave, parseSocialLinks } from "@/lib/social-links";
 import { auth } from "@/utils/auth";
 
 // Slugs that must never become a member profile (would collide with real routes
@@ -93,6 +94,7 @@ function mapSalesProfile(raw: typeof salesProfiles.$inferSelect) {
       note: string;
     }[],
     trackRecord: (raw.trackRecord || []) as { value: string; label: string }[],
+    socialLinks: parseSocialLinks(raw.socialLinks),
     testimonials: (raw.testimonials || []) as {
       name: string;
       title: string;
@@ -277,6 +279,7 @@ export async function updateMyProfile(input: {
   }[];
   featuredDossierIds?: string[];
   whatsappNumber?: string;
+  socialLinks?: Record<string, string>;
 }) {
   try {
     const session = await requireSession();
@@ -380,6 +383,19 @@ export async function updateMyProfile(input: {
       updateData.testimonials = input.testimonials;
     if (input.whatsappNumber !== undefined)
       updateData.whatsappNumber = input.whatsappNumber;
+    if (input.socialLinks !== undefined) {
+      const { links, invalid } = cleanSocialLinksForSave(input.socialLinks);
+      if (invalid) {
+        return {
+          success: false,
+          message:
+            invalid === "Website"
+              ? "That website link doesn't look right — paste the full address, starting https://."
+              : `That ${invalid} link doesn't look right — paste the full link from ${invalid}, or just your handle.`,
+        };
+      }
+      updateData.socialLinks = links;
+    }
     if (input.featuredDossierIds !== undefined) {
       updateData.featuredDossierIds = input.featuredDossierIds.filter(
         (id) => typeof id === "string" && id.trim() !== "",
