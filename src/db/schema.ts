@@ -89,6 +89,9 @@ export const salesProfiles = pgTable("salesprofile", {
   testimonials: jsonb("testimonials").notNull().default([]),
   featuredDossierIds: text("featuredDossierIds").array().notNull().default([]),
   whatsappNumber: text("whatsappNumber").notNull(),
+  // { instagram?, linkedin?, tiktok?, facebook?, x?, youtube?, website? } —
+  // full https URLs, shape and validation in src/lib/social-links.ts.
+  socialLinks: jsonb("socialLinks").notNull().default({}),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
