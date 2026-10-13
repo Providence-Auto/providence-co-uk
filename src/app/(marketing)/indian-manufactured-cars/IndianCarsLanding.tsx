@@ -643,7 +643,7 @@ export default function IndianCarsLanding() {
               className="group grid md:grid-cols-2 gap-0 overflow-hidden rounded-[2rem] border border-black/8 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.06)] transition-shadow hover:shadow-[0_30px_60px_rgba(0,0,0,0.1)]"
             >
               <img
-                src="https://images.unsplash.com/photo-1685019718640-6e562edc365e?q=80&w=1600&auto=format&fit=crop"
+                src="/stock/indian-cars.webp"
                 alt="Indian-manufactured car — why they cost less"
                 loading="lazy"
                 className="h-56 md:h-full w-full object-cover"

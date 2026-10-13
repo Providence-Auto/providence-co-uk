@@ -59,7 +59,7 @@ export const lhdCampaignConfig: LandingPageConfig = {
     subtitle:
       "Import grade-verified LHD supercars and luxury saloons direct from Japan's auctions and certified dealers — genuine factory left-hand drive, landed at your port. No conversions, no compromise.",
     backgroundImage:
-      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=3000&auto=format&fit=cover",
+      "/stock/classic-car.webp",
   },
   intro: {
     highlight: "No conversions. No compromise.",
