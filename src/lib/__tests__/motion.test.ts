@@ -4,11 +4,15 @@ import {
   digitCount,
   easeInOutCubic,
   easeOutCubic,
+  LOOP_FINISHED,
+  loopOpacity,
+  loopPhase,
   odometerColumns,
   quadAngle,
   quadLength,
   quadPoint,
   segmentWindow,
+  stageLevel,
   windowProgress,
 } from "@/lib/motion";
 
@@ -252,5 +256,72 @@ describe("quadratic Bézier", () => {
     const b = { x: 5, y: 5 };
     const c = { x: 10, y: 10 };
     expect(quadLength(a, b, c)).toBeCloseTo(Math.hypot(10, 10), 6);
+  });
+});
+
+describe("loopPhase", () => {
+  const timing = { playMs: 4000, holdMs: 2000, fadeMs: 1000 };
+
+  it("plays forward, holds finished, then fades", () => {
+    expect(loopPhase(0, timing)).toEqual({ progress: 0, fade: 1 });
+    expect(loopPhase(2000, timing)).toEqual({ progress: 0.5, fade: 1 });
+    expect(loopPhase(5000, timing)).toEqual(LOOP_FINISHED);
+    expect(loopPhase(6500, timing)).toEqual({ progress: 1, fade: 0.5 });
+  });
+
+  it("wraps at the end of each cycle", () => {
+    expect(loopPhase(7000, timing)).toEqual({ progress: 0, fade: 1 });
+    expect(loopPhase(7000 * 3 + 2000, timing)).toEqual({
+      progress: 0.5,
+      fade: 1,
+    });
+  });
+
+  it("is finished, not frozen at the start, for a zero-length cycle", () => {
+    expect(loopPhase(123, { playMs: 0, holdMs: 0, fadeMs: 0 })).toEqual(
+      LOOP_FINISHED,
+    );
+  });
+});
+
+describe("stageLevel", () => {
+  const timing = { playMs: 4000, holdMs: 2000, fadeMs: 1000 };
+  const steps = 4;
+
+  it("has every step empty both sides of the wrap, so the restart is seamless", () => {
+    for (let i = 0; i < steps; i += 1) {
+      const window = segmentWindow(i, steps, 0.3);
+      expect(stageLevel(loopPhase(6999.9, timing), window)).toBeCloseTo(0, 3);
+      expect(stageLevel(loopPhase(7000, timing), window)).toBe(0);
+    }
+  });
+
+  it("has every step complete through the hold", () => {
+    for (let i = 0; i < steps; i += 1) {
+      const window = segmentWindow(i, steps, 0.3);
+      expect(stageLevel(loopPhase(4500, timing), window)).toBe(1);
+    }
+  });
+
+  it("is complete in the finished state the server renders", () => {
+    for (let i = 0; i < steps; i += 1) {
+      expect(stageLevel(LOOP_FINISHED, segmentWindow(i, steps, 0.3))).toBe(1);
+    }
+  });
+});
+
+describe("loopOpacity", () => {
+  const timing = { playMs: 4000, holdMs: 2000, fadeMs: 1000 };
+
+  it("is continuous across the wrap", () => {
+    const before = loopOpacity(loopPhase(6999.9, timing));
+    const after = loopOpacity(loopPhase(7000, timing));
+    expect(after).toBeCloseTo(before, 3);
+  });
+
+  it("is fully opaque through the play and the hold, and when finished", () => {
+    expect(loopOpacity(loopPhase(2000, timing))).toBe(1);
+    expect(loopOpacity(loopPhase(5000, timing))).toBe(1);
+    expect(loopOpacity(LOOP_FINISHED)).toBe(1);
   });
 });

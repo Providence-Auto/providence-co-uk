@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ToolDemos from "@/components/tool-demos/ToolDemos";
 import { japanImportCampaignConfig } from "@/config/landing-pages";
 import JapanImportLanding from "./JapanImportLanding";
 
@@ -183,7 +184,14 @@ export default function ImportJapaneseCarsPage() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <JapanImportLanding />
+      <JapanImportLanding
+        tools={
+          <ToolDemos
+            source="japan"
+            cards={["inspection", "documents", "landed", "tracking"]}
+          />
+        }
+      />
     </>
   );
 }

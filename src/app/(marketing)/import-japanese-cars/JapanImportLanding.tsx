@@ -10,7 +10,7 @@ import {
   Plus,
   ShieldCheck,
 } from "lucide-react";
-import { Suspense, useMemo, useState } from "react";
+import { type ReactNode, Suspense, useMemo, useState } from "react";
 import {
   type Destination,
   DestinationChips,
@@ -383,7 +383,12 @@ const DESTINATIONS: Destination[] = [
   },
 ];
 
-export default function JapanImportLanding() {
+export default function JapanImportLanding({
+  tools,
+}: {
+  /** The tools section, rendered on the server and passed in. */
+  tools?: ReactNode;
+}) {
   const config = japanImportCampaignConfig;
 
   // Country pill → destination panel + form countryOfImport prefill.
@@ -743,6 +748,9 @@ export default function JapanImportLanding() {
           </Reveal>
         </div>
       </section>
+
+      {/* ── THE TOOLS, DEMONSTRATED (server-rendered, passed in) ── */}
+      {tools}
 
       {/* ── INQUIRY FORM + FAQ ───────────────────────── */}
       <section

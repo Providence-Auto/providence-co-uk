@@ -56,12 +56,18 @@ type Props = {
    * animate the full route once in view instead.
    */
   progress?: number;
+  /**
+   * Draw the stage names under the pips. Turn off where the rail is rendered
+   * too small to read them (a card) and the caller shows the stage itself.
+   */
+  showLabels?: boolean;
   className?: string;
 };
 
 export default function VoyageTrack({
   stages = DEFAULT_STAGES,
   progress: fixedProgress,
+  showLabels = true,
   className = "",
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -132,16 +138,18 @@ export default function VoyageTrack({
                 strokeWidth={2}
                 className="transition-all duration-300"
               />
-              <text
-                x={point.x}
-                y={point.y + 28}
-                textAnchor="middle"
-                fontSize={13}
-                fill={passed ? "#3f3f46" : "#a1a1aa"}
-                className="transition-colors duration-300"
-              >
-                {stage.label}
-              </text>
+              {showLabels && (
+                <text
+                  x={point.x}
+                  y={point.y + 28}
+                  textAnchor="middle"
+                  fontSize={13}
+                  fill={passed ? "#3f3f46" : "#a1a1aa"}
+                  className="transition-colors duration-300"
+                >
+                  {stage.label}
+                </text>
+              )}
             </g>
           );
         })}

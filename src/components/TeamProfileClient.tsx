@@ -23,6 +23,8 @@ import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
+import SocialIcon from "@/components/SocialIcon";
+import { SOCIAL_PLATFORMS, type SocialLinks } from "@/lib/social-links";
 import { formatLeadPrice, formatVehicleTitle } from "@/lib/vehicle";
 
 // Icons a member can attach to an expertise card, resolved from the stored
@@ -70,6 +72,7 @@ type Profile = {
     rating: number;
   }[];
   whatsappNumber?: string;
+  socialLinks?: SocialLinks;
   userId: string;
 };
 
@@ -90,6 +93,14 @@ export default function TeamProfileClient({
     (profile.displayName || "").split(" ")[0] || "our specialist";
   const wa = waLink(profile.whatsappNumber);
   const bioParagraphs = (profile.bio || "").split(/\n\n+/).filter(Boolean);
+  // Only the links the consultant actually filled in get an icon.
+  const socials = [
+    ...(wa ? [{ key: "whatsapp" as const, label: "WhatsApp", href: wa }] : []),
+    ...SOCIAL_PLATFORMS.flatMap((p) => {
+      const href = profile.socialLinks?.[p.key];
+      return href ? [{ key: p.key, label: p.label, href }] : [];
+    }),
+  ];
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col relative overflow-x-hidden font-sans selection:bg-black/10 selection:text-black">
@@ -197,6 +208,24 @@ export default function TeamProfileClient({
                   />
                 </a>
               </Reveal>
+              {socials.length > 0 && (
+                <ul className="flex flex-wrap items-center gap-2 mt-5">
+                  {socials.map((s) => (
+                    <li key={s.key}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer me"
+                        aria-label={`${firstName} on ${s.label}`}
+                        title={s.label}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/5 text-zinc-700 hover:bg-black hover:text-white transition-colors"
+                      >
+                        <SocialIcon platform={s.key} size={17} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <p className="text-xs text-zinc-400 mt-5">
                 Backed by Providence Auto — a global vehicle sourcing &amp;
                 export group with our own teams in seven countries.
