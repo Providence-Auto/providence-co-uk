@@ -48,7 +48,7 @@ export default function VehicleShowcaseCarousel({ tags }: { tags: string[] }) {
       <div className="flex overflow-x-auto gap-8 pb-8 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
         {vehicles.map((car: any, i: number) => {
           const fallbackImg =
-            "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2938&auto=format&fit=crop";
+            "/home/hero-1920.webp";
           const heroImage =
             car.images && car.images.length > 0 ? car.images[0] : fallbackImg;
 

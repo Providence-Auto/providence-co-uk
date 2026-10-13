@@ -38,7 +38,7 @@ const BRANDS: { name: string; make: string; image: string }[] = [
   {
     name: "Bentley",
     make: "Bentley",
-    image: IMG("1725181952127-93be5d418102"),
+    image: "/stock/bentley.webp",
   },
   {
     name: "Ferrari",

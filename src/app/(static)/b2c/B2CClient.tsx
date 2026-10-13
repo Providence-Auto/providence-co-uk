@@ -31,7 +31,7 @@ export default function B2CClient({ tools }: { tools?: ReactNode }) {
       <MinimalHeader />
 
       <section className="relative min-h-screen flex flex-col justify-center items-start px-6 pt-20 bg-white overflow-hidden">
-        <GradientMesh image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=3000&auto=format&fit=cover" />
+        <GradientMesh image="/stock/classic-car.webp" />
 
         <div className="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center mt-0">
           <Reveal
@@ -255,7 +255,7 @@ export default function B2CClient({ tools }: { tools?: ReactNode }) {
       {/*    >*/}
       {/*        <Link href="/b2c/gallery" className="group relative block w-full overflow-hidden rounded-[2.5rem] bg-black min-h-[400px] md:min-h-[500px]">*/}
       {/*            <img*/}
-      {/*                src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2938&auto=format&fit=crop"*/}
+      {/*                src="/home/hero-1920.webp"*/}
       {/*                alt="The Providence Gallery"*/}
       {/*                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-[1.5s] ease-out"*/}
       {/*            />*/}
