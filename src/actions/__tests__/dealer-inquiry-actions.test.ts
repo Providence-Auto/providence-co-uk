@@ -277,6 +277,50 @@ describe("submitDealerInquiry", () => {
     });
   });
 
+  it("routes a Malta inquiry to Shaq too", async () => {
+    state.results.push([SHAQ], []);
+
+    const result = await submitDealerInquiry(
+      validInput({ country: "Malta", whatsapp: "7912 3456" }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-shaq",
+      assignmentMethod: "country",
+    });
+  });
+
+  it("routes Cyprus to Shaq when he is B2B Sales", async () => {
+    state.results.push([{ ...SHAQ, role: "B2B Sales" }], []);
+
+    await submitDealerInquiry(
+      validInput({ country: "Cyprus", whatsapp: "99 123456" }) as Submit,
+    );
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-shaq",
+      assignmentMethod: "country",
+    });
+  });
+
+  // Dealer inquiries go to B2B Sales and Sales (business instruction
+  // 2026-10-14); a B2C salesperson never comes up in the dealer rotation.
+  it("keeps B2C Sales out of the dealer rotation", async () => {
+    const b2cOnly = user(
+      "u-b2c",
+      "Aaron",
+      "aaron@providenceauto.uk.com",
+      "B2C Sales",
+    );
+    state.results.push([b2cOnly, { ...DILSHARD, role: "B2B Sales" }], [], []);
+
+    await submitDealerInquiry(validInput() as Submit);
+
+    // Alphabetically Aaron would come first; his position keeps him out.
+    expect(state.inserted[0]).toMatchObject({ assignedToId: "u-dil" });
+  });
+
   it("sends the consultant's alert and the dealer's receipt", async () => {
     state.results.push([ABDALLAH], [], []);
     const input = validInput();

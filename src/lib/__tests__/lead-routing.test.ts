@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   COUNTRY_OWNER_EMAILS,
-  countryLeadOwner,
+  isSalesRole,
+  SALES_POSITIONS,
+  takesB2cLeads,
+  takesDealerLeads,
+  b2cCountryLeadOwner,
+  dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
   pickNextInRotation,
 } from "@/lib/lead-routing";
@@ -104,14 +109,57 @@ describe("isExcludedFromDealerRotation", () => {
 });
 
 describe("country owners", () => {
-  it("routes Cyprus to its owner, case-insensitively", () => {
-    expect(countryLeadOwner("Cyprus")).toBe("shaq@providenceauto.uk.com");
-    expect(countryLeadOwner("  cyprus ")).toBe("shaq@providenceauto.uk.com");
-    expect(countryLeadOwner("Kenya")).toBeUndefined();
-    expect(countryLeadOwner(undefined)).toBeUndefined();
+  it("routes Malta and Cyprus dealer inquiries to Shaq, case-insensitively", () => {
+    for (const country of ["Cyprus", "  cyprus ", "Malta", "MALTA"]) {
+      expect(dealerCountryLeadOwner(country), country).toBe(
+        "shaq@providenceauto.uk.com",
+      );
+    }
+    expect(dealerCountryLeadOwner("Kenya")).toBeUndefined();
+    expect(dealerCountryLeadOwner(undefined)).toBeUndefined();
+  });
+
+  // Every B2C lead goes to B2C Sales (business instruction 2026-10-14).
+  it("gives no B2C market a named owner", () => {
+    for (const country of ["Cyprus", "Malta", "Ireland", "United Kingdom"]) {
+      expect(b2cCountryLeadOwner(country), country).toBeUndefined();
+    }
   });
 
   it("holds every owner out of the general rotation", () => {
     expect(COUNTRY_OWNER_EMAILS.has("shaq@providenceauto.uk.com")).toBe(true);
+  });
+});
+
+describe("sales positions", () => {
+  it("sends B2C leads to B2C Sales and Sales, never to B2B Sales", () => {
+    expect(takesB2cLeads("B2C Sales")).toBe(true);
+    expect(takesB2cLeads("Sales")).toBe(true);
+    expect(takesB2cLeads("B2B Sales")).toBe(false);
+  });
+
+  it("sends dealer inquiries to B2B Sales and Sales, never to B2C Sales", () => {
+    expect(takesDealerLeads("B2B Sales")).toBe(true);
+    expect(takesDealerLeads("Sales")).toBe(true);
+    expect(takesDealerLeads("B2C Sales")).toBe(false);
+  });
+
+  it("ignores capitalisation and stray spaces in a stored role", () => {
+    expect(takesB2cLeads(" b2c  sales ")).toBe(true);
+    expect(takesDealerLeads("SALES")).toBe(true);
+  });
+
+  it("gives no lead to anyone outside a sales position", () => {
+    for (const role of ["Admin", "Staff", "User", "dealer", "", null]) {
+      expect(isSalesRole(role), String(role)).toBe(false);
+      expect(takesB2cLeads(role), String(role)).toBe(false);
+      expect(takesDealerLeads(role), String(role)).toBe(false);
+    }
+  });
+
+  it("offers every position on the Users screen", () => {
+    for (const position of SALES_POSITIONS) {
+      expect(isSalesRole(position), position).toBe(true);
+    }
   });
 });

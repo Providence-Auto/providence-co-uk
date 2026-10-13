@@ -353,7 +353,7 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 ### Server Actions
 
 All mutations go through server actions in `src/actions/`, not API routes. Key actions:
-- `submitCarRequest` — creates Request, assigns agent round-robin, sends email alerts
+- `submitCarRequest` — creates Request, assigns agent (profile-page pin to that person whatever their position, else round-robin across **B2C Sales** and **Sales**), sends email alerts
 - `dealer-inquiry-actions.ts` — `submitDealerInquiry` (public, from `/b2b-inquiry`) and the `/admin/dealer-inquiries` actions. See "B2B inquiry page" below.
 
 ### B2B inquiry page (`/b2b-inquiry`)
@@ -362,7 +362,7 @@ A landing page built around one action — a dealership sending a sourcing inqui
 
 - **The market check never prints the destination list.** It answers from `DESTINATIONS` (`src/lib/dealer-markets.ts`, server-side): a destination whose traffic keeps left (every one but Germany — `drives` on each registry entry) → "yes"; a left-traffic country we don't list (`LEFT_TRAFFIC_COUNTRIES` in `src/config/dealer-sourcing.ts`) → let through, flagged "not on list" for the consultant to confirm; right-traffic → pointed at `/japanese-luxury-cars-lhd`. The copy says "drive on the left", never "RHD market" — see the note above `listed()` in `src/config/destinations.ts`.
 - **One set of rules on both sides.** `src/lib/dealer-inquiry.ts` holds every validator; the form runs them for inline errors and `submitDealerInquiry` runs them again before storing anything. The WhatsApp number is checked with libphonenumber's *max* metadata against the dealer's own country (the default metadata only checks length); the form loads it lazily.
-- **Assignment** (`src/lib/lead-routing.ts`): a country owner first (`COUNTRY_LEAD_OWNERS`, shared with B2C), then a least-recently-assigned rotation across Sales — its own rotation, separate from B2C leads — under a transaction-scoped advisory lock, stamped with the database clock once the lock is held, so two submissions can't land on the same person. **`DEALER_ROTATION_EXCLUDED` keeps Chathuranga out of it** — keyed on his account email (`chathuranga@providenceauto.uk.com`, business instruction 2026-09-30), never on the name, which is common enough to catch someone else. An exclusion never falls back to the excluded person: the inquiry goes unassigned and the alert goes to the general inbox. **Every Cyprus inquiry goes to Shaq** (country owner), confirmed for dealer inquiries on 2026-09-30.
+- **Assignment** (`src/lib/lead-routing.ts`): a country owner first (`DEALER_COUNTRY_LEAD_OWNERS`), then a least-recently-assigned rotation across **B2B Sales** and **Sales** — its own rotation, separate from B2C leads — under a transaction-scoped advisory lock, stamped with the database clock once the lock is held, so two submissions can't land on the same person. **`DEALER_ROTATION_EXCLUDED` keeps Chathuranga out of it** — keyed on his account email (`chathuranga@providenceauto.uk.com`, business instruction 2026-09-30), never on the name, which is common enough to catch someone else. An exclusion never falls back to the excluded person: the inquiry goes unassigned and the alert goes to the general inbox. **Every Malta and Cyprus dealer inquiry goes to Shaq** (country owner; Cyprus since 2026-09-30, Malta since 2026-10-14). B2C leads have no country owners: every one goes to B2C Sales (2026-10-14).
 - **Abuse limits** (`src/lib/rate-limit.ts`, in memory): 5 complete requests an hour per client address and at most 2 receipts a day per inbox; a failed insert gives its hit back, and loopback addresses (a local server) are never limited. The receipt's subject carries only our reference, never dealer-typed text.
 - **It is framed on the inquiry, not on "dealer car sourcing"** (business instruction 2026-09-30): `/b2b` keeps that phrase, and a test fails if this page's title, H1 or description reaches for it.
 - **The per-car vocabulary is shared** with the B2C form through `src/lib/vehicle-inquiry.ts` (makes, year presets, mileage, timelines, the NHTSA model lookup) and `src/components/DualRangeSlider.tsx`, so the two forms can't drift apart.
@@ -373,7 +373,9 @@ A landing page built around one action — a dealership sending a sourcing inqui
 
 ### Auth & Roles
 
-Better-Auth custom fields on users: `role` (user/Sales/admin), `isBanned`, `badges`, `whatsappNumber`. Social providers: Google, Facebook, Discord. No `middleware.ts` — route protection is handled at the component/action level.
+Better-Auth custom fields on users: `role` (user/Staff/Admin, or a sales position), `isBanned`, `badges`, `whatsappNumber`.
+
+**Sales positions** (business instruction 2026-10-14) are roles set on `/admin/users`: **B2C Sales** takes every lead except dealer inquiries, **B2B Sales** takes dealer inquiries, **Sales** takes both. The lists and the `takesB2cLeads` / `takesDealerLeads` / `isSalesRole` helpers live in `src/lib/lead-routing.ts` — compare roles through them, never against the literal `"sales"`, which would leave the two new positions out. Roles are stored with inconsistent capitalisation across environments, so the helpers normalise. Social providers: Google, Facebook, Discord. No `middleware.ts` — route protection is handled at the component/action level.
 
 ### shadcn Components
 

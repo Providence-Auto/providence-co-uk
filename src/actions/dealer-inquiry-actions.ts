@@ -48,10 +48,12 @@ import { marketStatusFor } from "@/lib/dealer-markets";
 import { emailService } from "@/lib/email";
 import {
   COUNTRY_OWNER_EMAILS,
-  countryLeadOwner,
   DEALER_ROTATION_EXCLUDED,
+  dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
   pickNextInRotation,
+  SALES_ROLES,
+  takesDealerLeads,
 } from "@/lib/lead-routing";
 import { clientAddress, createRateLimiter } from "@/lib/rate-limit";
 import { auth } from "@/utils/auth";
@@ -59,15 +61,20 @@ import { auth } from "@/utils/auth";
 const ADMIN_PATH = "/admin/dealer-inquiries";
 
 /**
- * Who may own a dealer inquiry through the rotation: an active member of the
- * Sales team — the same rule as a B2C lead. Role is compared
- * case-insensitively because the environments disagree on capitalisation.
+ * Active members in any sales position. Who among them may own a dealer
+ * inquiry — B2B Sales or Sales — is decided by `takesDealerLeads`
+ * (src/lib/lead-routing.ts, business instruction 2026-10-14). Role is
+ * lower-cased and trimmed because the environments disagree on
+ * capitalisation.
  */
-const canOwnLeads = () =>
-  and(sql`lower(${users.role}) = 'sales'`, ne(users.isBanned, true));
+const inSalesPosition = () =>
+  and(
+    inArray(sql`lower(trim(${users.role}))`, SALES_ROLES),
+    ne(users.isBanned, true),
+  );
 
 /** Roles that work the admin panel. */
-const STAFF_ROLES = ["admin", "sales", "staff"];
+const STAFF_ROLES = ["admin", "staff", ...SALES_ROLES];
 
 const isSourceMarket = (slug: string) =>
   DEALER_SOURCE_MARKETS.some((m) => m.slug === slug);
@@ -254,43 +261,47 @@ export async function submitDealerInquiry(
       let chosen: typeof users.$inferSelect | null = null;
       let method: "country" | "round-robin" = "round-robin";
 
-      // 1. A market with a named owner goes to them, as it does for B2C leads.
-      //    An owner who is missing, banned or no longer Sales falls through.
-      const ownerEmail = countryLeadOwner(country);
+      // 1. A market with a named owner goes to them — Malta and Cyprus to
+      //    Shaq. An owner who is missing, banned or no longer in a position
+      //    that takes dealer inquiries falls through to the rotation.
+      const ownerEmail = dealerCountryLeadOwner(country);
       if (ownerEmail) {
         const [owner] = await tx
           .select()
           .from(users)
-          .where(and(ilike(users.email, ownerEmail), canOwnLeads()))
+          .where(and(ilike(users.email, ownerEmail), inSalesPosition()))
           .limit(1);
-        if (owner) {
+        if (owner && takesDealerLeads(owner.role)) {
           chosen = owner;
           method = "country";
         }
       }
 
-      // 2. Everyone else rotates across Sales — minus anyone held out of the
-      //    dealer rotation, and minus country owners, who take only their own
-      //    market (unless that would leave no one at all).
+      // 2. Everyone else rotates across B2B Sales and Sales — minus anyone
+      //    held out of the dealer rotation, and minus country owners, who take
+      //    only their own market (unless that would leave no one at all).
       if (!chosen) {
-        const sales = await tx
+        const salesTeam = await tx
           .select()
           .from(users)
-          .where(canOwnLeads())
+          .where(inSalesPosition())
           .orderBy(asc(users.name));
+        const sales = salesTeam.filter((u) => takesDealerLeads(u.role));
         const eligible = sales.filter((u) => !isExcludedFromDealerRotation(u));
         // An exclusion that matches nobody fails silently — the person it was
         // meant for would simply get their turn. Say so, once per process, so
         // a renamed account shows up in the logs rather than in their inbox.
         // (Expected on an environment where they have no account at all.)
+        // Checked against the whole sales team, not the dealer pool: a B2C
+        // salesperson is expected to be absent from the pool.
         if (
           DEALER_ROTATION_EXCLUDED.length > 0 &&
-          eligible.length === sales.length &&
+          !salesTeam.some(isExcludedFromDealerRotation) &&
           !warnedExclusionUnmatched
         ) {
           warnedExclusionUnmatched = true;
           console.warn(
-            `[dealer-inquiry] DEALER_ROTATION_EXCLUDED (${DEALER_ROTATION_EXCLUDED.join(", ")}) matched no one in Sales — check whether the account's email has changed.`,
+            `[dealer-inquiry] DEALER_ROTATION_EXCLUDED (${DEALER_ROTATION_EXCLUDED.join(", ")}) matched no one in a sales position — check whether the account's email has changed.`,
           );
         }
         const withoutOwners = eligible.filter(
@@ -526,7 +537,7 @@ export async function getDealerInquiryStaff(): Promise<DealerInquiryStaff[]> {
       .from(users)
       .where(
         and(
-          inArray(sql`lower(${users.role})`, STAFF_ROLES),
+          inArray(sql`lower(trim(${users.role}))`, STAFF_ROLES),
           ne(users.isBanned, true),
         ),
       )
@@ -606,7 +617,7 @@ export async function updateDealerInquiry(
         .where(
           and(
             eq(users.id, text(change.assignedToId, 100)),
-            inArray(sql`lower(${users.role})`, STAFF_ROLES),
+            inArray(sql`lower(trim(${users.role}))`, STAFF_ROLES),
             ne(users.isBanned, true),
           ),
         )
