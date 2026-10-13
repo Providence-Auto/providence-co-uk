@@ -129,7 +129,7 @@ type Dossier = {
 };
 
 const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2938&auto=format&fit=crop";
+  "/home/hero-1920.webp";
 
 // How much of each long list is shown before the reader has to ask for more.
 // A spec dossier can carry 20+ custom rows and a dozen features; rendering all
@@ -533,7 +533,7 @@ export default function GalleryDetailClient({
                 <>
                   <br />
                   <span className="text-2xl md:text-3xl lg:text-4xl text-[#4da8da]">
-                    Imported to {selectedDestination.name}
+                    Import to {selectedDestination.name}
                   </span>
                 </>
               )}
