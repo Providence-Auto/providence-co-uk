@@ -33,10 +33,12 @@ import RangeRoverElectricRevealedSpecificationsPrice from "./range-rover-electri
 import RangeRoverElectricUkSourcingExportVat from "./range-rover-electric-uk-sourcing-export-vat";
 import SriLankaVehicleFinanceLoanToValueCap2026 from "./sri-lanka-vehicle-finance-loan-to-value-cap-2026";
 import SriLankaVehicleImportSurchargeExtended2026 from "./sri-lanka-vehicle-import-surcharge-extended-2026";
+import SuzukiJimnyHeritageAutomaticAustraliaFinalRun from "./suzuki-jimny-heritage-automatic-australia-final-run";
 import TanzaniaUsedVehicleExciseDutyFinanceAct2026 from "./tanzania-used-vehicle-excise-duty-finance-act-2026";
 import ThailandVehicleProductionExports2026DealerRead from "./thailand-vehicle-production-exports-2026-dealer-read";
 import ToyotaLandCruiserFjJapanPriceThailandBuilt from "./toyota-land-cruiser-fj-japan-price-thailand-built";
 import UkEvedPayPerMile2028EvImportRead from "./uk-eved-pay-per-mile-2028-ev-import-read";
+import UkIndiaTradeDealZeroDutyIndiaBuiltCars from "./uk-india-trade-deal-zero-duty-india-built-cars";
 import UkZevMandateReview2026Consultation from "./uk-zev-mandate-review-2026-consultation";
 import YenIntervention2026JapanCarImportCost from "./yen-intervention-2026-japan-car-import-cost";
 
@@ -118,6 +120,10 @@ export const NEWS_BODIES: Record<string, ComponentType> = {
   "kenya-crsp-used-car-valuation-uncertainty-2026":
     KenyaCrspUsedCarValuationUncertainty2026,
   "uk-eved-pay-per-mile-2028-ev-import-read": UkEvedPayPerMile2028EvImportRead,
+  "uk-india-trade-deal-zero-duty-india-built-cars":
+    UkIndiaTradeDealZeroDutyIndiaBuiltCars,
+  "suzuki-jimny-heritage-automatic-australia-final-run":
+    SuzukiJimnyHeritageAutomaticAustraliaFinalRun,
 };
 
 export function getNewsBody(slug: string): ComponentType | undefined {

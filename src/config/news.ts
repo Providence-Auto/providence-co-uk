@@ -216,6 +216,192 @@ const AUTHOR = "Providence Auto";
 
 export const NEWS_ARTICLES: NewsArticle[] = [
   {
+    slug: "uk-india-trade-deal-zero-duty-india-built-cars",
+    cta: ARTICLE_CTAS.india,
+    title: "India-built cars now enter the UK at 0% duty — if origin is proved",
+    h1: "The UK–India Trade Deal Took Duty on India-Built Cars to Zero. Proving Origin Is the Catch.",
+    seoTitle: "UK–India Trade Deal: 0% Duty on India-Built Cars",
+    description:
+      "Since 15 July 2026 an India-built car can enter the UK at 0% duty, not 10%, under the UK–India trade deal. What it saves on a Jimny five-door, and the catch.",
+    excerpt:
+      "The tariff line moved on 15 July. The saving on a car is real, it compounds through VAT, and it depends entirely on a document most buyers never think to ask for.",
+    category: "Policy & Tax",
+    dateline: "London",
+    keywords: [
+      "uk india trade deal cars",
+      "uk india ceta car import duty",
+      "import duty on cars from india to uk",
+      "is there duty on cars from india to the uk",
+      "does the uk india trade deal cover used cars",
+      "jimny five door uk import duty",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 8,
+    heroImage: "/cars/suzuki-jimny-nomade-pt5608/05-rear-three-quarter.webp",
+    heroAlt:
+      "A five-door Suzuki Jimny, built in India by Maruti Suzuki, rear three-quarter view",
+    heroCaption:
+      "A five-door Suzuki Jimny, the India-built model this article uses as its example. This car was sold in Japan; it is shown to illustrate the model, not a car imported under the agreement.",
+    toc: [
+      { id: "what-changed", label: "What changed on 15 July" },
+      { id: "applies", label: "Does this apply to your car?" },
+      { id: "cost", label: "Does it cut what you pay?" },
+      { id: "proof", label: "The proof of origin" },
+      { id: "allowed", label: "Is your car still allowed in?" },
+      { id: "timing", label: "Should you move now or wait?" },
+      { id: "who-benefits", label: "Who benefits from the headline?" },
+    ],
+    faqs: [
+      {
+        q: "Is there import duty on cars from India to the UK?",
+        a: "Not on a car that qualifies as Indian-originating and is claimed correctly. Since 15 July 2026 the UK Trade Tariff has shown a 0% preference for India on passenger cars, including used cars of 1,000 to 1,500cc, under the UK–India Comprehensive Economic and Trade Agreement. Without a valid origin claim, the UK's 10% third-country rate still applies.",
+      },
+      {
+        q: "When did the UK–India trade deal come into force?",
+        a: "On 15 July 2026. The UK government announced the date on 17 June 2026, giving traders 28 days to prepare, and India's Ministry of Commerce confirmed the same date. The UK tariff preference for India on cars carries a start date of 15 July 2026 in the Trade Tariff.",
+      },
+      {
+        q: "How much does the UK–India deal save on a car?",
+        a: "The 10% duty, plus the 20% VAT that would have been charged on that duty, so 12% of the car's customs value. On an illustrative customs value of £20,000 that is £2,400: £2,000 of duty and £400 of VAT on duty. The import VAT on the car itself is unchanged.",
+      },
+      {
+        q: "Does the UK–India trade deal cover a car bought in Japan?",
+        a: "Not reliably. A Jimny Nomade sold in Japan is built in India, but the agreement expects goods to stay under customs control if they transit a third country and not to be processed outside the UK or India. A car sold, registered and driven in Japan has done neither. We found no HMRC guidance on the case; budget 10%.",
+      },
+      {
+        q: "Does the trade deal remove VAT on cars from India?",
+        a: "No. The agreement cuts customs duty, not import VAT. VAT of 20% is still charged on the customs value of the car, which is its price plus transport and insurance to the UK border. A VAT-registered business can reclaim it; for a private buyer it remains a cost. Only the VAT that was charged on the duty disappears.",
+      },
+    ],
+    sources: [
+      {
+        label: "Commodity 8703 22 90 00 — used passenger cars, 1,000–1,500cc",
+        href: "https://www.trade-tariff.service.gov.uk/commodities/8703229000",
+        publisher: "UK Trade Tariff (HMRC)",
+      },
+      {
+        label:
+          "The countdown begins: UK-India FTA enters into force on July 15th",
+        href: "https://www.gov.uk/government/news/the-countdown-begins-uk-india-fta-enters-into-force-on-july-15th",
+        publisher: "GOV.UK",
+      },
+      {
+        label: "UK–India CETA: rules of origin",
+        href: "https://www.business.gov.uk/campaign/alive-with-opportunity/the-uk-india-trade-deal/rules-of-origin",
+        publisher: "UK Department for Business and Trade",
+      },
+      {
+        label:
+          "The Customs (Tariff and Miscellaneous Amendments) Regulations 2026 (S.I. 2026/36)",
+        href: "https://www.legislation.gov.uk/uksi/2026/36/contents/made",
+        publisher: "legislation.gov.uk",
+      },
+      {
+        label:
+          "India and the United Kingdom: CETA set to enter into force on 15th July 2026",
+        href: "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2274280&lang=2&reg=48",
+        publisher: "Press Information Bureau, Government of India",
+      },
+      {
+        label: "Maruti Suzuki Jimny 5-Door crosses 1 lakh exports",
+        href: "https://www.theweek.in/news/biz-tech/2025/10/23/maruti-suzuki-jimny-5-door-crosses-1-lakh-exports-another-make-in-india-win.amp.html",
+        publisher: "The Week",
+      },
+    ],
+    relatedGuides: [
+      "importing-a-suzuki-jimny-to-the-uk",
+      "how-to-import-a-car-from-india",
+      "india-car-export-documents-explained",
+    ],
+  },
+  {
+    slug: "suzuki-jimny-heritage-automatic-australia-final-run",
+    cta: ARTICLE_CTAS.japan,
+    title:
+      "Suzuki's last three-door Jimny Heritage is an automatic, and it is for Australia",
+    h1: "Suzuki Australia's Final Jimny Heritage: 300 Automatics at A$42,490",
+    seoTitle: "Suzuki Jimny Heritage 2026: 300 Automatics, A$42,490",
+    description:
+      "Suzuki Australia's final three-door Jimny Heritage: 300 automatics, numbered 301 to 600, at A$42,490 drive-away. Can you import one, and is it worth it?",
+    excerpt:
+      "Three hundred numbered cars, red mudflaps and a cargo tray, on the same 1.5-litre automatic as the standard car. For buyers outside Australia, the answer is not this one.",
+    category: "Releases",
+    dateline: "Australia",
+    keywords: [
+      "suzuki jimny heritage",
+      "jimny heritage automatic",
+      "jimny heritage 2026 price",
+      "suzuki jimny limited edition australia",
+      "can you import a jimny heritage",
+      "is the jimny heritage worth it",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 6,
+    heroImage: "/source-cars/blog/iva-test-centres-uk.webp",
+    heroAlt: "A three-door Suzuki Jimny kei car in silver, parked in Japan",
+    heroCaption:
+      "Illustrative image of a Japanese-market three-door Suzuki Jimny, not the Australian Heritage edition. Photo: TTTNIS, CC0, via Wikimedia Commons.",
+    toc: [
+      { id: "confirmed", label: "What Suzuki Australia confirmed" },
+      { id: "what-you-get", label: "What the Heritage adds" },
+      { id: "applies", label: "Can you buy or import one?" },
+      { id: "cost", label: "What it costs in your money" },
+      { id: "timing", label: "Should you move now or wait?" },
+      { id: "who-benefits", label: "Who benefits from a limited edition?" },
+    ],
+    faqs: [
+      {
+        q: "How much is the Suzuki Jimny Heritage?",
+        a: "Suzuki Australia priced the automatic three-door Jimny Heritage from A$42,490 drive-away, A$1,500 more than the standard Jimny automatic, according to CarExpert and Chasing Cars in October 2026. Superior White is the no-cost colour; Jungle Green and Medium Grey add A$745. The drive-away price includes Australian on-road costs.",
+      },
+      {
+        q: "How many Jimny Heritage automatics are being built?",
+        a: "Three hundred, numbered 301 to 600, each with a build-number badge. They follow the 300 manual Heritage cars Suzuki Australia sold in 2023. Suzuki Australia's general manager, Michael Pachota, told CarExpert these will be the final three-door Jimny Heritage limited-edition models sold in Australia.",
+      },
+      {
+        q: "Is the Jimny Heritage different mechanically?",
+        a: "No changes to the drivetrain were reported. It uses the Jimny's 1.5-litre four-cylinder petrol, rated at 75kW and 130Nm in Australia, with a four-speed automatic and part-time four-wheel drive with low range. The Heritage adds graphics, red mudflaps, a cargo tray, a build-number badge and a merchandise pack.",
+      },
+      {
+        q: "Can you import a Jimny Heritage to the UK or New Zealand?",
+        a: "It is right-hand drive, so it suits both, but it is sold through Australian dealers to Australian buyers, so an export would usually mean a registered car. In the UK it would need an IVA, and as a Japanese-built car that has been registered in Australia it is unlikely to qualify for either the UK–Japan or UK–Australia duty preference.",
+      },
+    ],
+    sources: [
+      {
+        label: "Suzuki Jimny Heritage returns with automatic",
+        href: "https://www.carexpert.com.au/car-news/suzuki-jimny-heritage-returns-with-automatic",
+        publisher: "CarExpert",
+      },
+      {
+        label:
+          "Suzuki Jimny Heritage: red mudflaps, stripes and vibes for auto-only limited edition",
+        href: "https://www.chasingcars.com.au/news/new-car-prices/suzuki-jimny-heritage-2027-red-mudflaps-stripes-and-vibes-for-auto-only-limited-edition-off-roader/",
+        publisher: "Chasing Cars",
+      },
+      {
+        label:
+          "Suzuki Jimny Heritage returns with first automatic in final 300-car run",
+        href: "https://thebeep.com.au/car-news/2026-suzuki-jimny-heritage-automatic/",
+        publisher: "The Beep",
+      },
+      {
+        label: "Euro foreign exchange reference rates, 14 October 2026",
+        href: "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
+        publisher: "European Central Bank",
+      },
+    ],
+    relatedGuides: [
+      "importing-a-suzuki-jimny-from-japan",
+      "how-to-import-a-suzuki-jimny",
+      "how-to-import-a-car-from-australia",
+    ],
+  },
+  {
     slug: "hmrc-yen-customs-rate-japanese-car-import-uk",
     cta: ARTICLE_CTAS.japanUk,
     title:
@@ -477,8 +663,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-08-17",
     updatedDate: "2026-08-17",
     readingTimeMins: 8,
-    heroImage:
-      "/stock/classic-sports-car.webp",
+    heroImage: "/stock/classic-sports-car.webp",
     heroAlt:
       "A classic sports car at a concours event, illustrating collector car auction coverage",
     heroCaption:
@@ -694,8 +879,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-08-15",
     updatedDate: "2026-08-17",
     readingTimeMins: 8,
-    heroImage:
-      "/stock/classic-car.webp",
+    heroImage: "/stock/classic-car.webp",
     heroAlt:
       "A car on a UK road, illustrating coverage of UK vehicle emissions policy",
     heroCaption: "Illustrative image.",
@@ -1045,8 +1229,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-08-18",
     updatedDate: "2026-08-18",
     readingTimeMins: 10,
-    heroImage:
-      "/stock/maybach-s-class-w223.webp",
+    heroImage: "/stock/maybach-s-class-w223.webp",
     heroAlt:
       "Mercedes-Maybach S-Class (W223) long-wheelbase saloon photographed in Shenzhen, China",
     heroCaption:
@@ -1856,7 +2039,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
   {
     slug: "range-rover-electric-uk-sourcing-export-vat",
     cta: importFromCta("united-kingdom", "the UK"),
-    title: "Importing the Range Rover Electric: the 20% inside a £154,070 price",
+    title:
+      "Importing the Range Rover Electric: the 20% inside a £154,070 price",
     h1: "Importing the Range Rover Electric From the UK: What the Corridor Actually Contains",
     seoTitle: "Importing a Range Rover Electric from the UK",
     description:
@@ -2613,8 +2797,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-09-10",
     updatedDate: "2026-09-10",
     readingTimeMins: 11,
-    heroImage:
-      "/stock/classic-sports-car.webp",
+    heroImage: "/stock/classic-sports-car.webp",
     heroAlt:
       "A car photographed at dusk, illustrating the Japanese used vehicle export market",
     heroCaption:
@@ -3141,8 +3324,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-09-09",
     updatedDate: "2026-09-09",
     readingTimeMins: 9,
-    heroImage:
-      "/stock/classic-car.webp",
+    heroImage: "/stock/classic-car.webp",
     heroAlt: "A classic car, illustrating the collector vehicle market",
     heroCaption:
       "Illustrative image. Not a photograph of any vehicle, index constituent or transaction referred to in this article.",

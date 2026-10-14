@@ -653,4 +653,80 @@ export const JAPAN_UK_POSTS: BlogPost[] = [
       },
     ],
   },
+
+  // ── MODEL: SUZUKI JIMNY ───────────────────────────────────────────────────
+  // The model pillar and the two corridor guides live in blog.ts. This one is
+  // the UK end: why Britain has no new Jimny, and what the UK rules do to each
+  // of the three. The India preference (0% from 15 July 2026, UK–India CETA)
+  // was read from the Trade Tariff API on 15 October 2026.
+  {
+    slug: "importing-a-suzuki-jimny-to-the-uk",
+    title: "Importing a Suzuki Jimny to the UK: Duty, IVA and What to Check",
+    h1: "Importing a Suzuki Jimny to the UK",
+    seoTitle: "Importing a Suzuki Jimny to the UK: Rules and Costs",
+    description:
+      "No new Jimny is sold in the UK. How to import one from Japan or India: the duty on each, the IVA every current Jimny needs, road tax and checks.",
+    excerpt:
+      "Every current-generation Jimny is under ten years old, so every one needs an IVA. Where it was built decides the duty; where it was registered can undo the claim.",
+    cluster: "Japan to UK",
+    primaryKeyword: "importing a suzuki jimny to the uk",
+    keywords: [
+      "importing a suzuki jimny to the uk",
+      "import jimny uk",
+      "jimny five door uk",
+      "can you buy a new jimny in the uk",
+      "jimny iva test",
+      "jimny import duty uk",
+      "jimny nomade uk import",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 12,
+    heroImage:
+      "/cars/suzuki-jimny-nomade-pt5608/02-front-three-quarter-right.webp",
+    ogImage: "/source-cars/blog/og/importing-a-suzuki-jimny-to-the-uk.jpg",
+    heroAlt:
+      "A five-door Suzuki Jimny in Jungle Green with no number plate fitted",
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      JAPAN_UK_PILLAR,
+      "how-to-import-a-suzuki-jimny",
+      "japanese-car-import-duty-uk",
+      "japanese-import-road-tax-uk",
+    ],
+    toc: [
+      { id: "short-answer", label: "The short answer" },
+      { id: "why-import", label: "Why a Jimny has to be imported" },
+      { id: "which-jimny", label: "Which Jimny, from where" },
+      { id: "duty", label: "Duty: where it was built decides it" },
+      { id: "approval", label: "Every current Jimny needs an IVA" },
+      { id: "registration", label: "Registration and road tax" },
+      { id: "what-to-check", label: "What to check before you buy" },
+      { id: "cost", label: "What the landed figure is made of" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "Can you still buy a new Suzuki Jimny in the UK?",
+        a: "Not as a four-seat car. Suzuki withdrew the passenger Jimny from UK sale in 2020 because its CO2 output weighed on the brand's fleet average, then sold a two-seat light commercial version from 2021. We could not find a new Jimny in Suzuki GB's range when we checked on 15 October 2026, and there is no UK-market five-door, so a new four-seat Jimny means an import.",
+      },
+      {
+        q: "How much duty do you pay to import a Jimny to the UK?",
+        a: "The UK's third-country rate is 10% of the customs value. A Japan-built Jimny can enter at 0% under the UK–Japan agreement, and an India-built five-door at 0% under the UK–India agreement from 15 July 2026, but only with valid proof of origin. Without it, 10% applies. Import VAT of 20% is then charged on the value plus the duty.",
+      },
+      {
+        q: "Does an imported Jimny need an IVA test?",
+        a: "Every current-generation Jimny does for now. Cars over ten years old are exempt from vehicle approval, but the fourth-generation Jimny only went on sale in July 2018, so none will cross that line before July 2028. A Japanese-market car can use its Japanese Export Certificate as evidence, and the application must be at least six months after its first registration in Japan.",
+      },
+      {
+        q: "What is the road tax on an imported Jimny?",
+        a: "For a Japanese-registered Jimny registered in the UK without a certificate stating a CO2 figure, the law sets the general rate: £230 a year at 2026/27 rates, because both the 658cc kei engine and the 1,460cc K15B sit under 1,549cc. Where an IVA certificate records CO2, the DVLA has published no guidance on the outcome, so confirm it before buying a young car.",
+      },
+      {
+        q: "Is a Jimny Nomade bought in Japan duty-free in the UK?",
+        a: "Plan on 10%. The Nomade is built in India, so it is not Japanese-originating under the UK–Japan agreement. The UK–India agreement expects goods to stay under customs control in transit and not be processed elsewhere; a car sold, registered and driven in Japan has done neither. HMRC has published no ruling on this case that we could find.",
+      },
+    ],
+  },
 ];
