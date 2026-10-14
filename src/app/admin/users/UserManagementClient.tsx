@@ -52,12 +52,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { SALES_POSITIONS } from "@/lib/lead-routing";
 
 type User = {
   id: string;
   name: string;
   email: string;
-  role: "Admin" | "Staff" | "User";
+  role: string;
   status: "Active" | "Inactive";
 };
 
@@ -374,7 +375,11 @@ export default function UserManagementClient({
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Sales">Sales</SelectItem>
+                  {SALES_POSITIONS.map((position) => (
+                    <SelectItem key={position} value={position}>
+                      {position}
+                    </SelectItem>
+                  ))}
                   <SelectItem value="Staff">Staff</SelectItem>
                 </SelectContent>
               </Select>
@@ -452,7 +457,11 @@ export default function UserManagementClient({
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Sales">Sales</SelectItem>
+                  {SALES_POSITIONS.map((position) => (
+                    <SelectItem key={position} value={position}>
+                      {position}
+                    </SelectItem>
+                  ))}
                   <SelectItem value="Staff">Staff</SelectItem>
                 </SelectContent>
               </Select>
