@@ -9,6 +9,7 @@ import { db, requests, salesProfiles, specDossiers } from "@/db";
 import { pathnameToSource } from "@/lib/leadSource";
 import { cleanSocialLinksForSave, parseSocialLinks } from "@/lib/social-links";
 import { auth } from "@/utils/auth";
+import { isSalesRole } from "@/lib/lead-routing";
 
 // Slugs that must never become a member profile (would collide with real routes
 // or read as spam). Compared case-insensitively.
@@ -65,10 +66,9 @@ function isAdminRole(role?: string) {
   return normalizeRole(role) === "admin";
 }
 
-/** Only Sales/admin users may own or edit a profile. */
+/** Only admins and people in a sales position may own or edit a profile. */
 function canOwnProfile(role?: string) {
-  const r = normalizeRole(role);
-  return r === "sales" || r === "admin";
+  return isAdminRole(role) || isSalesRole(role);
 }
 
 /** Strip a Mongoose doc to a plain, serialisable object for the client. */

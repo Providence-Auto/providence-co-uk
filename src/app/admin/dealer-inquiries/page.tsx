@@ -7,13 +7,14 @@ import {
 } from "@/actions/dealer-inquiry-actions";
 import DealerInquiriesClient from "@/components/admin/DealerInquiriesClient";
 import { db, users } from "@/db";
+import { SALES_ROLES } from "@/lib/lead-routing";
 import { auth } from "@/utils/auth";
 
 // Reads the database on every request — never prerendered, because the build
 // container cannot reach Postgres and would bake in an empty table.
 export const dynamic = "force-dynamic";
 
-const STAFF_ROLES = ["admin", "sales", "staff"];
+const STAFF_ROLES = ["admin", "staff", ...SALES_ROLES];
 
 export default async function DealerInquiriesPage() {
   const session = await auth.api.getSession({ headers: await headers() });
