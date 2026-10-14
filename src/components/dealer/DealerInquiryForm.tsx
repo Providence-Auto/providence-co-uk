@@ -1,11 +1,14 @@
 "use client";
 
+import type { CountryCode } from "libphonenumber-js";
 import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  ChevronDown,
   CircleCheckBig,
+  ExternalLink,
   Info,
   Loader2,
   Plus,
@@ -32,6 +35,7 @@ import {
 } from "@/config/dealer-sourcing";
 import { currencyForCountry } from "@/lib/currencies";
 import {
+  checkSocial,
   checkWhatsApp,
   DESIGNATION_SUGGESTIONS,
   type DealerCarInput,
@@ -40,6 +44,11 @@ import {
   type FieldErrors,
   hasErrors,
   type PhoneLib,
+  parseSocialLink,
+  regionName,
+  resolvePhoneCountry,
+  SOCIAL_PLATFORMS,
+  type SocialPlatform,
   validateCar,
   validateCarsStep,
   validateContact,
@@ -72,6 +81,19 @@ const FIELD_STEP: Record<string, number> = {
   email: 2,
   whatsapp: 2,
 };
+
+/** The role chip that opens a free-text field instead of filling one in. */
+const OTHER_ROLE = "Other";
+
+type SocialChoice = SocialPlatform | "other";
+
+const SOCIAL_CHOICES: { value: SocialChoice; label: string }[] = [
+  ...(Object.keys(SOCIAL_PLATFORMS) as SocialPlatform[]).map((key) => ({
+    value: key,
+    label: SOCIAL_PLATFORMS[key].label,
+  })),
+  { value: "other", label: "Other" },
+];
 
 const isSourceMarket = (slug: string) =>
   DEALER_SOURCE_MARKETS.some((m) => m.slug === slug);
@@ -148,6 +170,17 @@ export default function DealerInquiryForm({
     notes: "",
     faxNumber: "",
   });
+  const [socialPlatform, setSocialPlatform] =
+    useState<SocialChoice>("instagram");
+  // null = no role chosen yet.
+  const [designationChoice, setDesignationChoice] = useState<string | null>(
+    null,
+  );
+  const designationRef = useRef<HTMLInputElement>(null);
+  const focusDesignation = useRef(false);
+  // null = the import country's code. Set only when the dealer changes it.
+  const [phoneCountry, setPhoneCountry] = useState<CountryCode | null>(null);
+  const [phoneLibReady, setPhoneLibReady] = useState(false);
   // null = not answered yet; "" = no particular market.
   const [sourceMarket, setSourceMarket] = useState<string | null>(
     initialSourceMarket,
@@ -190,6 +223,7 @@ export default function DealerInquiryForm({
     if (phoneLibRef.current) return phoneLibRef.current;
     const lib = await import("libphonenumber-js/max");
     phoneLibRef.current = lib;
+    setPhoneLibReady(true);
     return lib;
   }, []);
 
@@ -254,6 +288,79 @@ export default function DealerInquiryForm({
     });
   };
 
+  const chooseSocialPlatform = (choice: SocialChoice) => {
+    setSocialPlatform(choice);
+    setErrors(({ socialMedia: _s, ...rest }) => rest);
+    if (choice !== "other" && form.socialMedia.trimStart().startsWith("@")) {
+      setField("socialMedia", form.socialMedia.replace(/^\s*@+/, ""));
+    }
+  };
+
+  // A pasted profile link is turned into the platform plus the username, so
+  // the dealer sees what we will store — and doesn't have to pick the
+  // platform first.
+  const changeSocial = (value: string) => {
+    const link = parseSocialLink(value);
+    if (link?.url) {
+      setSocialPlatform(link.platform);
+      setField("socialMedia", link.handle ?? value);
+      return;
+    }
+    // The field already shows the "@" in front of a username.
+    setField(
+      "socialMedia",
+      socialPlatform === "other" ? value : value.replace(/^\s*@+/, ""),
+    );
+  };
+
+  const socialCheck = form.socialMedia.trim()
+    ? checkSocial(form.socialMedia, socialPlatform)
+    : null;
+
+  // A preset role fills the field; "Other" empties it and opens a text field.
+  const chooseDesignation = (title: string) => {
+    if (title === OTHER_ROLE && designationChoice === OTHER_ROLE) return;
+    setDesignationChoice(title);
+    setField("designation", title === OTHER_ROLE ? "" : title);
+    focusDesignation.current = title === OTHER_ROLE;
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs when "Other" is chosen; the choice is the trigger
+  useEffect(() => {
+    if (!focusDesignation.current) return;
+    focusDesignation.current = false;
+    designationRef.current?.focus();
+  }, [designationChoice]);
+
+  // The WhatsApp country: the import country unless the dealer changed it.
+  const phoneIso = phoneCountry ?? market?.iso ?? null;
+  const phoneChanged = Boolean(phoneCountry && phoneCountry !== market?.iso);
+  const phoneLib = phoneLibReady ? phoneLibRef.current : null;
+  const phoneDial =
+    phoneChanged && phoneLib && phoneCountry
+      ? `+${phoneLib.getCountryCallingCode(phoneCountry)}`
+      : market
+        ? dialLabel(market.dial)
+        : "";
+  const phoneOptions = useMemo(() => {
+    if (!phoneLib) return [];
+    return phoneLib
+      .getCountries()
+      .map((iso) => ({
+        iso,
+        name: regionName(iso),
+        code: phoneLib.getCountryCallingCode(iso),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "en"));
+  }, [phoneLib]);
+
+  const choosePhoneCountry = (iso: string) => {
+    const lib = phoneLibRef.current;
+    if (!lib?.isSupportedCountry(iso)) return;
+    setPhoneCountry(iso === market?.iso ? null : (iso as CountryCode));
+    setErrors(({ whatsapp: _w, ...rest }) => rest);
+  };
+
   const goTo = (next: number) => {
     interacted.current = true;
     setStep(next);
@@ -274,7 +381,8 @@ export default function DealerInquiryForm({
   const checkPhone = async (): Promise<string | null> => {
     if (!market?.iso) return "Choose your country first";
     const lib = await loadPhoneLib();
-    const result = checkWhatsApp(lib, form.whatsapp, market.iso, country);
+    const phone = resolvePhoneCountry(lib, phoneCountry, market.iso, country);
+    const result = checkWhatsApp(lib, form.whatsapp, phone.iso, phone.name);
     if (!result.ok) return result.error;
     setForm((prev) => ({ ...prev, whatsapp: result.national }));
     return null;
@@ -314,7 +422,7 @@ export default function DealerInquiryForm({
       return;
     }
     if (step === 1) {
-      const found = validateDealership(form);
+      const found = validateDealership({ ...form, socialPlatform });
       if (hasErrors(found)) {
         setErrors(found);
         flagErrors();
@@ -327,6 +435,9 @@ export default function DealerInquiryForm({
       setBusy(true);
       try {
         const found = validateContact(form);
+        if (designationChoice === null) {
+          found.designation = "Choose your role at the dealership";
+        }
         const phoneError = await checkPhone();
         if (phoneError) found.whatsapp = phoneError;
         if (hasErrors(found)) {
@@ -367,10 +478,12 @@ export default function DealerInquiryForm({
       dealershipName: form.dealershipName,
       website: form.website,
       socialMedia: form.socialMedia,
+      socialPlatform,
       contactName: form.contactName,
       designation: form.designation,
       email: form.email,
       whatsapp: form.whatsapp,
+      whatsappCountry: phoneIso ?? undefined,
       sourceMarket: sourceMarket ?? "",
       wantsSpecificCars: wantsSpecificCars === true,
       cars: wantsSpecificCars ? cars : [],
@@ -846,28 +959,82 @@ export default function DealerInquiryForm({
                       )}
                     />
                   </Field>
-                  <Field
-                    id="dealer-social"
-                    label="Social media page"
-                    error={errors.socialMedia}
-                  >
-                    <input
-                      id="dealer-social"
-                      value={form.socialMedia}
-                      onChange={(e) => setField("socialMedia", e.target.value)}
-                      placeholder="instagram.com/yourdealership"
-                      inputMode="url"
-                      maxLength={300}
-                      aria-invalid={
-                        Boolean(errors.socialMedia || errors.presence) ||
-                        undefined
-                      }
-                      className={inputClass(
-                        Boolean(errors.socialMedia || errors.presence),
-                        "h-13",
-                      )}
+                  <fieldset className="space-y-3">
+                    <legend className="mb-2 block text-sm font-medium text-zinc-800">
+                      Social media page
+                    </legend>
+                    <Segmented
+                      name="dealer-social-platform"
+                      options={SOCIAL_CHOICES}
+                      value={socialPlatform}
+                      onChange={chooseSocialPlatform}
                     />
-                  </Field>
+                    <Field
+                      id="dealer-social"
+                      label={
+                        socialPlatform === "other"
+                          ? "Link to your page"
+                          : `${SOCIAL_PLATFORMS[socialPlatform].label} username`
+                      }
+                      error={errors.socialMedia}
+                      hint={
+                        socialCheck?.ok && (
+                          <a
+                            href={socialCheck.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-medium text-sky-700 underline-offset-2 hover:underline"
+                          >
+                            {socialCheck.url.replace(/^https:\/\/(www\.)?/, "")}
+                            <ExternalLink size={13} aria-hidden />
+                            <span className="sr-only">
+                              (opens in a new tab)
+                            </span>
+                          </a>
+                        )
+                      }
+                    >
+                      <div className="relative">
+                        {socialPlatform !== "other" &&
+                          !form.socialMedia.includes("/") && (
+                            <span
+                              aria-hidden
+                              className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-base text-zinc-400"
+                            >
+                              @
+                            </span>
+                          )}
+                        <input
+                          id="dealer-social"
+                          value={form.socialMedia}
+                          onChange={(e) => changeSocial(e.target.value)}
+                          placeholder={
+                            socialPlatform === "other"
+                              ? "youtube.com/@yourdealership"
+                              : "yourdealership"
+                          }
+                          inputMode={
+                            socialPlatform === "other" ? "url" : "text"
+                          }
+                          autoCapitalize="none"
+                          autoCorrect="off"
+                          spellCheck={false}
+                          maxLength={300}
+                          aria-invalid={
+                            Boolean(errors.socialMedia || errors.presence) ||
+                            undefined
+                          }
+                          className={inputClass(
+                            Boolean(errors.socialMedia || errors.presence),
+                            socialPlatform !== "other" &&
+                              !form.socialMedia.includes("/")
+                              ? "h-13 pl-9"
+                              : "h-13",
+                          )}
+                        />
+                      </div>
+                    </Field>
+                  </fieldset>
                   <FieldMessage id="dealer-presence" error={errors.presence} />
                 </div>
               </>
@@ -890,33 +1057,50 @@ export default function DealerInquiryForm({
                     className={inputClass(Boolean(errors.contactName), "h-13")}
                   />
                 </Field>
-                <Field
-                  id="dealer-designation"
-                  label="Your role at the dealership"
-                  error={errors.designation}
-                >
-                  <input
-                    id="dealer-designation"
-                    value={form.designation}
-                    onChange={(e) => setField("designation", e.target.value)}
-                    autoComplete="organization-title"
-                    placeholder="e.g. Purchasing Manager"
-                    maxLength={80}
-                    aria-invalid={Boolean(errors.designation) || undefined}
-                    className={inputClass(Boolean(errors.designation), "h-13")}
-                  />
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {DESIGNATION_SUGGESTIONS.map((title) => (
+                <fieldset>
+                  <legend className="mb-3 text-sm font-medium text-zinc-800">
+                    Your role at the dealership
+                  </legend>
+                  <div className="flex flex-wrap gap-2">
+                    {[...DESIGNATION_SUGGESTIONS, OTHER_ROLE].map((title) => (
                       <Chip
                         key={title}
-                        selected={form.designation === title}
-                        onClick={() => setField("designation", title)}
+                        selected={designationChoice === title}
+                        onClick={() => chooseDesignation(title)}
                       >
                         {title}
                       </Chip>
                     ))}
                   </div>
-                </Field>
+                  {designationChoice === OTHER_ROLE ? (
+                    <div className="mt-3">
+                      <label htmlFor="dealer-designation" className="sr-only">
+                        Your role
+                      </label>
+                      <input
+                        id="dealer-designation"
+                        ref={designationRef}
+                        value={form.designation}
+                        onChange={(e) =>
+                          setField("designation", e.target.value)
+                        }
+                        autoComplete="organization-title"
+                        placeholder="e.g. Fleet Manager"
+                        maxLength={80}
+                        aria-invalid={Boolean(errors.designation) || undefined}
+                        aria-describedby="dealer-designation-message"
+                        className={inputClass(
+                          Boolean(errors.designation),
+                          "h-13",
+                        )}
+                      />
+                    </div>
+                  ) : null}
+                  <FieldMessage
+                    id="dealer-designation"
+                    error={errors.designation}
+                  />
+                </fieldset>
                 <Field id="dealer-email" label="Email" error={errors.email}>
                   <input
                     id="dealer-email"
@@ -933,7 +1117,11 @@ export default function DealerInquiryForm({
                   id="dealer-whatsapp"
                   label="WhatsApp number"
                   error={errors.whatsapp}
-                  hint={`A ${market.name} number — it's checked against ${market.name}'s numbering plan.`}
+                  hint={
+                    phoneChanged && phoneIso
+                      ? `Country code changed from ${market.name}, your import country.`
+                      : `Country code set from your import country, ${market.name}. Change it if your WhatsApp number is from another country.`
+                  }
                 >
                   <div
                     className={`flex h-13 items-stretch overflow-hidden rounded-2xl border transition-[border-color,box-shadow] focus-within:border-sky-500 focus-within:shadow-[0_0_0_4px_rgba(14,165,233,0.12)] ${
@@ -942,9 +1130,44 @@ export default function DealerInquiryForm({
                         : "border-black/10 bg-zinc-50/80"
                     }`}
                   >
-                    <span className="flex shrink-0 items-center gap-2 border-r border-black/10 bg-white/60 px-3.5 text-sm font-semibold text-zinc-700">
-                      <Flag iso={market.iso} size={20} />
-                      {dialLabel(market.dial)}
+                    {/* The visible prefix is drawn underneath; a transparent
+                        native <select> covers it, so a tap opens the phone's
+                        own picker and a keyboard user gets type-ahead. */}
+                    <span className="relative flex shrink-0 items-center gap-2 border-r border-black/10 bg-white/60 px-3.5 text-sm font-semibold text-zinc-700 focus-within:bg-white">
+                      <Flag iso={phoneIso} size={20} />
+                      {phoneDial}
+                      {phoneOptions.length > 0 && (
+                        <>
+                          <ChevronDown
+                            size={14}
+                            aria-hidden
+                            className="-ml-1 text-zinc-400"
+                          />
+                          <select
+                            aria-label="WhatsApp country code"
+                            value={phoneIso ?? ""}
+                            onChange={(e) => choosePhoneCountry(e.target.value)}
+                            className="absolute inset-0 cursor-pointer opacity-0"
+                          >
+                            {market.iso && (
+                              <optgroup label="Your import country">
+                                <option value={market.iso}>
+                                  {`${country} (+${phoneLib?.getCountryCallingCode(market.iso)})`}
+                                </option>
+                              </optgroup>
+                            )}
+                            <optgroup label="All countries">
+                              {phoneOptions
+                                .filter((o) => o.iso !== market.iso)
+                                .map((o) => (
+                                  <option key={o.iso} value={o.iso}>
+                                    {`${o.name} (+${o.code})`}
+                                  </option>
+                                ))}
+                            </optgroup>
+                          </select>
+                        </>
+                      )}
                     </span>
                     <input
                       id="dealer-whatsapp"
@@ -953,7 +1176,9 @@ export default function DealerInquiryForm({
                       autoComplete="tel-national"
                       value={form.whatsapp}
                       onChange={(e) => setField("whatsapp", e.target.value)}
-                      placeholder={phonePlaceholder(market.dial)}
+                      placeholder={
+                        phoneChanged ? undefined : phonePlaceholder(market.dial)
+                      }
                       maxLength={30}
                       aria-invalid={Boolean(errors.whatsapp) || undefined}
                       aria-describedby="dealer-whatsapp-message"

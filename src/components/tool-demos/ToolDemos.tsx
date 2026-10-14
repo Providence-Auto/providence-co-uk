@@ -24,11 +24,14 @@ import {
 export default function ToolDemos({
   cards,
   source,
+  background = "bg-[#FAFAFA]",
 }: {
   /** Which demos, in order. */
   cards: ToolDemoKind[];
   /** A country page slug, for that country's documents and local check. */
   source?: string;
+  /** The section's background, for a page whose neighbouring section is already grey. */
+  background?: string;
 }) {
   const data = toolDemoData(source);
 
@@ -53,7 +56,9 @@ export default function ToolDemos({
   };
 
   return (
-    <section className="relative z-10 border-y border-black/5 bg-[#FAFAFA] px-6 py-24 md:py-32">
+    <section
+      className={`relative z-10 border-y border-black/5 ${background} px-6 py-24 md:py-32`}
+    >
       <div className="mx-auto max-w-6xl">
         <Reveal
           y={30}

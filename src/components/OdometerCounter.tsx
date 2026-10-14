@@ -66,12 +66,19 @@ export default function OdometerCounter({
 
   return (
     <div ref={ref} className={className}>
+      {/* items-start, with the prefix and suffix on the cells' line height:
+          a digit cell clips its strip, so its baseline is its bottom edge,
+          and baseline alignment used to drop a "+" below the digits. */}
       <div
-        className="flex items-baseline font-semibold tabular-nums"
+        className="flex items-start font-semibold tabular-nums"
         role="img"
         aria-label={`${prefix ?? ""}${value.toLocaleString("en-GB")}${suffix ?? ""}${label ? ` ${label}` : ""}`}
       >
-        {prefix && <span aria-hidden>{prefix}</span>}
+        {prefix && (
+          <span aria-hidden style={{ lineHeight: `${CELL_EM}em` }}>
+            {prefix}
+          </span>
+        )}
         {places.map((place, index) => {
           const offset = offsets[place];
           // A separator before every third column from the right.
@@ -104,7 +111,15 @@ export default function OdometerCounter({
             </span>
           );
         })}
-        {suffix && <span aria-hidden>{suffix}</span>}
+        {suffix && (
+          <span
+            aria-hidden
+            className="whitespace-pre"
+            style={{ lineHeight: `${CELL_EM}em` }}
+          >
+            {suffix}
+          </span>
+        )}
       </div>
       {label && (
         <p className="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-400">

@@ -345,6 +345,52 @@ describe("submitDealerInquiry", () => {
     );
   });
 
+  it("stores a social username as the chosen platform's profile link", async () => {
+    state.results.push([ABDALLAH], [], []);
+
+    const result = await submitDealerInquiry(
+      validInput({
+        website: "",
+        socialMedia: "@nairobimotors",
+        socialPlatform: "tiktok",
+      }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      website: null,
+      socialMedia: "https://www.tiktok.com/@nairobimotors",
+    });
+  });
+
+  it("checks WhatsApp against the country code the dealer chose", async () => {
+    state.results.push([ABDALLAH], [], []);
+
+    const result = await submitDealerInquiry(
+      validInput({
+        whatsapp: "050 123 4567",
+        whatsappCountry: "AE",
+      }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      country: "Kenya",
+      whatsapp: "+971501234567",
+    });
+  });
+
+  it("rejects a number from neither the chosen code nor the import country", async () => {
+    const result = await submitDealerInquiry(
+      validInput({ whatsappCountry: "AE" }) as Submit,
+    );
+
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    expect(result.errors?.whatsapp).toMatch(/United Arab Emirates/);
+    expect(state.transactions).toBe(0);
+  });
+
   it("still succeeds when an email fails", async () => {
     state.results.push([ABDALLAH], [], []);
     vi.mocked(emailService.sendDealerInquiryAlert).mockRejectedValueOnce(
