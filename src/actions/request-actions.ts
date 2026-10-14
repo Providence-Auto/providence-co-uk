@@ -2,7 +2,17 @@
 "use server";
 
 import crypto from "node:crypto";
-import { and, asc, desc, eq, ilike, ne, notInArray, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  ne,
+  notInArray,
+  sql,
+} from "drizzle-orm";
 import { BLOG_BASE_PATH, getSuggestedPosts } from "@/config/blog";
 import { db, requests, users } from "@/db";
 import { getAgentPhotoUrl } from "@/lib/agent-photo";
@@ -14,23 +24,35 @@ import {
 import { sendMetaConversion } from "@/lib/conversions";
 import { formatBudget } from "@/lib/currencies";
 import { emailService } from "@/lib/email";
-import { COUNTRY_OWNER_EMAILS, countryLeadOwner } from "@/lib/lead-routing";
+import {
+  B2C_LEAD_ROLES,
+  b2cCountryLeadOwner,
+  COUNTRY_OWNER_EMAILS,
+  SALES_ROLES,
+} from "@/lib/lead-routing";
 import { LEAD_EVENT } from "@/lib/leadConversion";
 import connectToDatabase from "@/lib/mongoose";
 
-// Country owners (COUNTRY_LEAD_OWNERS) and the rule that holds them out of the
-// rotation live in src/lib/lead-routing.ts, shared with the dealer inquiry form.
+// The sales positions, the country owners and the rule that holds owners out
+// of the rotation live in src/lib/lead-routing.ts, shared with the dealer
+// inquiry form.
 
 /**
- * The one rule for who may own a lead: an active member of the Sales team.
- * Every assignment path is gated on this, so there is no route — direct,
- * country or rotation — by which a lead reaches anyone else.
+ * Who may own a lead: an active member in one of `roles`. Every assignment
+ * path is gated on this, so there is no route by which a lead reaches anyone
+ * outside the sales team.
  *
- * Role is compared case-insensitively because the environments disagree on
+ * Role is lower-cased and trimmed because the environments disagree on
  * capitalisation (production stores "Sales"/"Admin"/"Staff").
  */
-const canOwnLeads = () =>
-  and(sql`lower(${users.role}) = 'sales'`, ne(users.isBanned, true));
+const holdsRole = (roles: string[]) =>
+  and(
+    inArray(sql`lower(trim(${users.role}))`, roles),
+    ne(users.isBanned, true),
+  );
+
+/** A B2C lead goes to B2C Sales or Sales (business instruction 2026-10-14). */
+const takesB2cLeads = () => holdsRole(B2C_LEAD_ROLES);
 
 export async function submitCarRequest(data: {
   // When present, update the existing lead instead of creating a new one
@@ -128,10 +150,12 @@ export async function submitCarRequest(data: {
 
     // 1. Assign an agent, in precedence order:
     //      direct      — a profile-page inquiry carrying assignedAgentId is
-    //                    pinned to that member; the customer picked them.
-    //      country     — the destination market has a named owner.
-    //      round-robin — everything else rotates through the Sales team
-    //                    alphabetically.
+    //                    pinned to that member; the customer picked them, so
+    //                    any sales position will do, B2B Sales included
+    //                    (business instruction 2026-10-14).
+    //      country     — the destination market has a named B2C owner.
+    //      round-robin — everything else rotates through B2C Sales and
+    //                    Sales alphabetically.
     let assignedAgent = null;
     let assignmentMethod: "direct" | "country" | "round-robin" = "round-robin";
 
@@ -142,7 +166,7 @@ export async function submitCarRequest(data: {
       const [directAgent] = await db
         .select()
         .from(users)
-        .where(and(eq(users.id, data.assignedAgentId), canOwnLeads()))
+        .where(and(eq(users.id, data.assignedAgentId), holdsRole(SALES_ROLES)))
         .limit(1);
 
       if (directAgent) {
@@ -160,13 +184,13 @@ export async function submitCarRequest(data: {
     //     missing or banned falls through to the round-robin rather than
     //     leaving the lead unassigned.
     if (!assignedAgent) {
-      const ownerEmail = countryLeadOwner(data.countryOfImport);
+      const ownerEmail = b2cCountryLeadOwner(data.countryOfImport);
 
       if (ownerEmail) {
         const [countryOwner] = await db
           .select()
           .from(users)
-          .where(and(ilike(users.email, ownerEmail), canOwnLeads()))
+          .where(and(ilike(users.email, ownerEmail), takesB2cLeads()))
           .limit(1);
 
         if (countryOwner) {
@@ -180,11 +204,12 @@ export async function submitCarRequest(data: {
     }
 
     if (!assignedAgent) {
-      // The rotation pool: active Sales members, alphabetically by name.
+      // The rotation pool: active B2C Sales and Sales members,
+      // alphabetically by name.
       const staffMembers = await db
         .select()
         .from(users)
-        .where(canOwnLeads())
+        .where(takesB2cLeads())
         .orderBy(asc(users.name));
 
       // Drop country owners out of the rotation — they are reached by their

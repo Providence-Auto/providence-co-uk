@@ -8,27 +8,78 @@
  * a database.
  */
 
-// Destination markets owned by a named member rather than the shared Sales
-// rotation: an inquiry to import to one of these goes to that person.
+// ── Sales positions (business instruction 2026-10-14) ──────────────────────
 //
-// Keyed by the destination country lowercased, valued by email rather than
-// user id so the rule survives the owner's account being re-created and,
-// crucially, their role changing — the round-robin pool is role "Sales" only,
-// and these owners are often admins who would never come up in it.
-export const COUNTRY_LEAD_OWNERS: Record<string, string> = {
+// A salesperson's position is their role, set on the Users screen:
+//
+//   B2C Sales — takes every lead except dealer inquiries (the car request
+//               form, car pages, campaign pages, profile pages).
+//   B2B Sales — takes dealer inquiries from /b2b-inquiry.
+//   Sales     — takes both.
+//
+// Roles are stored as typed on the Users screen and the environments disagree
+// on capitalisation, so every comparison goes through `normaliseRole`, and
+// the SQL side lower-cases and trims the column before matching these lists.
+
+/** The positions, as the Users screen offers and stores them. */
+export const SALES_POSITIONS = ["B2C Sales", "B2B Sales", "Sales"] as const;
+
+/** Every role that can own a lead at all, normalised. */
+export const SALES_ROLES = ["b2c sales", "b2b sales", "sales"];
+/** Roles that take B2C leads, normalised. */
+export const B2C_LEAD_ROLES = ["b2c sales", "sales"];
+/** Roles that take dealer inquiries, normalised. */
+export const DEALER_LEAD_ROLES = ["b2b sales", "sales"];
+
+export function normaliseRole(role: string | null | undefined): string {
+  return (role ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+export const isSalesRole = (role: string | null | undefined) =>
+  SALES_ROLES.includes(normaliseRole(role));
+export const takesB2cLeads = (role: string | null | undefined) =>
+  B2C_LEAD_ROLES.includes(normaliseRole(role));
+export const takesDealerLeads = (role: string | null | undefined) =>
+  DEALER_LEAD_ROLES.includes(normaliseRole(role));
+
+// ── Country owners ─────────────────────────────────────────────────────────
+//
+// Markets owned by a named member rather than the rotation: an inquiry into
+// one of these goes to that person. Keyed by the country lowercased, valued
+// by email rather than user id so the rule survives the owner's account being
+// re-created. An owner still has to hold a position that takes that kind of
+// lead; one who does not, or is missing or banned, falls through to the
+// rotation.
+
+// None: every B2C lead goes to B2C Sales (business instruction 2026-10-14,
+// which retired the B2C half of the Cyprus → Shaq rule).
+export const B2C_COUNTRY_LEAD_OWNERS: Record<string, string> = {};
+
+// Dealer inquiries from Malta and Cyprus go to Shaq (business instruction
+// 2026-10-14; Cyprus since 2026-09-30).
+export const DEALER_COUNTRY_LEAD_OWNERS: Record<string, string> = {
   cyprus: "shaq@providenceauto.uk.com",
+  malta: "shaq@providenceauto.uk.com",
 };
 
 // Owning a market is exclusive, not additive: a country owner takes their own
-// market's leads and nothing else, so they are held out of the general
-// rotation. Without this, giving an owner the "Sales" role to make them
-// assignable would also drop them into the round-robin for every country.
+// market's leads and nothing else, so they are held out of both rotations.
 export const COUNTRY_OWNER_EMAILS = new Set(
-  Object.values(COUNTRY_LEAD_OWNERS).map((email) => email.toLowerCase()),
+  [
+    ...Object.values(B2C_COUNTRY_LEAD_OWNERS),
+    ...Object.values(DEALER_COUNTRY_LEAD_OWNERS),
+  ].map((email) => email.toLowerCase()),
 );
 
-export function countryLeadOwner(country: string | null | undefined) {
-  return COUNTRY_LEAD_OWNERS[country?.trim().toLowerCase() ?? ""];
+const countryKey = (country: string | null | undefined) =>
+  country?.trim().toLowerCase() ?? "";
+
+export function b2cCountryLeadOwner(country: string | null | undefined) {
+  return B2C_COUNTRY_LEAD_OWNERS[countryKey(country)];
+}
+
+export function dealerCountryLeadOwner(country: string | null | undefined) {
+  return DEALER_COUNTRY_LEAD_OWNERS[countryKey(country)];
 }
 
 /**
@@ -41,8 +92,13 @@ export function countryLeadOwner(country: string | null | undefined) {
  * on a name: "Chathuranga" is a common Sri Lankan given name, and a rule that
  * matched it would also hold out anyone else of that name the team hires. An
  * email also survives a renamed display name. Compared case-insensitively.
- * submitDealerInquiry logs a warning when the list matches nobody in Sales, so
- * a changed address shows up in the logs rather than in his inbox.
+ * submitDealerInquiry logs a warning when the list matches nobody in any
+ * sales position, so a changed address shows up in the logs rather than in
+ * his inbox.
+ *
+ * Since 2026-10-14 his position (B2C Sales) already keeps him out of the
+ * dealer rotation; this list is the backstop that holds even if he is moved
+ * to plain "Sales".
  */
 export const DEALER_ROTATION_EXCLUDED = ["chathuranga@providenceauto.uk.com"];
 
