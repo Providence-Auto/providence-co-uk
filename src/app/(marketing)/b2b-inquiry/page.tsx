@@ -232,108 +232,17 @@ export default function CarSourcingForDealersPage() {
               immediate
               y={24}
               delay={0.2}
-              // relative z-20: on a phone the proof tiles come next and would
-              // otherwise paint over an open dropdown that runs past the card.
-              className="relative z-20 min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1"
+              // relative z-20: the section below would otherwise paint over an
+              // open dropdown that runs past the card.
+              className="relative z-20 min-w-0 lg:col-start-2 lg:row-start-1"
             >
               <DealerInquiryForm markets={markets} />
             </Reveal>
-
-            <Reveal
-              immediate
-              y={18}
-              delay={0.3}
-              className="min-w-0 lg:col-start-1 lg:row-start-2"
-            >
-              <dl className="grid max-w-xl grid-cols-3 gap-3">
-                {PROOF.map((item) => (
-                  // Label first in the markup (dt before dd), figure first on
-                  // screen — so it reads "years trading: 15+" exactly once.
-                  // justify-end is the top of a column-reverse box: every
-                  // figure sits on the same line however many lines its label
-                  // wraps to.
-                  <div
-                    key={item.label}
-                    className="flex flex-col-reverse justify-end rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_10px_30px_rgba(2,6,23,0.06)] backdrop-blur-md md:p-5"
-                  >
-                    <dt className="mt-2 text-xs font-medium leading-snug text-zinc-600 md:text-sm">
-                      {item.label}
-                    </dt>
-                    <dd>
-                      <OdometerCounter
-                        value={item.value}
-                        suffix={item.suffix}
-                        className="text-2xl font-bold leading-none tracking-tight text-black sm:text-3xl md:text-4xl"
-                      />
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-              <ul
-                aria-label="Source markets"
-                className="mt-5 flex max-w-xl flex-wrap gap-2"
-              >
-                {DEALER_SOURCE_MARKETS.map((m) => (
-                  <li
-                    key={m.slug}
-                    className="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white/70 px-3 py-1.5 text-sm font-medium text-zinc-700 backdrop-blur-sm"
-                  >
-                    <Flag iso={m.iso} size={18} />
-                    {m.name}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
           </div>
         </section>
 
-        {/* ── 2. The value proposition ────────────────────────────────── */}
-        <section className="border-y border-black/5 bg-zinc-50 px-6 py-20 md:py-28">
-          <div className="mx-auto max-w-6xl">
-            <Reveal y={30} className="max-w-3xl">
-              <SectionRule align="left" />
-              <h2 className="text-3xl font-bold tracking-tighter text-black md:text-5xl">
-                You can import cars straight from the market they come from.
-              </h2>
-              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                And ship them to your own country, with the access, the tools
-                and the documentation support to do it — so you stock the cars
-                your buyers ask for, without floor-planning them on spec.
-              </p>
-            </Reveal>
-
-            <div className="mt-14 grid gap-5 md:grid-cols-2">
-              {PILLARS.map((pillar, index) => (
-                <Reveal
-                  key={pillar.title}
-                  y={30}
-                  delay={index * 0.06}
-                  className="pa-lift rounded-[1.75rem] border border-black/5 bg-white p-7 md:p-9"
-                >
-                  <span className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
-                    <pillar.icon size={22} />
-                  </span>
-                  <h3 className="text-xl font-bold tracking-tight text-black md:text-2xl">
-                    {pillar.title}
-                  </h3>
-                  <p className="mt-3 leading-relaxed text-zinc-600">
-                    {pillar.body}
-                  </p>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── 3. The tools, demonstrated: the same four demos as
-            /import-japanese-cars (business request 2026-10-14). White here,
-            because the section above is already grey. ─────────────────── */}
-        <ToolDemos
-          cards={["inspection", "documents", "landed", "tracking"]}
-          background="bg-white"
-        />
-
-        {/* ── 4. How fast each market moves ───────────────────────────── */}
+        {/* ── 2. How fast each market moves, with the proof figures
+            (moved up to follow the hero, business request 2026-10-15) ── */}
         <section className="relative overflow-hidden bg-zinc-950 px-6 py-20 text-white md:py-28">
           <div
             aria-hidden
@@ -349,6 +258,29 @@ export default function CarSourcingForDealersPage() {
                 <h2 className="text-3xl font-bold tracking-tighter md:text-5xl">
                   Import from seven markets, with your first quote in 24 hours.
                 </h2>
+                <dl className="mt-10 grid max-w-xl grid-cols-3 gap-3">
+                  {PROOF.map((item) => (
+                    // Label first in the markup (dt before dd), figure first
+                    // on screen — so it reads "years trading: 15+" once.
+                    // justify-end is the top of a column-reverse box: every
+                    // figure sits on the same line however its label wraps.
+                    <div
+                      key={item.label}
+                      className="flex flex-col-reverse justify-end rounded-2xl border border-white/10 bg-white/[0.05] p-4 md:p-5"
+                    >
+                      <dt className="mt-2 text-xs font-medium leading-snug text-white/60 md:text-sm">
+                        {item.label}
+                      </dt>
+                      <dd>
+                        <OdometerCounter
+                          value={item.value}
+                          suffix={item.suffix}
+                          className="text-2xl font-bold leading-none tracking-tight text-white sm:text-3xl md:text-4xl"
+                        />
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </Reveal>
               <Reveal
                 y={20}
@@ -446,6 +378,52 @@ export default function CarSourcingForDealersPage() {
             </Reveal>
           </div>
         </section>
+
+        {/* ── 3. The value proposition ────────────────────────────────── */}
+        <section className="border-y border-black/5 bg-zinc-50 px-6 py-20 md:py-28">
+          <div className="mx-auto max-w-6xl">
+            <Reveal y={30} className="max-w-3xl">
+              <SectionRule align="left" />
+              <h2 className="text-3xl font-bold tracking-tighter text-black md:text-5xl">
+                You can import cars straight from the market they come from.
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
+                And ship them to your own country, with the access, the tools
+                and the documentation support to do it — so you stock the cars
+                your buyers ask for, without floor-planning them on spec.
+              </p>
+            </Reveal>
+
+            <div className="mt-14 grid gap-5 md:grid-cols-2">
+              {PILLARS.map((pillar, index) => (
+                <Reveal
+                  key={pillar.title}
+                  y={30}
+                  delay={index * 0.06}
+                  className="pa-lift rounded-[1.75rem] border border-black/5 bg-white p-7 md:p-9"
+                >
+                  <span className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
+                    <pillar.icon size={22} />
+                  </span>
+                  <h3 className="text-xl font-bold tracking-tight text-black md:text-2xl">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-3 leading-relaxed text-zinc-600">
+                    {pillar.body}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 4. The tools, demonstrated: the same four demos as
+            /import-japanese-cars (business request 2026-10-14). White here,
+            because the section above is already grey. ─────────────────── */}
+        <ToolDemos
+          cards={["inspection", "documents", "landed", "tracking"]}
+          background="bg-white"
+        />
       </div>
     </main>
   );
