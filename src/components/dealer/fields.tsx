@@ -106,8 +106,15 @@ export function Chip({
   );
 }
 
+const SEGMENT_COLUMNS: Record<number, string> = {
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  // Four labels do not fit one row on a phone.
+  4: "grid-cols-2 sm:grid-cols-4",
+};
+
 /**
- * Two or three mutually exclusive options, as one row of equal segments.
+ * Two to four mutually exclusive options, as one row of equal segments.
  * Real radio inputs under the styling, so arrow keys move between them and a
  * screen reader announces "1 of 2" — the caller wraps it in a <fieldset> whose
  * <legend> is the question.
@@ -129,7 +136,7 @@ export function Segmented<T extends string>({
   return (
     <div
       className={`grid gap-2 rounded-2xl border p-1.5 ${
-        options.length === 3 ? "grid-cols-3" : "grid-cols-2"
+        SEGMENT_COLUMNS[options.length] ?? "grid-cols-2"
       } ${invalid ? "border-red-400 bg-red-50/40" : "border-black/10 bg-zinc-50/80"}`}
     >
       {options.map((option) => (

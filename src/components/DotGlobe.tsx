@@ -137,6 +137,11 @@ type Props = {
   interactive?: boolean;
   palette?: GlobePalette;
   className?: string;
+  /**
+   * Replaces the accessible name, which otherwise lists every place. For a
+   * page that must not print the destination list (/b2b-inquiry).
+   */
+  label?: string;
 };
 
 export default function DotGlobe({
@@ -148,6 +153,7 @@ export default function DotGlobe({
   interactive = true,
   palette = GLOBE_PALETTE_LIGHT,
   className = "",
+  label,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -545,7 +551,10 @@ export default function DotGlobe({
       ref={wrapRef}
       className={`relative aspect-square w-full ${className}`}
       role="img"
-      aria-label={`Globe showing Providence Auto shipping routes to ${marketNames}`}
+      aria-label={
+        label ??
+        `Globe showing Providence Auto shipping routes to ${marketNames}`
+      }
     >
       <canvas
         ref={canvasRef}
