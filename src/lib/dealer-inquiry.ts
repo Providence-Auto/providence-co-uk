@@ -67,12 +67,17 @@ export type DealerInquiryInput = {
   country: string;
   dealershipName: string;
   website: string;
+  /** A username when socialPlatform names a platform, otherwise a full link. */
   socialMedia: string;
+  /** A SOCIAL_PLATFORMS key, or "other" / absent for a pasted link. */
+  socialPlatform?: string;
   contactName: string;
   designation: string;
   email: string;
   /** As typed; normalised to E.164 on the server. */
   whatsapp: string;
+  /** ISO code of the WhatsApp number's country; absent means the import country. */
+  whatsappCountry?: string;
   /** A DEALER_SOURCE_MARKETS slug, or "" for no preference. */
   sourceMarket: string;
   /** Whether the dealer chose to name particular cars. */
@@ -147,26 +152,193 @@ export function normaliseWebsite(raw: string): string | null {
   return `https://${url.hostname.toLowerCase()}${path}${url.search}`;
 }
 
+// ── Social media ─────────────────────────────────────────────────────────────
+
 /**
- * A social profile link. Same rules as a website — a bare "@handle" is not
- * enough, because without the platform nobody can find the page from it.
+ * The platforms the form offers by name. The dealer picks one and types the
+ * username; the profile link is built here, so the form's preview and the
+ * stored value are always the same link. Any other platform goes through
+ * "other", which takes a pasted link under the website rules.
  */
-export function normaliseSocial(raw: string): string | null {
-  return normaliseWebsite(raw);
+export const SOCIAL_PLATFORMS = {
+  instagram: {
+    label: "Instagram",
+    domains: ["instagram.com", "instagr.am"],
+    username: /^[a-z0-9._]{1,30}$/i,
+    profileUrl: (handle: string) => `https://www.instagram.com/${handle}`,
+    /** First path segments that are not a username (posts, reels, …). */
+    reserved: ["p", "reel", "reels", "stories", "explore", "tv"],
+  },
+  tiktok: {
+    label: "TikTok",
+    domains: ["tiktok.com"],
+    username: /^[a-z0-9._]{2,24}$/i,
+    profileUrl: (handle: string) => `https://www.tiktok.com/@${handle}`,
+    reserved: [],
+  },
+  facebook: {
+    label: "Facebook",
+    domains: ["facebook.com", "fb.com"],
+    // Older page names carry hyphens, so this is looser than the current rule.
+    username: /^[a-z0-9.-]{2,80}$/i,
+    profileUrl: (handle: string) => `https://www.facebook.com/${handle}`,
+    reserved: [
+      "profile.php",
+      "people",
+      "pages",
+      "groups",
+      "share",
+      "p",
+      "watch",
+      "story.php",
+      "permalink.php",
+    ],
+  },
+} as const;
+
+export type SocialPlatform = keyof typeof SOCIAL_PLATFORMS;
+
+export const isSocialPlatform = (value: unknown): value is SocialPlatform =>
+  typeof value === "string" && Object.hasOwn(SOCIAL_PLATFORMS, value);
+
+/**
+ * A pasted link to one of SOCIAL_PLATFORMS: the platform, and the username if
+ * the link is a profile ("instagram.com/x", "tiktok.com/@x"). handle is null
+ * for a link that is the platform's but not a plain profile — a Facebook
+ * profile.php?id= page, a post. null for a bare handle or any other site.
+ */
+export function parseSocialLink(
+  raw: string,
+): { platform: SocialPlatform; handle: string | null; url: string } | null {
+  const url = normaliseWebsite(raw);
+  if (!url) return null;
+  const { hostname, pathname } = new URL(url);
+  const platform = (Object.keys(SOCIAL_PLATFORMS) as SocialPlatform[]).find(
+    (key) =>
+      SOCIAL_PLATFORMS[key].domains.some(
+        (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+      ),
+  );
+  if (!platform) return null;
+  const rule = SOCIAL_PLATFORMS[platform];
+  const first = pathname.split("/").find(Boolean) ?? "";
+  // A TikTok profile is the segment that starts with "@"; elsewhere it is bare.
+  const candidate =
+    platform === "tiktok"
+      ? first.startsWith("@")
+        ? first.slice(1)
+        : ""
+      : first;
+  const handle =
+    candidate &&
+    rule.username.test(candidate) &&
+    !(rule.reserved as readonly string[]).includes(candidate.toLowerCase())
+      ? candidate
+      : null;
+  return { platform, handle, url: first ? url : "" };
+}
+
+export type SocialCheck =
+  | { ok: true; url: string }
+  | { ok: false; error: string };
+
+/**
+ * The dealer's social page as one profile link. With a platform chosen, the
+ * value is a username ("@nairobimotors" or "nairobimotors") or a link to that
+ * platform. With "other" (or nothing — the shape before platforms were added)
+ * it must be a full link: a bare "@handle" is not enough, because without the
+ * platform nobody can find the page from it.
+ */
+export function checkSocial(raw: string, platform = ""): SocialCheck {
+  const trimmed = raw.trim();
+  if (!isSocialPlatform(platform)) {
+    const url = normaliseWebsite(trimmed);
+    return url
+      ? { ok: true, url }
+      : {
+          ok: false,
+          error: "Paste the full link, e.g. instagram.com/yourdealership",
+        };
+  }
+
+  const rule = SOCIAL_PLATFORMS[platform];
+  const usernameError = `Enter your ${rule.label} username, e.g. @yourdealership`;
+  const link = parseSocialLink(trimmed);
+  // A slash means a link; so does a known platform's domain. Anything else is
+  // a username — which may itself contain a dot ("nairobi.motors").
+  if (link || trimmed.includes("/")) {
+    if (!link) return { ok: false, error: usernameError };
+    if (link.platform !== platform) {
+      const other = SOCIAL_PLATFORMS[link.platform].label;
+      return {
+        ok: false,
+        error: `That's a ${other} link — choose ${other} above`,
+      };
+    }
+    if (!link.url) return { ok: false, error: usernameError };
+    return {
+      ok: true,
+      url: link.handle ? rule.profileUrl(link.handle) : link.url,
+    };
+  }
+
+  const handle = trimmed.replace(/^@/, "");
+  return rule.username.test(handle)
+    ? { ok: true, url: rule.profileUrl(handle) }
+    : { ok: false, error: usernameError };
+}
+
+/** The profile link checkSocial builds, or null if it rejects the value. */
+export function normaliseSocial(raw: string, platform = ""): string | null {
+  const result = checkSocial(raw, platform);
+  return result.ok ? result.url : null;
 }
 
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 // ── WhatsApp ─────────────────────────────────────────────────────────────────
 
-/** The two functions the check needs, from `libphonenumber-js/max`. */
+/** The functions the check and the country-code picker need, from `libphonenumber-js/max`. */
 export type PhoneLib = {
   parsePhoneNumberFromString: (
     text: string,
     defaultCountry?: CountryCode,
   ) => PhoneNumber | undefined;
   getCountryCallingCode: (country: CountryCode) => string;
+  getCountries: () => CountryCode[];
+  isSupportedCountry: (country: string) => boolean;
 };
+
+/** A country's English name from its ISO code ("KE" → "Kenya"). */
+export function regionName(iso: string): string {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" }).of(iso) ?? iso;
+  } catch {
+    return iso;
+  }
+}
+
+/**
+ * Which country the WhatsApp number is checked against. It starts as the
+ * import country, and the dealer can change it — a dealer importing into
+ * Kenya may well run WhatsApp on a UAE or UK number. An unknown or missing
+ * code (a tampered or older submission) falls back to the import country.
+ */
+export function resolvePhoneCountry(
+  lib: PhoneLib,
+  picked: unknown,
+  importIso: CountryCode,
+  importName: string,
+): { iso: CountryCode; name: string } {
+  if (
+    typeof picked === "string" &&
+    picked !== importIso &&
+    lib.isSupportedCountry(picked)
+  ) {
+    return { iso: picked as CountryCode, name: regionName(picked) };
+  }
+  return { iso: importIso, name: importName };
+}
 
 /** Number types no one answers WhatsApp on. */
 const NOT_WHATSAPP: ReadonlySet<NumberType> = new Set<NumberType>([
@@ -183,9 +355,9 @@ export type WhatsAppCheck =
   | { ok: false; error: string };
 
 /**
- * Whether `raw` is a real number in the dealer's own country.
+ * Whether `raw` is a real number in the phone country (`resolvePhoneCountry`).
  *
- * The number has to belong to the country they checked. Territories that share
+ * The number has to belong to that country. Territories that share
  * a calling code with a larger neighbour pass on either — a Jersey dealer on a
  * UK mobile is still reachable — except under +1, which spans two dozen
  * countries and would make the check meaningless there.
@@ -229,7 +401,7 @@ export function checkWhatsApp(
   if (!sameCountry) {
     return {
       ok: false,
-      error: `Enter a ${countryName} number, the country you checked above`,
+      error: `That isn't a ${countryName} number — check the country code`,
     };
   }
 
@@ -360,7 +532,10 @@ export function toStoredCar(car: DealerCarInput): DealerCar {
 // ── The whole inquiry, step by step ──────────────────────────────────────────
 
 export function validateDealership(
-  input: Pick<DealerInquiryInput, "dealershipName" | "website" | "socialMedia">,
+  input: Pick<
+    DealerInquiryInput,
+    "dealershipName" | "website" | "socialMedia" | "socialPlatform"
+  >,
 ): FieldErrors {
   const errors: FieldErrors = {};
   const name = input.dealershipName.trim();
@@ -375,9 +550,9 @@ export function validateDealership(
   if (hasWebsite && !normaliseWebsite(input.website)) {
     errors.website = "Enter a web address, e.g. yourdealership.com";
   }
-  if (hasSocial && !normaliseSocial(input.socialMedia)) {
-    errors.socialMedia =
-      "Paste the full link, e.g. instagram.com/yourdealership";
+  if (hasSocial) {
+    const social = checkSocial(input.socialMedia, input.socialPlatform);
+    if (!social.ok) errors.socialMedia = social.error;
   }
   return errors;
 }

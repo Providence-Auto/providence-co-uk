@@ -39,6 +39,7 @@ import {
   LIMITS,
   normaliseSocial,
   normaliseWebsite,
+  resolvePhoneCountry,
   toStoredCar,
   validateCarsStep,
   validateContact,
@@ -172,6 +173,7 @@ export async function submitDealerInquiry(
       dealershipName: text(input.dealershipName, 500),
       website: text(input.website, 1000),
       socialMedia: text(input.socialMedia, 1000),
+      socialPlatform: text(input.socialPlatform, 20),
       contactName: text(input.contactName, 500),
       designation: text(input.designation, 500),
       email: text(input.email, 500),
@@ -184,7 +186,18 @@ export async function submitDealerInquiry(
       notes: text(input.notes, 5000),
     };
 
-    const whatsapp = checkWhatsApp(phoneLib, fields.whatsapp, iso, country);
+    const phoneCountry = resolvePhoneCountry(
+      phoneLib,
+      input.whatsappCountry,
+      iso,
+      country,
+    );
+    const whatsapp = checkWhatsApp(
+      phoneLib,
+      fields.whatsapp,
+      phoneCountry.iso,
+      phoneCountry.name,
+    );
     const errors: FieldErrors = {
       ...validateDealership(fields),
       ...validateContact(fields),
@@ -228,7 +241,7 @@ export async function submitDealerInquiry(
       ? normaliseWebsite(fields.website)
       : null;
     const socialMedia = fields.socialMedia.trim()
-      ? normaliseSocial(fields.socialMedia)
+      ? normaliseSocial(fields.socialMedia, fields.socialPlatform)
       : null;
     const notes = fields.notes.trim().slice(0, LIMITS.notes) || null;
     const email = fields.email.trim().toLowerCase();
