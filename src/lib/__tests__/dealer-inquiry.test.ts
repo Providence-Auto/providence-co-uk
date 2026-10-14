@@ -1,12 +1,15 @@
 import * as phoneLib from "libphonenumber-js/max";
 import { describe, expect, it } from "vitest";
 import {
+  checkSocial,
   checkWhatsApp,
   type DealerCarInput,
   dealerInquiryReference,
   emptyCar,
   normaliseSocial,
   normaliseWebsite,
+  parseSocialLink,
+  resolvePhoneCountry,
   summariseCars,
   toStoredCar,
   validateCar,
@@ -49,11 +52,90 @@ describe("normaliseWebsite", () => {
     expect(normaliseWebsite("javascript:alert(1)")).toBeNull();
   });
 
-  it("needs a full link for social media, not a bare handle", () => {
+  it("needs a full link for social media when no platform is chosen", () => {
     expect(normaliseSocial("instagram.com/nairobimotors")).toBe(
       "https://instagram.com/nairobimotors",
     );
     expect(normaliseSocial("@nairobimotors")).toBeNull();
+    expect(normaliseSocial("@nairobimotors", "other")).toBeNull();
+  });
+});
+
+describe("checkSocial with a platform", () => {
+  it("builds each platform's profile link from a username", () => {
+    expect(normaliseSocial("@nairobimotors", "instagram")).toBe(
+      "https://www.instagram.com/nairobimotors",
+    );
+    expect(normaliseSocial(" nairobi.motors ", "instagram")).toBe(
+      "https://www.instagram.com/nairobi.motors",
+    );
+    expect(normaliseSocial("nairobimotors", "tiktok")).toBe(
+      "https://www.tiktok.com/@nairobimotors",
+    );
+    expect(normaliseSocial("@Nairobi.Motors", "facebook")).toBe(
+      "https://www.facebook.com/Nairobi.Motors",
+    );
+  });
+
+  it("accepts a pasted profile link and stores the canonical one", () => {
+    expect(
+      normaliseSocial(
+        "https://instagram.com/nairobimotors/?igsh=abc",
+        "instagram",
+      ),
+    ).toBe("https://www.instagram.com/nairobimotors");
+    expect(normaliseSocial("m.tiktok.com/@nairobimotors", "tiktok")).toBe(
+      "https://www.tiktok.com/@nairobimotors",
+    );
+    // No username in a profile.php link — the link itself is kept.
+    expect(
+      normaliseSocial(
+        "https://www.facebook.com/profile.php?id=100064",
+        "facebook",
+      ),
+    ).toBe("https://www.facebook.com/profile.php?id=100064");
+  });
+
+  it("says which platform a link belongs to when the wrong one is chosen", () => {
+    const result = checkSocial("tiktok.com/@nairobimotors", "instagram");
+    expect(result).toEqual({
+      ok: false,
+      error: "That's a TikTok link — choose TikTok above",
+    });
+  });
+
+  it("rejects what the platform would not accept as a username", () => {
+    expect(normaliseSocial("nairobi motors", "instagram")).toBeNull();
+    expect(normaliseSocial("a".repeat(31), "instagram")).toBeNull();
+    expect(normaliseSocial("x", "tiktok")).toBeNull();
+    expect(normaliseSocial("instagram.com", "instagram")).toBeNull();
+    expect(normaliseSocial("example.com/nairobi", "instagram")).toBeNull();
+  });
+
+  it("treats an unknown platform as a pasted link", () => {
+    expect(normaliseSocial("@nairobimotors", "myspace")).toBeNull();
+    expect(normaliseSocial("x.com/nairobimotors", "myspace")).toBe(
+      "https://x.com/nairobimotors",
+    );
+  });
+});
+
+describe("parseSocialLink", () => {
+  it("finds the platform and username in a profile link", () => {
+    expect(parseSocialLink("www.facebook.com/nairobimotors")).toMatchObject({
+      platform: "facebook",
+      handle: "nairobimotors",
+    });
+    expect(parseSocialLink("instagram.com/p/C1abc")).toMatchObject({
+      platform: "instagram",
+      handle: null,
+    });
+  });
+
+  it("ignores bare handles and other sites", () => {
+    expect(parseSocialLink("@nairobimotors")).toBeNull();
+    expect(parseSocialLink("nairobi.motors")).toBeNull();
+    expect(parseSocialLink("notinstagram.com/x")).toBeNull();
   });
 });
 
@@ -174,6 +256,49 @@ describe("checkWhatsApp", () => {
     expect(
       checkWhatsApp(phoneLib, "0800 123 4567", "GB", "United Kingdom").ok,
     ).toBe(false);
+  });
+});
+
+describe("resolvePhoneCountry", () => {
+  it("defaults to the import country", () => {
+    expect(resolvePhoneCountry(phoneLib, undefined, "KE", "Kenya")).toEqual({
+      iso: "KE",
+      name: "Kenya",
+    });
+    // The import country's own spelling is kept, not Intl's.
+    expect(resolvePhoneCountry(phoneLib, "KE", "KE", "Kenya").name).toBe(
+      "Kenya",
+    );
+  });
+
+  it("takes a code the dealer changed it to, by its English name", () => {
+    expect(resolvePhoneCountry(phoneLib, "AE", "KE", "Kenya")).toEqual({
+      iso: "AE",
+      name: "United Arab Emirates",
+    });
+  });
+
+  it("ignores a code the phone library does not know", () => {
+    expect(resolvePhoneCountry(phoneLib, "ZZ", "KE", "Kenya").iso).toBe("KE");
+    expect(resolvePhoneCountry(phoneLib, 42, "KE", "Kenya").iso).toBe("KE");
+  });
+
+  it("checks the number against the changed code", () => {
+    const phone = resolvePhoneCountry(phoneLib, "AE", "KE", "Kenya");
+    expect(
+      checkWhatsApp(phoneLib, "050 123 4567", phone.iso, phone.name),
+    ).toMatchObject({ ok: true, e164: "+971501234567" });
+    const kenyan = checkWhatsApp(
+      phoneLib,
+      "+254 712 345 678",
+      phone.iso,
+      phone.name,
+    );
+    expect(kenyan).toEqual({
+      ok: false,
+      error:
+        "That isn't a United Arab Emirates number — check the country code",
+    });
   });
 });
 

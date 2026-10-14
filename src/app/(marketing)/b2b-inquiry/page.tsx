@@ -10,12 +10,15 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import DotGlobe, { GLOBE_PALETTE_DARK } from "@/components/DotGlobe";
 import DealerInquiryForm from "@/components/dealer/DealerInquiryForm";
 import Flag from "@/components/dealer/Flag";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
+import OdometerCounter from "@/components/OdometerCounter";
 import { Reveal } from "@/components/Reveal";
 import SectionRule from "@/components/SectionRule";
+import ToolDemos from "@/components/tool-demos/ToolDemos";
 import {
   COUNTRY_BASE_PATH,
   getCountryPage,
@@ -43,6 +46,9 @@ import { buildMarketOptions } from "@/lib/dealer-markets";
 //   2. the shared B2B/B2C value proposition (brand-position.md §4–§5), without
 //      the dealer platform — no embed, no dashboard, no /saas;
 //   3. how fast each of the seven source markets moves.
+// Added on business request 2026-10-14: the four tool demos from
+// /import-japanese-cars (approved copy, src/config/tool-demos.ts), the dot
+// globe beside the source-markets heading, and odometers on the proof tiles.
 // Every figure on it is one already published elsewhere on the site: the
 // 24-hour first quote (/about-us, home), each market's ports and sea transit
 // (the /import-cars-from pages, read from the same config), and the proof line
@@ -92,12 +98,12 @@ export const metadata: Metadata = {
 
 /** brand-position.md §9 proof line — the three figures that speak to a dealer. */
 const PROOF = [
-  { value: "15+", label: "years trading" },
+  { value: 15, suffix: "+", label: "years trading" },
   {
-    value: String(OFFICE_COUNTRY_NAMES.length),
+    value: OFFICE_COUNTRY_NAMES.length,
     label: "countries with our own teams",
   },
-  { value: "200+", label: "dealership clients" },
+  { value: 200, suffix: "+", label: "dealership clients" },
 ];
 
 /**
@@ -243,15 +249,22 @@ export default function CarSourcingForDealersPage() {
                 {PROOF.map((item) => (
                   // Label first in the markup (dt before dd), figure first on
                   // screen — so it reads "years trading: 15+" exactly once.
+                  // justify-end is the top of a column-reverse box: every
+                  // figure sits on the same line however many lines its label
+                  // wraps to.
                   <div
                     key={item.label}
-                    className="flex flex-col-reverse rounded-2xl border border-black/5 bg-white/70 px-4 py-4 backdrop-blur-sm"
+                    className="flex flex-col-reverse justify-end rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_10px_30px_rgba(2,6,23,0.06)] backdrop-blur-md md:p-5"
                   >
-                    <dt className="mt-1 text-xs leading-snug text-zinc-500 md:text-sm">
+                    <dt className="mt-2 text-xs font-medium leading-snug text-zinc-600 md:text-sm">
                       {item.label}
                     </dt>
-                    <dd className="text-2xl font-bold tracking-tight text-black md:text-3xl">
-                      {item.value}
+                    <dd>
+                      <OdometerCounter
+                        value={item.value}
+                        suffix={item.suffix}
+                        className="text-2xl font-bold leading-none tracking-tight text-black sm:text-3xl md:text-4xl"
+                      />
                     </dd>
                   </div>
                 ))}
@@ -312,22 +325,45 @@ export default function CarSourcingForDealersPage() {
           </div>
         </section>
 
-        {/* ── 3. How fast each market moves ───────────────────────────── */}
+        {/* ── 3. The tools, demonstrated: the same four demos as
+            /import-japanese-cars (business request 2026-10-14). White here,
+            because the section above is already grey. ─────────────────── */}
+        <ToolDemos
+          cards={["inspection", "documents", "landed", "tracking"]}
+          background="bg-white"
+        />
+
+        {/* ── 4. How fast each market moves ───────────────────────────── */}
         <section className="relative overflow-hidden bg-zinc-950 px-6 py-20 text-white md:py-28">
           <div
             aria-hidden
             className="pointer-events-none absolute -top-40 left-1/2 h-[36rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(14,165,233,0.22),rgba(139,92,246,0.12),transparent)]"
           />
           <div className="relative mx-auto max-w-6xl">
-            <Reveal y={30} className="max-w-3xl">
-              <span
-                aria-hidden
-                className="mb-6 block h-px w-12 bg-gradient-to-r from-sky-400 to-violet-400"
-              />
-              <h2 className="text-3xl font-bold tracking-tighter md:text-5xl">
-                Import from seven markets, with your first quote in 24 hours.
-              </h2>
-            </Reveal>
+            <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
+              <Reveal y={30} className="max-w-3xl">
+                <span
+                  aria-hidden
+                  className="mb-6 block h-px w-12 bg-gradient-to-r from-sky-400 to-violet-400"
+                />
+                <h2 className="text-3xl font-bold tracking-tighter md:text-5xl">
+                  Import from seven markets, with your first quote in 24 hours.
+                </h2>
+              </Reveal>
+              <Reveal
+                y={20}
+                duration={0.6}
+                className="mx-auto w-full max-w-sm lg:max-w-none"
+              >
+                {/* The default accessible name lists every destination, and
+                    this page never prints that list — the market check
+                    answers it instead. */}
+                <DotGlobe
+                  palette={GLOBE_PALETTE_DARK}
+                  label={`Globe showing shipping routes from the ${sourceMarkets.length} countries we export cars from`}
+                />
+              </Reveal>
+            </div>
 
             <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {sourceMarkets.map((m, index) => (
