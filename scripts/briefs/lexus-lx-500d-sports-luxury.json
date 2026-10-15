@@ -1,0 +1,76 @@
+{
+  "_comment": "Lexus LX 500d Sports Luxury, Graphite Black, brand new, in stock with our team in Australia and ready to ship (business instruction 2026-10-15). No stock reference was supplied. Right-hand drive, read off the car's own cabin photo (not published). Interior colour is Hazel, also read off the cabin photos, which were seen for that purpose only: the request limited the page to the four exterior photographs. Seat count (Lexus Australia sells the Sports Luxury as a five-seat and a seven-seat car) is not visible in those photos and is left off, and with it the fuel tank (110 L five-seat, 80 L seven-seat). Model year is not supplied or visible and is left blank rather than guessed. Engine figures (227 kW at 4,000 rpm, 700 Nm at 1,600-2,600 rpm) are from Lexus Australia's release of 21 July 2025 (lexus.com.au/news/2025/07/upgraded-lexus-lx-flagship-suv-offers-customers-even-greater-choice), which also lists Graphite Black for the Sports Luxury grade and adds front massaging seats to it. Equipment, the 8.9 L/100 km ADR 81/02 combined figure and the 3,500 kg braked towing figure are from the Lexus Australia build-and-price data for the LX 500d Luxury and Sports Luxury grades (Sports Luxury = Luxury plus its own list), checked 2026-10-15; they describe the current Australian specification, which assumes this new car is current-model-year stock. countryOfOrigin is set to Australia, the country the car ships from, not the LX's build country (Japan): the field also picks the page's reading list, and a Japan origin served Japanese-auction guides on a car bought in Australia. Business decision 2026-10-15, accepting that the spec table's Origin row reads Australia. No price: none was given in the request, and the Lexus Australia prices in the release are deliberately not used. Photographs are of this car, taken in Australia, received as 640x480 WhatsApp images, cropped to 16:10 and resized to 1280x800 WebP under public/cars/lexus-lx-500d-sports-luxury/. No number plate is fitted in any of them (empty plate recesses front and rear), and the background car in the rear shot shows no plate, so nothing was blurred. Destinations are the five target markets in the order given; Zimbabwe and Zambia are 'listed' markets with focusList false, so they render as text links under the Kenya, Tanzania and Uganda buttons. Recreate on another environment, once the images have been deployed there, with node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/lexus-lx-500d-sports-luxury.json --env staging --publish (or --env production).",
+
+  "make": "Lexus",
+  "model": "LX 500d",
+  "year": "",
+  "trim": "Sports Luxury",
+  "slug": "lexus-lx-500d-sports-luxury",
+  "condition": "New",
+  "countryOfOrigin": "Australia",
+  "steeringOptions": ["RHD"],
+
+  "engineConfig": "twin-turbo diesel V6",
+  "displacement": "3.3-litre",
+  "maxPower": "227 kW @ 4,000 rpm",
+  "maxTorque": "700 Nm @ 1,600–2,600 rpm",
+  "transmission": "10-speed automatic, full-time all-wheel drive",
+  "fuelSystem": "Diesel",
+
+  "upholstery": "Hazel premium leather-accented seats with 'Takanoha' woodgrain trim",
+  "infotainment": "12.3-inch multimedia display, 25-speaker Mark Levinson audio, wireless Apple CarPlay and Android Auto",
+
+  "features": [
+    "Driver and front passenger seat massage",
+    "Ventilated front and rear seats, heated rear seats",
+    "Dual rear-seat entertainment screens",
+    "Heated steering wheel",
+    "Head-up display and 12.3-inch digital instrument cluster",
+    "Digital rear-view mirror",
+    "Fingerprint start",
+    "Moonroof",
+    "Adaptive Variable Suspension",
+    "Panoramic View Monitor and Multi-Terrain Monitor",
+    "22-inch alloy wheels",
+    "Hands-free power tailgate"
+  ],
+
+  "searchTags": ["lx500d", "lexus-lx", "lx", "sports-luxury", "diesel", "graphite-black", "australia", "lexus"],
+
+  "destinations": ["kenya", "tanzania", "zimbabwe", "uganda", "zambia"],
+
+  "exteriorColors": [{ "name": "Graphite Black", "hex": "#1b1c1e" }],
+  "interiorColors": [{ "name": "Hazel", "hex": "#b97a4b" }],
+
+  "valuePoints": [
+    {
+      "title": "Brand new, right-hand drive and ready to ship from Australia",
+      "description": "This LX 500d is new, in Graphite Black, and is with our team in Australia now, so you are buying a car that exists rather than waiting on a factory build slot."
+    },
+    {
+      "title": "The Sports Luxury cabin, in Hazel leather",
+      "description": "Massaging front seats, ventilated front and rear seats, a heated steering wheel, 'Takanoha' woodgrain trim and two rear-seat entertainment screens."
+    },
+    {
+      "title": "A twin-turbo diesel V6 with 700 Nm",
+      "description": "The 3.3-litre diesel makes 227 kW and 700 Nm from 1,600 rpm through a 10-speed automatic and full-time all-wheel drive, rated to tow 3,500 kg braked."
+    }
+  ],
+
+  "customData": [
+    { "label": "Grade", "value": "Sports Luxury" },
+    { "label": "Condition", "value": "Brand new" },
+    { "label": "Ships from", "value": "Australia" },
+    { "label": "Fuel consumption (combined, ADR 81/02)", "value": "8.9 L/100 km" },
+    { "label": "Braked towing capacity", "value": "3,500 kg" }
+  ],
+
+  "notes": "This Lexus LX 500d Sports Luxury is a brand-new, right-hand-drive car in Graphite Black with a Hazel leather cabin, in stock with our team in Australia and ready to ship. It runs the 3.3-litre twin-turbo diesel V6, with 227 kW and 700 Nm, through a 10-speed automatic and full-time all-wheel drive. The Sports Luxury grade adds massaging front seats, ventilated front and rear seats, 'Takanoha' woodgrain trim and dual rear-seat entertainment screens to the LX's 25-speaker Mark Levinson audio, head-up display and Adaptive Variable Suspension.",
+
+  "images": [
+    "/cars/lexus-lx-500d-sports-luxury/01-front-three-quarter.webp",
+    "/cars/lexus-lx-500d-sports-luxury/02-front.webp",
+    "/cars/lexus-lx-500d-sports-luxury/03-side.webp",
+    "/cars/lexus-lx-500d-sports-luxury/04-rear.webp"
+  ]
+}
