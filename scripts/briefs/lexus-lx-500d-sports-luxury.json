@@ -10,7 +10,7 @@
   "countryOfOrigin": "Japan",
   "steeringOptions": ["RHD"],
 
-  "engineConfig": "3.3-litre twin-turbo diesel V6",
+  "engineConfig": "twin-turbo diesel V6",
   "displacement": "3.3-litre",
   "maxPower": "227 kW @ 4,000 rpm",
   "maxTorque": "700 Nm @ 1,600–2,600 rpm",
