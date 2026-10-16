@@ -32,6 +32,7 @@ import {
 } from "@/lib/lead-routing";
 import { LEAD_EVENT } from "@/lib/leadConversion";
 import connectToDatabase from "@/lib/mongoose";
+import { normaliseRepCode, repLinkEmail } from "@/lib/rep-link";
 
 // The sales positions, the country owners and the rule that holds owners out
 // of the rotation live in src/lib/lead-routing.ts, shared with the dealer
@@ -91,6 +92,9 @@ export async function submitCarRequest(data: {
   // (/team/[slug]) and must be assigned directly to that member, bypassing the
   // round-robin rotation. Validated server-side against the Sales/admin role.
   assignedAgentId?: string;
+  // A rep link (?rep=shiraz) the customer arrived through: the salesperson
+  // who shared it takes the lead. Resolved and checked here, never trusted.
+  repCode?: string;
   // S2S Tracking Fields
   gclid?: string;
   fbclid?: string;
@@ -153,11 +157,15 @@ export async function submitCarRequest(data: {
     //                    pinned to that member; the customer picked them, so
     //                    any sales position will do, B2B Sales included
     //                    (business instruction 2026-10-14).
+    //      rep-link    — the customer arrived through a salesperson's rep
+    //                    link; it beats a country owner (business
+    //                    instruction 2026-10-16). Any sales position.
     //      country     — the destination market has a named B2C owner.
     //      round-robin — everything else rotates through B2C Sales and
     //                    Sales alphabetically.
     let assignedAgent = null;
-    let assignmentMethod: "direct" | "country" | "round-robin" = "round-robin";
+    let assignmentMethod: "direct" | "rep-link" | "country" | "round-robin" =
+      "round-robin";
 
     // 1a. Direct assignment — only honoured if the id resolves to a real
     //     user whose role can actually own leads. Never trust the client
@@ -178,7 +186,33 @@ export async function submitCarRequest(data: {
       }
     }
 
-    // 1b. Country routing — a destination market with a named owner skips the
+    // 1b. Rep link — the code names a company email; honoured only while that
+    //     account holds a sales position. Anything else falls through.
+    const repCode = normaliseRepCode(data.repCode);
+    if (!assignedAgent && repCode) {
+      const [repAgent] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            // Exact, not ilike: a code may hold "_", which ilike reads as a
+            // wildcard.
+            sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
+            holdsRole(SALES_ROLES),
+          ),
+        )
+        .limit(1);
+
+      if (repAgent) {
+        assignedAgent = {
+          ...repAgent,
+          _id: repAgent.id,
+        };
+        assignmentMethod = "rep-link";
+      }
+    }
+
+    // 1c. Country routing — a destination market with a named owner skips the
     //     rotation entirely. Matched case-insensitively on email, and gated on
     //     the same can-own-leads check as a direct assignment. An owner who is
     //     missing or banned falls through to the round-robin rather than
@@ -234,7 +268,13 @@ export async function submitCarRequest(data: {
         const [lastRequest] = await db
           .select()
           .from(requests)
-          .where(notInArray(requests.assignmentMethod, ["direct", "country"]))
+          .where(
+            notInArray(requests.assignmentMethod, [
+              "direct",
+              "rep-link",
+              "country",
+            ]),
+          )
           .orderBy(desc(requests.createdAt))
           .limit(1);
 
@@ -278,7 +318,11 @@ export async function submitCarRequest(data: {
     //    drafts are hidden from the admin pipeline and purged if abandoned.
     // Strip the routing hint before persisting — it's an input, not a
     // Request field (assignmentMethod records the outcome instead).
-    const { assignedAgentId: _assignedAgentId, ...requestData } = data;
+    const {
+      assignedAgentId: _assignedAgentId,
+      repCode: _repCode,
+      ...requestData
+    } = data;
 
     const newRequestId = crypto.randomUUID();
 

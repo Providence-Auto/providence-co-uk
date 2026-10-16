@@ -90,6 +90,8 @@ export type DealerInquiryInput = {
   fbclid?: string;
   fbc?: string;
   fbp?: string;
+  /** A rep link's code (?rep=shaq) — see src/lib/rep-link.ts. */
+  repCode?: string;
   /**
    * Honeypot. Rendered off-screen and never shown to a person; a submission
    * that fills it in is a bot and is quietly dropped.

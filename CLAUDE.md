@@ -353,7 +353,9 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 ### Server Actions
 
 All mutations go through server actions in `src/actions/`, not API routes. Key actions:
-- `submitCarRequest` — creates Request, assigns agent (profile-page pin to that person whatever their position, else round-robin across **B2C Sales** and **Sales**), sends email alerts
+- `submitCarRequest` — creates Request, assigns agent (profile-page pin to that person whatever their position, then a rep link, else round-robin across **B2C Sales** and **Sales**), sends email alerts
+
+**Rep links** (`src/lib/rep-link.ts`, business instruction 2026-10-16): any page with an inquiry form takes `?rep=<name>` (or the bare `?<name>`), where the name is the part of a salesperson's company email before the @ — `?rep=shaq` → `shaq@providenceauto.uk.com`. Every inquiry sent on that visit, B2C or dealer, goes to that person, **ahead of a country owner** and the rotation, recorded as `assignmentMethod: "rep-link"` (kept out of the rotation's history). Any sales position qualifies; anyone else, a departed name, or someone in `DEALER_ROTATION_EXCLUDED` on the dealer form falls back to normal routing. `<RepLinkCapture />` in the root layout keeps the name in sessionStorage for the tab, because the car page's destination picker rewrites the URL and drops the query string. Only a `/team/[slug]` profile-page pin beats it.
 - `dealer-inquiry-actions.ts` — `submitDealerInquiry` (public, from `/b2b-inquiry`) and the `/admin/dealer-inquiries` actions. See "B2B inquiry page" below.
 
 ### B2B inquiry page (`/b2b-inquiry`)

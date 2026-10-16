@@ -304,6 +304,60 @@ describe("submitDealerInquiry", () => {
     });
   });
 
+  it("gives a rep-link inquiry to the salesperson who shared it, over the country owner", async () => {
+    // ?rep=dilshard on a Malta inquiry: Dilshard, not Shaq (business
+    // instruction 2026-10-16). One lookup, then the insert.
+    state.results.push([DILSHARD], []);
+
+    const result = await submitDealerInquiry(
+      validInput({
+        country: "Malta",
+        whatsapp: "7912 3456",
+        repCode: "Dilshard",
+      }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-dil",
+      assignmentMethod: "rep-link",
+    });
+    expect(state.inserted[0]).not.toHaveProperty("repCode");
+  });
+
+  it("falls back to the owner when the rep link names no salesperson", async () => {
+    state.results.push([], [SHAQ], []);
+
+    await submitDealerInquiry(
+      validInput({
+        country: "Cyprus",
+        whatsapp: "99 123456",
+        repCode: "someone-who-left",
+      }) as Submit,
+    );
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-shaq",
+      assignmentMethod: "country",
+    });
+  });
+
+  it("does not hand Chathuranga a dealer inquiry through his rep link", async () => {
+    state.results.push(
+      [CHATHURANGA], // the rep lookup finds him, but he takes no dealer inquiries
+      [ABDALLAH], // so the rotation
+      [],
+      [],
+    );
+
+    await submitDealerInquiry(validInput({ repCode: "chathuranga" }) as Submit);
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-abd",
+      assignmentMethod: "round-robin",
+    });
+  });
+
   // Dealer inquiries go to B2B Sales and Sales (business instruction
   // 2026-10-14); a B2C salesperson never comes up in the dealer rotation.
   it("keeps B2C Sales out of the dealer rotation", async () => {
