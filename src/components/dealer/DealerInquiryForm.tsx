@@ -54,6 +54,7 @@ import {
   validateContact,
   validateDealership,
 } from "@/lib/dealer-inquiry";
+import { currentRepCode } from "@/lib/rep-link";
 
 const STEPS = [
   { key: "market", label: "Market" },
@@ -490,6 +491,9 @@ export default function DealerInquiryForm({
       notes: form.notes,
       faxNumber: form.faxNumber,
       ...tracking.current,
+      // Read at submit, not with the rest of the attribution on mount: the
+      // rep link may have been seen on another page earlier in the visit.
+      repCode: currentRepCode(),
     };
 
     setBusy(true);

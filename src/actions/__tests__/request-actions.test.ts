@@ -284,6 +284,125 @@ describe("request-actions", () => {
       expect(result.agent?.id).toBe("agent-123");
     });
 
+    it("gives a rep-link lead to the salesperson who shared it", async () => {
+      // ?rep=shaq on any page: the lead goes to Shaq, whatever his position,
+      // and is recorded as a rep-link assignment so the rotation skips it.
+      const shaq = {
+        id: "shaq-1",
+        name: "Shaqeeq Shahiq",
+        email: "shaq@providenceauto.uk.com",
+        role: "B2B Sales",
+      };
+
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([shaq])) // rep lookup
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({
+        make: "Lexus",
+        vehicle_model: "LX 500d",
+        condition: "Used",
+        name: "Rep Link Customer",
+        email: "customer10@test.com",
+        countryCode: "IE",
+        phone: "+353871234567",
+        countryOfImport: "Ireland",
+        repCode: " Shaq ",
+      });
+
+      expect(result.agent?.id).toBe("shaq-1");
+      expect(db.then).toHaveBeenCalledTimes(2);
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({
+          assignedToId: "shaq-1",
+          assignmentMethod: "rep-link",
+        }),
+      );
+      // The code is an input, never a column.
+      expect(db.values).not.toHaveBeenCalledWith(
+        expect.objectContaining({ repCode: expect.anything() }),
+      );
+    });
+
+    it("lets a profile-page pin win over a rep link", async () => {
+      const mockAgent = { id: "agent-123", name: "John Doe", role: "Sales" };
+
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([mockAgent])) // direct lookup
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({
+        make: "Lexus",
+        vehicle_model: "LX 500d",
+        condition: "Used",
+        name: "Both Customer",
+        email: "customer11@test.com",
+        countryCode: "IE",
+        phone: "+353871234568",
+        countryOfImport: "Ireland",
+        assignedAgentId: "agent-123",
+        repCode: "shaq",
+      });
+
+      expect(result.agent?.id).toBe("agent-123");
+      expect(db.then).toHaveBeenCalledTimes(2);
+    });
+
+    it("rotates a lead whose rep link names no salesperson", async () => {
+      const mockSalesMembers = [
+        {
+          id: "sales-1",
+          name: "Alice",
+          email: "alice@providenceauto.uk.com",
+          role: "B2C Sales",
+        },
+      ];
+
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // rep lookup finds no one
+        .mockImplementationOnce((onFulfilled) => onFulfilled(mockSalesMembers))
+        .mockImplementationOnce((onFulfilled) => onFulfilled([]))
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({
+        make: "Lexus",
+        vehicle_model: "LX 500d",
+        condition: "Used",
+        name: "Stale Link Customer",
+        email: "customer12@test.com",
+        countryCode: "IE",
+        phone: "+353871234569",
+        countryOfImport: "Ireland",
+        repCode: "someone-who-left",
+      });
+
+      expect(result.agent?.id).toBe("sales-1");
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ assignmentMethod: "round-robin" }),
+      );
+    });
+
+    it("never looks up a rep code that could not be an email name", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // staff list
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      await submitCarRequest({
+        make: "Lexus",
+        vehicle_model: "LX 500d",
+        condition: "Used",
+        name: "Odd Link Customer",
+        email: "customer13@test.com",
+        countryCode: "IE",
+        phone: "+353871234560",
+        countryOfImport: "Ireland",
+        repCode: "x@evil.com",
+      });
+
+      // Straight to the rotation: staff list (empty → unassigned), insert.
+      expect(db.then).toHaveBeenCalledTimes(2);
+    });
+
     it("refuses to assign a lead to a non-Sales user", async () => {
       // An admin id arriving as a profile-page pin must not win the lead; it
       // falls through to the Sales rotation instead.

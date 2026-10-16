@@ -57,6 +57,7 @@ import {
   takesDealerLeads,
 } from "@/lib/lead-routing";
 import { clientAddress, createRateLimiter } from "@/lib/rate-limit";
+import { normaliseRepCode, repLinkEmail } from "@/lib/rep-link";
 import { auth } from "@/utils/auth";
 
 const ADMIN_PATH = "/admin/dealer-inquiries";
@@ -159,6 +160,7 @@ export async function submitDealerInquiry(
     }
 
     const country = text(input.country, 100);
+    const repCode = normaliseRepCode(input.repCode);
     const marketStatus = marketStatusFor(country);
     const iso = LEFT_TRAFFIC_COUNTRIES[country];
     if (!marketStatus || marketStatus === "right-traffic" || !iso) {
@@ -272,13 +274,37 @@ export async function submitDealerInquiry(
       if (lockedAt) now = new Date(lockedAt);
 
       let chosen: typeof users.$inferSelect | null = null;
-      let method: "country" | "round-robin" = "round-robin";
+      let method: "rep-link" | "country" | "round-robin" = "round-robin";
 
-      // 1. A market with a named owner goes to them — Malta and Cyprus to
+      // 1. A rep link (?rep=shaq) the dealer arrived through — it beats a
+      //    country owner (business instruction 2026-10-16). Any sales
+      //    position, as for a profile-page lead — DEALER_ROTATION_EXCLUDED
+      //    included: the exclusion keeps someone out of the rotation, but a
+      //    dealer who came through their own link is theirs (2026-10-16).
+      if (repCode) {
+        const [rep] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              // Exact, not ilike: a code may hold "_", which ilike reads as a
+              // wildcard.
+              sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
+              inSalesPosition(),
+            ),
+          )
+          .limit(1);
+        if (rep) {
+          chosen = rep;
+          method = "rep-link";
+        }
+      }
+
+      // 2. A market with a named owner goes to them — Malta and Cyprus to
       //    Shaq. An owner who is missing, banned or no longer in a position
       //    that takes dealer inquiries falls through to the rotation.
       const ownerEmail = dealerCountryLeadOwner(country);
-      if (ownerEmail) {
+      if (!chosen && ownerEmail) {
         const [owner] = await tx
           .select()
           .from(users)
@@ -290,7 +316,7 @@ export async function submitDealerInquiry(
         }
       }
 
-      // 2. Everyone else rotates across B2B Sales and Sales — minus anyone
+      // 3. Everyone else rotates across B2B Sales and Sales — minus anyone
       //    held out of the dealer rotation, and minus country owners, who take
       //    only their own market (unless that would leave no one at all).
       if (!chosen) {
