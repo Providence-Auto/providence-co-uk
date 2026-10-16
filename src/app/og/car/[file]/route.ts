@@ -14,6 +14,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import { loadCarImageSource } from "@/lib/car-image-source";
 import { carOgSource } from "@/lib/car-page";
 import { loadCar } from "@/lib/car-page-data";
 
@@ -21,32 +22,11 @@ export const dynamic = "force-dynamic";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const SITE_URL = "https://www.providenceauto.co.uk";
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 const DEFAULT_IMAGE = path.join(PUBLIC_DIR, "og", "default.jpg");
 
 /** Statuses whose page a logged-out visitor — or a crawler — may see. */
 const PUBLIC_STATUSES = new Set(["Active", "Published"]);
-
-async function loadSource(src: string): Promise<Buffer> {
-  if (src.startsWith("/")) {
-    // A file under public/. Resolved and checked so a crafted path can never
-    // read outside it; fetched from the site instead if the file is missing
-    // from this build.
-    const local = path.resolve(PUBLIC_DIR, `.${decodeURI(src)}`);
-    if (local.startsWith(PUBLIC_DIR + path.sep)) {
-      try {
-        return await readFile(local);
-      } catch {
-        // fall through to the network
-      }
-    }
-  }
-  const url = new URL(src, SITE_URL);
-  const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
-  if (!response.ok) throw new Error(`${url} answered ${response.status}`);
-  return Buffer.from(await response.arrayBuffer());
-}
 
 function jpeg(body: Buffer, maxAge: number): Response {
   return new Response(new Uint8Array(body), {
@@ -70,7 +50,7 @@ export async function GET(
       car && PUBLIC_STATUSES.has(car.status) ? carOgSource(car) : null;
     if (!source) throw new Error(`no public hero for ${slug}`);
 
-    const image = await sharp(await loadSource(source))
+    const image = await sharp(await loadCarImageSource(source))
       .rotate()
       .resize(WIDTH, HEIGHT, { fit: "cover", position: "centre" })
       // A transparent PNG cut-out would otherwise turn black in the JPEG.

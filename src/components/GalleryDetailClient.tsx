@@ -7,11 +7,10 @@ import {
   CarFront,
   Check,
   ChevronDown,
-  FileText,
+  FileDown,
   Globe,
   Images,
   Layers,
-  Loader2,
   Mail,
   Palette,
   Zap,
@@ -19,7 +18,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { generateDossierPdfAction } from "@/actions/pdf-actions";
 import {
   DestinationBrief,
   DestinationChips,
@@ -37,6 +35,7 @@ import {
   destinationPath,
   splitDestinations,
 } from "@/config/destinations";
+import { carSpecRows } from "@/lib/car-spec-rows";
 import type { GuideLink } from "@/lib/destination-guides";
 import { getLogoFilename } from "@/lib/logo-utils";
 import {
@@ -55,7 +54,6 @@ import {
   findGrade,
   gradeFeatures,
   gradePricing,
-  gradeSpec,
   parseGrades,
   type VehicleGrade,
 } from "@/lib/vehicle-grades";
@@ -128,8 +126,7 @@ type Dossier = {
   slug?: string;
 };
 
-const FALLBACK_IMAGE =
-  "/home/hero-1920.webp";
+const FALLBACK_IMAGE = "/home/hero-1920.webp";
 
 // How much of each long list is shown before the reader has to ask for more.
 // A spec dossier can carry 20+ custom rows and a dozen features; rendering all
@@ -191,7 +188,6 @@ export default function GalleryDetailClient({
    */
   destinationGuides?: Record<string, GuideLink[]>;
 }) {
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const inquiryRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
@@ -304,39 +300,6 @@ export default function GalleryDetailClient({
     ? selectedSteering
     : steeringOptions[0];
 
-  // Every spec the selected grade touches, resolved against the base car.
-  // Blank on a grade means "same as the dossier", so this is the single place
-  // the inheritance rule is applied on the public side.
-  const specs = useMemo(() => {
-    const base = {
-      engineConfig: car.engineConfig,
-      displacement: car.displacement,
-      maxPower: car.maxPower,
-      maxTorque: car.maxTorque,
-      transmission: car.transmission,
-      fuelSystem: car.fuelSystem,
-      emissions: car.emissions,
-    };
-    return {
-      engineConfig: gradeSpec(base, selectedGrade, "engineConfig"),
-      displacement: gradeSpec(base, selectedGrade, "displacement"),
-      maxPower: gradeSpec(base, selectedGrade, "maxPower"),
-      maxTorque: gradeSpec(base, selectedGrade, "maxTorque"),
-      transmission: gradeSpec(base, selectedGrade, "transmission"),
-      fuelSystem: gradeSpec(base, selectedGrade, "fuelSystem"),
-      emissions: gradeSpec(base, selectedGrade, "emissions"),
-    };
-  }, [
-    car.engineConfig,
-    car.displacement,
-    car.maxPower,
-    car.maxTorque,
-    car.transmission,
-    car.fuelSystem,
-    car.emissions,
-    selectedGrade,
-  ]);
-
   // Memoised because RequestForm re-applies `prefill` whenever its identity
   // changes: without this, clicking a gallery thumbnail (which re-renders this
   // component) would rebuild the object and wipe whatever the customer had
@@ -417,57 +380,20 @@ export default function GalleryDetailClient({
     }
   };
 
-  const handleDownloadPdf = async () => {
-    setIsGeneratingPdf(true);
-    try {
-      const res = await generateDossierPdfAction(car._id);
-      if (res.success && res.pdfBase64) {
-        const byteCharacters = atob(res.pdfBase64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "application/pdf" });
-        const blobUrl = URL.createObjectURL(blob);
-        window.open(blobUrl, "_blank");
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-      } else {
-        alert(res.message || "Failed to generate PDF.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred while generating the PDF.");
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
+  // The PDF spec sheet is a plain link (see the spec-sheet route), carrying
+  // the grade and hand on screen so the sheet matches what the reader chose.
+  const specSheetHref = (() => {
+    const query = new URLSearchParams();
+    if (selectedGrade) query.set("grade", selectedGrade.id);
+    if (steeringOptions.length > 1) query.set("steering", activeSteering);
+    const qs = query.toString();
+    return `/b2c/gallery/${car.slug || car._id}/spec-sheet${qs ? `?${qs}` : ""}`;
+  })();
 
   // Base spec rows and the dossier's custom rows share one table and one
   // collapse, so the reader sees a single "Technical Specifications" list.
-  const specRows = [
-    // The grade replaces the static trim row when the model has a ladder —
-    // showing both puts two contradictory answers to the same question next
-    // to each other.
-    selectedGrade
-      ? { label: "Grade", value: selectedGrade.name }
-      : { label: "Variant / Trim", value: car.trim },
-    { label: "Origin", value: car.countryOfOrigin },
-    {
-      label: "Engine",
-      value: `${specs.displacement} ${specs.engineConfig}`.trim(),
-    },
-    { label: "Max Power", value: specs.maxPower },
-    { label: "Max Torque", value: specs.maxTorque },
-    { label: "Transmission", value: specs.transmission },
-    { label: "Fuel System", value: specs.fuelSystem },
-    { label: "Steering", value: steeringLabel(activeSteering) },
-    { label: "Emissions", value: specs.emissions },
-    ...(car.customData ?? []).map((c) => ({
-      label: c.label,
-      value: c.value,
-    })),
-  ].filter((row) => row.value);
+  // The PDF builds its table from the same function.
+  const specRows = carSpecRows(car, selectedGrade, activeSteering);
 
   const visibleSpecs = specsOpen ? specRows : specRows.slice(0, LIMITS.specs);
   const features = gradeFeatures(car.features, selectedGrade);
@@ -744,18 +670,15 @@ export default function GalleryDetailClient({
                 <Mail size={17} />{" "}
                 {car.isUpcoming ? "Register Interest" : "Inquire Now"}
               </button>
-              <button
-                onClick={handleDownloadPdf}
-                disabled={isGeneratingPdf}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-black/10 hover:border-black/30 hover:bg-zinc-50 text-black text-sm font-bold uppercase tracking-wider rounded-full transition-all disabled:opacity-70"
+              <a
+                href={specSheetHref}
+                target="_blank"
+                rel="noopener"
+                aria-label="Spec sheet (PDF)"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-black/10 hover:border-black/30 hover:bg-zinc-50 text-black text-sm font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-all"
               >
-                {isGeneratingPdf ? (
-                  <Loader2 className="animate-spin" size={17} />
-                ) : (
-                  <FileText size={17} />
-                )}
-                {isGeneratingPdf ? "Generating" : "PDF"}
-              </button>
+                <FileDown size={17} className="shrink-0" /> Spec sheet
+              </a>
             </div>
           </Reveal>
 
