@@ -304,6 +304,68 @@ describe("submitDealerInquiry", () => {
     });
   });
 
+  it("gives a rep-link inquiry to the salesperson who shared it, over the country owner", async () => {
+    // ?rep=dilshard on a Malta inquiry: Dilshard, not Shaq (business
+    // instruction 2026-10-16). One lookup, then the insert.
+    state.results.push([DILSHARD], []);
+
+    const result = await submitDealerInquiry(
+      validInput({
+        country: "Malta",
+        whatsapp: "7912 3456",
+        repCode: "Dilshard",
+      }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-dil",
+      assignmentMethod: "rep-link",
+    });
+    expect(state.inserted[0]).not.toHaveProperty("repCode");
+  });
+
+  it("falls back to the owner when the rep link names no salesperson", async () => {
+    state.results.push([], [SHAQ], []);
+
+    await submitDealerInquiry(
+      validInput({
+        country: "Cyprus",
+        whatsapp: "99 123456",
+        repCode: "someone-who-left",
+      }) as Submit,
+    );
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-shaq",
+      assignmentMethod: "country",
+    });
+  });
+
+  it("gives Chathuranga a dealer inquiry that came through his own rep link", async () => {
+    // He is out of the dealer rotation, but a dealer he sent is his
+    // (business instruction 2026-10-16). One lookup, then the insert.
+    state.results.push([{ ...CHATHURANGA, role: "B2C Sales" }], []);
+
+    await submitDealerInquiry(validInput({ repCode: "chathuranga" }) as Submit);
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-cha",
+      assignmentMethod: "rep-link",
+    });
+  });
+
+  it("sends ?rep=shiraz to Abdallah", async () => {
+    state.results.push([ABDALLAH], []);
+
+    await submitDealerInquiry(validInput({ repCode: "Shiraz" }) as Submit);
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-abd",
+      assignmentMethod: "rep-link",
+    });
+  });
+
   // Dealer inquiries go to B2B Sales and Sales (business instruction
   // 2026-10-14); a B2C salesperson never comes up in the dealer rotation.
   it("keeps B2C Sales out of the dealer rotation", async () => {

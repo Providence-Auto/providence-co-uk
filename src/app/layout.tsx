@@ -5,6 +5,7 @@ import Script from "next/script";
 import { Toaster } from "sonner";
 import ConditionalFooter from "@/components/ConditionalFooter";
 import MotionProvider from "@/components/MotionProvider";
+import RepLinkCapture from "@/components/RepLinkCapture";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -343,6 +344,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <ConditionalFooter />
         </MotionProvider>
         <Toaster position="bottom-right" richColors />
+        <RepLinkCapture />
       </body>
     </html>
   );
