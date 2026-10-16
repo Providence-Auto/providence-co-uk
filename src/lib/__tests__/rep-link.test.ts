@@ -56,7 +56,19 @@ describe("normaliseRepCode / repLinkEmail", () => {
   });
 
   it("points at the company address", () => {
-    expect(repLinkEmail("shiraz")).toBe("shiraz@providenceauto.uk.com");
+    expect(repLinkEmail("ishak")).toBe("ishak@providenceauto.uk.com");
+  });
+
+  it("points a customer-facing name at the account behind it", () => {
+    expect(repLinkEmail("shiraz")).toBe("abdallah@providenceauto.uk.com");
+    // The email name still works beside it.
+    expect(repLinkEmail("abdallah")).toBe("abdallah@providenceauto.uk.com");
+  });
+
+  it("never resolves an inherited object key as an alias", () => {
+    expect(repLinkEmail("constructor")).toBe(
+      "constructor@providenceauto.uk.com",
+    );
   });
 });
 

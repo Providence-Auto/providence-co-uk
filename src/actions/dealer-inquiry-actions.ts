@@ -278,8 +278,9 @@ export async function submitDealerInquiry(
 
       // 1. A rep link (?rep=shaq) the dealer arrived through — it beats a
       //    country owner (business instruction 2026-10-16). Any sales
-      //    position, as for a profile-page lead, but never someone held out
-      //    of dealer inquiries altogether: their link falls through.
+      //    position, as for a profile-page lead — DEALER_ROTATION_EXCLUDED
+      //    included: the exclusion keeps someone out of the rotation, but a
+      //    dealer who came through their own link is theirs (2026-10-16).
       if (repCode) {
         const [rep] = await tx
           .select()
@@ -293,7 +294,7 @@ export async function submitDealerInquiry(
             ),
           )
           .limit(1);
-        if (rep && !isExcludedFromDealerRotation(rep)) {
+        if (rep) {
           chosen = rep;
           method = "rep-link";
         }

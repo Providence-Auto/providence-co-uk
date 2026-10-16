@@ -6,11 +6,13 @@
  * inquiry sent from that visit is assigned to them, ahead of a country owner
  * and the rotation. The bare form `?shiraz` works too.
  *
- * The name is the part of their company email before the @ (shiraz@… →
- * "shiraz"), so every salesperson already has one and nothing has to be set
- * up per person. The server resolves it (`repLinkEmail`) and checks the
- * account still holds a sales position; an unknown or departed name falls
- * back to the normal routing, so a stale link never strands a lead.
+ * The name is the part of their company email before the @ (ishak@… →
+ * "ishak"), so every salesperson already has one and nothing has to be set
+ * up per person. Someone who goes by a different name with customers gets an
+ * entry in REP_LINK_ALIASES as well. The server resolves the name
+ * (`repLinkEmail`) and checks the account still holds a sales position; an
+ * unknown or departed name falls back to the normal routing, so a stale link
+ * never strands a lead.
  *
  * The link is remembered for the rest of the visit, in sessionStorage, by
  * <RepLinkCapture /> in the root layout. That matters because the car page
@@ -42,9 +44,23 @@ export function normaliseRepCode(value: unknown): string | null {
   return CODE.test(code) ? code : null;
 }
 
+/**
+ * Link names that are not the part of the account's email before the @ — the
+ * name a salesperson goes by with their own customers. Keyed by the name in
+ * the link, lower-cased; valued by the account email. Their email name keeps
+ * working beside it.
+ */
+export const REP_LINK_ALIASES: Record<string, string> = {
+  // Abdallah goes by Shiraz with customers (business instruction 2026-10-16).
+  shiraz: "abdallah@providenceauto.uk.com",
+};
+
 /** The account email a rep code points at. */
 export function repLinkEmail(code: string): string {
-  return `${code}@${REP_EMAIL_DOMAIN}`;
+  // Own keys only: a link reading ?rep=constructor must not find Object's.
+  return Object.hasOwn(REP_LINK_ALIASES, code)
+    ? REP_LINK_ALIASES[code].toLowerCase()
+    : `${code}@${REP_EMAIL_DOMAIN}`;
 }
 
 /**

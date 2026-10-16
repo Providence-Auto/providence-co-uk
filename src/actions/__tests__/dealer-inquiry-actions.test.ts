@@ -342,19 +342,27 @@ describe("submitDealerInquiry", () => {
     });
   });
 
-  it("does not hand Chathuranga a dealer inquiry through his rep link", async () => {
-    state.results.push(
-      [CHATHURANGA], // the rep lookup finds him, but he takes no dealer inquiries
-      [ABDALLAH], // so the rotation
-      [],
-      [],
-    );
+  it("gives Chathuranga a dealer inquiry that came through his own rep link", async () => {
+    // He is out of the dealer rotation, but a dealer he sent is his
+    // (business instruction 2026-10-16). One lookup, then the insert.
+    state.results.push([{ ...CHATHURANGA, role: "B2C Sales" }], []);
 
     await submitDealerInquiry(validInput({ repCode: "chathuranga" }) as Submit);
 
     expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-cha",
+      assignmentMethod: "rep-link",
+    });
+  });
+
+  it("sends ?rep=shiraz to Abdallah", async () => {
+    state.results.push([ABDALLAH], []);
+
+    await submitDealerInquiry(validInput({ repCode: "Shiraz" }) as Submit);
+
+    expect(state.inserted[0]).toMatchObject({
       assignedToId: "u-abd",
-      assignmentMethod: "round-robin",
+      assignmentMethod: "rep-link",
     });
   });
 
