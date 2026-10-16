@@ -10,6 +10,17 @@ const TITLE =
 const DESCRIPTION =
   "Free calculator for the cost of importing a car to Ireland — VRT, VAT, customs duty and the NOx levy on 2026 Revenue rates. Covers cars from the UK, Japan, the EU and beyond, with live exchange rates.";
 
+// A static file, not an opengraph-image route: the generated card was served
+// `max-age=0` and uncached at the edge, slow enough on a cold render for
+// WhatsApp's crawler to give up and cache a preview with no image.
+const OG_IMAGE = {
+  url: "https://www.providenceauto.co.uk/og/ireland-cost-calculator.jpg",
+  width: 1200,
+  height: 630,
+  type: "image/jpeg",
+  alt: "Ireland Car Import Cost Calculator — VRT, VAT & Customs Duty",
+};
+
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
@@ -33,11 +44,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
   robots: {
     index: true,
