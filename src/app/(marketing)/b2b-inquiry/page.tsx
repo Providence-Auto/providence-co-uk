@@ -59,6 +59,19 @@ import { buildMarketOptions } from "@/lib/dealer-markets";
 const SITE = "https://www.providenceauto.co.uk";
 const URL = `${SITE}${DEALER_SOURCING_PATH}`;
 
+// A static file, not an opengraph-image route: the generated card was served
+// `max-age=0` and uncached at the edge, so a cold render took ~4 s and
+// WhatsApp's crawler gave up and cached a preview with no image. Type only, no
+// car photograph — no single plate could match every market the page serves
+// (car-imagery-checklist.md).
+const OG_IMAGE = {
+  url: `${SITE}/og/b2b-inquiry.jpg`,
+  width: 1200,
+  height: 630,
+  type: "image/jpeg",
+  alt: `${H1} — Providence Auto`,
+};
+
 export const metadata: Metadata = {
   title: { absolute: DEALER_SOURCING_TITLE },
   description: DEALER_SOURCING_DESCRIPTION,
@@ -77,11 +90,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: DEALER_SOURCING_TITLE,
     description: DEALER_SOURCING_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: DEALER_SOURCING_TITLE,
     description: DEALER_SOURCING_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   robots: {
     index: true,
