@@ -28,9 +28,13 @@ import HowToImportACarFromThailand from "./how-to-import-a-car-from-thailand";
 import HowToImportACarFromTheUae from "./how-to-import-a-car-from-the-uae";
 import HowToImportACarFromTheUk from "./how-to-import-a-car-from-the-uk";
 import HowToImportANissanPatrol from "./how-to-import-a-nissan-patrol";
+import HowToImportASuzukiJimny from "./how-to-import-a-suzuki-jimny";
 import ImportCarFromJapanOrUkToIreland from "./import-car-from-japan-or-uk-to-ireland";
 import ImportJapaneseCarsToUk from "./import-japanese-cars-to-uk";
 import ImportingACarToSriLanka from "./importing-a-car-to-sri-lanka";
+import ImportingASuzukiJimnyFromIndia from "./importing-a-suzuki-jimny-from-india";
+import ImportingASuzukiJimnyFromJapan from "./importing-a-suzuki-jimny-from-japan";
+import ImportingASuzukiJimnyToTheUk from "./importing-a-suzuki-jimny-to-the-uk";
 import ImportingAUsedEvFromNewZealand from "./importing-a-used-ev-from-new-zealand";
 import ImportingAUteOr4x4FromAustralia from "./importing-a-ute-or-4x4-from-australia";
 import ImportingCarsFromIndiaForDealers from "./importing-cars-from-india-for-dealers";
@@ -83,6 +87,10 @@ export const BLOG_BODIES: Record<string, ComponentType> = {
   // ── Model guides ───────────────────────────────────────────────────────────
   "how-to-import-a-nissan-patrol": HowToImportANissanPatrol,
   "nissan-patrol-y63-grades-explained": NissanPatrolY63GradesExplained,
+  "how-to-import-a-suzuki-jimny": HowToImportASuzukiJimny,
+  "importing-a-suzuki-jimny-from-japan": ImportingASuzukiJimnyFromJapan,
+  "importing-a-suzuki-jimny-from-india": ImportingASuzukiJimnyFromIndia,
+  "importing-a-suzuki-jimny-to-the-uk": ImportingASuzukiJimnyToTheUk,
 
   // ── Japan to UK ────────────────────────────────────────────────────────────
   "import-japanese-cars-to-uk": ImportJapaneseCarsToUk,
