@@ -670,6 +670,211 @@ const MODEL_POSTS: BlogPost[] = [
       { id: "markets", label: "The ladder differs by market" },
     ],
   },
+  // ── Suzuki Jimny ───────────────────────────────────────────────────────────
+  // Two factories, three cars: the three-door Jimny and Jimny Sierra are built
+  // in Japan, the five-door in India. The pillar sorts out which is which; the
+  // two corridor guides go deep on buying in each country. The UK guide lives
+  // in the Japan → UK cluster (blog-japan-uk.ts). Hero photographs of the
+  // five-door are our own (stock PT5608), so they carry no Commons credit.
+  {
+    slug: "how-to-import-a-suzuki-jimny",
+    // A Jimny comes out of two corridors, so the pillar ends on the
+    // market-neutral page; the corridor guides end on their own pages.
+    ...blogCtaFields(ARTICLE_CTAS.neutral),
+    title: "How to Import a Suzuki Jimny: Japan, India and Which One",
+    h1: "How to Import a Suzuki Jimny",
+    seoTitle: "How to Import a Suzuki Jimny: Japan or India?",
+    description:
+      "How to import a Suzuki Jimny: the three current Jimnys, which is built in Japan and which in India, what to check before you buy, and the documents.",
+    excerpt:
+      "The three-door is built in Japan and the five-door in India. Which factory your Jimny came from decides the corridor, the paperwork and, in some markets, the duty.",
+    cluster: "Guides",
+    primaryKeyword: "how to import a suzuki jimny",
+    keywords: [
+      "how to import a suzuki jimny",
+      "import suzuki jimny",
+      "suzuki jimny import",
+      "where is the suzuki jimny made",
+      "jimny five door import",
+      "jimny sierra vs jimny",
+      "can i import a jimny nomade",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 10,
+    heroImage: "/cars/suzuki-jimny-nomade-pt5608/01-front-three-quarter.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-suzuki-jimny.jpg",
+    heroAlt:
+      "A five-door Suzuki Jimny Nomade in Jungle Green, front three-quarter view",
+    related: [
+      "importing-a-suzuki-jimny-from-japan",
+      "importing-a-suzuki-jimny-from-india",
+      "importing-a-suzuki-jimny-to-the-uk",
+    ],
+    faqs: [
+      {
+        q: "Where is the Suzuki Jimny made?",
+        a: "In two places. Suzuki builds the three-door Jimny and Jimny Sierra at its Kosai plant in Japan, where production of the current generation began in 2018. The five-door Jimny is built in India by Maruti Suzuki at Gurugram and exported from there, including to Japan, where it is sold as the Jimny Nomade.",
+      },
+      {
+        q: "What is the difference between the Jimny and the Jimny Sierra?",
+        a: "In Japan, the Jimny is the narrow kei car with a 658cc turbocharged three-cylinder engine, sold only in Japan. The Jimny Sierra is the wider car with the 1.5-litre K15B four-cylinder, and it is the model sold simply as the Jimny in export markets. Both are three-door, four-seat cars built in Japan.",
+      },
+      {
+        q: "Is it better to import a Jimny from Japan or India?",
+        a: "It depends on which Jimny you want. Japan is the only source of the kei Jimny and the deepest market for used three-door cars, graded and with recorded mileage. India is the factory source of the five-door, available new from Maruti Suzuki's NEXA dealers. A five-door bought used in Japan is still an India-built car.",
+      },
+      {
+        q: "Are Suzuki Jimnys right-hand drive?",
+        a: "The Japanese-market and Indian-market Jimnys are right-hand drive, because both countries drive on the left. That makes either country a natural source for the United Kingdom, Ireland, Australia, New Zealand, Kenya and the other left-traffic markets. A right-hand-drive Jimny is the wrong car for a right-traffic country, and in many of them cannot be registered.",
+      },
+      {
+        q: "Do age limits affect importing a used Jimny?",
+        a: "In some markets. The current generation went on sale in July 2018, so the oldest cars are now past eight years, the import limit Kenya applies, and close to the line in other age-capped markets. A new or nearly new Jimny clears them. Confirm the rule with the destination's standards or revenue authority before you buy, never with a forum thread.",
+      },
+    ],
+    toc: [
+      { id: "which-jimny", label: "Which Jimny are you buying?" },
+      { id: "where-built", label: "Two factories, two corridors" },
+      { id: "japan-or-india", label: "Japan or India?" },
+      { id: "what-to-check", label: "What to check before you pay" },
+      { id: "destination", label: "Can it be registered where you live?" },
+      { id: "documents", label: "The documents" },
+      { id: "timeline", label: "How long it takes" },
+    ],
+  },
+  {
+    slug: "importing-a-suzuki-jimny-from-japan",
+    ...blogCtaFields(ARTICLE_CTAS.japan),
+    title: "Importing a Suzuki Jimny from Japan: Kei, Sierra or Nomade",
+    h1: "Importing a Suzuki Jimny from Japan",
+    seoTitle: "Importing a Suzuki Jimny from Japan: Buyer's Guide",
+    description:
+      "Importing a Suzuki Jimny from Japan: kei Jimny or Sierra, Japanese prices, dealer or auction, what to check on a used car, and the export paperwork.",
+    excerpt:
+      "Japan sells three Jimnys and builds two of them. The kei car, the Sierra and the India-built Nomade each import differently — and modified cars are the trap.",
+    cluster: "Guides",
+    primaryKeyword: "import suzuki jimny from japan",
+    keywords: [
+      "import suzuki jimny from japan",
+      "jimny sierra import",
+      "jdm jimny import",
+      "jimny jb64 vs jb74",
+      "buying a jimny at japanese auction",
+      "how much is a jimny in japan",
+      "what to check on a used jimny",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 10,
+    heroImage: "/source-cars/blog/iva-test-centres-uk.webp",
+    ogImage: "/source-cars/blog/og/iva-test-centres-uk.jpg",
+    heroAlt: "A three-door Suzuki Jimny kei car in silver, parked in Japan",
+    related: [
+      "how-to-import-a-suzuki-jimny",
+      "japanese-auction-grades-explained",
+      "japan-car-export-documents-explained",
+    ],
+    faqs: [
+      {
+        q: "How much does a Suzuki Jimny cost in Japan?",
+        a: "Suzuki's Japanese list prices, checked on 15 October 2026 and including 10% consumption tax, run from ¥1,918,400 for the Jimny XG to ¥2,160,400 for the XC, and ¥2,271,500 to ¥2,385,900 for the Jimny Sierra. The five-door Jimny Nomade launched at ¥2,651,000 manual and ¥2,750,000 automatic. Used prices follow condition, mileage and demand, not list price.",
+      },
+      {
+        q: "Should I import a kei Jimny or a Jimny Sierra?",
+        a: "Buy the Sierra unless you specifically want the kei car. The kei Jimny's 658cc turbocharged engine and narrow body were built for Japan's kei class, and it is sold nowhere else, so parts and familiarity outside Japan are thinner. The Sierra's 1.5-litre engine and wider track are shared with the export Jimny sold in other markets.",
+      },
+      {
+        q: "Can you buy a Jimny Nomade in Japan for export?",
+        a: "You can buy a registered or used Nomade in Japan like any other car, but it is not a Japanese-built car. Suzuki builds the five-door in India and ships it to Japan. That matters wherever duty depends on origin: a Nomade bought in Japan is an India-built car that has been registered and used in Japan.",
+      },
+      {
+        q: "What should I check on a used Jimny from Japan?",
+        a: "The auction sheet or dealer condition report, the underbody for corrosion if the car lived in a snowy prefecture, every modification against your destination's rules, and the recorded mileage history. Jimnys are among the most modified cars in Japan, and a lift kit, oversized tyres or a changed bumper can stop a car being registered abroad.",
+      },
+      {
+        q: "Is the Jimny hard to find in Japan?",
+        a: "New ones have been. Suzuki paused Jimny Nomade orders within days of its January 2025 announcement and reopened them on 30 January 2026, allocating delivery order by lottery. The used three-door market is deep because the current generation has been on sale since July 2018, so a used Sierra or kei Jimny is the quicker purchase.",
+      },
+    ],
+    toc: [
+      { id: "three-cars", label: "Japan sells three Jimnys" },
+      { id: "kei-or-sierra", label: "Kei Jimny or Jimny Sierra?" },
+      { id: "prices", label: "What a Jimny costs in Japan" },
+      { id: "where-to-buy", label: "Dealer or auction?" },
+      { id: "what-to-check", label: "What to check on a used Jimny" },
+      { id: "nomade", label: "The Nomade is not Japanese-built" },
+      { id: "documents", label: "The export paperwork" },
+    ],
+  },
+  {
+    slug: "importing-a-suzuki-jimny-from-india",
+    ...blogCtaFields(ARTICLE_CTAS.india),
+    title: "Importing a Suzuki Jimny from India: The Five-Door at Source",
+    h1: "Importing a Suzuki Jimny from India",
+    seoTitle: "Importing a Suzuki Jimny from India: 5-Door Guide",
+    description:
+      "Importing a Suzuki Jimny five-door from India, where Maruti Suzuki builds it: Zeta or Alpha, new or used, Indian vs Japanese spec, and the paperwork.",
+    excerpt:
+      "Every five-door Jimny in the world is built at Gurugram. Buying in India means buying at the factory — but the Indian specification is not the Japanese one.",
+    cluster: "Guides",
+    primaryKeyword: "import suzuki jimny from india",
+    keywords: [
+      "import suzuki jimny from india",
+      "maruti jimny export",
+      "jimny 5 door import",
+      "maruti suzuki jimny zeta vs alpha",
+      "is the jimny 5 door made in india",
+      "can i buy a jimny in india for export",
+      "jimny india vs japan spec",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 9,
+    heroImage: "/cars/suzuki-jimny-nomade-pt5608/03-side-three-quarter.webp",
+    ogImage: "/source-cars/blog/og/importing-a-suzuki-jimny-from-india.jpg",
+    heroAlt:
+      "A five-door Suzuki Jimny, the India-built model, in Jungle Green side-on",
+    related: [
+      "how-to-import-a-suzuki-jimny",
+      "india-car-export-documents-explained",
+      "how-to-import-a-car-from-india",
+    ],
+    faqs: [
+      {
+        q: "Is the Suzuki Jimny five-door made in India?",
+        a: "Yes. Maruti Suzuki builds the five-door Jimny at its Gurugram plant for India and for export. Maruti reported in October 2025 that cumulative exports had passed 100,000 units to more than 100 countries, with Japan, Mexico, Australia, South Africa and Chile among the largest markets. In Japan the same car is sold as the Jimny Nomade.",
+      },
+      {
+        q: "What is the difference between the Jimny Zeta and Alpha?",
+        a: "Both share the 1.5-litre K15B engine, the choice of five-speed manual or four-speed automatic, and ALLGRIP PRO four-wheel drive with low range. The Alpha is the higher-equipped variant; launch-era comparisons list projector headlamps, headlamp washers and fog lamps among its additions. Confirm the current equipment on Maruti's own specification sheet before choosing, because it has changed since launch.",
+      },
+      {
+        q: "Is an Indian Jimny the same as a Japanese Jimny Nomade?",
+        a: "It is the same India-built five-door body and drivetrain, but not the same specification. Suzuki's Japanese Nomade carries Dual Camera Brake Support as standard. Maruti's Indian Jimny page, checked on 15 October 2026, lists six airbags, hill hold, hill descent control and adaptive cruise control on automatics, but no camera-based emergency braking. Compare the exact variant, not the badge.",
+      },
+      {
+        q: "Can you export a new car from India?",
+        a: "Yes, through an exporter that handles the Indian export side: the purchase invoice, customs export clearance, the shipping bill and the bill of lading. A new car exported before it is registered in India avoids the deregistration step that a used car needs. Your destination may also require a pre-shipment inspection in India before loading.",
+      },
+      {
+        q: "How much does a Jimny cost in India?",
+        a: "Maruti Suzuki publishes ex-showroom prices by city, and they were revised during 2026, so the reliable figure is the current one from a NEXA dealer for the exact variant. Ex-showroom is not the landed price: freight, marine insurance and your destination's own duty and taxes come on top, and the exporter confirms which Indian charges apply to an export sale.",
+      },
+    ],
+    toc: [
+      { id: "what-india-builds", label: "What India builds" },
+      { id: "variants", label: "Zeta or Alpha, manual or automatic" },
+      { id: "india-vs-japan", label: "Indian spec is not Japanese spec" },
+      { id: "new-or-used", label: "New or used?" },
+      { id: "what-to-check", label: "What to check before you pay" },
+      { id: "documents", label: "The export paperwork" },
+      { id: "destinations", label: "Where an Indian Jimny can go" },
+    ],
+  },
 ];
 
 // ── UK registration & IVA ────────────────────────────────────────────────────
