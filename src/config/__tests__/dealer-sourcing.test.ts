@@ -17,9 +17,11 @@ import {
   DEALER_SOURCING_TITLE,
   flagSrc,
   LEFT_TRAFFIC_COUNTRIES,
+  sourceMarketCurrency,
 } from "@/config/dealer-sourcing";
 import { DESTINATIONS } from "@/config/destinations";
 import { COUNTRIES } from "@/lib/countries";
+import { currencyForCountry, getCurrency } from "@/lib/currencies";
 import { buildMarketOptions, marketStatusFor } from "@/lib/dealer-markets";
 
 const COUNTRY_NAMES = new Set(COUNTRIES.map((c) => c.n));
@@ -114,6 +116,21 @@ describe("source markets", () => {
       expect(src, market.slug).toBeTruthy();
       expect(existsSync(join(PUBLIC, src as string)), `${src}`).toBe(true);
     }
+  });
+
+  it("prices each source market in that country's own currency", () => {
+    const names: Record<string, string> = {
+      "united-kingdom": "United Kingdom",
+      uae: "United Arab Emirates",
+    };
+    for (const market of DEALER_SOURCE_MARKETS) {
+      expect(getCurrency(market.currency), market.slug).toBeTruthy();
+      expect(market.currency, market.slug).toBe(
+        currencyForCountry(names[market.slug] ?? market.name),
+      );
+      expect(sourceMarketCurrency(market.slug)).toBe(market.currency);
+    }
+    expect(sourceMarketCurrency("")).toBe("");
   });
 });
 
