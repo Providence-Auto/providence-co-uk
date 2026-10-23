@@ -62,7 +62,7 @@ export default function DealerCarCard({
   errors: FieldErrors;
   open: boolean;
   canRemove: boolean;
-  /** The dealer's own country's currency, floated to the top of the picker. */
+  /** The source market's currency (else the dealer's), floated to the top. */
   preferredCurrency: string;
   onToggle: () => void;
   onChange: (patch: Partial<DealerCarInput>) => void;

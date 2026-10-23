@@ -57,15 +57,23 @@ export const DEALER_SOURCE_MARKETS: {
   slug: string;
   name: string;
   iso: CountryCode;
+  /** What a car costs there — the budget field opens in this currency. */
+  currency: string;
 }[] = [
-  { slug: "japan", name: "Japan", iso: "JP" },
-  { slug: "united-kingdom", name: "UK", iso: "GB" },
-  { slug: "australia", name: "Australia", iso: "AU" },
-  { slug: "new-zealand", name: "New Zealand", iso: "NZ" },
-  { slug: "thailand", name: "Thailand", iso: "TH" },
-  { slug: "india", name: "India", iso: "IN" },
-  { slug: "uae", name: "UAE", iso: "AE" },
+  { slug: "japan", name: "Japan", iso: "JP", currency: "JPY" },
+  { slug: "united-kingdom", name: "UK", iso: "GB", currency: "GBP" },
+  { slug: "australia", name: "Australia", iso: "AU", currency: "AUD" },
+  { slug: "new-zealand", name: "New Zealand", iso: "NZ", currency: "NZD" },
+  { slug: "thailand", name: "Thailand", iso: "TH", currency: "THB" },
+  { slug: "india", name: "India", iso: "IN", currency: "INR" },
+  { slug: "uae", name: "UAE", iso: "AE", currency: "AED" },
 ];
+
+/** The source market's currency code, or "" for none / no preference. */
+export function sourceMarketCurrency(slug: string | null | undefined): string {
+  if (!slug) return "";
+  return DEALER_SOURCE_MARKETS.find((m) => m.slug === slug)?.currency ?? "";
+}
 
 export function sourceMarketName(slug: string | null | undefined): string {
   if (!slug) return "";

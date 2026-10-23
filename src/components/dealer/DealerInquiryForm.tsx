@@ -29,6 +29,7 @@ import {
 } from "@/components/dealer/fields";
 import {
   DEALER_SOURCE_MARKETS,
+  sourceMarketCurrency,
   LHD_ALTERNATIVE,
   MAX_DEALER_CARS,
   type MarketOption,
@@ -203,7 +204,11 @@ export default function DealerInquiryForm({
   const refocusAfterRemove = useRef(false);
 
   const market = markets.find((m) => m.name === country) ?? null;
-  const preferredCurrency = currencyForCountry(country);
+  // A budget is what the car costs where it is bought, so it opens in the
+  // source market's currency; with no market chosen, the dealer's own.
+  const defaultCurrency = (slug: string | null) =>
+    sourceMarketCurrency(slug) || currencyForCountry(country);
+  const preferredCurrency = defaultCurrency(sourceMarket);
 
   // Attribution, read once. Deliberately not useSearchParams: that would put
   // the whole form behind a Suspense boundary for four query parameters.
@@ -538,6 +543,20 @@ export default function DealerInquiryForm({
   };
 
   // ── Cars ───────────────────────────────────────────────────────────────────
+
+  const chooseSourceMarket = (slug: string) => {
+    // Cars still on the old default follow the market; a currency the dealer
+    // picked by hand stays.
+    const from = preferredCurrency;
+    const to = defaultCurrency(slug);
+    setSourceMarket(slug);
+    setCars((prev) =>
+      prev.map((car) =>
+        car.budgetCurrency === from ? { ...car, budgetCurrency: to } : car,
+      ),
+    );
+    setErrors(({ sourceMarket: _s, cars: _c, ...rest }) => rest);
+  };
 
   const chooseSpecificCars = (wants: boolean) => {
     setWantsSpecificCars(wants);
@@ -1204,12 +1223,7 @@ export default function DealerInquiryForm({
                       <Chip
                         key={m.slug}
                         selected={sourceMarket === m.slug}
-                        onClick={() => {
-                          setSourceMarket(m.slug);
-                          setErrors(
-                            ({ sourceMarket: _s, cars: _c, ...rest }) => rest,
-                          );
-                        }}
+                        onClick={() => chooseSourceMarket(m.slug)}
                         leading={<Flag iso={m.iso} size={18} />}
                       >
                         {m.name}
@@ -1217,12 +1231,7 @@ export default function DealerInquiryForm({
                     ))}
                     <Chip
                       selected={sourceMarket === ""}
-                      onClick={() => {
-                        setSourceMarket("");
-                        setErrors(
-                          ({ sourceMarket: _s, cars: _c, ...rest }) => rest,
-                        );
-                      }}
+                      onClick={() => chooseSourceMarket("")}
                     >
                       No particular market
                     </Chip>
