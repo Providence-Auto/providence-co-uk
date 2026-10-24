@@ -16,8 +16,11 @@ import {
   DEALER_SOURCING_PATH,
   DEALER_SOURCING_TITLE,
   flagSrc,
+  joinSourceMarkets,
   LEFT_TRAFFIC_COUNTRIES,
+  parseSourceMarkets,
   sourceMarketCurrency,
+  sourceMarketName,
 } from "@/config/dealer-sourcing";
 import { DESTINATIONS } from "@/config/destinations";
 import { COUNTRIES } from "@/lib/countries";
@@ -221,5 +224,25 @@ describe("the market check", () => {
       if (option.status === "right-traffic") expect(option.iso).toBeNull();
       else expect(option.iso).toBeTruthy();
     }
+  });
+});
+
+describe("several source markets in one value", () => {
+  it("round-trips a pick order, dropping blanks and repeats", () => {
+    expect(parseSourceMarkets("united-kingdom, japan,,japan")).toEqual([
+      "united-kingdom",
+      "japan",
+    ]);
+    expect(parseSourceMarkets("")).toEqual([]);
+    expect(parseSourceMarkets(null)).toEqual([]);
+    expect(joinSourceMarkets(["uae", "india", "uae"])).toBe("uae,india");
+  });
+
+  it("names every market and prices in the first one picked", () => {
+    expect(sourceMarketName("united-kingdom,japan")).toBe("UK, Japan");
+    expect(sourceMarketName("japan")).toBe("Japan");
+    expect(sourceMarketName("")).toBe("");
+    expect(sourceMarketCurrency("united-kingdom,japan")).toBe("GBP");
+    expect(sourceMarketCurrency("japan,united-kingdom")).toBe("JPY");
   });
 });

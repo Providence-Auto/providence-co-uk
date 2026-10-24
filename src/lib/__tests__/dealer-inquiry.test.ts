@@ -391,6 +391,21 @@ describe("validateCarsStep", () => {
     ).toBeTruthy();
   });
 
+  it("accepts several markets, but not if any one is off the list", () => {
+    expect(
+      validateCarsStep(
+        { ...base, sourceMarket: "japan,uae" },
+        isSourceMarket,
+      ).errors,
+    ).toEqual({});
+    expect(
+      validateCarsStep(
+        { ...base, sourceMarket: "japan,germany" },
+        isSourceMarket,
+      ).errors.sourceMarket,
+    ).toBeTruthy();
+  });
+
   it("caps a request at five cars and validates each one", () => {
     const six = Array.from({ length: 6 }, () => usedCar());
     expect(
