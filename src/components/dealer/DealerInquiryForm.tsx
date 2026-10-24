@@ -29,6 +29,8 @@ import {
 } from "@/components/dealer/fields";
 import {
   DEALER_SOURCE_MARKETS,
+  joinSourceMarkets,
+  parseSourceMarkets,
   sourceMarketCurrency,
   LHD_ALTERNATIVE,
   MAX_DEALER_CARS,
@@ -183,7 +185,8 @@ export default function DealerInquiryForm({
   // null = the import country's code. Set only when the dealer changes it.
   const [phoneCountry, setPhoneCountry] = useState<CountryCode | null>(null);
   const [phoneLibReady, setPhoneLibReady] = useState(false);
-  // null = not answered yet; "" = no particular market.
+  // null = not answered yet; "" = no particular market; otherwise the picked
+  // markets, comma-joined (see parseSourceMarkets).
   const [sourceMarket, setSourceMarket] = useState<string | null>(
     initialSourceMarket,
   );
@@ -209,6 +212,7 @@ export default function DealerInquiryForm({
   const defaultCurrency = (slug: string | null) =>
     sourceMarketCurrency(slug) || currencyForCountry(country);
   const preferredCurrency = defaultCurrency(sourceMarket);
+  const pickedMarkets = parseSourceMarkets(sourceMarket);
 
   // Attribution, read once. Deliberately not useSearchParams: that would put
   // the whole form behind a Suspense boundary for four query parameters.
@@ -544,12 +548,24 @@ export default function DealerInquiryForm({
 
   // ── Cars ───────────────────────────────────────────────────────────────────
 
+  /**
+   * Markets are multi-select; "No particular market" ("") is exclusive of
+   * them. Unpicking the last market leaves the question unanswered (null).
+   */
   const chooseSourceMarket = (slug: string) => {
-    // Cars still on the old default follow the market; a currency the dealer
-    // picked by hand stays.
+    let next: string | null = "";
+    if (slug) {
+      const picked = parseSourceMarkets(sourceMarket);
+      const toggled = picked.includes(slug)
+        ? picked.filter((s) => s !== slug)
+        : [...picked, slug];
+      next = toggled.length ? joinSourceMarkets(toggled) : null;
+    }
+    // Cars still on the old default follow the first market picked; a
+    // currency the dealer picked by hand stays.
     const from = preferredCurrency;
-    const to = defaultCurrency(slug);
-    setSourceMarket(slug);
+    const to = defaultCurrency(next);
+    setSourceMarket(next);
     setCars((prev) =>
       prev.map((car) =>
         car.budgetCurrency === from ? { ...car, budgetCurrency: to } : car,
@@ -1215,14 +1231,17 @@ export default function DealerInquiryForm({
             {step === 3 && (
               <>
                 <fieldset>
-                  <legend className="mb-3 text-sm font-medium text-zinc-800">
-                    Do you want to import from a particular market?
+                  <legend className="text-sm font-medium text-zinc-800">
+                    Do you want to import from particular markets?
                   </legend>
+                  <p className="mt-1 mb-3 text-xs text-zinc-500">
+                    Choose as many as you like.
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {DEALER_SOURCE_MARKETS.map((m) => (
                       <Chip
                         key={m.slug}
-                        selected={sourceMarket === m.slug}
+                        selected={pickedMarkets.includes(m.slug)}
                         onClick={() => chooseSourceMarket(m.slug)}
                         leading={<Flag iso={m.iso} size={18} />}
                       >
@@ -1249,10 +1268,7 @@ export default function DealerInquiryForm({
                   <Segmented
                     name="dealer-specific-cars"
                     options={[
-                      {
-                        value: "yes",
-                        label: `Yes — up to ${MAX_DEALER_CARS} cars`,
-                      },
+                      { value: "yes", label: "Yes" },
                       { value: "no", label: "Not yet" },
                     ]}
                     value={
@@ -1265,6 +1281,9 @@ export default function DealerInquiryForm({
                     onChange={(value) => chooseSpecificCars(value === "yes")}
                     invalid={Boolean(errors.wantsSpecificCars)}
                   />
+                  <p className="mt-2 text-xs text-zinc-500">
+                    You can request multiple cars per request if needed.
+                  </p>
                   <FieldMessage
                     id="dealer-specific"
                     error={errors.wantsSpecificCars}

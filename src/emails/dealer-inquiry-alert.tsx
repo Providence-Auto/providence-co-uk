@@ -105,7 +105,9 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
         <Text style={labelStyle}>What they want</Text>
         {props.sourceMarket && (
           <Text style={valueStyle}>
-            Preferred source market: {props.sourceMarket}
+            Preferred source{" "}
+            {props.sourceMarket.includes(",") ? "markets" : "market"}:{" "}
+            {props.sourceMarket}
           </Text>
         )}
         {carCount === 0 && !props.sourceMarket && (
