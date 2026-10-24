@@ -14,7 +14,7 @@
  * which would let a mistyped number through.
  */
 import type { CountryCode, NumberType, PhoneNumber } from "libphonenumber-js";
-import { MAX_DEALER_CARS } from "@/config/dealer-sourcing";
+import { MAX_DEALER_CARS, parseSourceMarkets } from "@/config/dealer-sourcing";
 import { getCurrency } from "@/lib/currencies";
 import {
   IMPORT_TIMELINES,
@@ -78,7 +78,7 @@ export type DealerInquiryInput = {
   whatsapp: string;
   /** ISO code of the WhatsApp number's country; absent means the import country. */
   whatsappCountry?: string;
-  /** A DEALER_SOURCE_MARKETS slug, or "" for no preference. */
+  /** Comma-separated DEALER_SOURCE_MARKETS slugs, or "" for no preference. */
   sourceMarket: string;
   /** Whether the dealer chose to name particular cars. */
   wantsSpecificCars: boolean;
@@ -595,8 +595,8 @@ export function validateCarsStep(
   const errors: FieldErrors = {};
   let carErrors: FieldErrors[] = [];
 
-  if (input.sourceMarket && !isSourceMarket(input.sourceMarket)) {
-    errors.sourceMarket = "Choose one of the seven markets";
+  if (!parseSourceMarkets(input.sourceMarket).every(isSourceMarket)) {
+    errors.sourceMarket = "Choose from the seven markets";
   }
 
   if (input.wantsSpecificCars) {

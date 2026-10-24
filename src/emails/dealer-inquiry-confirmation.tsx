@@ -79,7 +79,9 @@ export const DealerInquiryConfirmationEmail = ({
         {sourceMarket && (
           <>
             <div style={dividerStyle} />
-            <Text style={labelStyle}>Source market</Text>
+            <Text style={labelStyle}>
+              {sourceMarket.includes(",") ? "Source markets" : "Source market"}
+            </Text>
             <Text style={valueStyle}>{sourceMarket}</Text>
           </>
         )}

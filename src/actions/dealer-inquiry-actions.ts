@@ -20,7 +20,9 @@ import { CONTACT_EMAIL } from "@/config/contact";
 import {
   DEALER_SOURCE_MARKETS,
   isDealerInquiryStatus,
+  joinSourceMarkets,
   LEFT_TRAFFIC_COUNTRIES,
+  parseSourceMarkets,
   sourceMarketName,
 } from "@/config/dealer-sourcing";
 import { db, dealerInquiries, users } from "@/db";
@@ -180,7 +182,8 @@ export async function submitDealerInquiry(
       designation: text(input.designation, 500),
       email: text(input.email, 500),
       whatsapp: text(input.whatsapp, 60),
-      sourceMarket: text(input.sourceMarket, 40),
+      // Every market picked is under 100 characters; 200 leaves a margin.
+      sourceMarket: text(input.sourceMarket, 200),
       wantsSpecificCars: input.wantsSpecificCars === true,
       cars: Array.isArray(input.cars)
         ? input.cars.slice(0, 6).map(coerceCar)
@@ -238,7 +241,8 @@ export async function submitDealerInquiry(
     const cars: DealerCar[] = fields.wantsSpecificCars
       ? fields.cars.map(toStoredCar)
       : [];
-    const sourceMarket = fields.sourceMarket || null;
+    const sourceMarket =
+      joinSourceMarkets(parseSourceMarkets(fields.sourceMarket)) || null;
     const website = fields.website.trim()
       ? normaliseWebsite(fields.website)
       : null;
