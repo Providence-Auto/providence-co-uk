@@ -69,15 +69,39 @@ export const DEALER_SOURCE_MARKETS: {
   { slug: "uae", name: "UAE", iso: "AE", currency: "AED" },
 ];
 
-/** The source market's currency code, or "" for none / no preference. */
-export function sourceMarketCurrency(slug: string | null | undefined): string {
-  if (!slug) return "";
-  return DEALER_SOURCE_MARKETS.find((m) => m.slug === slug)?.currency ?? "";
+/**
+ * A dealer can pick several source markets. They travel and are stored as one
+ * comma-separated string of slugs ("japan,united-kingdom") in the existing
+ * `sourceMarket` column, in the order they were picked; "" is no preference.
+ * Always read it through these helpers.
+ */
+export function parseSourceMarkets(value: string | null | undefined): string[] {
+  if (!value) return [];
+  const slugs = value
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return [...new Set(slugs)];
 }
 
-export function sourceMarketName(slug: string | null | undefined): string {
-  if (!slug) return "";
-  return DEALER_SOURCE_MARKETS.find((m) => m.slug === slug)?.name ?? slug;
+export function joinSourceMarkets(slugs: readonly string[]): string {
+  return parseSourceMarkets(slugs.join(",")).join(",");
+}
+
+/** The first picked market's currency code, or "" for none / no preference. */
+export function sourceMarketCurrency(value: string | null | undefined): string {
+  const first = parseSourceMarkets(value)[0];
+  if (!first) return "";
+  return DEALER_SOURCE_MARKETS.find((m) => m.slug === first)?.currency ?? "";
+}
+
+/** "Japan, UK" — every picked market's display name. */
+export function sourceMarketName(value: string | null | undefined): string {
+  return parseSourceMarkets(value)
+    .map(
+      (slug) => DEALER_SOURCE_MARKETS.find((m) => m.slug === slug)?.name ?? slug,
+    )
+    .join(", ");
 }
 
 /**
