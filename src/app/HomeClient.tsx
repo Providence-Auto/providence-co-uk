@@ -279,8 +279,8 @@ export default function HomeClient() {
                   </span>{" "}
                   Whether you are a car enthusiast or a dealership wanting to
                   scale up, you can now import the exact vehicle you want,
-                  direct from the most tax-efficient
-                  markets on earth — through our own teams in{" "}
+                  direct from the most tax-efficient markets on earth — through
+                  our own teams in{" "}
                   <span className="text-black font-medium">
                     the UK, Japan, the UAE, India, Thailand, Australia and New
                     Zealand
@@ -462,8 +462,9 @@ export default function HomeClient() {
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
                       For 15 years we have supplied 200+ dealerships worldwide.
-                      Now you can import direct from the same markets they import from
-                      — and keep the margin a forecourt would have added.
+                      Now you can import direct from the same markets they
+                      import from — and keep the margin a forecourt would have
+                      added.
                     </p>
                   </div>
 
@@ -480,7 +481,7 @@ export default function HomeClient() {
 
               <Reveal y={30} delay={0.2} duration={0.8} className="h-full">
                 <Link
-                  href="/b2b"
+                  href="/b2b-inquiry"
                   className="pa-lift group relative bg-zinc-50 border border-black/[0.07] rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between h-full hover:bg-white hover:border-black/10 overflow-hidden min-h-[350px] md:min-h-[400px]"
                 >
                   {/* Colorful gradient wash — on by default on mobile, on hover on desktop */}

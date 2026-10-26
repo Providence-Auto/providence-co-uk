@@ -517,13 +517,30 @@ describe("submitDealerInquiry", () => {
     });
   });
 
-  it("needs a website or a social page", async () => {
+  it("accepts a request with no dealership details at all", async () => {
+    state.results.push([ABDALLAH], [], []);
     const result = await submitDealerInquiry(
-      validInput({ website: "", socialMedia: "" }) as Submit,
+      validInput({
+        dealershipName: "",
+        website: "",
+        socialMedia: "",
+      }) as Submit,
+    );
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      dealershipName: "",
+      website: null,
+      socialMedia: null,
+    });
+  });
+
+  it("still rejects a malformed website", async () => {
+    const result = await submitDealerInquiry(
+      validInput({ website: "not a website" }) as Submit,
     );
     expect(result.success).toBe(false);
     if (result.success) return;
-    expect(result.errors?.presence).toBeTruthy();
+    expect(result.errors?.website).toBeTruthy();
   });
 
   it("stores no cars when the dealer only chose a market", async () => {

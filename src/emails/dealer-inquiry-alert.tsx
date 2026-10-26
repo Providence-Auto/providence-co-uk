@@ -45,17 +45,19 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
   const adminUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/admin/dealer-inquiries`;
   const whatsappUrl = whatsappLink(undefined, props.whatsapp);
   const carCount = props.cars.length;
+  // The dealership name is optional; the contact stands in for it.
+  const who = props.dealershipName || props.contactName;
 
   return (
     <EmailLayout
-      preview={`${props.dealershipName} (${props.country}) — ${
+      preview={`${who} (${props.country}) — ${
         carCount ? `${carCount} car${carCount > 1 ? "s" : ""}` : "sourcing"
       } request ${props.reference}`}
       heading="New Dealer Inquiry"
     >
       <Text style={textStyle}>
-        {props.dealershipName} in {props.country} sent a sourcing request from
-        the dealer page. It is assigned to {props.assignedToName}.
+        {who} in {props.country} sent a sourcing request from the dealer page.
+        It is assigned to {props.assignedToName}.
       </Text>
 
       {props.unlistedMarket && (
@@ -68,7 +70,7 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
       <Section style={containerStyle}>
         <Text style={labelStyle}>Dealership</Text>
         <Text style={{ ...valueStyle, fontWeight: "bold" }}>
-          {props.dealershipName}
+          {props.dealershipName || "Not given"}
         </Text>
         <Text style={valueStyle}>Market: {props.country}</Text>
         {props.website && (

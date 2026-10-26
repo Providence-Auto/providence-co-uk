@@ -62,6 +62,14 @@ describe("DealerInquiryAlertEmail", () => {
     );
     expect(html).toContain("not on our destination list yet");
   });
+
+  it("names the contact when no dealership was given", async () => {
+    const html = await render(
+      DealerInquiryAlertEmail({ ...ALERT, dealershipName: "" }),
+    );
+    expect(html).toContain("Wanjiru Kamau (Kenya)");
+    expect(html).toContain("Not given");
+  });
 });
 
 describe("DealerInquiryConfirmationEmail", () => {
@@ -104,6 +112,19 @@ describe("DealerInquiryConfirmationEmail", () => {
       `https://wa.me/${whatsappDigits(GENERAL_WHATSAPP_NUMBER)}`,
     );
     expect(html).toContain("Message us on WhatsApp");
+  });
+
+  it("reads naturally when no dealership was given", async () => {
+    const html = await render(
+      DealerInquiryConfirmationEmail({
+        ...BASE,
+        dealershipName: "",
+        agent: null,
+      }),
+    );
+    expect(html).toContain("Here is what you sent us:");
+    expect(html).not.toContain(" from  ");
+    expect(html).not.toContain(" for <");
   });
 
   it("makes no claim the page does not make", async () => {
