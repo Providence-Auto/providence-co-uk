@@ -59,17 +59,19 @@ import {
 } from "@/lib/dealer-inquiry";
 import { currentRepCode } from "@/lib/rep-link";
 
-// The contact comes first and the dealership details are optional, on the
-// same step below it (business instruction 2026-10-26).
+// The contact comes first (business instruction 2026-10-26); the dealership
+// details follow on a step of their own, every field optional (2026-10-27).
 const STEPS = [
   { key: "market", label: "Market" },
   { key: "details", label: "You" },
+  { key: "dealership", label: "Dealership" },
   { key: "cars", label: "Cars" },
 ] as const;
 
 const STEP_TITLES = [
   "Where does your dealership import cars into?",
   "Who should your consultant contact?",
+  "Tell us about your dealership, if you'd like.",
   "Which cars do you want to import?",
 ];
 
@@ -80,9 +82,9 @@ const FIELD_STEP: Record<string, number> = {
   designation: 1,
   email: 1,
   whatsapp: 1,
-  dealershipName: 1,
-  website: 1,
-  socialMedia: 1,
+  dealershipName: 2,
+  website: 2,
+  socialMedia: 2,
 };
 
 /** The role chip that opens a free-text field instead of filling one in. */
@@ -430,10 +432,7 @@ export default function DealerInquiryForm({
     if (step === 1) {
       setBusy(true);
       try {
-        const found = {
-          ...validateContact(form),
-          ...validateDealership({ ...form, socialPlatform }),
-        };
+        const found = validateContact(form);
         if (designationChoice === null) {
           found.designation = "Choose your role at the dealership";
         }
@@ -454,6 +453,16 @@ export default function DealerInquiryForm({
         setBusy(false);
       }
       goTo(2);
+      return;
+    }
+    if (step === 2) {
+      const found = validateDealership({ ...form, socialPlatform });
+      if (hasErrors(found)) {
+        setErrors(found);
+        flagErrors();
+        return;
+      }
+      goTo(3);
       return;
     }
     await submit();
@@ -754,7 +763,7 @@ export default function DealerInquiryForm({
     >
       {/* Progress: one segment per step, each a way back to a step already done. */}
       <nav aria-label="Form progress" className="px-5 pt-5 sm:px-8 sm:pt-7">
-        <ol className="grid grid-cols-3 gap-2">
+        <ol className="grid grid-cols-4 gap-2">
           {STEPS.map((s, i) => {
             const done = i < step;
             const current = i === step;
@@ -1084,145 +1093,124 @@ export default function DealerInquiryForm({
                     />
                   </div>
                 </Field>
-                <fieldset className="border-t border-black/5 pt-6">
-                  {/* The legend is for screen readers; the visible heading
-                      sits in normal flow, which a <legend> does not. */}
-                  <legend className="sr-only">
-                    Your dealership (optional)
-                  </legend>
-                  <p
-                    aria-hidden
-                    className="mb-5 text-base font-semibold text-black"
-                  >
-                    Your dealership
-                    <span className="ml-1.5 text-sm font-normal text-zinc-400">
-                      optional
-                    </span>
-                  </p>
-                  <div className="space-y-6">
-                    <Field
-                      id="dealer-name"
-                      label="Dealership name"
-                      error={errors.dealershipName}
-                    >
-                      <input
-                        id="dealer-name"
-                        value={form.dealershipName}
-                        onChange={(e) =>
-                          setField("dealershipName", e.target.value)
-                        }
-                        autoComplete="organization"
-                        maxLength={120}
-                        aria-invalid={
-                          Boolean(errors.dealershipName) || undefined
-                        }
-                        className={inputClass(
-                          Boolean(errors.dealershipName),
-                          "h-13",
-                        )}
-                      />
-                    </Field>
-                    <Field
-                      id="dealer-website"
-                      label="Website"
-                      error={errors.website}
-                    >
-                      <input
-                        id="dealer-website"
-                        value={form.website}
-                        onChange={(e) => setField("website", e.target.value)}
-                        placeholder="yourdealership.com"
-                        inputMode="url"
-                        autoComplete="url"
-                        maxLength={300}
-                        aria-invalid={Boolean(errors.website) || undefined}
-                        className={inputClass(Boolean(errors.website), "h-13")}
-                      />
-                    </Field>
-                    <fieldset className="space-y-3">
-                      <legend className="mb-2 block text-sm font-medium text-zinc-800">
-                        Social media page
-                      </legend>
-                      <Segmented
-                        name="dealer-social-platform"
-                        options={SOCIAL_CHOICES}
-                        value={socialPlatform}
-                        onChange={chooseSocialPlatform}
-                      />
-                      <Field
-                        id="dealer-social"
-                        label={
-                          socialPlatform === "other"
-                            ? "Link to your page"
-                            : `${SOCIAL_PLATFORMS[socialPlatform].label} username`
-                        }
-                        error={errors.socialMedia}
-                        hint={
-                          socialCheck?.ok && (
-                            <a
-                              href={socialCheck.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 font-medium text-sky-700 underline-offset-2 hover:underline"
-                            >
-                              {socialCheck.url.replace(
-                                /^https:\/\/(www\.)?/,
-                                "",
-                              )}
-                              <ExternalLink size={13} aria-hidden />
-                              <span className="sr-only">
-                                (opens in a new tab)
-                              </span>
-                            </a>
-                          )
-                        }
-                      >
-                        <div className="relative">
-                          {socialPlatform !== "other" &&
-                            !form.socialMedia.includes("/") && (
-                              <span
-                                aria-hidden
-                                className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-base text-zinc-400"
-                              >
-                                @
-                              </span>
-                            )}
-                          <input
-                            id="dealer-social"
-                            value={form.socialMedia}
-                            onChange={(e) => changeSocial(e.target.value)}
-                            placeholder={
-                              socialPlatform === "other"
-                                ? "youtube.com/@yourdealership"
-                                : "yourdealership"
-                            }
-                            inputMode={
-                              socialPlatform === "other" ? "url" : "text"
-                            }
-                            autoCapitalize="none"
-                            autoCorrect="off"
-                            spellCheck={false}
-                            maxLength={300}
-                            aria-invalid={
-                              Boolean(errors.socialMedia) || undefined
-                            }
-                            className={inputClass(
-                              Boolean(errors.socialMedia),
-                              socialPlatform !== "other" &&
-                                !form.socialMedia.includes("/")
-                                ? "h-13 pl-9"
-                                : "h-13",
-                            )}
-                          />
-                        </div>
-                      </Field>
-                    </fieldset>
-                  </div>
-                </fieldset>
               </>
             )}
 
             {step === 2 && (
+              <>
+                <Field
+                  id="dealer-name"
+                  label="Dealership name"
+                  optional
+                  error={errors.dealershipName}
+                >
+                  <input
+                    id="dealer-name"
+                    value={form.dealershipName}
+                    onChange={(e) => setField("dealershipName", e.target.value)}
+                    autoComplete="organization"
+                    maxLength={120}
+                    aria-invalid={Boolean(errors.dealershipName) || undefined}
+                    className={inputClass(
+                      Boolean(errors.dealershipName),
+                      "h-13",
+                    )}
+                  />
+                </Field>
+                <Field
+                  id="dealer-website"
+                  label="Website"
+                  optional
+                  error={errors.website}
+                >
+                  <input
+                    id="dealer-website"
+                    value={form.website}
+                    onChange={(e) => setField("website", e.target.value)}
+                    placeholder="yourdealership.com"
+                    inputMode="url"
+                    autoComplete="url"
+                    maxLength={300}
+                    aria-invalid={Boolean(errors.website) || undefined}
+                    className={inputClass(Boolean(errors.website), "h-13")}
+                  />
+                </Field>
+                <fieldset className="space-y-3">
+                  <legend className="mb-2 block text-sm font-medium text-zinc-800">
+                    Social media page
+                    <span className="ml-1.5 font-normal text-zinc-400">
+                      optional
+                    </span>
+                  </legend>
+                  <Segmented
+                    name="dealer-social-platform"
+                    options={SOCIAL_CHOICES}
+                    value={socialPlatform}
+                    onChange={chooseSocialPlatform}
+                  />
+                  <Field
+                    id="dealer-social"
+                    label={
+                      socialPlatform === "other"
+                        ? "Link to your page"
+                        : `${SOCIAL_PLATFORMS[socialPlatform].label} username`
+                    }
+                    error={errors.socialMedia}
+                    hint={
+                      socialCheck?.ok && (
+                        <a
+                          href={socialCheck.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-medium text-sky-700 underline-offset-2 hover:underline"
+                        >
+                          {socialCheck.url.replace(/^https:\/\/(www\.)?/, "")}
+                          <ExternalLink size={13} aria-hidden />
+                          <span className="sr-only">(opens in a new tab)</span>
+                        </a>
+                      )
+                    }
+                  >
+                    <div className="relative">
+                      {socialPlatform !== "other" &&
+                        !form.socialMedia.includes("/") && (
+                          <span
+                            aria-hidden
+                            className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-base text-zinc-400"
+                          >
+                            @
+                          </span>
+                        )}
+                      <input
+                        id="dealer-social"
+                        value={form.socialMedia}
+                        onChange={(e) => changeSocial(e.target.value)}
+                        placeholder={
+                          socialPlatform === "other"
+                            ? "youtube.com/@yourdealership"
+                            : "yourdealership"
+                        }
+                        inputMode={socialPlatform === "other" ? "url" : "text"}
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        maxLength={300}
+                        aria-invalid={Boolean(errors.socialMedia) || undefined}
+                        className={inputClass(
+                          Boolean(errors.socialMedia),
+                          socialPlatform !== "other" &&
+                            !form.socialMedia.includes("/")
+                            ? "h-13 pl-9"
+                            : "h-13",
+                        )}
+                      />
+                    </div>
+                  </Field>
+                </fieldset>
+              </>
+            )}
+
+            {step === 3 && (
               <>
                 <fieldset>
                   <legend className="text-sm font-medium text-zinc-800">
