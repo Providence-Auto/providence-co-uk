@@ -14,12 +14,15 @@
  * unknown or departed name falls back to the normal routing, so a stale link
  * never strands a lead.
  *
- * The link is remembered for the rest of the visit, in sessionStorage, by
- * <RepLinkCapture /> in the root layout. That matters because the car page
- * rewrites its own URL when the reader picks a destination, which drops the
- * query string, and because a reader may land on one page and inquire from
- * another. It does not outlive the tab: a later visit without the link is
- * routed normally.
+ * The link is remembered by <RepLinkCapture /> in the root layout, for
+ * REP_LINK_DAYS days in localStorage (and for the tab in sessionStorage, in
+ * case localStorage is blocked). That matters because a reader may land on
+ * one page and inquire from another, and because a reader who taps an ad
+ * often comes back days later without the link — in a new tab, or in their
+ * own browser after the in-app one. Seven days is Meta's own click window, so
+ * a lead the ad gets credit for is a lead its salesperson gets. A newer rep
+ * link replaces the remembered one; once it expires the visit is routed
+ * normally.
  *
  * No "use client": the server actions import `normaliseRepCode` and
  * `repLinkEmail` from here. The storage helpers guard against running on the
@@ -32,10 +35,18 @@ export const REP_PARAM = "rep";
 /** The domain every salesperson's account email is on. */
 export const REP_EMAIL_DOMAIN = "providenceauto.uk.com";
 
+/** How long a rep link is remembered after it was last opened. */
+export const REP_LINK_DAYS = 7;
+
 const STORAGE_KEY = "pa-rep";
 
 // An email local part, lower-cased: letters, digits, dot, underscore, hyphen.
 const CODE = /^[a-z0-9][a-z0-9._-]{0,63}$/;
+
+// The same, followed by URL debris — `shiraz?utm_source=fb`, `shiraz/` —
+// which is what an ad's URL-parameters box produces when the link already
+// had a "?". Anything else after the name (an "@", a space) is refused.
+const CODE_WITH_DEBRIS = /^([a-z0-9][a-z0-9._-]{0,63})(?:[?&#/].*)?$/;
 
 /** A rep code as typed in a link, or null if it cannot be one. */
 export function normaliseRepCode(value: unknown): string | null {
@@ -70,7 +81,10 @@ export function repLinkEmail(code: string): string {
 export function repCodeFromSearch(search: string): string | null {
   const params = new URLSearchParams(search);
   const named = params.get(REP_PARAM);
-  if (named !== null) return normaliseRepCode(named);
+  if (named !== null) {
+    const match = CODE_WITH_DEBRIS.exec(named.trim().toLowerCase());
+    return match ? match[1] : null;
+  }
 
   for (const [key, value] of params) {
     if (value !== "") continue;
@@ -80,7 +94,17 @@ export function repCodeFromSearch(search: string): string | null {
   return null;
 }
 
-/** Remember the rep code in the current URL, if it has one, for this visit. */
+/**
+ * `search` with only its rep link kept — for a page that rewrites its own
+ * URL, so the address the reader copies or reopens in another browser still
+ * carries it. Empty when there is no rep link.
+ */
+export function repSearch(search: string): string {
+  const code = repCodeFromSearch(search);
+  return code ? `?${REP_PARAM}=${encodeURIComponent(code)}` : "";
+}
+
+/** Remember the rep code in the current URL, if it has one. */
 export function rememberRepCode(search: string): void {
   const code = repCodeFromSearch(search);
   if (!code) return;
@@ -89,21 +113,47 @@ export function rememberRepCode(search: string): void {
   } catch {
     /* storage blocked: the current URL is still read at submit */
   }
+  try {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ code, at: Date.now() }),
+    );
+  } catch {
+    /* storage blocked: the tab's copy above still holds it */
+  }
+}
+
+/** The code remembered in localStorage, if it has not expired. */
+function rememberedCode(now: number): string | null {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const { code, at } = JSON.parse(raw) as { code?: unknown; at?: unknown };
+    if (typeof at !== "number" || now - at > REP_LINK_DAYS * 86_400_000) {
+      return null;
+    }
+    return normaliseRepCode(code);
+  } catch {
+    return null;
+  }
 }
 
 /**
  * The rep code an inquiry sent now should carry: the one in the address bar,
- * else the one remembered earlier in the visit.
+ * else the one remembered in this tab, else one remembered in the last
+ * REP_LINK_DAYS days.
  */
-export function currentRepCode(): string | undefined {
+export function currentRepCode(now = Date.now()): string | undefined {
   if (typeof window === "undefined") return undefined;
   const fromUrl = repCodeFromSearch(window.location.search);
   if (fromUrl) return fromUrl;
   try {
-    return (
-      normaliseRepCode(window.sessionStorage.getItem(STORAGE_KEY)) ?? undefined
+    const fromTab = normaliseRepCode(
+      window.sessionStorage.getItem(STORAGE_KEY),
     );
+    if (fromTab) return fromTab;
   } catch {
-    return undefined;
+    /* fall through to localStorage */
   }
+  return rememberedCode(now) ?? undefined;
 }

@@ -524,6 +524,65 @@ export default function RequestActionModal({
               </div>
             </div>
 
+            {/* Where the lead came from, as full URLs — the answer to "why
+                did this lead go to that person?". See
+                src/lib/lead-attribution.ts. Leads older than these columns
+                show N/A. */}
+            <div className="bg-white border border-black/5 shadow-sm rounded-2xl p-5 space-y-4 text-sm">
+              <h4 className="font-bold text-black border-b border-black/5 pb-2">
+                Lead Origin
+              </h4>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Assigned By
+                  </span>
+                  <span className="font-medium text-black">
+                    {modal.request.assignmentMethod || "N/A"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Rep Link
+                  </span>
+                  <span
+                    className={
+                      modal.request.repCode
+                        ? "font-medium text-black"
+                        : "font-medium text-zinc-400"
+                    }
+                  >
+                    {modal.request.repCode || "N/A"}
+                  </span>
+                </div>
+                {(
+                  [
+                    ["Landing Page", modal.request.landingUrl],
+                    ["Sent From", modal.request.pageUrl],
+                    ["Referrer", modal.request.referrer],
+                  ] as const
+                ).map(([label, url]) => (
+                  <div key={label} className="col-span-2">
+                    <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                      {label}
+                    </span>
+                    {url ? (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-blue-600 hover:underline break-all"
+                      >
+                        {url}
+                      </a>
+                    ) : (
+                      <span className="font-medium text-zinc-400">N/A</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-zinc-50 border border-black/5 rounded-2xl p-5 space-y-4 text-sm">
               <h4 className="font-bold text-black border-b border-black/5 pb-2">
                 Collected Pipeline Data

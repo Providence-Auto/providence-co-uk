@@ -163,6 +163,12 @@ export const requests = pgTable("request", {
   customsNotes: text("customsNotes"),
   adminNotes: text("adminNotes"),
   source: text("source"),
+  // Full URLs the lead came through and the rep code the browser sent,
+  // matched or not (src/lib/lead-attribution.ts). Diagnostic only.
+  landingUrl: text("landingUrl"),
+  pageUrl: text("pageUrl"),
+  referrer: text("referrer"),
+  repCode: text("repCode"),
   followUpAt: timestamp("followUpAt"),
   followUpSetAt: timestamp("followUpSetAt"),
   gclid: text("gclid"),
