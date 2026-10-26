@@ -140,14 +140,23 @@ describe("parseSocialLink", () => {
 });
 
 describe("validateDealership", () => {
-  it("needs a name and one of website or social media", () => {
+  it("asks for nothing: every dealership detail is optional", () => {
+    expect(
+      validateDealership({
+        dealershipName: "",
+        website: "",
+        socialMedia: "",
+      }),
+    ).toEqual({});
+  });
+
+  it("still caps the name's length", () => {
     const errors = validateDealership({
-      dealershipName: "",
+      dealershipName: "x".repeat(121),
       website: "",
       socialMedia: "",
     });
     expect(errors.dealershipName).toBeTruthy();
-    expect(errors.presence).toBeTruthy();
   });
 
   it("is satisfied by either one alone", () => {
@@ -174,7 +183,6 @@ describe("validateDealership", () => {
       socialMedia: "@nairobimotors",
     });
     expect(errors.socialMedia).toBeTruthy();
-    expect(errors.presence).toBeUndefined();
   });
 });
 
@@ -393,10 +401,8 @@ describe("validateCarsStep", () => {
 
   it("accepts several markets, but not if any one is off the list", () => {
     expect(
-      validateCarsStep(
-        { ...base, sourceMarket: "japan,uae" },
-        isSourceMarket,
-      ).errors,
+      validateCarsStep({ ...base, sourceMarket: "japan,uae" }, isSourceMarket)
+        .errors,
     ).toEqual({});
     expect(
       validateCarsStep(
