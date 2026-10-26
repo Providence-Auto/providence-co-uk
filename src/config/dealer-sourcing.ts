@@ -42,16 +42,19 @@ export const DEALER_SOURCING_TITLE =
 
 /** Meta description. Keep it under 155 characters (tested). */
 export const DEALER_SOURCING_DESCRIPTION =
-  "B2B inquiry for dealerships: check your market, then request up to five cars from Japan, the UK, Australia, New Zealand, Thailand, India or the UAE.";
+  "B2B inquiry for dealerships: check your market, then request up to five cars from eight markets, including Japan, the UK, Australia and South Africa.";
 
 /** The most cars one request can carry. */
 export const MAX_DEALER_CARS = 5;
 
 /**
- * The seven countries we buy in, in the order the form offers them. Kept as a
- * short literal rather than read from `COUNTRY_PAGES` so the client form does
- * not pull every country page's copy into its bundle; a test holds the two to
- * the same seven slugs.
+ * The countries a dealer can source from, in the order the form offers them:
+ * the seven we buy in (one `/import-cars-from` page each), then South Africa,
+ * a dealer-channel source market only (business instruction 2026-10-26) — it
+ * has no country page, so the page shows no transit or port figures for it.
+ * Kept as a short literal rather than read from `COUNTRY_PAGES` so the client
+ * form does not pull every country page's copy into its bundle; a test holds
+ * the two together, with `DEALER_ONLY_SOURCE_MARKETS` the only difference.
  */
 export const DEALER_SOURCE_MARKETS: {
   slug: string;
@@ -59,6 +62,11 @@ export const DEALER_SOURCE_MARKETS: {
   iso: CountryCode;
   /** What a car costs there — the budget field opens in this currency. */
   currency: string;
+  /**
+   * The drive side, for a dealer-only market's card on the page. Every other
+   * market takes it from its `/import-cars-from` page.
+   */
+  steering?: string;
 }[] = [
   { slug: "japan", name: "Japan", iso: "JP", currency: "JPY" },
   { slug: "united-kingdom", name: "UK", iso: "GB", currency: "GBP" },
@@ -67,7 +75,17 @@ export const DEALER_SOURCE_MARKETS: {
   { slug: "thailand", name: "Thailand", iso: "TH", currency: "THB" },
   { slug: "india", name: "India", iso: "IN", currency: "INR" },
   { slug: "uae", name: "UAE", iso: "AE", currency: "AED" },
+  {
+    slug: "south-africa",
+    name: "South Africa",
+    iso: "ZA",
+    currency: "ZAR",
+    steering: "Right-hand drive",
+  },
 ];
+
+/** Source markets offered to dealers that have no `/import-cars-from` page. */
+export const DEALER_ONLY_SOURCE_MARKETS = ["south-africa"];
 
 /**
  * A dealer can pick several source markets. They travel and are stored as one
@@ -99,7 +117,8 @@ export function sourceMarketCurrency(value: string | null | undefined): string {
 export function sourceMarketName(value: string | null | undefined): string {
   return parseSourceMarkets(value)
     .map(
-      (slug) => DEALER_SOURCE_MARKETS.find((m) => m.slug === slug)?.name ?? slug,
+      (slug) =>
+        DEALER_SOURCE_MARKETS.find((m) => m.slug === slug)?.name ?? slug,
     )
     .join(", ");
 }

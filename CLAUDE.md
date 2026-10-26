@@ -345,7 +345,7 @@ run it through `car-imagery-checklist.md` at the repo root. The short version:
 /import-japanese-cars/dealership          B2B: UK dealerships buying Japanese stock
 /import-cars-from          Import-from hub (was /source-cars-from, which 301s)
 /import-cars-from/[country] One page per country we buy in
-/b2b-inquiry               B2B inquiry landing page: market check + 4-step dealer form
+/b2b-inquiry               B2B inquiry landing page: market check + 3-step dealer form (contact first, dealership optional)
 /admin/dealer-inquiries    The dealer inquiries it produces
 /admin/*                   Protected admin dashboard
 /api/v1/*                  REST API routes

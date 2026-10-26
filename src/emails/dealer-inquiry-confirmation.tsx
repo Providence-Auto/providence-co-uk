@@ -36,11 +36,13 @@ export const DealerInquiryConfirmationEmail = ({
 }: DealerInquiryConfirmationProps) => {
   const firstName = contactName.trim().split(/\s+/)[0] || "there";
   const agentFirstName = agent?.name.trim().split(/\s+/)[0] ?? "";
+  // The dealership name is optional.
+  const fromDealership = dealershipName ? ` from ${dealershipName}` : "";
   const hasAgentWhatsapp = Boolean(agent?.whatsappNumber?.trim());
   const whatsappUrl = whatsappLink(
     hasAgentWhatsapp
-      ? `Hi ${agentFirstName}, this is ${firstName} from ${dealershipName} — about request ${reference}.`
-      : `Hi Providence Auto, this is ${firstName} from ${dealershipName} — about request ${reference}.`,
+      ? `Hi ${agentFirstName}, this is ${firstName}${fromDealership} — about request ${reference}.`
+      : `Hi Providence Auto, this is ${firstName}${fromDealership} — about request ${reference}.`,
     hasAgentWhatsapp
       ? (agent?.whatsappNumber as string)
       : GENERAL_WHATSAPP_NUMBER,
@@ -48,7 +50,7 @@ export const DealerInquiryConfirmationEmail = ({
 
   return (
     <EmailLayout
-      preview={`Your sourcing request ${reference} for ${dealershipName}`}
+      preview={`Your sourcing request ${reference}${dealershipName ? ` for ${dealershipName}` : ""}`}
       heading={`Your request is in, ${firstName}`}
       profile={
         agent
@@ -63,8 +65,8 @@ export const DealerInquiryConfirmationEmail = ({
     >
       <Text style={textStyle}>
         {agent
-          ? `I'm ${agent.name}, and I'm your consultant for this request. Here is what ${dealershipName} sent us:`
-          : `Here is what ${dealershipName} sent us:`}
+          ? `I'm ${agent.name}, and I'm your consultant for this request. Here is what ${dealershipName || "you"} sent us:`
+          : `Here is what ${dealershipName || "you"} sent us:`}
       </Text>
 
       <Section style={containerStyle}>

@@ -533,6 +533,11 @@ export function toStoredCar(car: DealerCarInput): DealerCar {
 
 // ── The whole inquiry, step by step ──────────────────────────────────────────
 
+/**
+ * The dealership details. Every one is optional (business instruction
+ * 2026-10-26: the contact comes first, the dealership is extra) — but a value
+ * that is given still has to be a real web address or profile.
+ */
 export function validateDealership(
   input: Pick<
     DealerInquiryInput,
@@ -540,15 +545,12 @@ export function validateDealership(
   >,
 ): FieldErrors {
   const errors: FieldErrors = {};
-  const name = input.dealershipName.trim();
-  if (!name) errors.dealershipName = "Enter your dealership's name";
-  else if (name.length > LIMITS.name) errors.dealershipName = "That's too long";
+  if (input.dealershipName.trim().length > LIMITS.name) {
+    errors.dealershipName = "That's too long";
+  }
 
   const hasWebsite = input.website.trim().length > 0;
   const hasSocial = input.socialMedia.trim().length > 0;
-  if (!hasWebsite && !hasSocial) {
-    errors.presence = "Add your website or a social media page — one is enough";
-  }
   if (hasWebsite && !normaliseWebsite(input.website)) {
     errors.website = "Enter a web address, e.g. yourdealership.com";
   }
@@ -596,7 +598,7 @@ export function validateCarsStep(
   let carErrors: FieldErrors[] = [];
 
   if (!parseSourceMarkets(input.sourceMarket).every(isSourceMarket)) {
-    errors.sourceMarket = "Choose from the seven markets";
+    errors.sourceMarket = "Choose from the markets listed";
   }
 
   if (input.wantsSpecificCars) {
