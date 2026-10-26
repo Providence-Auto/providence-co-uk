@@ -26,6 +26,7 @@ import {
   OFFICE_COUNTRY_NAMES,
 } from "@/config/countries";
 import {
+  DEALER_ONLY_SOURCE_MARKETS,
   DEALER_SOURCE_MARKETS,
   DEALER_SOURCING_ANSWER,
   DEALER_SOURCING_DESCRIPTION,
@@ -45,7 +46,9 @@ import { buildMarketOptions } from "@/lib/dealer-markets";
 //   1. the market check, opening the multi-step dealer form (the primary CTA);
 //   2. the shared B2B/B2C value proposition (brand-position.md §4–§5), without
 //      the dealer platform — no embed, no dashboard, no /saas;
-//   3. how fast each of the seven source markets moves.
+//   3. how fast each source market moves. South Africa (added 2026-10-26)
+//      has no /import-cars-from page, so its card carries the drive side
+//      only — no transit or port figure is published for it.
 // Added on business request 2026-10-14: the four tool demos from
 // /import-japanese-cars (approved copy, src/config/tool-demos.ts), the dot
 // globe beside the source-markets heading, and odometers on the proof tiles.
@@ -152,8 +155,10 @@ export default function CarSourcingForDealersPage() {
   const markets = buildMarketOptions();
 
   const sourceMarkets = DEALER_SOURCE_MARKETS.map((m) => {
-    const page = getCountryPage(m.slug);
-    if (!page) throw new Error(`No /import-cars-from page for ${m.slug}`);
+    const page = getCountryPage(m.slug) ?? null;
+    if (!page && !DEALER_ONLY_SOURCE_MARKETS.includes(m.slug)) {
+      throw new Error(`No /import-cars-from page for ${m.slug}`);
+    }
     return { ...m, page };
   });
 
@@ -184,8 +189,8 @@ export default function CarSourcingForDealersPage() {
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
-          name: `Car sourcing from ${m.page.country}`,
-          url: `${SITE}${COUNTRY_BASE_PATH}/${m.slug}`,
+          name: `Car sourcing from ${m.page?.country ?? m.name}`,
+          ...(m.page && { url: `${SITE}${COUNTRY_BASE_PATH}/${m.slug}` }),
         },
       })),
     },
@@ -271,7 +276,7 @@ export default function CarSourcingForDealersPage() {
                   className="mb-6 block h-px w-12 bg-gradient-to-r from-sky-400 to-violet-400"
                 />
                 <h2 className="text-3xl font-bold tracking-tighter md:text-5xl">
-                  Import from seven markets, with your first quote in 24 hours.
+                  Import from eight markets, with your first quote in 24 hours.
                 </h2>
                 <dl className="mt-10 grid max-w-xl grid-cols-3 gap-3">
                   {PROOF.map((item) => (
@@ -312,53 +317,57 @@ export default function CarSourcingForDealersPage() {
               </Reveal>
             </div>
 
-            <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {sourceMarkets.map((m, index) => (
                 <Reveal
                   as="li"
                   key={m.slug}
                   y={24}
-                  delay={(index % 4) * 0.05}
+                  delay={(index % 3) * 0.05}
                   className="flex flex-col rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-6 transition-colors hover:border-white/25 hover:bg-white/[0.07]"
                 >
                   <div className="flex items-center gap-3">
                     <Flag iso={m.iso} size={28} />
                     <h3 className="text-lg font-bold tracking-tight">
-                      {m.page.shortName}
+                      {m.page?.shortName ?? m.name}
                     </h3>
                   </div>
                   <p className="mt-2 text-sm text-white/55">
-                    {m.page.facts.steering}
+                    {m.page?.facts.steering ?? m.steering}
                   </p>
 
-                  <dl className="mt-6 space-y-4 text-sm">
-                    <div>
-                      <dt className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/40">
-                        <Ship size={14} aria-hidden />
-                        Sea transit
-                      </dt>
-                      <dd className="mt-1.5 leading-relaxed text-white/85">
-                        {m.page.logistics.transit}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/40">
-                        <Anchor size={14} aria-hidden />
-                        Loading ports
-                      </dt>
-                      <dd className="mt-1.5 leading-relaxed text-white/85">
-                        {listSentence(m.page.logistics.ports)}
-                      </dd>
-                    </div>
-                  </dl>
+                  {m.page && (
+                    <dl className="mt-6 space-y-4 text-sm">
+                      <div>
+                        <dt className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+                          <Ship size={14} aria-hidden />
+                          Sea transit
+                        </dt>
+                        <dd className="mt-1.5 leading-relaxed text-white/85">
+                          {m.page.logistics.transit}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/40">
+                          <Anchor size={14} aria-hidden />
+                          Loading ports
+                        </dt>
+                        <dd className="mt-1.5 leading-relaxed text-white/85">
+                          {listSentence(m.page.logistics.ports)}
+                        </dd>
+                      </div>
+                    </dl>
+                  )}
 
-                  <Link
-                    href={`${COUNTRY_BASE_PATH}/${m.slug}`}
-                    className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-sky-300 transition-colors hover:text-sky-200"
-                  >
-                    Import cars from {m.page.country}
-                    <ArrowUpRight size={15} aria-hidden />
-                  </Link>
+                  {m.page && (
+                    <Link
+                      href={`${COUNTRY_BASE_PATH}/${m.slug}`}
+                      className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-sky-300 transition-colors hover:text-sky-200"
+                    >
+                      Import cars from {m.page.country}
+                      <ArrowUpRight size={15} aria-hidden />
+                    </Link>
+                  )}
                 </Reveal>
               ))}
 
@@ -366,7 +375,7 @@ export default function CarSourcingForDealersPage() {
                 as="li"
                 y={24}
                 delay={0.15}
-                className="flex flex-col justify-between rounded-[1.5rem] bg-gradient-to-br from-sky-500 to-violet-600 p-6"
+                className="flex flex-col justify-between rounded-[1.5rem] bg-gradient-to-br sm:col-span-2 lg:col-span-1 from-sky-500 to-violet-600 p-6"
               >
                 <p className="text-lg font-bold leading-snug tracking-tight">
                   Check whether you can import into your country, then name up

@@ -9,6 +9,7 @@ import { isSupportedCountry } from "libphonenumber-js/max";
 import { describe, expect, it } from "vitest";
 import { COUNTRY_PAGES } from "@/config/countries";
 import {
+  DEALER_ONLY_SOURCE_MARKETS,
   DEALER_SOURCE_MARKETS,
   DEALER_SOURCING_ANSWER,
   DEALER_SOURCING_DESCRIPTION,
@@ -107,10 +108,20 @@ describe("dealer sourcing page — copy rules", () => {
 });
 
 describe("source markets", () => {
-  it("names exactly the seven countries we buy in", () => {
+  it("names the seven countries we buy in, plus the dealer-only markets", () => {
     expect(DEALER_SOURCE_MARKETS.map((m) => m.slug).sort()).toEqual(
-      COUNTRY_PAGES.map((p) => p.slug).sort(),
+      [
+        ...COUNTRY_PAGES.map((p) => p.slug),
+        ...DEALER_ONLY_SOURCE_MARKETS,
+      ].sort(),
     );
+    // A dealer-only market must not also have a country page.
+    for (const slug of DEALER_ONLY_SOURCE_MARKETS) {
+      expect(
+        COUNTRY_PAGES.some((p) => p.slug === slug),
+        slug,
+      ).toBe(false);
+    }
   });
 
   it("has a flag for every source market", () => {

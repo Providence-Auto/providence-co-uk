@@ -324,7 +324,11 @@ export default function DealerInquiriesClient({
                         }}
                         className="text-left font-semibold text-zinc-900 hover:underline"
                       >
-                        {inquiry.dealershipName}
+                        {inquiry.dealershipName || (
+                          <span className="font-normal italic text-zinc-400">
+                            No dealership given
+                          </span>
+                        )}
                       </button>
                       <div className="mt-1 flex items-center gap-1.5 text-sm text-zinc-500">
                         <Flag
@@ -550,7 +554,9 @@ function InquiryDetail({
             {inquiry.reference}
           </span>
         </div>
-        <SheetTitle className="text-xl">{inquiry.dealershipName}</SheetTitle>
+        <SheetTitle className="text-xl">
+          {inquiry.dealershipName || inquiry.contactName}
+        </SheetTitle>
         <SheetDescription>
           Received {formatDate(inquiry.createdAt)} ·{" "}
           {inquiry.assignedToName

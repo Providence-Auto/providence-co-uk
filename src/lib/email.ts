@@ -224,7 +224,7 @@ export const emailService = {
     const cars = data.cars.length;
     await sendEmail({
       to,
-      subject: `New dealer inquiry: ${data.dealershipName} (${data.country}) — ${
+      subject: `New dealer inquiry: ${data.dealershipName || data.contactName} (${data.country}) — ${
         cars ? `${cars} car${cars > 1 ? "s" : ""}` : "sourcing"
       } · ${data.reference}`,
       component: DealerInquiryAlertEmail(data),
