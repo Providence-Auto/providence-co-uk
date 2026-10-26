@@ -318,9 +318,46 @@ describe("request-actions", () => {
           assignmentMethod: "rep-link",
         }),
       );
-      // The code is an input, never a column.
-      expect(db.values).not.toHaveBeenCalledWith(
-        expect.objectContaining({ repCode: expect.anything() }),
+      // The code is kept on the lead, normalised, for diagnosing routing.
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ repCode: "shaq" }),
+      );
+    });
+
+    it("keeps the full URLs the lead came through", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // staff list
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      await submitCarRequest({
+        make: "Nissan",
+        vehicle_model: "Patrol",
+        condition: "New",
+        name: "Ad Customer",
+        email: "customer14@test.com",
+        countryCode: "IE",
+        phone: "+353871234561",
+        countryOfImport: "Ireland",
+        source: "/b2c/gallery/nissan-patrol-y63",
+        landingUrl:
+          " https://www.providenceauto.co.uk/b2c/gallery/nissan-patrol-y63?rep=shiraz&fbclid=abc ",
+        pageUrl:
+          "https://www.providenceauto.co.uk/b2c/gallery/nissan-patrol-y63/import-to-ireland",
+        referrer: "javascript:alert(1)",
+      });
+
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({
+          // source stays the pathname the dashboards group by
+          source: "/b2c/gallery/nissan-patrol-y63",
+          landingUrl:
+            "https://www.providenceauto.co.uk/b2c/gallery/nissan-patrol-y63?rep=shiraz&fbclid=abc",
+          pageUrl:
+            "https://www.providenceauto.co.uk/b2c/gallery/nissan-patrol-y63/import-to-ireland",
+          // the admin renders these as links: no script URLs
+          referrer: null,
+          repCode: null,
+        }),
       );
     });
 
@@ -378,7 +415,11 @@ describe("request-actions", () => {
 
       expect(result.agent?.id).toBe("sales-1");
       expect(db.values).toHaveBeenCalledWith(
-        expect.objectContaining({ assignmentMethod: "round-robin" }),
+        expect.objectContaining({
+          assignmentMethod: "round-robin",
+          // Kept although it matched no one: that is the diagnosis.
+          repCode: "someone-who-left",
+        }),
       );
     });
 

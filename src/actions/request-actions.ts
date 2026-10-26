@@ -24,6 +24,7 @@ import {
 import { sendMetaConversion } from "@/lib/conversions";
 import { formatBudget } from "@/lib/currencies";
 import { emailService } from "@/lib/email";
+import { cleanAttributionUrl } from "@/lib/lead-attribution";
 import {
   B2C_LEAD_ROLES,
   b2cCountryLeadOwner,
@@ -95,6 +96,11 @@ export async function submitCarRequest(data: {
   // A rep link (?rep=shiraz) the customer arrived through: the salesperson
   // who shared it takes the lead. Resolved and checked here, never trusted.
   repCode?: string;
+  // Full URLs the lead came through (src/lib/lead-attribution.ts). Stored as
+  // sent once they pass cleanAttributionUrl; they never affect routing.
+  landingUrl?: string;
+  pageUrl?: string;
+  referrer?: string;
   // S2S Tracking Fields
   gclid?: string;
   fbclid?: string;
@@ -321,6 +327,9 @@ export async function submitCarRequest(data: {
     const {
       assignedAgentId: _assignedAgentId,
       repCode: _repCode,
+      landingUrl,
+      pageUrl,
+      referrer,
       ...requestData
     } = data;
 
@@ -353,6 +362,13 @@ export async function submitCarRequest(data: {
         budgetCurrency: requestData.budgetCurrency || null,
         importTimeline: requestData.importTimeline || null,
         source: requestData.source || null,
+        landingUrl: cleanAttributionUrl(landingUrl),
+        pageUrl: cleanAttributionUrl(pageUrl),
+        referrer: cleanAttributionUrl(referrer),
+        // The rep code the browser sent, matched or not: a lead that arrived
+        // with "shiraz" and still went to the rotation is a different problem
+        // from one that arrived with nothing.
+        repCode,
         gclid: requestData.gclid || null,
         fbclid: requestData.fbclid || null,
         fbc: requestData.fbc || null,
