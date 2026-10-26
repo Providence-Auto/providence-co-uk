@@ -3,9 +3,11 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   currentRepCode,
   normaliseRepCode,
+  REP_LINK_DAYS,
   rememberRepCode,
   repCodeFromSearch,
   repLinkEmail,
+  repSearch,
 } from "../rep-link";
 
 describe("repCodeFromSearch", () => {
@@ -34,6 +36,30 @@ describe("repCodeFromSearch", () => {
   it("rejects a value that could not be an email name", () => {
     expect(repCodeFromSearch("?rep=x%40evil.com")).toBeNull();
     expect(repCodeFromSearch("?rep=")).toBeNull();
+    expect(repCodeFromSearch("?rep=a%20b")).toBeNull();
+  });
+
+  it("reads the name out of URL debris an ad's parameter box leaves", () => {
+    // A link that already had "?" with more parameters pasted after it.
+    expect(repCodeFromSearch("?rep=shiraz?utm_source=fb&fbclid=x")).toBe(
+      "shiraz",
+    );
+    expect(repCodeFromSearch("?rep=Shiraz/")).toBe("shiraz");
+    expect(repCodeFromSearch("?rep=shiraz%23top")).toBe("shiraz");
+  });
+});
+
+describe("repSearch", () => {
+  it("keeps the rep link and drops everything else", () => {
+    expect(repSearch("?fbclid=abc&rep=Shiraz&utm_source=fb")).toBe(
+      "?rep=shiraz",
+    );
+    expect(repSearch("?shiraz")).toBe("?rep=shiraz");
+  });
+
+  it("is empty without one", () => {
+    expect(repSearch("?fbclid=abc")).toBe("");
+    expect(repSearch("")).toBe("");
   });
 });
 
@@ -72,10 +98,55 @@ describe("normaliseRepCode / repLinkEmail", () => {
   });
 });
 
-describe("remembering a rep link for the visit", () => {
+describe("remembering a rep link", () => {
   beforeEach(() => {
     window.sessionStorage.clear();
+    window.localStorage.clear();
     window.history.replaceState(null, "", "/");
+  });
+
+  const DAY = 86_400_000;
+
+  it("survives a new tab or browser within REP_LINK_DAYS", () => {
+    window.history.replaceState(null, "", "/b2c/gallery/x?rep=shiraz");
+    rememberRepCode(window.location.search);
+
+    // Days later, a new tab: no URL code, no tab storage.
+    window.sessionStorage.clear();
+    window.history.replaceState(null, "", "/b2c/gallery/x");
+
+    expect(currentRepCode(Date.now() + (REP_LINK_DAYS - 1) * DAY)).toBe(
+      "shiraz",
+    );
+  });
+
+  it("forgets it after REP_LINK_DAYS", () => {
+    window.history.replaceState(null, "", "/b2c/gallery/x?rep=shiraz");
+    rememberRepCode(window.location.search);
+    window.sessionStorage.clear();
+    window.history.replaceState(null, "", "/b2c/gallery/x");
+
+    expect(
+      currentRepCode(Date.now() + (REP_LINK_DAYS + 1) * DAY),
+    ).toBeUndefined();
+  });
+
+  it("lets a newer link replace the remembered one", () => {
+    rememberRepCode("?rep=shiraz");
+    rememberRepCode("?rep=ishak");
+    window.sessionStorage.clear();
+
+    expect(currentRepCode()).toBe("ishak");
+  });
+
+  it("ignores a garbled remembered value", () => {
+    window.localStorage.setItem("pa-rep", "not json");
+    expect(currentRepCode()).toBeUndefined();
+    window.localStorage.setItem(
+      "pa-rep",
+      JSON.stringify({ code: "a@b", at: Date.now() }),
+    );
+    expect(currentRepCode()).toBeUndefined();
   });
 
   it("survives the URL losing its query string", () => {

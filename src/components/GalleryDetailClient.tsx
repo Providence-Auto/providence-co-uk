@@ -38,6 +38,7 @@ import {
 import { carSpecRows } from "@/lib/car-spec-rows";
 import type { GuideLink } from "@/lib/destination-guides";
 import { getLogoFilename } from "@/lib/logo-utils";
+import { repSearch } from "@/lib/rep-link";
 import {
   formatVehicleTitle,
   parseSteeringOptions,
@@ -276,6 +277,10 @@ export default function GalleryDetailClient({
    * discard anything already typed into the inquiry form below, and a history
    * entry per chip would turn the back button into a tour of the countries the
    * reader clicked through on the way to the one they wanted.
+   *
+   * A rep link (`?rep=shiraz`) is carried over and every other parameter
+   * dropped: the in-app browser's "Open in browser" reopens this exact
+   * address, and without the rep link the lead loses its salesperson.
    */
   const pickDestination = (destination: DestinationConfig) => {
     setSelectedDestinationSlug(destination.slug);
@@ -284,7 +289,8 @@ export default function GalleryDetailClient({
       window.history.replaceState(
         null,
         "",
-        destinationPath(car.slug, destination.slug),
+        destinationPath(car.slug, destination.slug) +
+          repSearch(window.location.search),
       );
     }
   };
