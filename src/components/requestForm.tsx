@@ -46,6 +46,7 @@ import {
   currencyOptions,
   getCurrency,
 } from "@/lib/currencies";
+import { currentAttribution } from "@/lib/lead-attribution";
 import { currentRepCode } from "@/lib/rep-link";
 import { formatVehicleTitle, steeringLabel } from "@/lib/vehicle";
 import {
@@ -1006,6 +1007,9 @@ export default function RequestForm({
       // A rep link (?rep=shiraz) seen anywhere on this visit pins the lead to
       // that salesperson. See src/lib/rep-link.ts.
       repCode: currentRepCode(),
+      // The full landing URL, the page sent from and the referrer, so a
+      // routing question can be answered from the lead.
+      ...currentAttribution(),
       ...trackingData,
     };
 
