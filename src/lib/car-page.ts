@@ -124,16 +124,19 @@ export function carPath(
 /**
  * Metadata for a car page, optionally scoped to one destination market.
  *
- * The destination variant is a genuinely different page — a different rule set,
- * different facts, a different reading list — so it is self-canonical rather
- * than pointing back at the base car page, on the same reasoning the
- * /import-japanese-cars-to-ireland intersection page is self-canonical.
+ * Every destination variant canonicalises to the base car page and stays out
+ * of the sitemap (business decision 2026-10-27). The variants were
+ * self-canonical, and Search Console left 99 of them, and 8 of the car pages
+ * they copy, "Discovered - currently not indexed": each variant is the car
+ * page plus one market block that is word-for-word the same on every car, so
+ * Google read them as near-duplicates and stopped crawling. Folding them
+ * onto the car page keeps every link working (sharing, ads, rep links) and
+ * puts their signals behind the one page that should rank for the model.
  *
- * A `listed` destination is the exception. We ship there and the link works,
- * but nothing market-specific is published for it yet, so its page is close
- * enough to the base car page to be thin. It is marked `noindex, follow` and
- * kept out of the sitemap: shareable, but not competing in search with the
- * page it is a near-copy of.
+ * `listed` and `full` are treated alike here. A canonical says "index that
+ * page instead", so a `noindex` on the same variant would be a contradiction.
+ * The title and description still name the market, because they are what a
+ * shared link previews as.
  */
 export function buildCarMetadata(
   car: CarRecord,
@@ -189,10 +192,8 @@ export function buildCarMetadata(
   return {
     title,
     description,
-    alternates: { canonical: path },
-    ...(destination && destination.depth === "listed"
-      ? { robots: { index: false, follow: true } }
-      : { robots: { index: true, follow: true } }),
+    alternates: { canonical: carPath(car, fallbackId) },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
