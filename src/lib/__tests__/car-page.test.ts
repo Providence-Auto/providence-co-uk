@@ -58,15 +58,13 @@ describe("buildCarMetadata", () => {
     expect(buildCarMetadata(CAR, CAR.slug).title).toBe("2027 Nissan Patrol");
   });
 
-  it("names the destination in the title and canonicalises to itself", () => {
+  it("names the destination in the title and canonicalises to the car page", () => {
     const ireland = getDestination("ireland");
     if (!ireland) throw new Error("ireland missing");
 
     const meta = buildCarMetadata(CAR, CAR.slug, ireland);
     expect(meta.title).toBe("Import a 2027 Nissan Patrol to Ireland");
-    expect(meta.alternates?.canonical).toBe(
-      "/b2c/gallery/nissan-patrol-y63/import-to-ireland",
-    );
+    expect(meta.alternates?.canonical).toBe("/b2c/gallery/nissan-patrol-y63");
   });
 
   // CLAUDE.md, SEO & AEO. Checked across every destination, because both
@@ -139,21 +137,19 @@ describe("buildCarMetadata", () => {
     expect(json).toContain("zero customs duty");
   });
 
-  it("indexes a full destination and noindexes a listed one", () => {
-    const full = getDestination("ireland");
-    const listed = getDestination("malaysia");
-    if (!full || !listed) throw new Error("registry missing an entry");
-
-    expect(full.depth).toBe("full");
-    expect(listed.depth).toBe("listed");
-    expect(buildCarMetadata(CAR, CAR.slug, full).robots).toEqual({
-      index: true,
-      follow: true,
-    });
-    expect(buildCarMetadata(CAR, CAR.slug, listed).robots).toEqual({
-      index: false,
-      follow: true,
-    });
+  // A noindex beside a canonical is a contradiction Google resolves its own
+  // way, so no variant may carry one, whatever its depth.
+  it("folds every destination onto the car page without a noindex", () => {
+    for (const destination of DESTINATIONS) {
+      const meta = buildCarMetadata(CAR, CAR.slug, destination);
+      expect(meta.alternates?.canonical, destination.slug).toBe(
+        "/b2c/gallery/nissan-patrol-y63",
+      );
+      expect(meta.robots, destination.slug).toEqual({
+        index: true,
+        follow: true,
+      });
+    }
   });
 
   it("declares OG image dimensions on every variant", () => {
