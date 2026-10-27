@@ -699,6 +699,13 @@ heading treatment, not its fonts:
 
 ### 10.3 Motion tokens
 
+> **Superseded for anything a person causes (2026-10-27).** Motion is governed
+> by `motion-interaction-rulebook.md`: state changes, enter/exit, hover
+> movement and drags run on the spring tokens in `src/lib/fluid.ts`, not on the
+> timed exit curve below. The entrance row (`<Reveal>`) and the one-shot
+> recipes (media entrance, word swap, ambient loops) still stand as kind-A and
+> kind-G motion under that rule book's §2.
+
 | Token | Value | Where it already lives |
 |---|---|---|
 | Entrance easing | `[0.16, 1, 0.3, 1]` | `appleEase` in `Reveal.tsx` |
@@ -877,6 +884,9 @@ The CLAUDE.md minimum (title under 60, description under 155, OG image at
 
 ### 14.3 Before shipping motion
 
+The full list is `motion-interaction-rulebook.md` §9.1; these are the
+landing-page specifics on top of it.
+
 - [ ] Stops off-screen and on a hidden tab.
 - [ ] Reduced motion shows the finished state.
 - [ ] Hover behaviour gated to fine pointers.
@@ -939,6 +949,9 @@ Paths and names verified on 2026-10-08.
   `depth: "full" | "listed"`), `src/config/landing-pages.ts` (campaign pages),
   `src/config/japan-uk.ts` (Japan → UK copy), `src/lib/uk-landed-cost.ts`
   (`computeLandedCost`).
+- **Spring tokens and gesture physics:** `src/lib/fluid.ts`
+  (`springTransition`, `SPRING`, `Spring`, `clampRubber`, `chooseSnap`) and the
+  `--pa-spring-*` CSS pairs — rules in `motion-interaction-rulebook.md`.
 - **Motion helpers:** `src/lib/motion.ts` (`easeOutCubic`, `easeInOutCubic`,
   quadratic Bézier helpers used by `VoyageTrack`), `appleEase` in
   `src/components/Reveal.tsx`, `useInViewProgress` in
