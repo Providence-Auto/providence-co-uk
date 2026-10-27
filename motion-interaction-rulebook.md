@@ -508,7 +508,6 @@ left below is kept on purpose.
 | Where | What | Status |
 |---|---|---|
 | Reveal runtime (`layout.tsx`), `.pa-reveal-immediate` | `cubic-bezier(0.16, 1, 0.3, 1)`, 600 ms | Kept by decision — kind A, §5.1. `<Reveal>` now caps travel at 24 px and delay at 0.4 s itself |
-| `GradientMesh` blob drift | `ease-in-out` between three waypoints, not linear | Kept pending a decision: linear would put a visible corner at each waypoint of a large, fast drift. Paused off screen via `data-pa-loop` |
 | `.pa-fan` deck hover (`/about-us` values) | Lifts 1rem and scales 1.12, ungated by pointer type | Kept by decision: the cards overlap, the lift is what uncovers one, and on a touch screen at `lg` a tap's sticky `:hover` is the only way in. Timing is on the `snappy` pair |
 | `DotGlobe`, `RadialBurst` drag | The spin carries the last pointer delta, then eases back to its idle speed; no bounds | Fine — an unbounded rotation has nothing to rubber-band against. Measure release velocity with `VelocityTracker` if either is reworked |
 | `transition-colors` / `transition-opacity` with `duration-300`–`700` | Timed colour and fade changes | Fine — nothing travels (§5.2) |

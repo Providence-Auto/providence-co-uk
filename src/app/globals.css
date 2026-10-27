@@ -214,6 +214,10 @@ html {
    pulse rather than as drift. Opacity moves too, so the mesh changes colour
    balance as well as position.
 
+   The drift is linear, like every endless loop (motion-interaction-rulebook.md
+   §5.6): no blob ever slows to a stop at a waypoint, so the mesh never reads
+   as pausing between moves.
+
    The global prefers-reduced-motion block at the bottom of this file neutralises
    these animations, so no separate guard is needed. */
 .pa-mesh-blob {

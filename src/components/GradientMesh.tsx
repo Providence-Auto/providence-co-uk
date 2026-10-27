@@ -133,7 +133,7 @@ export default function GradientMesh({
                 top: blob.top,
                 width: blob.size,
                 height: blob.size,
-                animation: `${blob.animation} ${blob.duration} ease-in-out infinite`,
+                animation: `${blob.animation} ${blob.duration} linear infinite`,
                 animationDelay: blob.delay,
               }}
             />
