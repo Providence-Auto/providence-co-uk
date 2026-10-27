@@ -122,6 +122,19 @@ export function cssSpring(name: SpringName, points = 40) {
   return { easing: `linear(${stops.join(", ")})`, durationMs };
 }
 
+/**
+ * The `behavior` for a scripted scroll (scrollIntoView, scrollTo, scrollBy):
+ * smooth, unless the reader asked for reduced motion — the CSS
+ * `scroll-behavior: auto` override does not reach a script that names
+ * "smooth" itself (rule book §7). "smooth" during server rendering.
+ */
+export function scrollBehavior(): ScrollBehavior {
+  if (typeof window === "undefined" || !window.matchMedia) return "smooth";
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+}
+
 /** UIKit rubber band: x = travel past the bound, d = room on that axis. Never reaches d. */
 export function rubberBand(x: number, d: number, c = RUBBER_BAND_C): number {
   const a = Math.abs(x);

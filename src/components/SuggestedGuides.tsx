@@ -71,7 +71,7 @@ export default function SuggestedGuides({
         Browse all import guides
         <ArrowRight
           size={16}
-          className="group-hover:translate-x-1 transition-transform"
+          className="group-hover:translate-x-1 transition-feedback"
         />
       </Link>
     </div>

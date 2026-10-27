@@ -7,9 +7,20 @@ import BestCarsToImportFromJapan from "./best-cars-to-import-from-japan";
 import BestCarsToImportFromNewZealand from "./best-cars-to-import-from-new-zealand";
 import BestCarsToImportFromTheUk from "./best-cars-to-import-from-the-uk";
 import BestCarsToImportToSriLanka from "./best-cars-to-import-to-sri-lanka";
+import BestCountryToImportCarsFrom from "./best-country-to-import-cars-from";
 import BestPickupsToImportFromThailand from "./best-pickups-to-import-from-thailand";
+import BillOfLadingForCarImports from "./bill-of-lading-for-car-imports";
+import BuyingCarsAtOverseasAuctions from "./buying-cars-at-overseas-auctions";
+import CarImportDocumentsChecklist from "./car-import-documents-checklist";
+import CarImportDutyAndTaxesExplained from "./car-import-duty-and-taxes-explained";
+import CarImportGlossary from "./car-import-glossary";
+import CarImportLicencesAndPermits from "./car-import-licences-and-permits";
+import CarImportMistakesDealersMake from "./car-import-mistakes-dealers-make";
+import CarImportTimelineForDealers from "./car-import-timeline-for-dealers";
 import BestCarsToImportToIreland from "./cheapest-cars-to-import-to-ireland";
 import CheapestWayToImportACarToIreland from "./cheapest-way-to-import-a-car-to-ireland";
+import CheckingMileageOnImportedCars from "./checking-mileage-on-imported-cars";
+import ChoosingAShippingLineForCarImports from "./choosing-a-shipping-line-for-car-imports";
 import CostOfImportingACarToIreland from "./cost-of-importing-a-car-to-ireland";
 import CostToImportACarFromAustralia from "./cost-to-import-a-car-from-australia";
 import CostToImportACarFromIndia from "./cost-to-import-a-car-from-india";
@@ -18,6 +29,9 @@ import CostToImportACarFromNewZealand from "./cost-to-import-a-car-from-new-zeal
 import CostToImportACarFromThailand from "./cost-to-import-a-car-from-thailand";
 import CostToImportACarFromTheUae from "./cost-to-import-a-car-from-the-uae";
 import CostToImportACarFromTheUk from "./cost-to-import-a-car-from-the-uk";
+import CurrencyRiskForCarImporters from "./currency-risk-for-car-importers";
+import CustomsClearingAgentForCarImports from "./customs-clearing-agent-for-car-imports";
+import CustomsValuationOfImportedCars from "./customs-valuation-of-imported-cars";
 import DoINeedAnIvaTest from "./do-i-need-an-iva-test";
 import GccSpecCarsExplained from "./gcc-spec-cars-explained";
 import HowToBuyACarAtJapaneseAuction from "./how-to-buy-a-car-at-japanese-auction";
@@ -29,6 +43,7 @@ import HowToImportACarFromTheUae from "./how-to-import-a-car-from-the-uae";
 import HowToImportACarFromTheUk from "./how-to-import-a-car-from-the-uk";
 import HowToImportANissanPatrol from "./how-to-import-a-nissan-patrol";
 import HowToImportASuzukiJimny from "./how-to-import-a-suzuki-jimny";
+import HowToSourceCarsOverseas from "./how-to-source-cars-overseas";
 import ImportCarFromJapanOrUkToIreland from "./import-car-from-japan-or-uk-to-ireland";
 import ImportJapaneseCarsToUk from "./import-japanese-cars-to-uk";
 import ImportingACarToSriLanka from "./importing-a-car-to-sri-lanka";
@@ -37,10 +52,17 @@ import ImportingASuzukiJimnyFromJapan from "./importing-a-suzuki-jimny-from-japa
 import ImportingASuzukiJimnyToTheUk from "./importing-a-suzuki-jimny-to-the-uk";
 import ImportingAUsedEvFromNewZealand from "./importing-a-used-ev-from-new-zealand";
 import ImportingAUteOr4x4FromAustralia from "./importing-a-ute-or-4x4-from-australia";
+import ImportingCarsFromAustraliaForDealers from "./importing-cars-from-australia-for-dealers";
 import ImportingCarsFromIndiaForDealers from "./importing-cars-from-india-for-dealers";
+import ImportingCarsFromJapanForDealers from "./importing-cars-from-japan-for-dealers";
+import ImportingCarsFromNewZealandForDealers from "./importing-cars-from-new-zealand-for-dealers";
+import ImportingCarsFromThailandForDealers from "./importing-cars-from-thailand-for-dealers";
+import ImportingCarsFromTheUaeForDealers from "./importing-cars-from-the-uae-for-dealers";
+import ImportingCarsFromTheUkForDealers from "./importing-cars-from-the-uk-for-dealers";
 import ImportingCarsToIreland from "./importing-cars-to-ireland";
 import ImportingHybridsAndEvsToSriLanka from "./importing-hybrids-and-evs-to-sri-lanka";
 import ImportingJapaneseCarsForUkDealers from "./importing-japanese-cars-for-uk-dealers";
+import IncotermsForCarImports from "./incoterms-for-car-imports";
 import IndiaCarExportDocumentsExplained from "./india-car-export-documents-explained";
 import InsuringAJapaneseImportUk from "./insuring-a-japanese-import-uk";
 import IvaTestCentresUk from "./iva-test-centres-uk";
@@ -54,11 +76,19 @@ import JapaneseImportAgeRulesUk from "./japanese-import-age-rules-uk";
 import JapaneseImportConditionExplained from "./japanese-import-condition-explained";
 import JapaneseImportPartsUk from "./japanese-import-parts-uk";
 import JapaneseImportRoadTaxUk from "./japanese-import-road-tax-uk";
+import LandedCostOfAnImportedCar from "./landed-cost-of-an-imported-car";
+import MarineInsuranceForImportedCars from "./marine-insurance-for-imported-cars";
 import NewZealandVsJapanForUsedImports from "./new-zealand-vs-japan-for-used-imports";
 import NissanPatrolY63GradesExplained from "./nissan-patrol-y63-grades-explained";
 import PayingForACarFromJapan from "./paying-for-a-car-from-japan";
+import PayingOverseasCarSuppliers from "./paying-overseas-car-suppliers";
+import PreShipmentInspectionForUsedCars from "./pre-shipment-inspection-for-used-cars";
 import RegisteringAnImportedCarInTheUk from "./registering-an-imported-car-in-the-uk";
+import RegisteringImportedCarsForResale from "./registering-imported-cars-for-resale";
+import RightHandDriveImportRules from "./right-hand-drive-import-rules";
+import RoroVsContainerCarShipping from "./roro-vs-container-car-shipping";
 import ShippingACarFromJapanToTheUk from "./shipping-a-car-from-japan-to-the-uk";
+import ShippingSeveralCarsInOneContainer from "./shipping-several-cars-in-one-container";
 import SriLankaCarImportDocumentsExplained from "./sri-lanka-car-import-documents-explained";
 import SriLankaVehicleImportRulesForDealers from "./sri-lanka-vehicle-import-rules-for-dealers";
 import SriLankaVehicleImportTaxesExplained from "./sri-lanka-vehicle-import-taxes-explained";
@@ -67,6 +97,8 @@ import ThailandVsJapanForPickupImports from "./thailand-vs-japan-for-pickup-impo
 import UaeCarExportDocumentsExplained from "./uae-car-export-documents-explained";
 import UkCarExportDocumentsExplained from "./uk-car-export-documents-explained";
 import UkCarHistoryChecksExplained from "./uk-car-history-checks-explained";
+import VehicleBiosecurityCleaningForImport from "./vehicle-biosecurity-cleaning-for-import";
+import VehicleImportAgeLimitsByCountry from "./vehicle-import-age-limits-by-country";
 import VrtExplainedIreland from "./vrt-explained-ireland";
 import WhyAreIndianManufacturedCarsCheaper from "./why-are-indian-manufactured-cars-cheaper";
 
@@ -74,6 +106,43 @@ import WhyAreIndianManufacturedCarsCheaper from "./why-are-indian-manufactured-c
 // in src/config/blog.ts (Ireland cluster) and src/config/blog-countries.ts
 // (per-source-country clusters).
 export const BLOG_BODIES: Record<string, ComponentType> = {
+  "best-country-to-import-cars-from": BestCountryToImportCarsFrom,
+  "car-import-duty-and-taxes-explained": CarImportDutyAndTaxesExplained,
+  "customs-valuation-of-imported-cars": CustomsValuationOfImportedCars,
+  "vehicle-import-age-limits-by-country": VehicleImportAgeLimitsByCountry,
+  "right-hand-drive-import-rules": RightHandDriveImportRules,
+  "pre-shipment-inspection-for-used-cars": PreShipmentInspectionForUsedCars,
+  "car-import-licences-and-permits": CarImportLicencesAndPermits,
+  "incoterms-for-car-imports": IncotermsForCarImports,
+  "roro-vs-container-car-shipping": RoroVsContainerCarShipping,
+  "choosing-a-shipping-line-for-car-imports":
+    ChoosingAShippingLineForCarImports,
+  "marine-insurance-for-imported-cars": MarineInsuranceForImportedCars,
+  "bill-of-lading-for-car-imports": BillOfLadingForCarImports,
+  "car-import-documents-checklist": CarImportDocumentsChecklist,
+  "customs-clearing-agent-for-car-imports": CustomsClearingAgentForCarImports,
+  "registering-imported-cars-for-resale": RegisteringImportedCarsForResale,
+  "landed-cost-of-an-imported-car": LandedCostOfAnImportedCar,
+  "paying-overseas-car-suppliers": PayingOverseasCarSuppliers,
+  "currency-risk-for-car-importers": CurrencyRiskForCarImporters,
+  "checking-mileage-on-imported-cars": CheckingMileageOnImportedCars,
+  "buying-cars-at-overseas-auctions": BuyingCarsAtOverseasAuctions,
+  "vehicle-biosecurity-cleaning-for-import":
+    VehicleBiosecurityCleaningForImport,
+  "shipping-several-cars-in-one-container": ShippingSeveralCarsInOneContainer,
+  "car-import-timeline-for-dealers": CarImportTimelineForDealers,
+  "car-import-mistakes-dealers-make": CarImportMistakesDealersMake,
+  "car-import-glossary": CarImportGlossary,
+  "importing-cars-from-japan-for-dealers": ImportingCarsFromJapanForDealers,
+  "importing-cars-from-the-uk-for-dealers": ImportingCarsFromTheUkForDealers,
+  "importing-cars-from-the-uae-for-dealers": ImportingCarsFromTheUaeForDealers,
+  "importing-cars-from-thailand-for-dealers":
+    ImportingCarsFromThailandForDealers,
+  "importing-cars-from-australia-for-dealers":
+    ImportingCarsFromAustraliaForDealers,
+  "importing-cars-from-new-zealand-for-dealers":
+    ImportingCarsFromNewZealandForDealers,
+  "how-to-source-cars-overseas": HowToSourceCarsOverseas,
   // ── Ireland cluster ────────────────────────────────────────────────────────
   "importing-cars-to-ireland": ImportingCarsToIreland,
   "cheapest-cars-to-import-to-ireland": BestCarsToImportToIreland,

@@ -181,7 +181,7 @@ export default function MyProfileAdminPage() {
             type="button"
             key={t.id}
             onClick={() => setTab(t.id as any)}
-            className={`px-5 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${
+            className={`px-5 py-2 text-sm font-bold rounded-lg transition-feedback flex items-center gap-2 ${
               tab === t.id
                 ? "bg-white text-black shadow-sm"
                 : "text-zinc-400 hover:text-zinc-900"

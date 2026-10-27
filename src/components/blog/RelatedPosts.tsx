@@ -29,7 +29,7 @@ export default function RelatedPosts({ slug }: { slug: string }) {
           >
             <Link
               href={`${BLOG_BASE_PATH}/${post.slug}`}
-              className="group flex h-full flex-col rounded-[1.5rem] border border-black/5 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
+              className="group flex h-full flex-col rounded-[1.5rem] border border-black/5 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-feedback hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
             >
               <p className="text-xs font-bold tracking-[0.2em] uppercase text-zinc-400 mb-2">
                 {post.cluster}
@@ -44,7 +44,7 @@ export default function RelatedPosts({ slug }: { slug: string }) {
                 Read guide
                 <ArrowRight
                   size={14}
-                  className="group-hover:translate-x-1 transition-transform"
+                  className="group-hover:translate-x-1 transition-feedback"
                 />
               </span>
             </Link>

@@ -23,7 +23,7 @@ export default function NewsCard({
     <Reveal as="div" y={20} delay={index * 0.05} duration={0.5}>
       <Link
         href={`${NEWS_BASE_PATH}/${article.slug}`}
-        className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
+        className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-feedback hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
       >
         {/* biome-ignore lint/performance/noImgElement: remote hero image, intentional <img> per site convention */}
         <img

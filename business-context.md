@@ -343,9 +343,14 @@ Below, the two informational systems, which are deliberately separate
 (`CLAUDE.md`, "Editorial: blog vs news"):
 
 - **`/blog`** — evergreen how-to guides in keyword clusters (`src/config/blog.ts`,
-  `src/config/blog-countries.ts`). Country clusters currently live: Australia,
-  India, Japan, New Zealand, Sri Lanka, Thailand, UAE, United Kingdom. Gets
-  updated, does not age.
+  `src/config/blog-countries.ts`, `src/config/blog-japan-uk.ts`,
+  `src/config/blog-dealer-sourcing.ts`). Country clusters currently live:
+  Australia, India, Japan, New Zealand, Sri Lanka, Thailand, UAE, United
+  Kingdom. Also live: **Japan to UK**, and **Dealer Sourcing** — sourcing and
+  importing cars from overseas, written for the dealer reader (§7), with a
+  destination selector on every guide (`src/config/import-market-guides.ts`,
+  each rule citing its official source) and every post's CTA on
+  `/b2b-inquiry`. Gets updated, does not age.
 - **`/latest-news`** — dated reporting: new-model releases, industry moves,
   auction results, market data, tax/policy changes. Categories: Releases,
   Industry, Auctions, Market, Policy & Tax, Providence. Ages, feeds Google
@@ -445,6 +450,7 @@ don't just fix the copy silently.
 | 2026-10-09 | **`landing-page-playbook.md` made a standing document**, listed in §13 and pointed to from CLAUDE.md's "Landing pages" section. It is a pattern library and a set of build recipes for landing-page sections, copy and motion, drawn from a teardown of surge.cloud (2026-10-08), and it ranks below every source-of-truth document. Its seven questions were answered the same day: the repeated line is **"Import your dream car anywhere in the world."** (not the position line the playbook proposed); two-tone headings are allowed (one heading, one sentence, no eyebrow); the tools micro-demos are approved for `/b2c` and `/import-japanese-cars`; the import-plan builder is to be scoped once those ship; a dark hero is not a site-wide change and may only be tried as an A/B test on `/b2b-inquiry`; and leads record which on-page button led to the form. | Business instruction, answering the questions raised on 2026-10-08 (`brand-position.md` §11.3). Kept out of the source-of-truth set on purpose, so it can be revised without the §11.2 process; where it disagrees with a source of truth, the source of truth wins. |
 | 2026-10-09 | **The customer imports and Providence exports.** *Buy* and *sell* are no longer used for the two acts in a Providence transaction, and *source* as a verb becomes *import* (the reader) or *export* (us); the noun stays. Applied to `writing-angle.md` (new §10), `brand-position.md` §1, §3, §4, §5, §9 and §10, this document, and every public page. The home tagline became "Import Any Car. From Any Country. To Any Port.", with *Import*, *From* and *To* in the accent colour. | Business instruction. *Import* is what the customer actually does — the import entry is made in their name (§4) — and it is the phrase they search; *export* is what our own offices do as exporter of record (§2 step 3). Providence is never written as the importer, for the same §4 reason. Other people's purchases, domestic purchases, nouns and URL slugs are left alone, because changing them would make sentences false or break links. |
 | 2026-10-26 | **South Africa is a dealer-channel source market only**: offered on `/b2b-inquiry` (the form's source markets and a card on the page, which says "eight markets"), with no office or presence claim, no `/import-cars-from` page and no B2C sourcing. Recorded in §3. | Business instruction. It changes the 2026-09-24 decision that South Africa stays destination-only, for dealers alone. Its card shows the drive side and nothing else, because no ports or sea-transit figure for it has been reviewed. Answers the question logged in `brand-position.md` §11.3 the same day. |
+| 2026-10-27 | **A dealer-sourcing blog cluster**: the pillar `/blog/how-to-source-cars-overseas`, 25 supporting guides and seven "importing cars from <country> for dealers" guides (`src/config/blog-dealer-sourcing.ts`, 33 posts including the rewritten India dealer guide, slug unchanged). Every guide carries an "Importing to" selector over 12 destinations, backed by `src/config/import-market-guides.ts`, and every post's three touchpoints point at `/b2b-inquiry`. Recorded in §9 and in `page-types.md` §8. | Business instruction: position Providence as the reference on sourcing a car overseas for dealers, from tax law to choosing a vessel, as informational pages that make no claim about Providence's services. The country data publishes conflicts between official sources (Kenya's duty, Mauritius's excise bands, Trinidad's age limit) rather than choosing one, and prints no rate it could not confirm, per §8's "a missing number is not a failure; a wrong number is". Answers the question logged in `brand-position.md` §11.3 the same day. |
 
 ## 12. Known documentation to reconcile
 

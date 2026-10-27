@@ -30,11 +30,11 @@ import {
 import {
   DEALER_SOURCE_MARKETS,
   joinSourceMarkets,
-  parseSourceMarkets,
-  sourceMarketCurrency,
   LHD_ALTERNATIVE,
   MAX_DEALER_CARS,
   type MarketOption,
+  parseSourceMarkets,
+  sourceMarketCurrency,
 } from "@/config/dealer-sourcing";
 import { currencyForCountry } from "@/lib/currencies";
 import {
@@ -57,6 +57,7 @@ import {
   validateContact,
   validateDealership,
 } from "@/lib/dealer-inquiry";
+import { scrollBehavior } from "@/lib/fluid";
 import { currentRepCode } from "@/lib/rep-link";
 
 // The contact comes first (business instruction 2026-10-26); the dealership
@@ -250,7 +251,10 @@ export default function DealerInquiryForm({
     if (!interacted.current) return;
     const top = rootRef.current?.getBoundingClientRect().top ?? 0;
     if (top < 0) {
-      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      rootRef.current?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
     }
     headingRef.current?.focus({ preventScroll: true });
   }, [step, success]);
@@ -267,7 +271,7 @@ export default function DealerInquiryForm({
       '[aria-invalid="true"], [role="alert"]',
     );
     if (!first) return;
-    first.scrollIntoView({ behavior: "smooth", block: "center" });
+    first.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
     const control = first.matches('[aria-invalid="true"]')
       ? first
       : first

@@ -329,7 +329,7 @@ export default function JapaneseCarsForDealershipsPage() {
               </ol>
               <a
                 href="#inquiry-form"
-                className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition-transform hover:scale-[1.03]"
+                className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition-feedback hover:scale-[1.03]"
               >
                 Start your dealer inquiry
                 <ArrowRight size={16} aria-hidden />
@@ -384,7 +384,7 @@ export default function JapaneseCarsForDealershipsPage() {
                   >
                     <Link
                       href={`${BLOG_BASE_PATH}/${post.slug}`}
-                      className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
+                      className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-feedback hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
                     >
                       {/* biome-ignore lint/performance/noImgElement: static hero image, intentional <img> per site convention */}
                       <img

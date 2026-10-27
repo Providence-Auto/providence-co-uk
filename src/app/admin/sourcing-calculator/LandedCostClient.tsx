@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { scrollBehavior } from "@/lib/fluid";
 import { computeMarketStats, type NormalizedListing } from "@/lib/market-stats";
 import {
   AUCTION_FEE_RATE,
@@ -224,7 +225,7 @@ function UsageMeter({
         className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200"
       >
         <div
-          className={`h-full rounded-full transition-all ${bar}`}
+          className={`h-full rounded-full ${bar}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -542,7 +543,10 @@ export default function LandedCostClient({
   const marketRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (market) {
-      marketRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      marketRef.current?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
     }
   }, [market]);
 

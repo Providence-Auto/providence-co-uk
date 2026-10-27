@@ -1,0 +1,105 @@
+{
+  "_comment": "Hero photographs for the dealer-sourcing cluster (src/config/blog-dealer-sourcing.ts). `photos` are Wikimedia Commons ship and port photographs with no car or number plate in frame (car-imagery-checklist.md); `heroes` maps each post slug to one of them; `reuse` gives a post the already-cleared hero of an existing post. scripts/build-dealer-sourcing-heroes.mjs writes public/source-cars/blog/<slug>.webp and og/<slug>.jpg from this file, and car-photo-credits.ts credits each one from it.",
+  "photos": {
+    "glovis": {
+      "title": "Car carrier GLOVIS SIGMA à quai.jpg",
+      "author": "Farid mernissi",
+      "licence": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Car_carrier_GLOVIS_SIGMA_%C3%A0_quai.jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Car_carrier_GLOVIS_SIGMA_%C3%A0_quai.jpg",
+      "alt": "The car carrier Glovis Sigma moored at a container terminal"
+    },
+    "liberty": {
+      "title": "Car carrier vessel LIBERTY PEACE, sailing in the Puget Sound (20240219).jpg",
+      "author": "FPTI",
+      "licence": "CC0",
+      "source": "https://commons.wikimedia.org/wiki/File:Car_carrier_vessel_LIBERTY_PEACE,_sailing_in_the_Puget_Sound_(20240219).jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Car_carrier_vessel_LIBERTY_PEACE%2C_sailing_in_the_Puget_Sound_%2820240219%29.jpg",
+      "alt": "The car carrier Liberty Peace under way at sunset"
+    },
+    "jupiter": {
+      "title": "Jupiter Spirit (car carrier ship) at Port of Auckland 20250722-131005.jpg",
+      "author": "XiaYZ2023",
+      "licence": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Jupiter_Spirit_(car_carrier_ship)_at_Port_of_Auckland_20250722-131005.jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/4/42/Jupiter_Spirit_%28car_carrier_ship%29_at_Port_of_Auckland_20250722-131005.jpg",
+      "alt": "The car carrier Jupiter Spirit berthed at the Port of Auckland"
+    },
+    "transfuture": {
+      "title": "Trans Future 5 (car carrier ship) at Port of Auckland 20250802-170707.jpg",
+      "author": "XiaYZ2023",
+      "licence": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Trans_Future_5_(car_carrier_ship)_at_Port_of_Auckland_20250802-170707.jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/6/61/Trans_Future_5_%28car_carrier_ship%29_at_Port_of_Auckland_20250802-170707.jpg",
+      "alt": "The car carrier Trans Future 5 berthed at the Port of Auckland"
+    },
+    "nyk": {
+      "title": "Container ship NYK Themis at the Port of Los Angeles.jpg",
+      "author": "Downtowngal",
+      "licence": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Container_ship_NYK_Themis_at_the_Port_of_Los_Angeles.jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/1/11/Container_ship_NYK_Themis_at_the_Port_of_Los_Angeles.jpg",
+      "alt": "The container ship NYK Themis under the cranes at the Port of Los Angeles"
+    },
+    "hoegh": {
+      "title": "Car carrier vessel HOEGH SUNLIGHT underway.jpg",
+      "author": "IikaJzuchiN",
+      "licence": "CC BY 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Car_carrier_vessel_HOEGH_SUNLIGHT_underway.jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Car_carrier_vessel_HOEGH_SUNLIGHT_underway.jpg",
+      "alt": "The car carrier Höegh Sunlight under way"
+    },
+    "neptune": {
+      "title": "Car carrier ship 'Neptune Hellas' entering the port of Haifa, Israel - 2023-03-15 (DSC1328).jpg",
+      "author": "DmitTrix",
+      "licence": "CC BY 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Car_carrier_ship_%27Neptune_Hellas%27_entering_the_port_of_Haifa,_Israel_-_2023-03-15_(DSC1328).jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Car_carrier_ship_%27Neptune_Hellas%27_entering_the_port_of_Haifa%2C_Israel_-_2023-03-15_%28DSC1328%29.jpg",
+      "alt": "The car carrier Neptune Hellas approaching the port of Haifa"
+    },
+    "vigo": {
+      "title": "Container ship in the Port of Vigo.jpg",
+      "author": "Toatway",
+      "licence": "CC BY-SA 4.0",
+      "source": "https://commons.wikimedia.org/wiki/File:Container_ship_in_the_Port_of_Vigo.jpg",
+      "file": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Container_ship_in_the_Port_of_Vigo.jpg",
+      "alt": "A container ship loading under the cranes at the Port of Vigo"
+    }
+  },
+  "heroes": {
+    "how-to-source-cars-overseas": "glovis",
+    "best-country-to-import-cars-from": "hoegh",
+    "car-import-duty-and-taxes-explained": "nyk",
+    "customs-valuation-of-imported-cars": "vigo",
+    "vehicle-import-age-limits-by-country": "jupiter",
+    "right-hand-drive-import-rules": "transfuture",
+    "pre-shipment-inspection-for-used-cars": "liberty",
+    "car-import-licences-and-permits": "neptune",
+    "incoterms-for-car-imports": "nyk",
+    "roro-vs-container-car-shipping": "glovis",
+    "choosing-a-shipping-line-for-car-imports": "hoegh",
+    "marine-insurance-for-imported-cars": "neptune",
+    "bill-of-lading-for-car-imports": "vigo",
+    "car-import-documents-checklist": "jupiter",
+    "customs-clearing-agent-for-car-imports": "transfuture",
+    "registering-imported-cars-for-resale": "liberty",
+    "landed-cost-of-an-imported-car": "glovis",
+    "paying-overseas-car-suppliers": "hoegh",
+    "currency-risk-for-car-importers": "nyk",
+    "checking-mileage-on-imported-cars": "jupiter",
+    "buying-cars-at-overseas-auctions": "transfuture",
+    "vehicle-biosecurity-cleaning-for-import": "liberty",
+    "shipping-several-cars-in-one-container": "vigo",
+    "car-import-timeline-for-dealers": "neptune",
+    "car-import-mistakes-dealers-make": "jupiter",
+    "car-import-glossary": "liberty"
+  },
+  "reuse": {
+    "importing-cars-from-japan-for-dealers": "best-cars-to-import-from-japan",
+    "importing-cars-from-the-uk-for-dealers": "best-cars-to-import-from-the-uk",
+    "importing-cars-from-the-uae-for-dealers": "best-cars-to-import-from-dubai",
+    "importing-cars-from-thailand-for-dealers": "best-pickups-to-import-from-thailand",
+    "importing-cars-from-australia-for-dealers": "best-cars-to-import-from-australia",
+    "importing-cars-from-new-zealand-for-dealers": "best-cars-to-import-from-new-zealand"
+  }
+}

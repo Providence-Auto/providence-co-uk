@@ -6,6 +6,19 @@ import type { HTMLAttributes, ReactNode } from "react";
  */
 export const appleEase = [0.16, 1, 0.3, 1] as const;
 
+/**
+ * Appearance stays small (motion-interaction-rulebook.md §5.1): an element
+ * travels at most 24px, and nothing waits more than 0.4s to start, so the last
+ * card of a stagger is moving before the reader has finished looking for it.
+ * Enforced here rather than at each call site, so a long list's `i * 0.1`
+ * stagger caps itself.
+ */
+export const REVEAL_MAX_OFFSET = 24;
+export const REVEAL_MAX_DELAY = 0.4;
+
+const clampOffset = (v: number) =>
+  Math.max(-REVEAL_MAX_OFFSET, Math.min(REVEAL_MAX_OFFSET, v));
+
 type RevealTag =
   | "div"
   | "section"
@@ -72,6 +85,9 @@ export function Reveal({
 }: RevealProps) {
   // biome-ignore lint/suspicious/noExplicitAny: dynamic tag name
   const Comp = as as any;
+  const ry = clampOffset(y);
+  const rx = clampOffset(x);
+  const rdelay = Math.max(0, Math.min(REVEAL_MAX_DELAY, delay));
 
   // An immediate reveal is played by CSS, not by the runtime script, so its
   // motion parameters have to reach the stylesheet — custom properties are the
@@ -80,22 +96,22 @@ export function Reveal({
   const style = immediate
     ? ({
         ...(rest.style || {}),
-        "--pa-ry": `${y}px`,
-        "--pa-rx": `${x}px`,
+        "--pa-ry": `${ry}px`,
+        "--pa-rx": `${rx}px`,
         "--pa-rs": scale,
         "--pa-rd": `${Math.round(duration * 1000)}ms`,
-        "--pa-rdelay": `${Math.round(delay * 1000)}ms`,
+        "--pa-rdelay": `${Math.round(rdelay * 1000)}ms`,
       } as React.CSSProperties)
     : rest.style;
 
   return (
     <Comp
       className={`${immediate ? "pa-reveal-immediate" : "pa-reveal"} ${className}`}
-      data-ry={y}
-      data-rx={x}
+      data-ry={ry}
+      data-rx={rx}
       data-rs={scale}
       data-rd={Math.round(duration * 1000)}
-      data-rdelay={Math.round(delay * 1000)}
+      data-rdelay={Math.round(rdelay * 1000)}
       {...rest}
       style={style}
     >
