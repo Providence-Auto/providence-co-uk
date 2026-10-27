@@ -216,6 +216,326 @@ const AUTHOR = "Providence Auto";
 
 export const NEWS_ARTICLES: NewsArticle[] = [
   {
+    slug: "audi-q9-uk-specification-deliveries",
+    cta: importFromCta("united-kingdom", "the UK"),
+    title:
+      "Audi Q9 in the UK: two grades, one diesel, deliveries from November",
+    h1: "Audi Q9 UK Specification: Two Grades, One V6 Diesel and First Deliveries in November",
+    seoTitle: "Audi Q9 UK: Specification, Grades and Delivery Date",
+    description:
+      "The Audi Q9 reaches the UK as Edition 1 and Vorsprung, both with a 299 PS V6 diesel, and deliveries start in November 2026. The specification, landed.",
+    excerpt:
+      "The largest Audi built comes to Britain with one engine, two grades and no SQ9. For anyone importing into a right-hand-drive market, the UK specification is the one Audi has published in full.",
+    category: "Releases",
+    dateline: "Bratislava, Slovakia",
+    keywords: [
+      "audi q9",
+      "audi q9 uk",
+      "audi q9 specification",
+      "audi q9 edition 1 vs vorsprung",
+      "when is the audi q9 available in the uk",
+      "is the audi sq9 coming to the uk",
+      "how big is the audi q9",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 8,
+    heroImage: "/cars/audi-q9/front-driving.webp",
+    heroAlt:
+      "An Audi Q9 in Waitomo blue metallic driving on a desert road past red rock formations",
+    heroCaption:
+      "Audi AG press image of a US-market Audi Q9 in Waitomo blue metallic, photographed in Utah. Illustrative of the model — not the UK-specification car and not a specific vehicle offered for sale.",
+    toc: [
+      { id: "confirmed", label: "What Audi has confirmed for the UK" },
+      { id: "price", label: "The price, and why it is not an export price" },
+      { id: "landed", label: "What it means landed" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Move now or wait?" },
+      { id: "unknowns", label: "What is still unknown" },
+    ],
+    faqs: [
+      {
+        q: "When can you get an Audi Q9 in the UK?",
+        a: "Audi opened orders at the end of July 2026 and states that deliveries start in November 2026. Audi UK lists two grades, Edition 1 and Vorsprung, on its configurator. Both use the same 3.0-litre V6 TDI mild-hybrid engine of 299 PS, so the choice between them is equipment rather than performance.",
+      },
+      {
+        q: "What is the difference between the Audi Q9 Edition 1 and Vorsprung?",
+        a: "Edition 1 has 22-inch wheels, adaptive air suspension, all-wheel steering, an openable switchable panoramic roof and seven heated seats. Vorsprung adds 23-inch wheels, digital matrix LED headlights, curved digital OLED rear lights, automatic doors, the Bang & Olufsen 4D Premium sound system and exterior ambient lighting, and it is the grade offered with the six-seat Lounge Pack.",
+      },
+      {
+        q: "Is the Audi SQ9 coming to the UK?",
+        a: "No. Audi UK lists only the 299 PS V6 diesel Q9. Audi offers the 591 hp twin-turbo V8 SQ9 in selected markets, including the United States and Canada. For a right-hand-drive buyer, the V6 diesel is the only Q9 Audi has published, so anyone set on the V8 is looking at a left-hand-drive car.",
+      },
+      {
+        q: "How big is the Audi Q9?",
+        a: "Audi gives the Q9 as 5.31 metres long, 2.21 metres wide across the mirrors and 1.81 metres tall, on a 3.14-metre wheelbase, and calls it the largest Audi of all time. Audi UK quotes up to 850 litres of boot space with the third row folded and 2,308 litres with the second and third rows folded.",
+      },
+      {
+        q: "Is the Audi UK price what an exported Q9 costs?",
+        a: "No. Audi UK's on-the-road price, from £103,900, includes 20 per cent UK VAT, the first year's Vehicle Excise Duty, number plates and the registration fee. HMRC zero-rates exported goods for VAT when the conditions in VAT Notice 703 are met, so the OTR figure is a ceiling on the source price rather than the base of a landed cost.",
+      },
+    ],
+    sources: [
+      {
+        label: "Audi Q9: Audi's first large full-size SUV tops the lineup",
+        href: "https://www.audi.com/en/press-releases/audi-q9-audis-first-large-full-size-suv-tops-the-lineup-18158",
+        publisher: "AUDI AG",
+      },
+      {
+        label: "Elegance and space: a first look inside the new Audi Q9",
+        href: "https://www.audi.com/en/press-releases/elegance-and-space-a-first-look-inside-the-new-audi-q9-17903",
+        publisher: "AUDI AG",
+      },
+      {
+        label: "New Audi Q9 SUV design and specification",
+        href: "https://www.audi.co.uk/en/models/q9/q9/design-and-specification/",
+        publisher: "Audi UK",
+      },
+      {
+        label: "Build your Audi Q9 SUV — configurator",
+        href: "https://www.audi.co.uk/en/models/q9/q9/configurator/",
+        publisher: "Audi UK",
+      },
+      {
+        label: "New Audi Q9 on sale with UK prices and specs revealed",
+        href: "https://www.autoexpress.co.uk/audi/366306/new-audi-q9-sale-uk-prices-and-specs-revealed",
+        publisher: "Auto Express",
+      },
+      {
+        label: "VAT on goods exported from the UK (VAT Notice 703)",
+        href: "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703",
+        publisher: "GOV.UK (HMRC)",
+      },
+      {
+        label: "New Audi Q9 arrives in Ireland",
+        href: "https://www.rev.ie/new-audi-q9-arrives-in-ireland/",
+        publisher: "Rev.ie",
+      },
+    ],
+    relatedGuides: [
+      "how-to-import-a-car-from-the-uk",
+      "cost-to-import-a-car-from-the-uk",
+      "uk-car-export-documents-explained",
+    ],
+    linkedVehicleSlugs: ["audi-q9-2027"],
+  },
+  {
+    slug: "audi-q9-right-hand-drive-import-markets",
+    cta: ARTICLE_CTAS.dealer,
+    title:
+      "Audi Q9 in right-hand drive: Britain has it, most RHD markets do not",
+    h1: "Audi Q9 Right-Hand Drive: Britain Has the Specification, Most RHD Markets Do Not Yet",
+    seoTitle: "Audi Q9 Right-Hand Drive: Which Markets Get It",
+    description:
+      "As of 28 October 2026 only the UK has a published right-hand-drive Audi Q9. What that means for dealers importing into Kenya, Sri Lanka and other RHD markets.",
+    excerpt:
+      "Ireland is reported, Australia is expected, and everywhere else that drives on the left is silent. For a dealer, that makes Britain the source of a right-hand-drive Q9 — and the 3.0-litre diesel the only engine to price.",
+    category: "Industry",
+    dateline: "Bratislava, Slovakia",
+    keywords: [
+      "audi q9 right hand drive",
+      "audi q9 rhd markets",
+      "import audi q9",
+      "can you import an audi q9 to kenya",
+      "is the audi q9 coming to australia",
+      "audi q9 ireland",
+      "importing a new luxury suv from the uk",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 7,
+    heroImage: "/cars/audi-q9/side-profile.webp",
+    heroAlt:
+      "An Audi Q9 in Waitomo blue metallic parked in side profile beside palm trees and a modern building, with no number plate visible",
+    heroCaption:
+      "Audi AG press image of a US-market Audi Q9 in Waitomo blue metallic. Illustrative of the model — not the right-hand-drive UK-specification car.",
+    toc: [
+      {
+        id: "markets",
+        label: "Which right-hand-drive markets get the Audi Q9?",
+      },
+      {
+        id: "permission",
+        label: "Can a UK-specification Q9 be registered in your market?",
+      },
+      {
+        id: "cost",
+        label: "Is it going to cost more than the badge suggests?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Should a dealer move now or wait?" },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Is the Audi Q9 available in right-hand drive?",
+        a: "Yes. Audi UK sells the Q9 in right-hand drive as Edition 1 and Vorsprung, with a 3.0-litre V6 TDI of 299 PS, and Audi states deliveries start in November 2026. As of 28 October 2026 the United Kingdom is the only right-hand-drive market where Audi has published the Q9's specification in full.",
+      },
+      {
+        q: "Is the Audi Q9 coming to Ireland?",
+        a: "Rev.ie reported on 30 July 2026 that the Q9 will reach Irish Audi dealers towards the end of 2026. Audi Ireland's own Q9 page was not live when we checked on 28 October 2026. An Irish buyer should wait for local supply rather than import from Britain, because Revenue charges import VAT, and possibly customs duty, on a vehicle brought in from Great Britain, before VRT.",
+      },
+      {
+        q: "Is the Audi Q9 coming to Australia?",
+        a: "Australian motoring press, including Chasing Cars and CarExpert, expects a local launch in 2027, but Audi Australia had not formally announced one as of 28 October 2026. Australia approves vehicles under its own road vehicle standards regime, so a model not yet approved there is not one to import ahead of the local launch.",
+      },
+      {
+        q: "Can you import a new Audi Q9 into Kenya?",
+        a: "On age and hand of drive, yes. Kenya admits vehicles under eight years old with a pre-export roadworthiness inspection and requires right-hand drive, and a UK-specification Q9 delivered from November 2026 meets both. The open question is the tax: a 3.0-litre diesel sits at the expensive end, and the Kenya Revenue Authority's current schedule should be confirmed at the time of order.",
+      },
+      {
+        q: "Does the Audi Q9 come with a petrol engine in right-hand drive?",
+        a: "Not on the UK price list. Audi UK offers one engine, the 3.0-litre V6 TDI mild hybrid. Audi sells a petrol V6 Q9 and the V8 SQ9 in the United States, and the SQ9 is offered in selected markets including Canada, but none of those is listed in right-hand drive as of 28 October 2026.",
+      },
+    ],
+    sources: [
+      {
+        label: "Audi Q9: Audi's first large full-size SUV tops the lineup",
+        href: "https://www.audi.com/en/press-releases/audi-q9-audis-first-large-full-size-suv-tops-the-lineup-18158",
+        publisher: "AUDI AG",
+      },
+      {
+        label: "Build your Audi Q9 SUV — configurator",
+        href: "https://www.audi.co.uk/en/models/q9/q9/configurator/",
+        publisher: "Audi UK",
+      },
+      {
+        label: "New Audi Q9 arrives in Ireland",
+        href: "https://www.rev.ie/new-audi-q9-arrives-in-ireland/",
+        publisher: "Rev.ie",
+      },
+      {
+        label:
+          "Audi reveals Q9 V6 and SQ9 V8 flagship SUVs to fill gap left by A8 limousine",
+        href: "https://www.chasingcars.com.au/news/car-industry/audi-reveals-q9-v6-and-sq9-v8-flagship-suvs-to-fill-gap-left-by-a8-limousine/",
+        publisher: "Chasing Cars",
+      },
+      {
+        label:
+          "2027 Audi Q9: All-new flagship SUV revealed as Audi's largest model yet",
+        href: "https://www.carexpert.com.au/car-news/2027-audi-q9-all-new-flagship-suv-revealed-as-audis-largest-model-yet",
+        publisher: "CarExpert",
+      },
+      {
+        label: "Importing vehicles from Great Britain and Northern Ireland",
+        href: "https://www.revenue.ie/en/vrt/registration-of-imported-used-vehicles/index.aspx",
+        publisher: "Revenue (Ireland)",
+      },
+      {
+        label: "Vehicles",
+        href: "https://www.infrastructure.gov.au/infrastructure-transport-vehicles/vehicles",
+        publisher:
+          "Australian Government Department of Infrastructure, Transport, Regional Development, Communications, Sport and the Arts",
+      },
+    ],
+    relatedGuides: [
+      "importing-cars-from-the-uk-for-dealers",
+      "best-cars-to-import-from-the-uk",
+      "uk-car-export-documents-explained",
+    ],
+    linkedVehicleSlugs: ["audi-q9-2027"],
+  },
+  {
+    slug: "ireland-budget-2027-vrt-increase-bands-3-20",
+    cta: ARTICLE_CTAS.ireland,
+    title: "Budget 2027 raises VRT on every car over 80 g/km from 1 January",
+    h1: "Budget 2027 VRT Increase: What the Rise on Bands 3 to 20 Means for Your Import",
+    seoTitle: "Budget 2027 VRT Increase: Bands 3 to 20 From 1 January",
+    description:
+      "Budget 2027 raises Irish VRT on bands 3 to 20 from 1 January 2027 — about €100 per €10,000 of OMSP. Who pays, the registration-date rule and EV relief to 2028.",
+    excerpt:
+      "One point on most of the VRT table, from 1 January. The date that decides your rate is the day the car is registered, and on most cars the increase is not worth rushing an import for.",
+    category: "Policy & Tax",
+    dateline: "Dublin",
+    keywords: [
+      "budget 2027 vrt",
+      "vrt increase 2027",
+      "vrt rates 2027 ireland",
+      "budget 2027 motoring changes",
+      "how much will vrt go up in 2027",
+      "does the vrt increase apply to imported cars",
+      "ev vrt relief extended 2028",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 8,
+    heroImage: "/country/ireland.webp",
+    heroAlt:
+      "An Irish coastal road, illustrating Irish vehicle registration tax",
+    heroCaption:
+      "Illustrative image of Ireland. Not a photograph of any vehicle or registration process referred to in this article.",
+    toc: [
+      { id: "what-changed", label: "What did Budget 2027 change on VRT?" },
+      { id: "one-percent", label: "Does “1%” mean one percentage point?" },
+      { id: "cost", label: "How much more VRT will you pay?" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Should you rush an import to beat 1 January?" },
+      {
+        id: "who-benefits",
+        label: "Is this just news, or is someone selling you something?",
+      },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Is VRT going up in 2027?",
+        a: "Yes, for most cars. From 1 January 2027 the Category A VRT rates for bands 3 to 20, covering every car above 80 g/km of CO₂, rise by 1 per cent, according to the Department of Finance's note on the Finance (No. 2) Bill 2026. Bands 1 and 2, up to 80 g/km, are unchanged.",
+      },
+      {
+        q: "How much will VRT go up by in 2027?",
+        a: "On the reading used by published band tables, one percentage point, which is €100 more for every €10,000 of open market selling price, taking the top band from 41 to 42 per cent. The Department of Finance's wording is 'increased by 1%', and Revenue had not published its 2027 table when we checked on 28 October 2026.",
+      },
+      {
+        q: "Does the 2027 VRT increase apply to an imported car?",
+        a: "Yes, if the car is registered in Ireland on or after 1 January 2027 and emits more than 80 g/km. Revenue charges VRT when a vehicle is registered, and a vehicle must be registered within 30 days of entering the State, so the registration date decides the rate, not the date you bought or shipped the car.",
+      },
+      {
+        q: "Is the VRT relief on electric cars extended?",
+        a: "Yes. Budget 2027 extends the VRT relief for electric vehicles, which was due to end on 31 December 2026, to the end of 2028. Electric cars with an open market selling price up to €40,000 keep relief of up to €5,000, and those between €40,000 and €50,000 receive a reduced level of relief.",
+      },
+      {
+        q: "Should I register my imported car before 1 January 2027?",
+        a: "If it lands in time, yes, because a car registered on or before 31 December 2026 pays the current rate. But the saving is modest: up to €300 on a €30,000 car in band 8, and up to €700 on a €70,000 car in band 20. It is rarely worth paying for faster freight or choosing a worse car to beat the date.",
+      },
+    ],
+    sources: [
+      {
+        label: "Department of Finance publishes Finance (No.2) Bill 2026",
+        href: "https://www.gov.ie/en/department-of-finance/press-releases/department-of-finance-publishes-finance-bill-no2-2026/",
+        publisher: "Department of Finance (gov.ie)",
+      },
+      {
+        label: "Applying the tax — Category A VRT rates",
+        href: "https://www.revenue.ie/en/vrt/calculating-vrt/applying-tax.aspx",
+        publisher: "Revenue (Ireland)",
+      },
+      {
+        label: "Vehicle Registration Tax (VRT)",
+        href: "https://www.revenue.ie/en/vrt/vehicle-registration-tax/index.aspx",
+        publisher: "Revenue (Ireland)",
+      },
+      {
+        label:
+          "VRT change to push up prices for nine of the top 10 bestselling new cars",
+        href: "https://www.irishtimes.com/your-money/2026/10/06/vrt-change-to-push-up-prices-for-nine-of-the-top-10-bestselling-new-cars/",
+        publisher: "The Irish Times",
+      },
+      {
+        label: "Budget 2027 VRT changes",
+        href: "https://www.vrt.ie/faq/budget-2027-vrt-changes/",
+        publisher: "vrt.ie",
+      },
+    ],
+    relatedGuides: [
+      "vrt-explained-ireland",
+      "cost-of-importing-a-car-to-ireland",
+      "import-car-from-japan-or-uk-to-ireland",
+    ],
+  },
+  {
     slug: "uk-india-trade-deal-zero-duty-india-built-cars",
     cta: ARTICLE_CTAS.india,
     title: "India-built cars now enter the UK at 0% duty — if origin is proved",
@@ -1039,7 +1359,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     seoTitle:
       "Ireland EV Tax Changes 2026–2028: VRT Relief End Date & BIK Taper Explained",
     description:
-      "Ireland's €5,000 VRT relief for electric vehicles now runs to 31 December 2026, and the BIK original market value reduction tapers from €10,000 in 2026 to €5,000 in 2027 and €2,500 in 2028. The full timetable, what it costs, and why it changes when you should import.",
+      "Ireland's €5,000 VRT relief for electric vehicles now runs to 31 December 2028 after Budget 2027, and the BIK original market value reduction tapers from €10,000 in 2026 to €5,000 in 2027 and €2,500 in 2028. The full timetable, and why it changes when you should import.",
     excerpt:
       "The €5,000 VRT relief has a hard end date. The BIK relief halves, then halves again. If you are planning an EV import or a company car change, the calendar now matters more than the spec.",
     category: "Policy & Tax",
@@ -1054,7 +1374,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     ],
     author: AUTHOR,
     publishDate: "2026-08-10",
-    updatedDate: "2026-08-17",
+    updatedDate: "2026-10-28",
     readingTimeMins: 7,
     heroImage:
       "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
