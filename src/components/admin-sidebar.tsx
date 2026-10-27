@@ -102,7 +102,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton
                   asChild
                   isActive={pathname === item.url}
-                  className="rounded-xl h-11 px-4 hover:bg-black/5 data-[active=true]:bg-black data-[active=true]:text-white transition-all"
+                  className="rounded-xl h-11 px-4 hover:bg-black/5 data-[active=true]:bg-black data-[active=true]:text-white transition-feedback"
                 >
                   <Link href={item.url}>
                     <item.icon />
@@ -139,7 +139,7 @@ export function AdminSidebar() {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-bold text-zinc-600 hover:text-red-600 bg-white hover:bg-red-50 border border-black/5 rounded-xl transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-bold text-zinc-600 hover:text-red-600 bg-white hover:bg-red-50 border border-black/5 rounded-xl transition-feedback shadow-sm"
           >
             <LogOut size={14} />
             Sign Out

@@ -75,7 +75,7 @@ export default function SignUp() {
   };
 
   const glassInputClasses =
-    "bg-black/40 border-white/10 text-white placeholder:text-gray-600 focus-visible:ring-white/20 focus-visible:border-white/30 transition-all h-12";
+    "bg-black/40 border-white/10 text-white placeholder:text-gray-600 focus-visible:ring-white/20 focus-visible:border-white/30 transition-feedback h-12";
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden justify-center items-center py-12">
@@ -190,7 +190,7 @@ export default function SignUp() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 mt-4 text-md font-bold bg-white text-black hover:bg-gray-200 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all rounded-full flex items-center justify-center gap-2"
+                className="w-full h-12 mt-4 text-md font-bold bg-white text-black hover:bg-gray-200 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-feedback rounded-full flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
