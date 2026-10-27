@@ -31,7 +31,7 @@ appointment, the document that gets refused at the port. We are the publisher,
 not the topic. The page earns its closing call to action by being genuinely
 useful first, and it is useful whether or not the reader ever buys from us.
 
-Live informational surfaces: **`/blog` (66 posts)** and **`/latest-news` (40
+Live informational surfaces: **`/blog` (102 posts)** and **`/latest-news` (40
 articles)**, plus the news category archives and the RSS / Google News feeds.
 
 ### 1.2 A landing page
@@ -356,7 +356,7 @@ unclassified page is the state this document exists to prevent.
 
 | Surface | Count | Type | Notes |
 |---|---|---|---|
-| `/blog/[slug]` | 66 | Informational | `src/config/blog.ts` (15), `src/config/blog-countries.ts` (41), `src/config/blog-japan-uk.ts` (10, added 2026-10-07). Counts recounted from the registries on 2026-10-07 |
+| `/blog/[slug]` | 102 | Informational | `src/config/blog.ts` (18), `src/config/blog-countries.ts` (40), `src/config/blog-japan-uk.ts` (11, added 2026-10-07), `src/config/blog-dealer-sourcing.ts` (33, added 2026-10-27: the dealer-sourcing cluster, written for the dealer reader, every post ending on `/b2b-inquiry`; the India dealer guide moved into it from `blog-countries.ts` with its slug unchanged). Counts recounted from the registries on 2026-10-27 |
 | `/latest-news/[slug]` | 40 | Informational | `src/config/news.ts`; also the category archives, RSS and news sitemap. Recounted 2026-10-07 |
 | `/import-cars-from/[country]` | 7 | Landing | Agreed section list in `CLAUDE.md`; enforced by `src/config/__tests__/countries.test.ts` |
 | `/import-cars-from` | 1 | Landing | Hub |
