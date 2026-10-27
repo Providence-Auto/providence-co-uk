@@ -75,8 +75,7 @@ const japanPosts: BlogPost[] = [
     slug: "how-to-buy-a-car-at-japanese-auction",
     title: "How to Import a Car From a Japanese Auction",
     h1: "How to Import a Car From a Japanese Auction Without Being in the Room",
-    seoTitle:
-      "How to Import a Car From a Japanese Auction (Step by Step)",
+    seoTitle: "How to Import a Car From a Japanese Auction (Step by Step)",
     description:
       "How the Japanese used-car auction system actually works, who is allowed to bid, what a proxy bid costs you, and the seven steps between choosing a car and having it loaded on a vessel.",
     excerpt:
@@ -427,7 +426,10 @@ const ukPosts: BlogPost[] = [
       "uk-car-export-documents-explained",
     ],
     toc: [
-      { id: "two-reasons", label: "Two different reasons to import from Britain" },
+      {
+        id: "two-reasons",
+        label: "Two different reasons to import from Britain",
+      },
       { id: "uk-built", label: "The Japanese cars built in Britain" },
       { id: "hybrids", label: "Toyota and Lexus hybrids" },
       { id: "enthusiast", label: "Enthusiast cars and 4x4s" },
@@ -983,58 +985,8 @@ const indiaPosts: BlogPost[] = [
       },
     ],
   }),
-  post({
-    slug: "importing-cars-from-india-for-dealers",
-    title: "Importing Cars From India: A Dealer's Guide",
-    h1: "Importing Cars From India: What Dealers Need to Know",
-    seoTitle: "Importing Cars From India for Dealers: Margins, Volume and Risk",
-    description:
-      "A dealer-focused guide to Indian vehicle sourcing — where the margin actually sits, how multi-unit allocations work, managing specification consistency across a batch, and the risks worth pricing in.",
-    excerpt:
-      "For a dealership, India is a margin play with a consistency problem attached. Here is how to run it properly.",
-    cluster: "India",
-    primaryKeyword: "importing cars from india for dealers",
-    keywords: [
-      "importing cars from india for dealers",
-      "bulk car import from india",
-      "dealer vehicle sourcing india",
-      "multi unit car import",
-      "india car import margin",
-    ],
-    readingTimeMins: 11,
-    heroImage: "/source-cars/blog/importing-cars-from-india-for-dealers.webp",
-    ogImage: "/source-cars/blog/og/importing-cars-from-india-for-dealers.jpg",
-    heroAlt: "A Hyundai Venue",
-    related: [
-      "best-cars-to-import-from-india",
-      "cost-to-import-a-car-from-india",
-      "how-to-import-a-car-from-india",
-      "india-car-export-documents-explained",
-    ],
-    toc: [
-      { id: "where-margin-sits", label: "Where the margin actually sits" },
-      { id: "allocations", label: "How multi-unit allocations work" },
-      { id: "consistency", label: "The consistency problem" },
-      { id: "cashflow", label: "Cashflow and lead time" },
-      { id: "aftersales", label: "Warranty and aftersales" },
-      { id: "risks", label: "The risks worth pricing in" },
-      { id: "faqs", label: "FAQs" },
-    ],
-    faqs: [
-      {
-        q: "What is the minimum order for a multi-unit import from India?",
-        a: "There is no fixed floor — we ship single cars and we ship regular allocations. What changes with volume is the economics: shared container loading, consolidated documentation and a single clearance event spread fixed costs across more units, so the per-car landed figure improves noticeably once you are shipping several at a time.",
-      },
-      {
-        q: "How do I keep specification consistent across a batch?",
-        a: "By specifying at the order stage and verifying at the inspection stage, in writing, per unit. The failure mode on volume orders is silent substitution — a different trim or a different colour arriving because it was available. Every unit in an allocation is documented against the agreed specification before loading, and any variance is raised before the vehicle sails, not after.",
-      },
-      {
-        q: "What warranty can I offer on an India-built import?",
-        a: "That depends on the model and your market, and it needs establishing before you commit rather than after a customer asks. Manufacturer warranty transferability across borders varies considerably, so many dealers back these units with their own workshop cover instead. We confirm in writing what factory cover, if any, applies to your specific units as part of the quote.",
-      },
-    ],
-  }),
+  // importing-cars-from-india-for-dealers moved to the dealer-sourcing cluster
+  // (src/config/blog-dealer-sourcing.ts) on 2026-10-27; its slug is unchanged.
   post({
     slug: "cost-to-import-a-car-from-india",
     title: "What It Costs to Import a Car From India",
