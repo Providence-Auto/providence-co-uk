@@ -154,7 +154,7 @@ export default function DealerCarCard({
           <ChevronDown
             size={18}
             aria-hidden
-            className={`shrink-0 text-zinc-400 transition-transform ${open ? "rotate-180" : ""}`}
+            className={`shrink-0 text-zinc-400 transition-transform duration-(--pa-spring-smooth-duration) ease-(--pa-spring-smooth) ${open ? "rotate-180" : ""}`}
           />
         </button>
         {canRemove && (

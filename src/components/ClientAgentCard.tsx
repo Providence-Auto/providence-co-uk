@@ -64,7 +64,7 @@ export default function ClientAgentCard({
             <a
               href={`mailto:${agentEmail}`}
               onClick={handleContactClick}
-              className="inline-flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-xl text-sm font-bold shadow-xl shadow-black/10 hover:scale-[1.02] transition-transform"
+              className="inline-flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-xl text-sm font-bold shadow-xl shadow-black/10 hover:scale-[1.02] transition-feedback"
             >
               <MessageCircle size={18} /> Email Me
             </a>

@@ -172,7 +172,7 @@ export function DestinationEditor({
                           : // Internal, and it stays internal: business-context.md §14.
                             "Ranks and links normally, but never takes one of the five button slots"
                       }
-                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-feedback ${
                         isOn
                           ? "border-black bg-black text-white shadow-sm"
                           : "border-transparent bg-zinc-50 text-zinc-500 hover:border-black/20"

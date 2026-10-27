@@ -419,7 +419,7 @@ function ColorPaletteEditor({
                   value={color.name}
                   onChange={(e) => onChange(index, { name: e.target.value })}
                   placeholder={namePlaceholder}
-                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                 />
                 <input
                   type="color"
@@ -457,7 +457,7 @@ function ColorPaletteEditor({
                   }`}
                 >
                   <span
-                    className={`block h-3 w-3 rounded-full bg-white transition-transform ${
+                    className={`block h-3 w-3 rounded-full bg-white transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${
                       color.isDualTone ? "translate-x-3" : "translate-x-0"
                     }`}
                   />
@@ -473,7 +473,7 @@ function ColorPaletteEditor({
                       onChange(index, { secondaryName: e.target.value })
                     }
                     placeholder={secondaryPlaceholder}
-                    className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                    className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                   />
                   <input
                     type="color"
@@ -499,7 +499,7 @@ function ColorPaletteEditor({
                       type="button"
                       onClick={() => onChange(index, { imageIndex: undefined })}
                       aria-pressed={color.imageIndex === undefined}
-                      className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-all ${
+                      className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-feedback ${
                         color.imageIndex === undefined
                           ? "border-black bg-black text-white"
                           : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400"
@@ -515,7 +515,7 @@ function ColorPaletteEditor({
                         onClick={() => onChange(index, { imageIndex: imgIdx })}
                         aria-pressed={color.imageIndex === imgIdx}
                         title={`Link photo ${imgIdx + 1}`}
-                        className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all ${
+                        className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-feedback ${
                           color.imageIndex === imgIdx
                             ? "border-sky-500 ring-2 ring-sky-200"
                             : "border-zinc-200 hover:border-zinc-400"
@@ -1179,7 +1179,7 @@ function SpecBuilderContent() {
                 placeholder="Internal notes regarding this specific vehicle blueprint..."
                 value={specData.notes}
                 onChange={(e) => handleInputChange("notes", e.target.value)}
-                className="min-h-[150px] rounded-[2rem] bg-zinc-50 border-transparent p-6 focus:bg-white transition-all"
+                className="min-h-[150px] rounded-[2rem] bg-zinc-50 border-transparent p-6 focus:bg-white transition-feedback"
               />
             </div>
 
@@ -1240,7 +1240,7 @@ function SpecBuilderContent() {
                   }`}
                 >
                   <span
-                    className={`block h-4 w-4 rounded-full bg-white transition-transform ${
+                    className={`block h-4 w-4 rounded-full bg-white transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${
                       specData.isUpcoming ? "translate-x-4" : "translate-x-0"
                     }`}
                   />
@@ -1272,7 +1272,7 @@ function SpecBuilderContent() {
                           e.target.value,
                         )
                       }
-                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                     />
                     <p className="text-[10px] text-zinc-400 pl-1 font-medium">
                       Shown verbatim on the car page. Leave blank if the date
@@ -1297,7 +1297,7 @@ function SpecBuilderContent() {
                             .replace(/[^a-z0-9-_]/g, ""),
                         )
                       }
-                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all font-mono text-xs"
+                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-xs"
                     />
                     {specData.newsSlug ? (
                       <a
@@ -1337,7 +1337,7 @@ function SpecBuilderContent() {
                       .replace(/[^a-z0-9-_]/g, "");
                     handleInputChange("slug", processedSlug);
                   }}
-                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all font-mono text-sm text-zinc-800"
+                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-sm text-zinc-800"
                 />
                 <p className="text-[10px] text-zinc-400 pl-1 font-medium">
                   Used for building clean routing addresses. Spaces
@@ -1455,7 +1455,7 @@ function SpecBuilderContent() {
                 ))}
 
                 {/* Upload Trigger */}
-                <label className="flex flex-col items-center justify-center aspect-video rounded-2xl border-2 border-dashed border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all cursor-pointer">
+                <label className="flex flex-col items-center justify-center aspect-video rounded-2xl border-2 border-dashed border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-feedback cursor-pointer">
                   <div className="flex flex-col items-center gap-2 text-zinc-500">
                     <Save size={24} />
                     <span className="text-xs font-bold uppercase tracking-wider">
@@ -1505,7 +1505,7 @@ function SpecBuilderContent() {
                   list="make-list"
                   value={specData.make}
                   onChange={(e) => handleInputChange("make", e.target.value)}
-                  className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all"
+                  className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                   placeholder="Select or type a brand"
                 />
                 <datalist id="make-list">
@@ -1572,7 +1572,7 @@ function SpecBuilderContent() {
                             mileage: opt.value === "New" ? "" : prev.mileage,
                           }));
                         }}
-                        className={`flex-1 h-12 rounded-xl font-bold border transition-all ${active ? "bg-black text-white border-black shadow-md" : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"}`}
+                        className={`flex-1 h-12 rounded-xl font-bold border transition-feedback ${active ? "bg-black text-white border-black shadow-md" : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"}`}
                       >
                         {opt.label}
                       </button>
@@ -1643,7 +1643,7 @@ function SpecBuilderContent() {
                     onChange={(e) =>
                       handleInputChange(item.id as any, e.target.value)
                     }
-                    className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all"
+                    className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                     placeholder={item.placeholder}
                   />
                 </div>
@@ -1655,7 +1655,7 @@ function SpecBuilderContent() {
                   value={specData.fuelSystem}
                   onValueChange={(v) => handleInputChange("fuelSystem", v)}
                 >
-                  <SelectTrigger className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all">
+                  <SelectTrigger className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback">
                     <SelectValue placeholder="Select Fuel Type" />
                   </SelectTrigger>
                   <SelectContent>

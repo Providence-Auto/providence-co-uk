@@ -288,9 +288,20 @@ export default function RootLayout({
     io.observe(el);
     pending.push(el);
   }
+  // Ambient CSS loops (rule book §5.6): anything marked data-pa-loop pauses
+  // while it is off screen. Absent an observer it simply keeps running.
+  var lio = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    for(var i=0;i<es.length;i++){
+      if(es[i].isIntersecting) es[i].target.removeAttribute('data-pa-offscreen');
+      else es[i].target.setAttribute('data-pa-offscreen','');
+    }
+  }, {rootMargin:'100px 0px'}) : null;
+  function loop(el){ if(lio && !el.__pal){ el.__pal = 1; lio.observe(el); } }
   function scan(root){
     var els=(root||document).querySelectorAll('.pa-reveal:not(.pa-revealed)');
     for(var i=0;i<els.length;i++) add(els[i]);
+    var ls=(root||document).querySelectorAll('[data-pa-loop]');
+    for(i=0;i<ls.length;i++) loop(ls[i]);
     sweep();
   }
   if(window.MutationObserver){
@@ -301,6 +312,7 @@ export default function RootLayout({
           var n=nodes[j];
           if(n.nodeType===1){
             if(n.classList && n.classList.contains('pa-reveal')) add(n);
+            if(n.hasAttribute && n.hasAttribute('data-pa-loop')) loop(n);
             if(n.querySelectorAll) scan(n);
           }
         }

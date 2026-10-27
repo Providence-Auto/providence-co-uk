@@ -44,12 +44,12 @@ export default function BlogCTA({
         <div className="flex flex-col sm:flex-row gap-3">
           <a
             href={href}
-            className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-black transition-transform hover:scale-105"
+            className="group inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-black transition-feedback hover:scale-[1.03]"
           >
             {label}
             <ArrowRight
               size={16}
-              className="group-hover:translate-x-1 transition-transform"
+              className="group-hover:translate-x-1 transition-feedback"
             />
           </a>
           {showCalculator && (

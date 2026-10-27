@@ -46,6 +46,7 @@ import {
   currencyOptions,
   getCurrency,
 } from "@/lib/currencies";
+import { springTransition } from "@/lib/fluid";
 import { currentAttribution } from "@/lib/lead-attribution";
 import { currentRepCode } from "@/lib/rep-link";
 import { formatVehicleTitle, steeringLabel } from "@/lib/vehicle";
@@ -214,7 +215,7 @@ const SelectDropdown = ({
             <ChevronDown
               size={18}
               onClick={() => !disabled && setIsOpen(!isOpen)}
-              className={`transition-transform duration-300 cursor-pointer ${isOpen ? "rotate-180 text-sky-500" : "text-zinc-400"}`}
+              className={`transition-transform duration-(--pa-spring-smooth-duration) ease-(--pa-spring-smooth) cursor-pointer ${isOpen ? "rotate-180 text-sky-500" : "text-zinc-400"}`}
             />
           )}
         </div>
@@ -226,7 +227,7 @@ const SelectDropdown = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
+            transition={springTransition()}
             className="absolute z-50 top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-black/5 max-h-64 overflow-y-auto py-2"
           >
             {filteredOptions.length === 0 ? (
@@ -324,7 +325,7 @@ function ChipChoiceField({
                 // Clicking the active chip clears it — the field is optional.
                 onChange(isSelected ? "" : option);
               }}
-              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium border transition-all ${
+              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium border transition-feedback ${
                 isSelected
                   ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md"
                   : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"
@@ -345,7 +346,7 @@ function ChipChoiceField({
             if (!next) onChange("");
             else if (!isCustom) onChange("");
           }}
-          className={`px-4 py-2.5 rounded-full text-sm font-medium border transition-all ${
+          className={`px-4 py-2.5 rounded-full text-sm font-medium border transition-feedback ${
             showCustom
               ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md"
               : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"
@@ -469,10 +470,10 @@ function ColorChoiceField({
                 // Clicking the active swatch clears it — the field is optional.
                 onChange(isSelected ? "" : optionLabel);
               }}
-              className={`relative h-11 w-11 shrink-0 rounded-full transition-all focus:outline-none ${
+              className={`relative h-11 w-11 shrink-0 rounded-full transition-feedback focus:outline-none ${
                 isSelected
                   ? "ring-2 ring-sky-500 ring-offset-2 ring-offset-white"
-                  : "ring-1 ring-black/15 hover:ring-black/40 hover:scale-[1.08] focus-visible:ring-2 focus-visible:ring-sky-400"
+                  : "ring-1 ring-black/15 hover:ring-black/40 hover:scale-[1.03] focus-visible:ring-2 focus-visible:ring-sky-400 transition-feedback"
               }`}
               style={swatchStyle(color)}
             >
@@ -509,7 +510,7 @@ function ColorChoiceField({
             // while the swatch's label is still what gets submitted.
             onChange("");
           }}
-          className={`flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-dashed px-4 text-sm font-medium transition-all ${
+          className={`flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-dashed px-4 text-sm font-medium transition-feedback ${
             showCustom
               ? "border-sky-500 bg-sky-50 text-sky-600"
               : "border-black/25 bg-white text-zinc-500 hover:border-black/50 hover:text-black"
@@ -640,6 +641,10 @@ export default function RequestForm({
   const pathname = usePathname();
 
   const [step, setStep] = useState(1);
+  // Which way the last step change went: Next slides the new step in from the
+  // right, Back from the left (rule book principle 7). 0 on first render, so
+  // the form never moves on page load.
+  const [stepDirection, setStepDirection] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
 
@@ -1054,10 +1059,12 @@ export default function RequestForm({
       }
     }
 
+    setStepDirection(1);
     setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
   };
 
   const handlePrev = () => {
+    setStepDirection(-1);
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
@@ -1168,10 +1175,12 @@ export default function RequestForm({
     >
       {/* Progress Bar */}
       <div className="w-full h-1.5 bg-[#4da8da]/10 absolute top-0 left-0 overflow-hidden rounded-t-[2.5rem]">
+        {/* Scaled, not resized: only transform animates per frame (§8). */}
         <motion.div
-          className="h-full bg-[#4da8da]"
-          animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
-          transition={{ duration: 0.5 }}
+          className="h-full w-full origin-left bg-[#4da8da]"
+          initial={false}
+          animate={{ scaleX: step / TOTAL_STEPS }}
+          transition={springTransition()}
         />
       </div>
 
@@ -1180,6 +1189,7 @@ export default function RequestForm({
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
+          transition={springTransition()}
           className="p-10 md:p-16 text-center flex flex-col items-center justify-center min-h-[500px]"
         >
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#4da8da] mb-10 tracking-tight">
@@ -1300,709 +1310,710 @@ export default function RequestForm({
             </span>
           </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              className="flex-1"
-            >
-              {step === 1 && (
-                <>
-                  <div className="flex flex-col gap-10 sm:gap-14">
-                    <SelectDropdown
-                      id="make"
-                      placeholder="Select Make"
-                      options={CAR_MAKES.map((m) => ({ label: m, value: m }))}
-                      value={formData.make}
-                      onChange={handleDropdownChange}
-                      error={errors.make}
-                    />
+          {/* The step body moves on transform only — never opacity — so a paused
+              frame loop (a backgrounded tab) still shows the whole step, and
+              nothing waits on the old step leaving: it is replaced at once and
+              the new one slides the last 24px in on the smooth spring
+              (rule book §5.4). */}
+          <motion.div
+            key={step}
+            initial={{ x: stepDirection * 24 }}
+            animate={{ x: 0 }}
+            transition={springTransition()}
+            className="flex-1"
+          >
+            {step === 1 && (
+              <>
+                <div className="flex flex-col gap-10 sm:gap-14">
+                  <SelectDropdown
+                    id="make"
+                    placeholder="Select Make"
+                    options={CAR_MAKES.map((m) => ({ label: m, value: m }))}
+                    value={formData.make}
+                    onChange={handleDropdownChange}
+                    error={errors.make}
+                  />
 
-                    {/* CONDITIONAL RENDER BASED ON API STATUS */}
-                    {apiFailed ? (
-                      <div className="space-y-2">
-                        <input
-                          id="vehicle_model"
-                          value={formData.vehicle_model}
-                          onChange={handleInputChange}
-                          placeholder="Type Vehicle Model (e.g. Aqua, Prius, 911)"
-                          className={inputClasses("vehicle_model")}
-                        />
-                        <div className="flex items-center justify-between">
-                          {errors.vehicle_model ? (
-                            <p className="text-[10px] font-bold text-red-500 flex items-center gap-1">
-                              <AlertCircle size={10} /> {errors.vehicle_model}
-                            </p>
-                          ) : (
-                            <span />
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setApiFailed(false);
-                              setFormData((prev) => ({
-                                ...prev,
-                                vehicle_model: "",
-                              }));
-                            }}
-                            className="text-[10px] text-zinc-400 hover:text-sky-500 transition-colors"
-                          >
-                            Use dropdown instead
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <SelectDropdown
-                          id="vehicle_model"
-                          placeholder="Select Model"
-                          options={availableModels.map((m) => ({
-                            label: m,
-                            value: m,
-                          }))}
-                          value={formData.vehicle_model}
-                          onChange={handleDropdownChange}
-                          disabled={!formData.make}
-                          isLoading={isLoadingModels}
-                          error={errors.vehicle_model}
-                        />
-                        {formData.make && !isLoadingModels && (
-                          <div className="flex justify-end">
-                            <button
-                              type="button"
-                              onClick={() => setApiFailed(true)}
-                              className="text-[10px] text-zinc-400 hover:text-sky-500 transition-colors"
-                            >
-                              Type manually
-                            </button>
-                          </div>
+                  {/* CONDITIONAL RENDER BASED ON API STATUS */}
+                  {apiFailed ? (
+                    <div className="space-y-2">
+                      <input
+                        id="vehicle_model"
+                        value={formData.vehicle_model}
+                        onChange={handleInputChange}
+                        placeholder="Type Vehicle Model (e.g. Aqua, Prius, 911)"
+                        className={inputClasses("vehicle_model")}
+                      />
+                      <div className="flex items-center justify-between">
+                        {errors.vehicle_model ? (
+                          <p className="text-[10px] font-bold text-red-500 flex items-center gap-1">
+                            <AlertCircle size={10} /> {errors.vehicle_model}
+                          </p>
+                        ) : (
+                          <span />
                         )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Condition */}
-                  <div className="mt-12">
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
-                      Condition
-                    </label>
-                    <div className="flex gap-4">
-                      {VEHICLE_CONDITIONS.map((cond) => (
                         <button
-                          key={cond}
                           type="button"
-                          aria-pressed={formData.condition === cond}
                           onClick={() => {
+                            setApiFailed(false);
                             setFormData((prev) => ({
                               ...prev,
-                              condition: cond,
+                              vehicle_model: "",
                             }));
-                            if (errors.condition)
-                              setErrors((prev) => ({ ...prev, condition: "" }));
                           }}
-                          className={`flex-1 py-4 rounded-2xl font-bold border transition-all ${formData.condition === cond ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : `bg-transparent text-zinc-400 hover:border-[#4da8da]/30 ${errors.condition ? "border-red-300" : "border-black/10"}`}`}
+                          className="text-[10px] text-zinc-400 hover:text-sky-500 transition-colors"
                         >
-                          {cond === "New" ? "Brand New" : "Pre-Owned"}
+                          Use dropdown instead
                         </button>
-                      ))}
+                      </div>
                     </div>
-
-                    {errors.condition && (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-3">
-                        <AlertCircle size={10} /> {errors.condition}
-                      </p>
-                    )}
-
-                    <AnimatePresence>
-                      {formData.condition === "Used" && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="overflow-hidden mt-8 space-y-8"
-                        >
-                          {/* Model year — quick presets */}
-                          <div>
-                            <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
-                              Model Year
-                            </label>
-                            <div className="flex flex-wrap gap-2">
-                              {YEAR_PRESETS.map((p) => {
-                                const active = formData.yearRange === p.label;
-                                return (
-                                  <button
-                                    key={p.label}
-                                    type="button"
-                                    onClick={() =>
-                                      setFormData((prev) => ({
-                                        ...prev,
-                                        yearRange: p.label,
-                                      }))
-                                    }
-                                    className={`px-4 py-2.5 rounded-full text-sm font-medium border transition-all ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
-                                  >
-                                    {p.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          {/* Mileage — draggable min/max range */}
-                          <div>
-                            <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-5">
-                              Mileage Range
-                            </label>
-                            <div className="px-2.5">
-                              <DualRangeSlider
-                                min={MILEAGE_MIN}
-                                max={MILEAGE_MAX}
-                                step={MILEAGE_STEP}
-                                valueMin={formData.mileageMin}
-                                valueMax={formData.mileageMax}
-                                onChange={(lo, hi) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    mileageMin: lo,
-                                    mileageMax: hi,
-                                  }))
-                                }
-                              />
-                            </div>
-                            <div className="flex justify-between mt-4 text-sm">
-                              <span className="text-zinc-500">
-                                Minimum{" "}
-                                <strong className="text-black font-bold">
-                                  {formatMileage(formData.mileageMin)} mi
-                                </strong>
-                              </span>
-                              <span className="text-zinc-500">
-                                Maximum{" "}
-                                <strong className="text-black font-bold">
-                                  {formatMileage(formData.mileageMax)} mi
-                                </strong>
-                              </span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {formData.condition === "New" && (
-                      <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="text-zinc-500 italic text-center py-4 text-sm"
-                      >
-                        New vehicles will be exported with 2025/2026 factory
-                        specifications.
-                      </motion.p>
-                    )}
-                  </div>
-
-                  {/* Grade and steering. Both are autofilled from the car
-                      page's selectors, and both stay editable here — a
-                      customer who came in on one grade and changed their mind
-                      shouldn't have to scroll back up to say so. */}
-                  {(gradeOptions.length > 0 || steeringOptions.length > 0) && (
-                    <div className="mt-10 space-y-8">
-                      {gradeOptions.length > 0 && (
-                        <ChipChoiceField
-                          label="Grade"
-                          options={gradeOptions}
-                          value={formData.grade}
-                          onChange={(v) =>
-                            setFormData((prev) => ({ ...prev, grade: v }))
-                          }
-                        />
-                      )}
-                      {steeringOptions.length > 0 && (
-                        <ChipChoiceField
-                          label="Steering"
-                          options={steeringOptions}
-                          optionLabel={steeringLabel}
-                          value={formData.steering}
-                          onChange={(v) =>
-                            setFormData((prev) => ({ ...prev, steering: v }))
-                          }
-                        />
+                  ) : (
+                    <div className="space-y-2">
+                      <SelectDropdown
+                        id="vehicle_model"
+                        placeholder="Select Model"
+                        options={availableModels.map((m) => ({
+                          label: m,
+                          value: m,
+                        }))}
+                        value={formData.vehicle_model}
+                        onChange={handleDropdownChange}
+                        disabled={!formData.make}
+                        isLoading={isLoadingModels}
+                        error={errors.vehicle_model}
+                      />
+                      {formData.make && !isLoadingModels && (
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => setApiFailed(true)}
+                            className="text-[10px] text-zinc-400 hover:text-sky-500 transition-colors"
+                          >
+                            Type manually
+                          </button>
+                        </div>
                       )}
                     </div>
                   )}
+                </div>
 
-                  {/* Colours */}
-                  <div className="mt-10 space-y-8">
-                    <ColorChoiceField
-                      label="Exterior colour"
-                      options={exteriorColorOptions}
-                      value={formData.exteriorColor}
-                      onChange={(v) =>
-                        setFormData((prev) => ({ ...prev, exteriorColor: v }))
-                      }
-                      placeholder="e.g. Sonic Grey Pearl, or Black with a white roof"
-                    />
-                    <ColorChoiceField
-                      label="Interior colour"
-                      options={interiorColorOptions}
-                      value={formData.interiorColor}
-                      onChange={(v) =>
-                        setFormData((prev) => ({ ...prev, interiorColor: v }))
-                      }
-                      placeholder="e.g. Black leather with tan inserts"
-                    />
-                  </div>
-
-                  {/* Specs */}
-                  <div className="relative mt-10">
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-2">
-                      Specification requests (optional)
-                    </label>
-                    <textarea
-                      id="specs"
-                      value={formData.specs}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Carbon Fiber Pack, Magma Red Interior, Night Package..."
-                      className={`${inputClasses("specs")} min-h-[100px] resize-none`}
-                    />
-                  </div>
-                </>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="relative">
-                      <input
-                        id="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Full Name"
-                        className={inputClasses("name")}
-                      />
-                      {errors.name && (
-                        <p className="absolute -bottom-5 left-0 text-[10px] font-bold text-red-500 flex items-center gap-1">
-                          <AlertCircle size={10} /> {errors.name}
-                        </p>
-                      )}
-                    </div>
-                    <div className="relative">
-                      <input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="Email"
-                        className={inputClasses("email")}
-                      />
-                      {errors.email && (
-                        <p className="absolute -bottom-5 left-0 text-[10px] font-bold text-red-500 flex items-center gap-1">
-                          <AlertCircle size={10} /> {errors.email}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Country of Import — before phone so selection auto-fills the country code */}
-                  <div className="relative">
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1">
-                      Where are you importing to?
-                    </label>
-                    <SelectDropdown
-                      id="countryOfImport"
-                      placeholder="Destination Country..."
-                      options={COUNTRIES.map((c) => ({
-                        label: c.n,
-                        value: c.n,
-                      }))}
-                      value={formData.countryOfImport}
-                      onChange={handleDropdownChange}
-                      error={errors.countryOfImport}
-                    />
-                  </div>
-
-                  {/* Budget — amount and currency, the currency defaulted from
-                      the destination chosen above. Required: a lead without a
-                      figure can't be matched to stock. */}
-                  <div className="space-y-1">
-                    <label
-                      htmlFor="budgetAmount"
-                      className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block"
-                    >
-                      What's your budget?{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <div className="grid grid-cols-[1fr_130px] sm:grid-cols-[1fr_230px] gap-3 items-start">
-                      <div className="flex items-center gap-2 border-b border-black/10 focus-within:border-sky-500 transition-colors">
-                        {budgetSymbol && (
-                          <span className="text-lg text-zinc-400 shrink-0">
-                            {budgetSymbol}
-                          </span>
-                        )}
-                        <input
-                          id="budgetAmount"
-                          type="text"
-                          inputMode="numeric"
-                          autoComplete="off"
-                          value={budgetDisplay}
-                          onChange={handleBudgetAmountChange}
-                          placeholder="e.g. 45,000"
-                          aria-describedby="budget-note"
-                          className="w-full font-sans bg-transparent border-0 text-black placeholder:text-zinc-400 focus:outline-none rounded-none px-0 py-3 text-lg"
-                        />
-                      </div>
-                      <SelectDropdown
-                        id="budgetCurrency"
-                        placeholder="Currency..."
-                        options={budgetCurrencyChoices}
-                        value={formData.budgetCurrency}
-                        onChange={handleDropdownChange}
-                      />
-                    </div>
-                    {errors.budgetAmount || errors.budgetCurrency ? (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pt-0.5">
-                        <AlertCircle size={10} />{" "}
-                        {errors.budgetAmount || errors.budgetCurrency}
-                      </p>
-                    ) : null}
-                    <p
-                      id="budget-note"
-                      className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2 flex items-start gap-2"
-                    >
-                      <AlertCircle
-                        size={12}
-                        className="shrink-0 mt-0.5 text-amber-600"
-                      />
-                      <span>
-                        Give us the most you're ready to spend on the car. If it
-                        sits well below the market range for the{" "}
-                        <strong>{budgetVehicleLabel}</strong>, your inquiry may
-                        be disqualified — it can't be found under the range.
-                      </span>
-                    </p>
-                  </div>
-
-                  {/* Sync notification */}
-                  <AnimatePresence>
-                    {countryCodeUpdated && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="text-xs text-sky-500 font-medium -mt-4 pl-1"
+                {/* Condition */}
+                <div className="mt-12">
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
+                    Condition
+                  </label>
+                  <div className="flex gap-4">
+                    {VEHICLE_CONDITIONS.map((cond) => (
+                      <button
+                        key={cond}
+                        type="button"
+                        aria-pressed={formData.condition === cond}
+                        onClick={() => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            condition: cond,
+                          }));
+                          if (errors.condition)
+                            setErrors((prev) => ({ ...prev, condition: "" }));
+                        }}
+                        className={`flex-1 py-4 rounded-2xl font-bold border transition-feedback ${formData.condition === cond ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : `bg-transparent text-zinc-400 hover:border-[#4da8da]/30 ${errors.condition ? "border-red-300" : "border-black/10"}`}`}
                       >
-                        Country code updated to {updatedCountryCodeLabel} based
-                        on your import destination.
-                      </motion.p>
+                        {cond === "New" ? "Brand New" : "Pre-Owned"}
+                      </button>
+                    ))}
+                  </div>
+
+                  {errors.condition && (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-3">
+                      <AlertCircle size={10} /> {errors.condition}
+                    </p>
+                  )}
+
+                  <AnimatePresence>
+                    {formData.condition === "Used" && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={springTransition()}
+                        className="overflow-hidden mt-8 space-y-8"
+                      >
+                        {/* Model year — quick presets */}
+                        <div>
+                          <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
+                            Model Year
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {YEAR_PRESETS.map((p) => {
+                              const active = formData.yearRange === p.label;
+                              return (
+                                <button
+                                  key={p.label}
+                                  type="button"
+                                  onClick={() =>
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      yearRange: p.label,
+                                    }))
+                                  }
+                                  className={`px-4 py-2.5 rounded-full text-sm font-medium border transition-feedback ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
+                                >
+                                  {p.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Mileage — draggable min/max range */}
+                        <div>
+                          <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-5">
+                            Mileage Range
+                          </label>
+                          <div className="px-2.5">
+                            <DualRangeSlider
+                              min={MILEAGE_MIN}
+                              max={MILEAGE_MAX}
+                              step={MILEAGE_STEP}
+                              valueMin={formData.mileageMin}
+                              valueMax={formData.mileageMax}
+                              onChange={(lo, hi) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  mileageMin: lo,
+                                  mileageMax: hi,
+                                }))
+                              }
+                            />
+                          </div>
+                          <div className="flex justify-between mt-4 text-sm">
+                            <span className="text-zinc-500">
+                              Minimum{" "}
+                              <strong className="text-black font-bold">
+                                {formatMileage(formData.mileageMin)} mi
+                              </strong>
+                            </span>
+                            <span className="text-zinc-500">
+                              Maximum{" "}
+                              <strong className="text-black font-bold">
+                                {formatMileage(formData.mileageMax)} mi
+                              </strong>
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
                     )}
                   </AnimatePresence>
 
-                  {/* Phone: country code selector | local number — two separate columns */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block">
-                      WhatsApp / Phone Number
-                    </label>
-                    <div className="grid grid-cols-[120px_1fr] sm:grid-cols-[150px_1fr] gap-3 items-start">
-                      <SelectDropdown
-                        id="countryCode"
-                        placeholder="+1"
-                        options={COUNTRIES.map((c) => ({
-                          label: `${c.c}  ${c.n}`,
-                          value: c.c,
-                        }))}
-                        value={formData.countryCode}
-                        onChange={handleDropdownChange}
-                      />
-                      <input
-                        id="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="Local number (e.g. 085 123 4567)"
-                        className={inputClasses("phone")}
-                      />
-                    </div>
-                    {/* Error / hint always in normal flow — no overlay */}
-                    {errors.phone ? (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pt-0.5">
-                        <AlertCircle size={10} /> {errors.phone}
-                      </p>
-                    ) : (
-                      <p className="text-[10px] text-zinc-400 pt-0.5">
-                        Enter local number only — country code is selected above
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
-                      When are you planning to import?{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {IMPORT_TIMELINES.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              importTimeline: option,
-                            }));
-                            if (errors.importTimeline)
-                              setErrors((prev) => ({
-                                ...prev,
-                                importTimeline: "",
-                              }));
-                          }}
-                          className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium border transition-all ${
-                            formData.importTimeline === option
-                              ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md"
-                              : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/30"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                    {errors.importTimeline && (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pt-2">
-                        <AlertCircle size={10} /> {errors.importTimeline}
-                      </p>
-                    )}
-                  </div>
-
-                  {errors.submit && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium text-center">
-                      {errors.submit}
-                    </div>
+                  {formData.condition === "New" && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-zinc-500 italic text-center py-4 text-sm"
+                    >
+                      New vehicles will be exported with 2025/2026 factory
+                      specifications.
+                    </motion.p>
                   )}
                 </div>
-              )}
 
-              {step === 3 && (
-                <div className="space-y-8">
-                  {/* Assigned agent header */}
-                  <div className="flex items-center gap-4 bg-[#f0f9ff] border border-[#bae6fd] rounded-2xl p-4">
-                    <div className="w-14 h-14 rounded-full border-2 border-white overflow-hidden bg-[#e6f3fa] shrink-0 flex items-center justify-center shadow-sm">
-                      {assignedAgent?.image ? (
-                        <img
-                          src={assignedAgent.image}
-                          alt={assignedAgent.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <User className="h-7 w-7 text-[#4da8da]" />
-                      )}
-                    </div>
-                    <div className="text-sm">
-                      <p className="text-zinc-800">
-                        Hi {formData.name.split(" ")[0] || "there"}, I'm{" "}
-                        <strong>
-                          {assignedAgent?.name || "your specialist"}
-                        </strong>
-                        . I'll be in touch to discuss pricing, availability and
-                        shipping.
-                      </p>
-                      <p className="text-zinc-500 text-xs mt-1">
-                        Just let me know how and when works best for you.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Contact method (multi-select) */}
-                  <div>
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1">
-                      How should we contact you?
-                    </label>
-                    <p className="text-[11px] text-zinc-400 mb-3">
-                      Pick all that work — e.g. WhatsApp and WhatsApp Call.
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {CONTACT_METHODS.map((method) => {
-                        const Icon = CONTACT_METHOD_ICONS[method];
-                        const active = formData.contactMethods.includes(method);
-                        return (
-                          <button
-                            key={method}
-                            type="button"
-                            aria-pressed={active}
-                            onClick={() => toggleContactMethod(method)}
-                            className={`relative flex flex-col items-center justify-center gap-1.5 py-3 rounded-2xl border text-xs font-semibold transition-all ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
-                          >
-                            {active && (
-                              <CheckCircle2
-                                size={14}
-                                className="absolute top-1.5 right-1.5 text-white"
-                              />
-                            )}
-                            <Icon size={18} />
-                            {method}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {errors.contactMethods && (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2">
-                        <AlertCircle size={10} /> {errors.contactMethods}
-                      </p>
+                {/* Grade and steering. Both are autofilled from the car
+                      page's selectors, and both stay editable here — a
+                      customer who came in on one grade and changed their mind
+                      shouldn't have to scroll back up to say so. */}
+                {(gradeOptions.length > 0 || steeringOptions.length > 0) && (
+                  <div className="mt-10 space-y-8">
+                    {gradeOptions.length > 0 && (
+                      <ChipChoiceField
+                        label="Grade"
+                        options={gradeOptions}
+                        value={formData.grade}
+                        onChange={(v) =>
+                          setFormData((prev) => ({ ...prev, grade: v }))
+                        }
+                      />
+                    )}
+                    {steeringOptions.length > 0 && (
+                      <ChipChoiceField
+                        label="Steering"
+                        options={steeringOptions}
+                        optionLabel={steeringLabel}
+                        value={formData.steering}
+                        onChange={(v) =>
+                          setFormData((prev) => ({ ...prev, steering: v }))
+                        }
+                      />
                     )}
                   </div>
+                )}
 
-                  {/* Preferred day(s) */}
-                  <div>
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3 flex items-center gap-1.5">
-                      <CalendarDays size={12} /> Which day(s) suit you?
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {DAY_OPTIONS.map((day) => {
-                        const active = formData.contactDays.includes(day);
-                        return (
-                          <button
-                            key={day}
-                            type="button"
-                            onClick={() => toggleContactDay(day)}
-                            className={`px-3 py-2 rounded-full text-xs font-medium border transition-all ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
-                          >
-                            {day}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {errors.contactDays && (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2">
-                        <AlertCircle size={10} /> {errors.contactDays}
-                      </p>
-                    )}
-                  </div>
+                {/* Colours */}
+                <div className="mt-10 space-y-8">
+                  <ColorChoiceField
+                    label="Exterior colour"
+                    options={exteriorColorOptions}
+                    value={formData.exteriorColor}
+                    onChange={(v) =>
+                      setFormData((prev) => ({ ...prev, exteriorColor: v }))
+                    }
+                    placeholder="e.g. Sonic Grey Pearl, or Black with a white roof"
+                  />
+                  <ColorChoiceField
+                    label="Interior colour"
+                    options={interiorColorOptions}
+                    value={formData.interiorColor}
+                    onChange={(v) =>
+                      setFormData((prev) => ({ ...prev, interiorColor: v }))
+                    }
+                    placeholder="e.g. Black leather with tan inserts"
+                  />
+                </div>
 
-                  {/* Time window */}
-                  <div>
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1 flex items-center gap-1.5">
-                      <Clock size={12} /> Best time of day
-                    </label>
-                    <p className="text-[11px] text-zinc-400 mb-3">
-                      Pick every time that works — select all that apply.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {TIME_WINDOWS.map((w) => {
-                        const active = formData.contactTimeWindow.includes(
-                          w.label,
-                        );
-                        return (
-                          <button
-                            key={w.label}
-                            type="button"
-                            onClick={() => toggleContactTimeWindow(w.label)}
-                            className={`py-3 rounded-2xl border text-sm font-semibold transition-all ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
-                          >
-                            {w.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {errors.contactTimeWindow && (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2">
-                        <AlertCircle size={10} /> {errors.contactTimeWindow}
-                      </p>
-                    )}
-                  </div>
+                {/* Specs */}
+                <div className="relative mt-10">
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-2">
+                    Specification requests (optional)
+                  </label>
+                  <textarea
+                    id="specs"
+                    value={formData.specs}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Carbon Fiber Pack, Magma Red Interior, Night Package..."
+                    className={`${inputClasses("specs")} min-h-[100px] resize-none`}
+                  />
+                </div>
+              </>
+            )}
 
-                  {/* Timezone */}
+            {step === 2 && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="relative">
-                    <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1 flex items-center gap-1.5">
-                      <Globe size={12} /> Your timezone
-                    </label>
-                    <SelectDropdown
-                      id="contactTimezone"
-                      placeholder="Select your timezone..."
-                      options={TIMEZONE_OPTIONS.map((t) => ({
-                        label: t.label,
-                        value: t.tz,
-                      }))}
-                      value={formData.contactTimezone}
-                      onChange={(_id, val) => {
-                        const opt = TIMEZONE_OPTIONS.find((o) => o.tz === val);
-                        setFormData((prev) => ({
-                          ...prev,
-                          contactTimezone: val,
-                          contactTimezoneLabel: opt?.label || val,
-                        }));
-                        if (errors.contactTimezone)
-                          setErrors((prev) => ({
-                            ...prev,
-                            contactTimezone: "",
-                          }));
-                      }}
-                      error={errors.contactTimezone}
+                    <input
+                      id="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Full Name"
+                      className={inputClasses("name")}
                     />
-                    {formData.countryOfImport && (
-                      <p className="text-[10px] text-zinc-400 mt-1">
-                        Auto-set from {formData.countryOfImport} — change it if
-                        you're elsewhere.
+                    {errors.name && (
+                      <p className="absolute -bottom-5 left-0 text-[10px] font-bold text-red-500 flex items-center gap-1">
+                        <AlertCircle size={10} /> {errors.name}
                       </p>
                     )}
                   </div>
-
-                  {/* Preview */}
-                  {formData.contactMethods.length > 0 &&
-                    formData.contactDays.length > 0 &&
-                    formData.contactTimeWindow.length > 0 &&
-                    formData.contactTimezone && (
-                      <div className="bg-zinc-50 border border-black/5 rounded-xl px-4 py-3 text-xs text-zinc-600 flex items-start gap-2">
-                        <CheckCircle2
-                          size={14}
-                          className="text-[#4da8da] mt-0.5 shrink-0"
-                        />
-                        <span>
-                          We'll reach you via{" "}
-                          <strong>{formData.contactMethods.join(" & ")}</strong>{" "}
-                          during the{" "}
-                          <strong>
-                            {formData.contactTimeWindow.join(", ")}
-                          </strong>{" "}
-                          on <strong>{formData.contactDays.join(", ")}</strong>.
-                          {(() => {
-                            try {
-                              const when = computePreferredContactAt(
-                                formData.contactDays,
-                                earliestTimeWindow(),
-                                formData.contactTimezone,
-                              );
-                              return (
-                                <>
-                                  {" "}
-                                  Approx.{" "}
-                                  <strong>
-                                    {formatInTz(when, formData.contactTimezone)}
-                                  </strong>{" "}
-                                  your time.
-                                </>
-                              );
-                            } catch {
-                              return null;
-                            }
-                          })()}
-                        </span>
-                      </div>
+                  <div className="relative">
+                    <input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Email"
+                      className={inputClasses("email")}
+                    />
+                    {errors.email && (
+                      <p className="absolute -bottom-5 left-0 text-[10px] font-bold text-red-500 flex items-center gap-1">
+                        <AlertCircle size={10} /> {errors.email}
+                      </p>
                     )}
+                  </div>
+                </div>
 
-                  {errors.submit && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium text-center">
-                      {errors.submit}
+                {/* Country of Import — before phone so selection auto-fills the country code */}
+                <div className="relative">
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1">
+                    Where are you importing to?
+                  </label>
+                  <SelectDropdown
+                    id="countryOfImport"
+                    placeholder="Destination Country..."
+                    options={COUNTRIES.map((c) => ({
+                      label: c.n,
+                      value: c.n,
+                    }))}
+                    value={formData.countryOfImport}
+                    onChange={handleDropdownChange}
+                    error={errors.countryOfImport}
+                  />
+                </div>
+
+                {/* Budget — amount and currency, the currency defaulted from
+                      the destination chosen above. Required: a lead without a
+                      figure can't be matched to stock. */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="budgetAmount"
+                    className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block"
+                  >
+                    What's your budget? <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-[1fr_130px] sm:grid-cols-[1fr_230px] gap-3 items-start">
+                    <div className="flex items-center gap-2 border-b border-black/10 focus-within:border-sky-500 transition-colors">
+                      {budgetSymbol && (
+                        <span className="text-lg text-zinc-400 shrink-0">
+                          {budgetSymbol}
+                        </span>
+                      )}
+                      <input
+                        id="budgetAmount"
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        value={budgetDisplay}
+                        onChange={handleBudgetAmountChange}
+                        placeholder="e.g. 45,000"
+                        aria-describedby="budget-note"
+                        className="w-full font-sans bg-transparent border-0 text-black placeholder:text-zinc-400 focus:outline-none rounded-none px-0 py-3 text-lg"
+                      />
                     </div>
+                    <SelectDropdown
+                      id="budgetCurrency"
+                      placeholder="Currency..."
+                      options={budgetCurrencyChoices}
+                      value={formData.budgetCurrency}
+                      onChange={handleDropdownChange}
+                    />
+                  </div>
+                  {errors.budgetAmount || errors.budgetCurrency ? (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pt-0.5">
+                      <AlertCircle size={10} />{" "}
+                      {errors.budgetAmount || errors.budgetCurrency}
+                    </p>
+                  ) : null}
+                  <p
+                    id="budget-note"
+                    className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2 flex items-start gap-2"
+                  >
+                    <AlertCircle
+                      size={12}
+                      className="shrink-0 mt-0.5 text-amber-600"
+                    />
+                    <span>
+                      Give us the most you're ready to spend on the car. If it
+                      sits well below the market range for the{" "}
+                      <strong>{budgetVehicleLabel}</strong>, your inquiry may be
+                      disqualified — it can't be found under the range.
+                    </span>
+                  </p>
+                </div>
+
+                {/* Sync notification */}
+                <AnimatePresence>
+                  {countryCodeUpdated && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={springTransition()}
+                      className="text-xs text-sky-500 font-medium -mt-4 pl-1"
+                    >
+                      Country code updated to {updatedCountryCodeLabel} based on
+                      your import destination.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+
+                {/* Phone: country code selector | local number — two separate columns */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block">
+                    WhatsApp / Phone Number
+                  </label>
+                  <div className="grid grid-cols-[120px_1fr] sm:grid-cols-[150px_1fr] gap-3 items-start">
+                    <SelectDropdown
+                      id="countryCode"
+                      placeholder="+1"
+                      options={COUNTRIES.map((c) => ({
+                        label: `${c.c}  ${c.n}`,
+                        value: c.c,
+                      }))}
+                      value={formData.countryCode}
+                      onChange={handleDropdownChange}
+                    />
+                    <input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="Local number (e.g. 085 123 4567)"
+                      className={inputClasses("phone")}
+                    />
+                  </div>
+                  {/* Error / hint always in normal flow — no overlay */}
+                  {errors.phone ? (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pt-0.5">
+                      <AlertCircle size={10} /> {errors.phone}
+                    </p>
+                  ) : (
+                    <p className="text-[10px] text-zinc-400 pt-0.5">
+                      Enter local number only — country code is selected above
+                    </p>
                   )}
                 </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+
+                <div>
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
+                    When are you planning to import?{" "}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {IMPORT_TIMELINES.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            importTimeline: option,
+                          }));
+                          if (errors.importTimeline)
+                            setErrors((prev) => ({
+                              ...prev,
+                              importTimeline: "",
+                            }));
+                        }}
+                        className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium border transition-feedback ${
+                          formData.importTimeline === option
+                            ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md"
+                            : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/30"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                  {errors.importTimeline && (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pt-2">
+                      <AlertCircle size={10} /> {errors.importTimeline}
+                    </p>
+                  )}
+                </div>
+
+                {errors.submit && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium text-center">
+                    {errors.submit}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="space-y-8">
+                {/* Assigned agent header */}
+                <div className="flex items-center gap-4 bg-[#f0f9ff] border border-[#bae6fd] rounded-2xl p-4">
+                  <div className="w-14 h-14 rounded-full border-2 border-white overflow-hidden bg-[#e6f3fa] shrink-0 flex items-center justify-center shadow-sm">
+                    {assignedAgent?.image ? (
+                      <img
+                        src={assignedAgent.image}
+                        alt={assignedAgent.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-7 w-7 text-[#4da8da]" />
+                    )}
+                  </div>
+                  <div className="text-sm">
+                    <p className="text-zinc-800">
+                      Hi {formData.name.split(" ")[0] || "there"}, I'm{" "}
+                      <strong>
+                        {assignedAgent?.name || "your specialist"}
+                      </strong>
+                      . I'll be in touch to discuss pricing, availability and
+                      shipping.
+                    </p>
+                    <p className="text-zinc-500 text-xs mt-1">
+                      Just let me know how and when works best for you.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Contact method (multi-select) */}
+                <div>
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1">
+                    How should we contact you?
+                  </label>
+                  <p className="text-[11px] text-zinc-400 mb-3">
+                    Pick all that work — e.g. WhatsApp and WhatsApp Call.
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {CONTACT_METHODS.map((method) => {
+                      const Icon = CONTACT_METHOD_ICONS[method];
+                      const active = formData.contactMethods.includes(method);
+                      return (
+                        <button
+                          key={method}
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() => toggleContactMethod(method)}
+                          className={`relative flex flex-col items-center justify-center gap-1.5 py-3 rounded-2xl border text-xs font-semibold transition-feedback ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
+                        >
+                          {active && (
+                            <CheckCircle2
+                              size={14}
+                              className="absolute top-1.5 right-1.5 text-white"
+                            />
+                          )}
+                          <Icon size={18} />
+                          {method}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {errors.contactMethods && (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2">
+                      <AlertCircle size={10} /> {errors.contactMethods}
+                    </p>
+                  )}
+                </div>
+
+                {/* Preferred day(s) */}
+                <div>
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3 flex items-center gap-1.5">
+                    <CalendarDays size={12} /> Which day(s) suit you?
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {DAY_OPTIONS.map((day) => {
+                      const active = formData.contactDays.includes(day);
+                      return (
+                        <button
+                          key={day}
+                          type="button"
+                          onClick={() => toggleContactDay(day)}
+                          className={`px-3 py-2 rounded-full text-xs font-medium border transition-feedback ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
+                        >
+                          {day}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {errors.contactDays && (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2">
+                      <AlertCircle size={10} /> {errors.contactDays}
+                    </p>
+                  )}
+                </div>
+
+                {/* Time window */}
+                <div>
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1 flex items-center gap-1.5">
+                    <Clock size={12} /> Best time of day
+                  </label>
+                  <p className="text-[11px] text-zinc-400 mb-3">
+                    Pick every time that works — select all that apply.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {TIME_WINDOWS.map((w) => {
+                      const active = formData.contactTimeWindow.includes(
+                        w.label,
+                      );
+                      return (
+                        <button
+                          key={w.label}
+                          type="button"
+                          onClick={() => toggleContactTimeWindow(w.label)}
+                          className={`py-3 rounded-2xl border text-sm font-semibold transition-feedback ${active ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-500 border-black/10 hover:border-[#4da8da]/40"}`}
+                        >
+                          {w.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {errors.contactTimeWindow && (
+                    <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 mt-2">
+                      <AlertCircle size={10} /> {errors.contactTimeWindow}
+                    </p>
+                  )}
+                </div>
+
+                {/* Timezone */}
+                <div className="relative">
+                  <label className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-1 flex items-center gap-1.5">
+                    <Globe size={12} /> Your timezone
+                  </label>
+                  <SelectDropdown
+                    id="contactTimezone"
+                    placeholder="Select your timezone..."
+                    options={TIMEZONE_OPTIONS.map((t) => ({
+                      label: t.label,
+                      value: t.tz,
+                    }))}
+                    value={formData.contactTimezone}
+                    onChange={(_id, val) => {
+                      const opt = TIMEZONE_OPTIONS.find((o) => o.tz === val);
+                      setFormData((prev) => ({
+                        ...prev,
+                        contactTimezone: val,
+                        contactTimezoneLabel: opt?.label || val,
+                      }));
+                      if (errors.contactTimezone)
+                        setErrors((prev) => ({
+                          ...prev,
+                          contactTimezone: "",
+                        }));
+                    }}
+                    error={errors.contactTimezone}
+                  />
+                  {formData.countryOfImport && (
+                    <p className="text-[10px] text-zinc-400 mt-1">
+                      Auto-set from {formData.countryOfImport} — change it if
+                      you're elsewhere.
+                    </p>
+                  )}
+                </div>
+
+                {/* Preview */}
+                {formData.contactMethods.length > 0 &&
+                  formData.contactDays.length > 0 &&
+                  formData.contactTimeWindow.length > 0 &&
+                  formData.contactTimezone && (
+                    <div className="bg-zinc-50 border border-black/5 rounded-xl px-4 py-3 text-xs text-zinc-600 flex items-start gap-2">
+                      <CheckCircle2
+                        size={14}
+                        className="text-[#4da8da] mt-0.5 shrink-0"
+                      />
+                      <span>
+                        We'll reach you via{" "}
+                        <strong>{formData.contactMethods.join(" & ")}</strong>{" "}
+                        during the{" "}
+                        <strong>{formData.contactTimeWindow.join(", ")}</strong>{" "}
+                        on <strong>{formData.contactDays.join(", ")}</strong>.
+                        {(() => {
+                          try {
+                            const when = computePreferredContactAt(
+                              formData.contactDays,
+                              earliestTimeWindow(),
+                              formData.contactTimezone,
+                            );
+                            return (
+                              <>
+                                {" "}
+                                Approx.{" "}
+                                <strong>
+                                  {formatInTz(when, formData.contactTimezone)}
+                                </strong>{" "}
+                                your time.
+                              </>
+                            );
+                          } catch {
+                            return null;
+                          }
+                        })()}
+                      </span>
+                    </div>
+                  )}
+
+                {errors.submit && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium text-center">
+                    {errors.submit}
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
 
           <div className="mt-12 pt-8 flex items-center justify-between border-t border-black/5">
             <button
               onClick={handlePrev}
-              className={`flex items-center gap-2 font-bold transition-all ${step === 1 ? "opacity-0 pointer-events-none" : "opacity-100 text-zinc-500 hover:text-[#4da8da]"}`}
+              className={`flex items-center gap-2 font-bold transition-feedback ${step === 1 ? "opacity-0 pointer-events-none" : "opacity-100 text-zinc-500 hover:text-[#4da8da]"}`}
             >
               <ArrowLeft size={18} /> Back
             </button>
@@ -2010,7 +2021,7 @@ export default function RequestForm({
               <button
                 onClick={handleNext}
                 disabled={isCreatingLead}
-                className="bg-[#4da8da] text-white px-10 py-4 rounded-full font-bold hover:bg-[#3d92c2] hover:scale-105 transition-all shadow-[0_10px_20px_rgba(77,168,218,0.3)] disabled:opacity-50 disabled:hover:scale-100 flex items-center gap-2"
+                className="bg-[#4da8da] text-white px-10 py-4 rounded-full font-bold hover:bg-[#3d92c2] hover:scale-[1.03] transition-feedback shadow-[0_10px_20px_rgba(77,168,218,0.3)] disabled:opacity-50 disabled:hover:scale-100 flex items-center gap-2"
               >
                 {isCreatingLead ? (
                   <>
@@ -2024,7 +2035,7 @@ export default function RequestForm({
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="bg-[#4da8da] text-white px-10 py-4 rounded-full font-bold hover:bg-[#3d92c2] hover:scale-105 transition-all shadow-[0_10px_20px_rgba(77,168,218,0.3)] disabled:opacity-50 disabled:hover:scale-100 flex items-center gap-2"
+                className="bg-[#4da8da] text-white px-10 py-4 rounded-full font-bold hover:bg-[#3d92c2] hover:scale-[1.03] transition-feedback shadow-[0_10px_20px_rgba(77,168,218,0.3)] disabled:opacity-50 disabled:hover:scale-100 flex items-center gap-2"
               >
                 {isSubmitting ? (
                   <>
