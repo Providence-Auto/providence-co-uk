@@ -29,7 +29,7 @@ export default function GlobalPartnersStrip({
             scale={0.95}
             delay={index * 0.1}
             duration={0.8}
-            className="relative shrink h-6 w-12 sm:h-8 sm:w-16 md:h-12 md:w-24 lg:h-16 lg:w-32 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-105 transition-all duration-500 cursor-pointer"
+            className="relative shrink h-6 w-12 sm:h-8 sm:w-16 md:h-12 md:w-24 lg:h-16 lg:w-32 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-[1.03] transition-feedback cursor-pointer"
           >
             <Image
               src={`/affiliate/${num}.png`}

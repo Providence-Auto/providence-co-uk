@@ -37,6 +37,7 @@ import {
 } from "@/config/destinations";
 import { carSpecRows } from "@/lib/car-spec-rows";
 import type { GuideLink } from "@/lib/destination-guides";
+import { scrollBehavior } from "@/lib/fluid";
 import { getLogoFilename } from "@/lib/logo-utils";
 import { repSearch } from "@/lib/rep-link";
 import {
@@ -164,7 +165,7 @@ function MoreButton({
       {expanded ? "Show less" : `Show ${hiddenCount} more ${label}`}
       <ChevronDown
         size={14}
-        className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+        className={`transition-transform duration-(--pa-spring-smooth-duration) ease-(--pa-spring-smooth) ${expanded ? "rotate-180" : ""}`}
       />
     </button>
   );
@@ -199,7 +200,10 @@ export default function GalleryDetailClient({
   const [descriptionOpen, setDescriptionOpen] = useState(false);
 
   const scrollToInquiry = () => {
-    inquiryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    inquiryRef.current?.scrollIntoView({
+      behavior: scrollBehavior(),
+      block: "start",
+    });
   };
 
   // Normalise the dossier's condition, defaulting older records (no condition
@@ -363,7 +367,7 @@ export default function GalleryDetailClient({
     // On mobile the palette sits below the gallery, so bring the photo back
     // into view — otherwise the swatch appears to do nothing.
     galleryRef.current?.scrollIntoView({
-      behavior: "smooth",
+      behavior: scrollBehavior(),
       block: "nearest",
     });
   };
@@ -416,587 +420,595 @@ export default function GalleryDetailClient({
     : displayImages.slice(0, LIMITS.thumbs);
 
   return (
-    <main className="min-h-screen bg-[#FDFCFB] text-black selection:bg-black/10 selection:text-black font-sans overflow-x-hidden pb-16">
-      <MinimalHeader />
+    <main className="min-h-screen bg-[#FDFCFB] text-black selection:bg-black/10 selection:text-black font-sans pb-16">
+      {/* The horizontal clip lives on this wrapper, not on <main>: on <main> it
+          degrades iOS touch-scroll for any horizontal strip on the page
+          (motion-interaction-rulebook.md §5.5). */}
+      <div className="relative w-full overflow-hidden">
+        <MinimalHeader />
 
-      <section className="pt-28 px-6 max-w-[1400px] mx-auto">
-        <Link
-          href="/b2c/gallery"
-          className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-black transition-colors mb-6"
-        >
-          <ArrowLeft size={16} /> Back to Gallery
-        </Link>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Identity + description */}
-          <Reveal
-            immediate
-            y={24}
-            duration={0.7}
-            className="lg:col-span-5 flex flex-col"
+        <section className="pt-28 px-6 max-w-[1400px] mx-auto">
+          <Link
+            href="/b2c/gallery"
+            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-black transition-colors mb-6"
           >
-            {getLogoFilename(car.make) && (
-              <img
-                src={`/car_logo/${getLogoFilename(car.make)}`}
-                alt={`${car.make} logo`}
-                // `self-start` is load-bearing: this sits in a `flex flex-col`,
-                // where the default `align-items: stretch` widens the image to
-                // the whole column and `w-auto` resolves to that stretched
-                // width. With `h-9` pinning the height, a wordmark like Land
-                // Rover's oval was being smeared to roughly 18:1.
-                className="h-12 w-auto self-start object-contain opacity-50 grayscale hover:opacity-100 transition-opacity duration-500 mb-4"
-              />
-            )}
+            <ArrowLeft size={16} /> Back to Gallery
+          </Link>
 
-            {car.isUpcoming && (
-              <div className="mb-4 inline-flex items-center gap-2 self-start rounded-full bg-sky-600 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white">
-                <CalendarClock size={13} /> Coming Soon
-              </div>
-            )}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* Identity + description */}
+            <Reveal
+              immediate
+              y={24}
+              duration={0.7}
+              className="lg:col-span-5 flex flex-col"
+            >
+              {getLogoFilename(car.make) && (
+                <img
+                  src={`/car_logo/${getLogoFilename(car.make)}`}
+                  alt={`${car.make} logo`}
+                  // `self-start` is load-bearing: this sits in a `flex flex-col`,
+                  // where the default `align-items: stretch` widens the image to
+                  // the whole column and `w-auto` resolves to that stretched
+                  // width. With `h-9` pinning the height, a wordmark like Land
+                  // Rover's oval was being smeared to roughly 18:1.
+                  className="h-12 w-auto self-start object-contain opacity-50 grayscale hover:opacity-100 transition-opacity duration-500 mb-4"
+                />
+              )}
 
-            {/* On a destination variant the H1 carries the market, so the page
+              {car.isUpcoming && (
+                <div className="mb-4 inline-flex items-center gap-2 self-start rounded-full bg-sky-600 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white">
+                  <CalendarClock size={13} /> Coming Soon
+                </div>
+              )}
+
+              {/* On a destination variant the H1 carries the market, so the page
                 answers "can I import this to Kenya?" above the fold instead of
                 300 lines down — and so the two URLs are not competing in search
                 with byte-identical headings. */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[0.95] mb-3 uppercase">
-              {car.make} <span className="text-zinc-400">{car.model}</span>{" "}
-              <span className="text-zinc-300">{car.year}</span>
-              {selectedDestination && (
-                <>
-                  <br />
-                  <span className="text-2xl md:text-3xl lg:text-4xl text-[#4da8da]">
-                    Import to {selectedDestination.name}
-                  </span>
-                </>
-              )}
-            </h1>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[0.95] mb-3 uppercase">
+                {car.make} <span className="text-zinc-400">{car.model}</span>{" "}
+                <span className="text-zinc-300">{car.year}</span>
+                {selectedDestination && (
+                  <>
+                    <br />
+                    <span className="text-2xl md:text-3xl lg:text-4xl text-[#4da8da]">
+                      Import to {selectedDestination.name}
+                    </span>
+                  </>
+                )}
+              </h1>
 
-            {/* Pre-order framing: state plainly that this car isn't here yet,
+              {/* Pre-order framing: state plainly that this car isn't here yet,
                 and link to the announcement it was launched in. */}
-            {car.isUpcoming && (
-              <div className="mt-3 rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
-                <p className="text-sm text-zinc-600 font-light leading-relaxed">
-                  Announced but not yet available to import. Register your
-                  interest and we&rsquo;ll come back with a landed cost for your
-                  country once specification and pricing are confirmed.
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
-                  {car.expectedAvailability && (
-                    <p className="flex items-center gap-1.5 text-sm font-bold text-sky-700">
-                      <CalendarClock size={14} className="shrink-0" />
-                      {car.expectedAvailability}
-                    </p>
-                  )}
-                  {car.newsSlug && (
-                    <Link
-                      href={`/latest-news/${car.newsSlug}`}
-                      className="group inline-flex items-center gap-1.5 text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
-                    >
-                      Read the announcement
-                      <ArrowRight
-                        size={14}
-                        className="group-hover:translate-x-1 transition-transform"
-                      />
-                    </Link>
-                  )}
+              {car.isUpcoming && (
+                <div className="mt-3 rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
+                  <p className="text-sm text-zinc-600 font-light leading-relaxed">
+                    Announced but not yet available to import. Register your
+                    interest and we&rsquo;ll come back with a landed cost for
+                    your country once specification and pricing are confirmed.
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                    {car.expectedAvailability && (
+                      <p className="flex items-center gap-1.5 text-sm font-bold text-sky-700">
+                        <CalendarClock size={14} className="shrink-0" />
+                        {car.expectedAvailability}
+                      </p>
+                    )}
+                    {car.newsSlug && (
+                      <Link
+                        href={`/latest-news/${car.newsSlug}`}
+                        className="group inline-flex items-center gap-1.5 text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
+                      >
+                        Read the announcement
+                        <ArrowRight
+                          size={14}
+                          className="group-hover:translate-x-1 transition-feedback"
+                        />
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* A car that is already orderable still belongs to the story that
+              {/* A car that is already orderable still belongs to the story that
                 announced it — `newsSlug` is documented as a two-way link, so it
                 cannot live only inside the pre-order panel above. */}
-            {!car.isUpcoming && car.newsSlug && (
-              <div className="mt-3">
-                <Link
-                  href={`/latest-news/${car.newsSlug}`}
-                  className="group inline-flex items-center gap-1.5 text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
-                >
-                  Read the announcement
-                  <ArrowRight
-                    size={14}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </Link>
-              </div>
-            )}
-
-            {car.notes && (
-              <div className="mt-5">
-                <p
-                  className={`text-base text-zinc-600 font-light leading-relaxed ${descriptionOpen ? "" : "line-clamp-4"}`}
-                >
-                  {car.notes}
-                </p>
-                {car.notes.length > 260 && (
-                  <button
-                    type="button"
-                    onClick={() => setDescriptionOpen((v) => !v)}
-                    className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-black transition-colors"
+              {!car.isUpcoming && car.newsSlug && (
+                <div className="mt-3">
+                  <Link
+                    href={`/latest-news/${car.newsSlug}`}
+                    className="group inline-flex items-center gap-1.5 text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
                   >
-                    {descriptionOpen ? "Show less" : "Read more"}
-                  </button>
-                )}
-              </div>
-            )}
+                    Read the announcement
+                    <ArrowRight
+                      size={14}
+                      className="group-hover:translate-x-1 transition-feedback"
+                    />
+                  </Link>
+                </div>
+              )}
 
-            {/* Destination, grade and steering — the three choices that change
+              {car.notes && (
+                <div className="mt-5">
+                  <p
+                    className={`text-base text-zinc-600 font-light leading-relaxed ${descriptionOpen ? "" : "line-clamp-4"}`}
+                  >
+                    {car.notes}
+                  </p>
+                  {car.notes.length > 260 && (
+                    <button
+                      type="button"
+                      onClick={() => setDescriptionOpen((v) => !v)}
+                      className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-500 hover:text-black transition-colors"
+                    >
+                      {descriptionOpen ? "Show less" : "Read more"}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Destination, grade and steering — the three choices that change
                 what gets quoted, so they sit above the CTA rather than below
                 it. Destination leads: it decides the duty, the age rule and
                 therefore the price, which the other two only adjust. */}
-            {(destinations.length > 0 ||
-              grades.length > 0 ||
-              steeringOptions.length > 1) && (
-              <div className="mt-6 rounded-2xl border border-black/5 bg-white p-5 shadow-[0_12px_28px_rgba(0,0,0,0.03)]">
-                {destinations.length > 0 && (
-                  <div
-                    className={
-                      grades.length > 0 || steeringOptions.length > 1
-                        ? "pb-5 mb-5 border-b border-black/5"
-                        : ""
-                    }
-                  >
-                    <DestinationChips
-                      featured={featured}
-                      more={more}
-                      selected={selectedDestination}
-                      onSelect={pickDestination}
-                      carSlug={car.slug}
-                    />
+              {(destinations.length > 0 ||
+                grades.length > 0 ||
+                steeringOptions.length > 1) && (
+                <div className="mt-6 rounded-2xl border border-black/5 bg-white p-5 shadow-[0_12px_28px_rgba(0,0,0,0.03)]">
+                  {destinations.length > 0 && (
+                    <div
+                      className={
+                        grades.length > 0 || steeringOptions.length > 1
+                          ? "pb-5 mb-5 border-b border-black/5"
+                          : ""
+                      }
+                    >
+                      <DestinationChips
+                        featured={featured}
+                        more={more}
+                        selected={selectedDestination}
+                        onSelect={pickDestination}
+                        carSlug={car.slug}
+                      />
 
-                    {/* What changes once the car has a destination, opened
+                      {/* What changes once the car has a destination, opened
                         directly under the buttons so a click never moves the
                         reader. Rendered only when one is chosen — the chips
                         already ask the question. */}
-                    {selectedDestination && destinationBrief && (
-                      <DestinationBrief
-                        destination={selectedDestination}
-                        copy={destinationBrief}
-                        vehicle={formatVehicleTitle(car.make, car.model)}
-                        isUsed={isUsed}
-                      />
-                    )}
-                  </div>
-                )}
-
-                {grades.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Layers size={17} className="text-zinc-400" />
-                      <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">
-                        Grade
-                      </p>
+                      {selectedDestination && destinationBrief && (
+                        <DestinationBrief
+                          destination={selectedDestination}
+                          copy={destinationBrief}
+                          vehicle={formatVehicleTitle(car.make, car.model)}
+                          isUsed={isUsed}
+                        />
+                      )}
                     </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      {grades.map((grade) => {
-                        const isActive = selectedGrade?.id === grade.id;
-                        return (
-                          <button
-                            key={grade.id}
-                            type="button"
-                            onClick={() => pickGrade(grade.id)}
-                            aria-pressed={isActive}
-                            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-all ${
-                              isActive
-                                ? "bg-black text-white border-black shadow-md"
-                                : "bg-white text-zinc-600 border-black/10 hover:border-black/40"
-                            }`}
-                          >
-                            {isActive && <Check size={14} strokeWidth={3} />}
-                            {grade.name}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {selectedGrade?.summary && (
-                      <p className="mt-3.5 text-sm text-zinc-600 font-light leading-relaxed">
-                        {selectedGrade.summary}
-                      </p>
-                    )}
-
-                    {selectedGrade && selectedGrade.highlights.length > 0 && (
-                      <GradeHighlights grade={selectedGrade} />
-                    )}
-                  </div>
-                )}
-
-                {steeringOptions.length > 1 && (
-                  <div
-                    className={
-                      grades.length > 0
-                        ? "mt-5 pt-5 border-t border-black/5"
-                        : ""
-                    }
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <CarFront size={17} className="text-zinc-400" />
-                      <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">
-                        Steering
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      {steeringOptions.map((option) => {
-                        const isActive = activeSteering === option;
-                        return (
-                          <button
-                            key={option}
-                            type="button"
-                            onClick={() => setSelectedSteering(option)}
-                            aria-pressed={isActive}
-                            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-all ${
-                              isActive
-                                ? "bg-black text-white border-black shadow-md"
-                                : "bg-white text-zinc-600 border-black/10 hover:border-black/40"
-                            }`}
-                          >
-                            {isActive && <Check size={14} strokeWidth={3} />}
-                            {steeringLabel(option)}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <p className="mt-3 text-[11px] text-zinc-400 font-light leading-relaxed">
-                      Your destination country decides which hand you can
-                      register, and we export this model from both.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
-              <button
-                onClick={scrollToInquiry}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-black hover:bg-zinc-800 text-white text-sm font-bold uppercase tracking-wider rounded-full transition-colors"
-              >
-                <Mail size={17} />{" "}
-                {car.isUpcoming ? "Register Interest" : "Inquire Now"}
-              </button>
-              <a
-                href={specSheetHref}
-                target="_blank"
-                rel="noopener"
-                aria-label="Spec sheet (PDF)"
-                className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-black/10 hover:border-black/30 hover:bg-zinc-50 text-black text-sm font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-all"
-              >
-                <FileDown size={17} className="shrink-0" /> Spec sheet
-              </a>
-            </div>
-          </Reveal>
-
-          {/* Gallery + the palette that drives it */}
-          <Reveal
-            immediate
-            y={0}
-            scale={0.97}
-            duration={0.8}
-            delay={0.1}
-            className="lg:col-span-7 flex flex-col gap-4 lg:sticky lg:top-24"
-          >
-            <div
-              ref={galleryRef}
-              className="relative aspect-[16/10] w-full rounded-[1.5rem] overflow-hidden bg-black flex items-center justify-center shadow-[0_16px_40px_rgba(0,0,0,0.10)]"
-            >
-              <img
-                key={activeImage}
-                src={displayImages[activeImage]}
-                alt={`${car.make} ${car.model} — view ${activeImage + 1}`}
-                className="w-full h-full object-cover animate-in fade-in zoom-in-95 duration-500"
-              />
-            </div>
-
-            {displayImages.length > 1 && (
-              <div>
-                <div className="grid grid-cols-5 sm:grid-cols-6 gap-2.5">
-                  {visibleThumbs.map((img, idx) => (
-                    <button
-                      key={`${img}-${idx}`}
-                      onClick={() => setActiveImage(idx)}
-                      className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-100 border-2 transition-all duration-300 ${activeImage === idx ? "border-black shadow-md" : "border-transparent hover:border-black/20"}`}
-                    >
-                      <img
-                        src={img}
-                        alt={`Thumbnail ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-                <MoreButton
-                  expanded={thumbsOpen}
-                  hiddenCount={displayImages.length - LIMITS.thumbs}
-                  noun="photo"
-                  onClick={() => setThumbsOpen((v) => !v)}
-                />
-              </div>
-            )}
-
-            {/* Colours & finishes, next to the photo they change. */}
-            {(exteriorColors.length > 0 || interiorColors.length > 0) && (
-              <div className="mt-2 rounded-2xl border border-black/5 bg-white p-5">
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <Palette size={17} className="text-zinc-400" />
-                    <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">
-                      Colours &amp; Finishes
-                    </p>
-                  </div>
-                  {anyColorLinked && (
-                    <p className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-600">
-                      <Images size={12} /> Tap a swatch to view
-                    </p>
                   )}
-                </div>
 
-                {/* Exterior and interior sit side by side from sm up, so the
-                    card's full width is used and the block stays short. */}
-                <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-                  {[
-                    { label: "Exterior", colors: exteriorColors },
-                    { label: "Interior", colors: interiorColors },
-                  ]
-                    .filter((group) => group.colors.length > 0)
-                    .map((group) => (
-                      <ColorGroup
-                        key={group.label}
-                        label={group.label}
-                        colors={group.colors}
-                        linkedImage={linkedImage}
-                        activeImage={activeImage}
-                        onPick={showColorImage}
-                      />
-                    ))}
-                </div>
-
-                <p className="mt-4 text-[11px] text-zinc-400 font-light leading-relaxed">
-                  Swatches are an approximation of the factory paint, not a
-                  colour match. Availability varies by market and build slot.
-                </p>
-              </div>
-            )}
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Details */}
-      <section className="mt-16 lg:mt-24 px-6 max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          <div className="lg:col-span-6 flex flex-col">
-            {pricing.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
-                  <Globe size={18} className="text-[#4da8da]" /> Landed Pricing
-                  Estimate
-                  {selectedGrade && (
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-                      {selectedGrade.name}
-                    </span>
-                  )}
-                </h3>
-                <div className="space-y-2.5">
-                  {pricing.map((p, i) => {
-                    // The row for the country the reader picked, if the matrix
-                    // carries one. Matched on the normalised name rather than
-                    // the raw string because the matrix is typed by hand into a
-                    // free-text field ("UK", "united kingdom") while the
-                    // registry is canonical.
-                    const isDestinationRow =
-                      !!selectedDestination &&
-                      countryKey(p.country) ===
-                        countryKey(selectedDestination.formCountry);
-                    return (
-                      <div
-                        key={i}
-                        className={`flex justify-between items-center p-3.5 rounded-xl shadow-sm transition-colors ${
-                          isDestinationRow
-                            ? "bg-sky-50 border border-sky-300"
-                            : "bg-white border border-black/5"
-                        }`}
-                      >
-                        <div>
-                          <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">
-                            {p.country}
-                            {isDestinationRow && (
-                              <span className="ml-2 text-sky-600">
-                                Your destination
-                              </span>
-                            )}
-                          </p>
-                          <p className="text-xs font-bold text-zinc-500 uppercase">
-                            {p.type}
-                          </p>
-                        </div>
-                        <p className="text-lg font-bold text-black tracking-tight">
-                          <span className="text-sm font-medium mr-1 text-[#4da8da]">
-                            {p.currency}
-                          </span>
-                          {p.amount.toLocaleString()}
+                  {grades.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Layers size={17} className="text-zinc-400" />
+                        <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                          Grade
                         </p>
                       </div>
-                    );
-                  })}
-                  <p className="text-[10px] text-zinc-400 italic px-1 pt-1">
-                    * Estimates include logistics and estimated duties. Final
-                    quote provided upon inquiry.
+
+                      <div className="flex flex-wrap gap-2">
+                        {grades.map((grade) => {
+                          const isActive = selectedGrade?.id === grade.id;
+                          return (
+                            <button
+                              key={grade.id}
+                              type="button"
+                              onClick={() => pickGrade(grade.id)}
+                              aria-pressed={isActive}
+                              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-feedback ${
+                                isActive
+                                  ? "bg-black text-white border-black shadow-md"
+                                  : "bg-white text-zinc-600 border-black/10 hover:border-black/40"
+                              }`}
+                            >
+                              {isActive && <Check size={14} strokeWidth={3} />}
+                              {grade.name}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {selectedGrade?.summary && (
+                        <p className="mt-3.5 text-sm text-zinc-600 font-light leading-relaxed">
+                          {selectedGrade.summary}
+                        </p>
+                      )}
+
+                      {selectedGrade && selectedGrade.highlights.length > 0 && (
+                        <GradeHighlights grade={selectedGrade} />
+                      )}
+                    </div>
+                  )}
+
+                  {steeringOptions.length > 1 && (
+                    <div
+                      className={
+                        grades.length > 0
+                          ? "mt-5 pt-5 border-t border-black/5"
+                          : ""
+                      }
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <CarFront size={17} className="text-zinc-400" />
+                        <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                          Steering
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {steeringOptions.map((option) => {
+                          const isActive = activeSteering === option;
+                          return (
+                            <button
+                              key={option}
+                              type="button"
+                              onClick={() => setSelectedSteering(option)}
+                              aria-pressed={isActive}
+                              className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-feedback ${
+                                isActive
+                                  ? "bg-black text-white border-black shadow-md"
+                                  : "bg-white text-zinc-600 border-black/10 hover:border-black/40"
+                              }`}
+                            >
+                              {isActive && <Check size={14} strokeWidth={3} />}
+                              {steeringLabel(option)}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <p className="mt-3 text-[11px] text-zinc-400 font-light leading-relaxed">
+                        Your destination country decides which hand you can
+                        register, and we export this model from both.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <button
+                  onClick={scrollToInquiry}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-black hover:bg-zinc-800 text-white text-sm font-bold uppercase tracking-wider rounded-full transition-colors"
+                >
+                  <Mail size={17} />{" "}
+                  {car.isUpcoming ? "Register Interest" : "Inquire Now"}
+                </button>
+                <a
+                  href={specSheetHref}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Spec sheet (PDF)"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-black/10 hover:border-black/30 hover:bg-zinc-50 text-black text-sm font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-feedback"
+                >
+                  <FileDown size={17} className="shrink-0" /> Spec sheet
+                </a>
+              </div>
+            </Reveal>
+
+            {/* Gallery + the palette that drives it */}
+            <Reveal
+              immediate
+              y={0}
+              scale={0.97}
+              duration={0.8}
+              delay={0.1}
+              className="lg:col-span-7 flex flex-col gap-4 lg:sticky lg:top-24"
+            >
+              <div
+                ref={galleryRef}
+                className="relative aspect-[16/10] w-full rounded-[1.5rem] overflow-hidden bg-black flex items-center justify-center shadow-[0_16px_40px_rgba(0,0,0,0.10)]"
+              >
+                <img
+                  key={activeImage}
+                  src={displayImages[activeImage]}
+                  alt={`${car.make} ${car.model} — view ${activeImage + 1}`}
+                  className="w-full h-full object-cover animate-in fade-in zoom-in-95 duration-500"
+                />
+              </div>
+
+              {displayImages.length > 1 && (
+                <div>
+                  <div className="grid grid-cols-5 sm:grid-cols-6 gap-2.5">
+                    {visibleThumbs.map((img, idx) => (
+                      <button
+                        key={`${img}-${idx}`}
+                        onClick={() => setActiveImage(idx)}
+                        className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-100 border-2 transition-feedback ${activeImage === idx ? "border-black shadow-md" : "border-transparent hover:border-black/20"}`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Thumbnail ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <MoreButton
+                    expanded={thumbsOpen}
+                    hiddenCount={displayImages.length - LIMITS.thumbs}
+                    noun="photo"
+                    onClick={() => setThumbsOpen((v) => !v)}
+                  />
+                </div>
+              )}
+
+              {/* Colours & finishes, next to the photo they change. */}
+              {(exteriorColors.length > 0 || interiorColors.length > 0) && (
+                <div className="mt-2 rounded-2xl border border-black/5 bg-white p-5">
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Palette size={17} className="text-zinc-400" />
+                      <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                        Colours &amp; Finishes
+                      </p>
+                    </div>
+                    {anyColorLinked && (
+                      <p className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-600">
+                        <Images size={12} /> Tap a swatch to view
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Exterior and interior sit side by side from sm up, so the
+                    card's full width is used and the block stays short. */}
+                  <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+                    {[
+                      { label: "Exterior", colors: exteriorColors },
+                      { label: "Interior", colors: interiorColors },
+                    ]
+                      .filter((group) => group.colors.length > 0)
+                      .map((group) => (
+                        <ColorGroup
+                          key={group.label}
+                          label={group.label}
+                          colors={group.colors}
+                          linkedImage={linkedImage}
+                          activeImage={activeImage}
+                          onPick={showColorImage}
+                        />
+                      ))}
+                  </div>
+
+                  <p className="mt-4 text-[11px] text-zinc-400 font-light leading-relaxed">
+                    Swatches are an approximation of the factory paint, not a
+                    colour match. Availability varies by market and build slot.
                   </p>
                 </div>
-              </div>
-            )}
+              )}
+            </Reveal>
+          </div>
+        </section>
 
-            <h3 className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">
-              Technical Specifications
-            </h3>
-            <div className="bg-white rounded-2xl border border-black/5 p-6 shadow-[0_12px_28px_rgba(0,0,0,0.02)]">
-              <dl className="divide-y divide-black/5">
-                {visibleSpecs.map((spec, i) => (
-                  <div
-                    key={`${spec.label}-${i}`}
-                    className="py-3 flex justify-between items-start gap-6 first:pt-0"
-                  >
-                    <dt className="text-zinc-500 text-sm font-medium shrink-0">
-                      {spec.label}
-                    </dt>
-                    <dd className="text-black font-semibold text-right text-sm max-w-[62%] break-words">
-                      {spec.value}
-                    </dd>
+        {/* Details */}
+        <section className="mt-16 lg:mt-24 px-6 max-w-[1400px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            <div className="lg:col-span-6 flex flex-col">
+              {pricing.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
+                    <Globe size={18} className="text-[#4da8da]" /> Landed
+                    Pricing Estimate
+                    {selectedGrade && (
+                      <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                        {selectedGrade.name}
+                      </span>
+                    )}
+                  </h3>
+                  <div className="space-y-2.5">
+                    {pricing.map((p, i) => {
+                      // The row for the country the reader picked, if the matrix
+                      // carries one. Matched on the normalised name rather than
+                      // the raw string because the matrix is typed by hand into a
+                      // free-text field ("UK", "united kingdom") while the
+                      // registry is canonical.
+                      const isDestinationRow =
+                        !!selectedDestination &&
+                        countryKey(p.country) ===
+                          countryKey(selectedDestination.formCountry);
+                      return (
+                        <div
+                          key={i}
+                          className={`flex justify-between items-center p-3.5 rounded-xl shadow-sm transition-colors ${
+                            isDestinationRow
+                              ? "bg-sky-50 border border-sky-300"
+                              : "bg-white border border-black/5"
+                          }`}
+                        >
+                          <div>
+                            <p className="text-[10px] font-black uppercase text-zinc-400 tracking-widest">
+                              {p.country}
+                              {isDestinationRow && (
+                                <span className="ml-2 text-sky-600">
+                                  Your destination
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-xs font-bold text-zinc-500 uppercase">
+                              {p.type}
+                            </p>
+                          </div>
+                          <p className="text-lg font-bold text-black tracking-tight">
+                            <span className="text-sm font-medium mr-1 text-[#4da8da]">
+                              {p.currency}
+                            </span>
+                            {p.amount.toLocaleString()}
+                          </p>
+                        </div>
+                      );
+                    })}
+                    <p className="text-[10px] text-zinc-400 italic px-1 pt-1">
+                      * Estimates include logistics and estimated duties. Final
+                      quote provided upon inquiry.
+                    </p>
                   </div>
-                ))}
-              </dl>
-              <MoreButton
-                expanded={specsOpen}
-                hiddenCount={specRows.length - LIMITS.specs}
-                noun="specification"
-                onClick={() => setSpecsOpen((v) => !v)}
-              />
+                </div>
+              )}
+
+              <h3 className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">
+                Technical Specifications
+              </h3>
+              <div className="bg-white rounded-2xl border border-black/5 p-6 shadow-[0_12px_28px_rgba(0,0,0,0.02)]">
+                <dl className="divide-y divide-black/5">
+                  {visibleSpecs.map((spec, i) => (
+                    <div
+                      key={`${spec.label}-${i}`}
+                      className="py-3 flex justify-between items-start gap-6 first:pt-0"
+                    >
+                      <dt className="text-zinc-500 text-sm font-medium shrink-0">
+                        {spec.label}
+                      </dt>
+                      <dd className="text-black font-semibold text-right text-sm max-w-[62%] break-words">
+                        {spec.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <MoreButton
+                  expanded={specsOpen}
+                  hiddenCount={specRows.length - LIMITS.specs}
+                  noun="specification"
+                  onClick={() => setSpecsOpen((v) => !v)}
+                />
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 flex flex-col">
+              {advantages.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-bold text-black flex items-center gap-2 mb-4">
+                    <Zap
+                      size={18}
+                      className="text-amber-500 fill-amber-500/10"
+                    />{" "}
+                    Providence Advantages
+                  </h3>
+                  <div className="space-y-3">
+                    {visibleAdvantages.map((point, i) => (
+                      <div
+                        key={i}
+                        className="p-5 bg-amber-50/50 rounded-2xl border border-amber-100/70"
+                      >
+                        <h4 className="text-sm font-bold text-zinc-900 mb-1">
+                          {point.title}
+                        </h4>
+                        <p className="text-xs text-zinc-600 leading-relaxed font-light">
+                          {point.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <MoreButton
+                    expanded={advantagesOpen}
+                    hiddenCount={advantages.length - LIMITS.advantages}
+                    noun="advantage"
+                    onClick={() => setAdvantagesOpen((v) => !v)}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="lg:col-span-6 flex flex-col">
-            {advantages.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-lg font-bold text-black flex items-center gap-2 mb-4">
-                  <Zap size={18} className="text-amber-500 fill-amber-500/10" />{" "}
-                  Providence Advantages
-                </h3>
-                <div className="space-y-3">
-                  {visibleAdvantages.map((point, i) => (
-                    <div
-                      key={i}
-                      className="p-5 bg-amber-50/50 rounded-2xl border border-amber-100/70"
-                    >
-                      <h4 className="text-sm font-bold text-zinc-900 mb-1">
-                        {point.title}
-                      </h4>
-                      <p className="text-xs text-zinc-600 leading-relaxed font-light">
-                        {point.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <MoreButton
-                  expanded={advantagesOpen}
-                  hiddenCount={advantages.length - LIMITS.advantages}
-                  noun="advantage"
-                  onClick={() => setAdvantagesOpen((v) => !v)}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Feature chips carry long sentences ("First-class rear compartment
+          {/* Feature chips carry long sentences ("First-class rear compartment
             with two individual executive seats"), so in a half-width column
             they stack one per line. Given the full row they flow several to a
             line and the block collapses to a couple of rows. */}
-        {features.length > 0 && (
-          <div className="mt-10 lg:mt-12">
-            <h3 className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">
-              Included Features
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {visibleFeatures.map((feature, idx) => (
-                <span
-                  key={idx}
-                  className="px-3.5 py-1.5 bg-zinc-100/80 text-zinc-800 text-[11px] font-bold uppercase tracking-wider rounded-lg border border-black/5"
-                >
-                  {feature}
-                </span>
-              ))}
+          {features.length > 0 && (
+            <div className="mt-10 lg:mt-12">
+              <h3 className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase mb-4">
+                Included Features
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {visibleFeatures.map((feature, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3.5 py-1.5 bg-zinc-100/80 text-zinc-800 text-[11px] font-bold uppercase tracking-wider rounded-lg border border-black/5"
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
+              <MoreButton
+                expanded={featuresOpen}
+                hiddenCount={features.length - LIMITS.features}
+                noun="feature"
+                onClick={() => setFeaturesOpen((v) => !v)}
+              />
             </div>
-            <MoreButton
-              expanded={featuresOpen}
-              hiddenCount={features.length - LIMITS.features}
-              noun="feature"
-              onClick={() => setFeaturesOpen((v) => !v)}
-            />
-          </div>
-        )}
-      </section>
+          )}
+        </section>
 
-      {/* Inquiry Section.
+        {/* Inquiry Section.
           `id` is load-bearing, not decoration: the destination panel's primary
           CTA is an `#inquiry` anchor, and without a matching id the browser
           appends the fragment to the address bar and scrolls nowhere. Every
           other page in the repo that links to #inquiry ships this id. */}
-      <section
-        id="inquiry"
-        ref={inquiryRef}
-        className="mt-16 lg:mt-24 px-6 py-16 bg-zinc-50 border-y border-black/5 scroll-mt-24"
-      >
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-4">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter uppercase leading-[0.85] mb-4">
-              {car.isUpcoming ? (
-                <>
-                  Register <br />{" "}
-                  <span className="text-[#4da8da]">Interest</span>
-                </>
-              ) : (
-                <>
-                  Start Your <br />{" "}
-                  <span className="text-[#4da8da]">Purchase</span>
-                </>
-              )}
-            </h2>
-            <p className="text-zinc-500 text-base font-light leading-relaxed">
-              {car.isUpcoming
-                ? `We'll hold your specification for this ${car.model} and come back with a landed cost for your country as soon as it's confirmed for release.`
-                : selectedDestination
-                  ? `Our team will verify the availability of this ${car.model} and come back with a landed cost into ${selectedDestination.name}, itemised, before you commit to anything.`
-                  : `Our team will verify the availability of this ${car.model} and provide a landed cost estimate for your destination country.`}
-            </p>
+        <section
+          id="inquiry"
+          ref={inquiryRef}
+          className="mt-16 lg:mt-24 px-6 py-16 bg-zinc-50 border-y border-black/5 scroll-mt-24"
+        >
+          <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div className="lg:col-span-4">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter uppercase leading-[0.85] mb-4">
+                {car.isUpcoming ? (
+                  <>
+                    Register <br />{" "}
+                    <span className="text-[#4da8da]">Interest</span>
+                  </>
+                ) : (
+                  <>
+                    Start Your <br />{" "}
+                    <span className="text-[#4da8da]">Purchase</span>
+                  </>
+                )}
+              </h2>
+              <p className="text-zinc-500 text-base font-light leading-relaxed">
+                {car.isUpcoming
+                  ? `We'll hold your specification for this ${car.model} and come back with a landed cost for your country as soon as it's confirmed for release.`
+                  : selectedDestination
+                    ? `Our team will verify the availability of this ${car.model} and come back with a landed cost into ${selectedDestination.name}, itemised, before you commit to anything.`
+                    : `Our team will verify the availability of this ${car.model} and provide a landed cost estimate for your destination country.`}
+              </p>
+            </div>
+            <div className="lg:col-span-8">
+              <RequestForm
+                prefill={prefillData}
+                exteriorColorOptions={exteriorColors}
+                interiorColorOptions={interiorColors}
+                gradeOptions={grades.map((g) => g.name)}
+                selectedGrade={selectedGrade?.name ?? ""}
+                steeringOptions={steeringOptions}
+                selectedSteering={activeSteering}
+                selectedDestination={selectedDestination?.formCountry}
+              />
+            </div>
           </div>
-          <div className="lg:col-span-8">
-            <RequestForm
-              prefill={prefillData}
-              exteriorColorOptions={exteriorColors}
-              interiorColorOptions={interiorColors}
-              gradeOptions={grades.map((g) => g.name)}
-              selectedGrade={selectedGrade?.name ?? ""}
-              steeringOptions={steeringOptions}
-              selectedSteering={activeSteering}
-              selectedDestination={selectedDestination?.formCountry}
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* The page's one secondary CTA, and it sits here — below the inquiry
+        {/* The page's one secondary CTA, and it sits here — below the inquiry
           form — on purpose. CLAUDE.md: nothing competes with the primary CTA,
           and a panel of links placed between the reader and the form reads as
           body copy and costs the form its traffic. */}
-      {selectedDestination && (
-        <DestinationGuides
-          destination={selectedDestination}
-          guides={destinationGuides[selectedDestination.slug] ?? []}
-        />
-      )}
+        {selectedDestination && (
+          <DestinationGuides
+            destination={selectedDestination}
+            guides={destinationGuides[selectedDestination.slug] ?? []}
+          />
+        )}
 
-      <FAQSection />
+        <FAQSection />
+      </div>
     </main>
   );
 }
@@ -1080,7 +1092,7 @@ function ColorGroup({
           const swatch = (
             <>
               <span
-                className={`h-9 w-9 rounded-full border shadow-[0_3px_10px_rgba(0,0,0,0.08)] transition-transform ${isShowing ? "border-black ring-2 ring-black ring-offset-2" : "border-black/10"} ${isLinked ? "group-hover:scale-105" : ""}`}
+                className={`h-9 w-9 rounded-full border shadow-[0_3px_10px_rgba(0,0,0,0.08)] transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${isShowing ? "border-black ring-2 ring-black ring-offset-2" : "border-black/10"} ${isLinked ? "group-hover:scale-[1.03] transition-feedback" : ""}`}
                 style={swatchStyle(color)}
                 aria-hidden="true"
               />

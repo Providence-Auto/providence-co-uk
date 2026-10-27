@@ -67,7 +67,7 @@ export default function WhatsAppCTA() {
             Chat on WhatsApp
             <ArrowRight
               size={18}
-              className="group-hover:translate-x-1 transition-transform"
+              className="group-hover:translate-x-1 transition-feedback"
             />
           </a>
         </div>

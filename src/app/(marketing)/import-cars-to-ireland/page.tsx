@@ -1180,8 +1180,9 @@ export default function ImportCarsToIrelandPage() {
                 </p>
                 <p>
                   Because it is a percentage of Irish retail value, a low
-                  purchase price abroad does not reduce your VRT. Choosing a lower-CO₂
-                  car does — and it is the single biggest lever on the page.
+                  purchase price abroad does not reduce your VRT. Choosing a
+                  lower-CO₂ car does — and it is the single biggest lever on the
+                  page.
                 </p>
               </div>
 
@@ -1390,9 +1391,9 @@ export default function ImportCarsToIrelandPage() {
                 <>
                   Because each charge compounds on the last, that €1,545 duty
                   bill really costs about <strong>€1,900</strong> once the VAT
-                  charged on top of it is counted. Proving origin before you commit
-                  is worth more than anything you will win haggling over the
-                  purchase price.
+                  charged on top of it is counted. Proving origin before you
+                  commit is worth more than anything you will win haggling over
+                  the purchase price.
                 </>
               }
             />
@@ -1514,8 +1515,8 @@ export default function ImportCarsToIrelandPage() {
                   The right market depends on the car, not the other way round.
                   We export directly from seven countries and compare the{" "}
                   <strong>total landed cost across every one</strong> that can
-                  supply your specification — then export from where it lands cheapest,
-                  which is not always where you expected.
+                  supply your specification — then export from where it lands
+                  cheapest, which is not always where you expected.
                 </>
               }
             />
@@ -1769,8 +1770,8 @@ export default function ImportCarsToIrelandPage() {
               point={
                 <>
                   Both deadlines start the day the car lands, not the day you
-                  pay for it. We prepare the customs declaration, calculate your VRT
-                  and assemble the NCTS pack before the car arrives, so{" "}
+                  pay for it. We prepare the customs declaration, calculate your
+                  VRT and assemble the NCTS pack before the car arrives, so{" "}
                   <strong>
                     the 30-day clock starts with your paperwork already done
                   </strong>
@@ -1873,7 +1874,7 @@ export default function ImportCarsToIrelandPage() {
               Browse all import guides
               <ArrowRight
                 size={15}
-                className="group-hover:translate-x-1 transition-transform"
+                className="group-hover:translate-x-1 transition-feedback"
               />
             </Link>
           </section>
@@ -1895,7 +1896,7 @@ export default function ImportCarsToIrelandPage() {
                     </span>
                     <span
                       aria-hidden="true"
-                      className="shrink-0 mt-1 text-zinc-400 text-lg leading-none transition-transform group-open:rotate-45"
+                      className="shrink-0 mt-1 text-zinc-400 text-lg leading-none transition-transform duration-(--pa-spring-smooth-duration) ease-(--pa-spring-smooth) group-open:rotate-45"
                     >
                       +
                     </span>
@@ -1939,9 +1940,9 @@ export default function ImportCarsToIrelandPage() {
               <p className="text-base md:text-lg text-zinc-600 font-light leading-relaxed">
                 Give us the make, model and rough specification you are after
                 and we will come back with the full landed cost — purchase
-                price, shipping, duty, VAT, VRT and NOx — exported from whichever
-                of our seven source countries lands it cheapest. No cost, and no
-                obligation to proceed.
+                price, shipping, duty, VAT, VRT and NOx — exported from
+                whichever of our seven source countries lands it cheapest. No
+                cost, and no obligation to proceed.
               </p>
             </div>
 

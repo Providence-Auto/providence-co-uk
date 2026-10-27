@@ -405,7 +405,8 @@ export default function AboutUsPage() {
                   {OFFICE_COUNTRIES_SENTENCE}
                 </span>
                 . You choose the car; we find it, inspect it and export it to
-                your port, then support your clearance with the full document pack.
+                your port, then support your clearance with the full document
+                pack.
               </Reveal>
 
               <Reveal
@@ -667,10 +668,9 @@ export default function AboutUsPage() {
                   We are not a marketplace, and not a broker network.
                 </h2>
                 <p className="text-lg text-zinc-500 font-light">
-                  For 15+ years we've found, inspected and exported
-                  every car ourselves — through our own people in the source
-                  country, never a chain of intermediaries who never see the
-                  vehicle.
+                  For 15+ years we've found, inspected and exported every car
+                  ourselves — through our own people in the source country,
+                  never a chain of intermediaries who never see the vehicle.
                 </p>
               </Reveal>
             </div>
@@ -756,7 +756,7 @@ export default function AboutUsPage() {
                     y={24}
                     delay={i * 0.06}
                     duration={0.5}
-                    className="group flex flex-col items-start p-7 rounded-[1.75rem] bg-white/[0.06] border border-white/10 sm:bg-white/[0.04] sm:backdrop-blur-sm hover:border-white/25 hover:bg-white/[0.09] sm:hover:bg-white/[0.07] transition-all duration-300"
+                    className="group flex flex-col items-start p-7 rounded-[1.75rem] bg-white/[0.06] border border-white/10 sm:bg-white/[0.04] sm:backdrop-blur-sm hover:border-white/25 hover:bg-white/[0.09] sm:hover:bg-white/[0.07] transition-feedback"
                   >
                     <div className="p-3 bg-white/10 border border-white/15 rounded-2xl group-hover:bg-white group-hover:border-white transition-colors duration-500 mb-5">
                       <pillar.icon className="text-white h-5 w-5 group-hover:text-black transition-colors duration-500" />
@@ -823,7 +823,7 @@ export default function AboutUsPage() {
                           </div>
                           <ArrowRight
                             size={14}
-                            className="mt-1 shrink-0 text-zinc-300 group-hover:text-sky-600 group-hover:translate-x-1 transition-all"
+                            className="mt-1 shrink-0 text-zinc-300 group-hover:text-sky-600 group-hover:translate-x-1 transition-feedback"
                           />
                         </Link>
                       </li>
@@ -836,7 +836,7 @@ export default function AboutUsPage() {
                     Explore the full network
                     <ArrowRight
                       size={14}
-                      className="group-hover:translate-x-1 transition-transform"
+                      className="group-hover:translate-x-1 transition-feedback"
                     />
                   </Link>
                 </div>
@@ -943,7 +943,7 @@ export default function AboutUsPage() {
                   Meet the sales team
                   <ArrowRight
                     size={14}
-                    className="group-hover:translate-x-1 transition-transform"
+                    className="group-hover:translate-x-1 transition-feedback"
                   />
                 </Link>
               </div>
@@ -991,7 +991,7 @@ export default function AboutUsPage() {
                   <Reveal key={a.title} y={24} delay={i * 0.08} duration={0.5}>
                     <Link
                       href={a.href}
-                      className="group flex h-full flex-col items-start p-8 rounded-[2rem] bg-[#FAFAFA] border border-black/5 hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-300"
+                      className="group flex h-full flex-col items-start p-8 rounded-[2rem] bg-[#FAFAFA] border border-black/5 hover:border-sky-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-feedback"
                     >
                       <div className="p-3 bg-black/5 border border-black/10 rounded-2xl group-hover:bg-black group-hover:border-black transition-colors duration-500 mb-5">
                         <a.icon className="text-black h-6 w-6 group-hover:text-white transition-colors duration-500" />
@@ -1006,7 +1006,7 @@ export default function AboutUsPage() {
                         {a.cta}
                         <ArrowRight
                           size={14}
-                          className="group-hover:translate-x-1 transition-transform"
+                          className="group-hover:translate-x-1 transition-feedback"
                         />
                       </span>
                     </Link>
@@ -1045,12 +1045,12 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/request"
-                className="group inline-flex items-center justify-center gap-2 px-10 py-5 text-lg font-bold text-white bg-black rounded-full transition-transform hover:scale-105 shadow-[0_10px_40px_rgba(0,0,0,0.1)]"
+                className="group inline-flex items-center justify-center gap-2 px-10 py-5 text-lg font-bold text-white bg-black rounded-full transition-feedback hover:scale-[1.03] shadow-[0_10px_40px_rgba(0,0,0,0.1)]"
               >
                 Start your request
                 <ArrowRight
                   size={18}
-                  className="group-hover:translate-x-1 transition-transform"
+                  className="group-hover:translate-x-1 transition-feedback"
                 />
               </Link>
             </Reveal>

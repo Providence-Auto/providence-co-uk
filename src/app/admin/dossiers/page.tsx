@@ -139,7 +139,7 @@ export default function InventoryPage() {
         </div>
 
         <Link href="/admin/specs">
-          <Button className="rounded-2xl bg-black text-white h-12 px-8 hover:scale-[1.02] transition-transform gap-2 shadow-xl shadow-black/5">
+          <Button className="rounded-2xl bg-black text-white h-12 px-8 hover:scale-[1.02] transition-feedback gap-2 shadow-xl shadow-black/5">
             <Plus size={18} /> New Template
           </Button>
         </Link>

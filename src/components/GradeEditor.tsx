@@ -147,7 +147,7 @@ function GradeRow({
           value={grade.name}
           onChange={(e) => onChange({ name: e.target.value })}
           placeholder="Grade name, e.g. Ti-L Reserve"
-          className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all font-bold"
+          className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-bold"
         />
 
         {/* The grade the public page opens on. Exactly one, so this is a
@@ -161,7 +161,7 @@ function GradeRow({
               ? "This grade is shown first on the car page"
               : "Show this grade first on the car page"
           }
-          className={`shrink-0 inline-flex items-center gap-1.5 h-11 px-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-all ${
+          className={`shrink-0 inline-flex items-center gap-1.5 h-11 px-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-feedback ${
             grade.isDefault
               ? "border-amber-300 bg-amber-50 text-amber-700"
               : "border-zinc-200 bg-white text-zinc-400 hover:border-zinc-400"
@@ -185,7 +185,7 @@ function GradeRow({
         >
           <ChevronDown
             size={18}
-            className={`transition-transform ${open ? "rotate-180" : ""}`}
+            className={`transition-transform duration-(--pa-spring-smooth-duration) ease-(--pa-spring-smooth) ${open ? "rotate-180" : ""}`}
           />
         </Button>
 
@@ -221,7 +221,7 @@ function GradeRow({
               value={grade.summary || ""}
               onChange={(e) => onChange({ summary: e.target.value })}
               placeholder="e.g. The flagship — air suspension, 22-inch wheels, rear entertainment"
-              className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+              className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
             />
             <p className="text-[10px] text-zinc-400 pl-1 font-medium">
               Shown under the grade name on the car page. Optional.
@@ -274,7 +274,7 @@ function GradeRow({
                   }
                 }}
                 placeholder="e.g. 22-inch step-machined alloy wheels"
-                className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
               />
               <Button
                 type="button"
@@ -311,7 +311,7 @@ function GradeRow({
                       } as Partial<VehicleGrade>)
                     }
                     placeholder={baseSpecs[key] || "Same as base spec"}
-                    className="h-10 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all text-sm"
+                    className="h-10 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback text-sm"
                   />
                 </div>
               ))}
@@ -363,7 +363,7 @@ function GradeRow({
                   }
                 }}
                 placeholder="e.g. Head-Up Display"
-                className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
               />
               <Button
                 type="button"
@@ -390,7 +390,7 @@ function GradeRow({
                   type="button"
                   onClick={() => onChange({ imageIndex: undefined })}
                   aria-pressed={grade.imageIndex === undefined}
-                  className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-all ${
+                  className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-feedback ${
                     grade.imageIndex === undefined
                       ? "border-black bg-black text-white"
                       : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400"
@@ -406,7 +406,7 @@ function GradeRow({
                     onClick={() => onChange({ imageIndex: imgIdx })}
                     aria-pressed={grade.imageIndex === imgIdx}
                     title={`Link photo ${imgIdx + 1}`}
-                    className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-feedback ${
                       grade.imageIndex === imgIdx
                         ? "border-sky-500 ring-2 ring-sky-200"
                         : "border-zinc-200 hover:border-zinc-400"
@@ -608,7 +608,7 @@ export function SteeringOptionsEditor({
                   ? "At least one steering configuration has to stay selected"
                   : undefined
               }
-              className={`flex-1 h-11 rounded-xl text-xs font-bold border transition-all ${
+              className={`flex-1 h-11 rounded-xl text-xs font-bold border transition-feedback ${
                 active
                   ? "bg-black text-white border-black shadow-md"
                   : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"

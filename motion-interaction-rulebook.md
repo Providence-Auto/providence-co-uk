@@ -22,6 +22,8 @@ moves*.
 |---|---|
 | `src/lib/fluid.ts` | The spring tokens, `springTransition()` for framer-motion, `cssSpring()`, the rubber band, flick projection, the interruptible `Spring` and `VelocityTracker`. Pure, tested in `src/lib/__tests__/fluid.test.ts`. |
 | `src/app/globals.css` → "Motion tokens" | `--pa-spring-{smooth,snappy,bouncy,throw}` easings and their `-duration` pairs, for CSS transitions. Generated from `fluid.ts`; a test fails if they drift. |
+| `src/app/globals.css` → top of file | The `hover:` variant gated to `(hover: hover) and (pointer: fine)`; the `transition-feedback` utility (movement on `snappy`, colour at 150 ms) that every kind-B element uses; the press rule (`scale: 0.98`, no transition on pointer-down) for links and buttons that carry it. |
+| `src/components/__tests__/motion-rules.test.tsx` | Fails on `transition-all`, `transition={{ duration: … }}`, a hover scale over 1.03, `snap-mandatory`, `overflow-x-hidden` on `<main>`, or a scripted `behavior: "smooth"`; checks `<Reveal>`'s limits. |
 | `src/components/Reveal.tsx` + the reveal runtime in `src/app/layout.tsx` | Every scroll or load appearance. |
 | `src/components/MotionProvider.tsx` | `MotionConfig reducedMotion="user"` — reduced motion for every framer-motion animation. |
 | `src/lib/motion.ts` | Timeline maths for one-shot visualisations (odometer, landed-cost bar, voyage route). |
@@ -499,19 +501,17 @@ reduced-motion visuals — are manual, on a phone, when a component ships.
 
 ## 10. What predates this rule book
 
-Written down so nobody copies it as precedent. **Do not migrate these in
-passing**; when you are already changing one for another reason, bring it onto
-a token in the same change.
+Written down so nobody copies it as precedent. The whole site was migrated
+onto this rule book on 2026-10-27 (branch `feat/fluid-motion-site`); what is
+left below is kept on purpose.
 
 | Where | What | Status |
 |---|---|---|
-| Reveal runtime (`layout.tsx`), `.pa-reveal-immediate` | `cubic-bezier(0.16, 1, 0.3, 1)`, 600 ms | Kept by decision — kind A, §5.1 |
-| `appleEase` timed transitions — `HomeClient`, `B2CClient`, `saas`, `InstagramFeed` | 0.5–1.5 s eases on hero/media entrances | Kind A/G one-shots; fine until touched |
-| `transition={{ duration: 0.3–0.35 }}` — the five landing components, `DestinationPicker`, `requestForm`, the Ireland calculator | Timed enter/exit and state changes | Kind C/D — **move to `springTransition()`** when touched |
-| `.pa-lift`, `.pa-step-in`, `.pa-fan` transitions in `globals.css` | 0.4–0.5 s `appleEase` | Kind B/C — move to the `snappy`/`smooth` CSS pairs when touched |
-| `InstagramFeed`, `vehicleShowcaseCarousel` | `snap-mandatory` strips | Move to `snap-proximity` per `GalleryPreview` when touched |
+| Reveal runtime (`layout.tsx`), `.pa-reveal-immediate` | `cubic-bezier(0.16, 1, 0.3, 1)`, 600 ms | Kept by decision — kind A, §5.1. `<Reveal>` now caps travel at 24 px and delay at 0.4 s itself |
+| `.pa-fan` deck hover (`/about-us` values) | Lifts 1rem and scales 1.12, ungated by pointer type | Kept by decision: the cards overlap, the lift is what uncovers one, and on a touch screen at `lg` a tap's sticky `:hover` is the only way in. Timing is on the `snappy` pair |
 | `DotGlobe`, `RadialBurst` drag | The spin carries the last pointer delta, then eases back to its idle speed; no bounds | Fine — an unbounded rotation has nothing to rubber-band against. Measure release velocity with `VelocityTracker` if either is reworked |
-| 21 files with `overflow-x-hidden` on `<main>` (counted 2026-10-27) | iOS strip bug | Fix per §5.5 whenever that page is touched |
+| `transition-colors` / `transition-opacity` with `duration-300`–`700` | Timed colour and fade changes | Fine — nothing travels (§5.2) |
+| shadcn components in `src/components/ui/` and `src/app/components/ui/` | Upstream `transition-all`, `tw-animate-css` enter/exit | System components, left as shipped |
 | `landing-page-playbook.md` §4.9, §10.3 | Surge's timed motion vocabulary (exits `cubic-bezier(.4, 0, .6, 1)`, word swap, media entrance) | Superseded for anything a person causes; still describes one-shot kind-G recipes |
 
 ---

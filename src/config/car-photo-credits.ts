@@ -12,6 +12,8 @@
 // heroes are keyed "blog/<slug>" and captioned under the hero by ArticleShell.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import dealerSourcingHeroes from "./dealer-sourcing-heroes.json";
+
 export type PhotoCredit = {
   /** Commons file name. */
   title: string;
@@ -744,6 +746,25 @@ export const CAR_PHOTO_CREDITS: Record<string, PhotoCredit> = {
       "https://commons.wikimedia.org/wiki/File:MITSUBISHI_PAJERO_(V80-,_NS,_NT,_NW,_NX)_China_(41).jpg",
   },
 };
+
+// ── Dealer-sourcing cluster heroes ──
+// One Commons ship or port photograph serves several posts, so the credits are
+// generated per slug from the same file that builds the images
+// (scripts/build-dealer-sourcing-heroes.mjs). A `reuse` slug carries the credit
+// of the existing post whose hero it copies.
+{
+  const photos = dealerSourcingHeroes.photos as Record<
+    string,
+    PhotoCredit & { file: string; alt: string }
+  >;
+  for (const [slug, key] of Object.entries(dealerSourcingHeroes.heroes)) {
+    const { title, author, licence, source } = photos[key];
+    CAR_PHOTO_CREDITS[`blog/${slug}`] = { title, author, licence, source };
+  }
+  for (const [slug, from] of Object.entries(dealerSourcingHeroes.reuse)) {
+    CAR_PHOTO_CREDITS[`blog/${slug}`] = CAR_PHOTO_CREDITS[`blog/${from}`];
+  }
+}
 
 /**
  * The credit key for an image path, or null for a path that needs none (our
