@@ -20,6 +20,7 @@
 
 import { ARTICLE_CTAS, blogCtaFields } from "./article-ctas";
 import { COUNTRY_BLOG_POSTS } from "./blog-countries";
+import { DEALER_SOURCING_POSTS } from "./blog-dealer-sourcing";
 import { JAPAN_UK_POSTS } from "./blog-japan-uk";
 
 export type BlogCluster =
@@ -27,6 +28,10 @@ export type BlogCluster =
   | "Tax & Rules"
   | "Source Country"
   | "Guides"
+  // Sourcing and importing cars from overseas, for dealers — the pillar, its
+  // supporting guides and one guide per source country
+  // (src/config/blog-dealer-sourcing.ts).
+  | "Dealer Sourcing"
   // Japanese cars into the UK — the pillar and its supporting guides
   // (src/config/blog-japan-uk.ts). Research: japanese-car-import-uk-research.md.
   | "Japan to UK"
@@ -1309,6 +1314,7 @@ export const BLOG_POSTS: BlogPost[] = [
   ...JAPAN_UK_POSTS,
   ...UK_IVA_POSTS,
   ...COUNTRY_BLOG_POSTS,
+  ...DEALER_SOURCING_POSTS,
 ];
 
 // ── Roadmap — remaining cluster posts to build in later batches ──────────────
@@ -1470,6 +1476,7 @@ export function getSuggestedPosts(options?: {
 
 export const CLUSTER_ORDER: BlogCluster[] = [
   "Guides",
+  "Dealer Sourcing",
   "Japan to UK",
   "Japan",
   "United Kingdom",
