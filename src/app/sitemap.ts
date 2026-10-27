@@ -5,14 +5,12 @@ import { getAllSpecDossiers } from "@/actions/spec-actions";
 import { BLOG_BASE_PATH, BLOG_POSTS } from "@/config/blog";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
 import { DEALER_SOURCING_PATH } from "@/config/dealer-sourcing";
-import { destinationPath } from "@/config/destinations";
 import {
   getPopulatedCategories,
   NEWS_ARTICLES,
   NEWS_BASE_PATH,
   NEWS_CATEGORY_BASE_PATH,
 } from "@/config/news";
-import { parseDestinations } from "@/lib/vehicle-destinations";
 
 /**
  * The sitemap is DB-backed, so it must never be prerendered.
@@ -33,6 +31,23 @@ export const dynamic = "force-dynamic";
 
 /** Dossier statuses that render publicly; anything else redirects to "/". */
 const LIVE_DOSSIER_STATUSES = new Set(["Active", "Published"]);
+
+/**
+ * The most recent of a set of dates, or undefined when none parses.
+ *
+ * `lastmod` is only worth sending when it is true. Google uses it "if it's
+ * consistently and verifiably accurate", and this file used to stamp every
+ * static, country and category page with the time of the request — so a
+ * crawler saw half the site claim to have changed on every visit and learnt to
+ * discount the field for the whole file, the accurate news and car dates
+ * included. A page with no real date now carries no `lastmod` at all.
+ */
+function latest(dates: (string | Date | null | undefined)[]): Date | undefined {
+  const times = dates
+    .map((d) => (d ? new Date(d).getTime() : Number.NaN))
+    .filter(Number.isFinite);
+  return times.length ? new Date(Math.max(...times)) : undefined;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://www.providenceauto.co.uk";
@@ -64,7 +79,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     COUNTRY_BASE_PATH,
   ].map((route) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+    // The two indexes change when something is published into them; the rest
+    // have no recorded edit date, so they send none rather than a false one.
+    lastModified:
+      route === BLOG_BASE_PATH
+        ? latest(BLOG_POSTS.map((post) => post.updatedDate))
+        : route === NEWS_BASE_PATH
+          ? latest(NEWS_ARTICLES.map((article) => article.updatedDate))
+          : undefined,
     changeFrequency: "daily" as const,
     priority: 1,
   }));
@@ -72,7 +94,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 1a. Source-country landing pages (one per country we buy in).
   const countryRoutes = SOURCE_COUNTRY_PAGES.map((country) => ({
     url: `${baseUrl}${COUNTRY_BASE_PATH}/${country.slug}`,
-    lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.9,
   }));
@@ -106,7 +127,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ("car industry news", "new car releases").
   const newsCategoryRoutes = getPopulatedCategories().map((category) => ({
     url: `${baseUrl}${NEWS_CATEGORY_BASE_PATH}/${category.slug}`,
-    lastModified: new Date(),
+    lastModified: latest(
+      NEWS_ARTICLES.filter((a) => a.category === category.label).map(
+        (a) => a.updatedDate,
+      ),
+    ),
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
@@ -124,47 +149,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     throw new Error("[sitemap] Failed to load spec dossiers");
   }
   //
-  // Each live car also emits one URL per destination market it is offered
-  // into — /b2c/gallery/<car>/import-to-<destination> — because each answers a
-  // different query ("import a Land Cruiser to Kenya" is not "Land Cruiser")
-  // with a different rule set and a different reading list.
-  //
-  // Only `full` destinations are listed. A `listed` one is a market we ship to
-  // with nothing market-specific published for it yet, so its page is close to
-  // a copy of the car page; it is served with `noindex, follow` and kept out of
-  // here rather than handed to Google as thin content. See
-  // src/config/destinations.ts for what separates the two.
+  // The car page only. Its /import-to-<destination> variants canonicalise to
+  // it (src/lib/car-page.ts), and a sitemap must list canonical URLs alone —
+  // listing them here put 99 near-duplicates in front of 20 car pages, and
+  // Google left both "Discovered - currently not indexed".
   const carRoutes = dossierResult.data
     .filter((car: any) => LIVE_DOSSIER_STATUSES.has(car.status))
-    .flatMap((car: any) => {
-      const key = car.slug || car._id;
-      const lastModified = car.updatedAt ? new Date(car.updatedAt) : new Date();
-
-      return [
-        {
-          url: `${baseUrl}/b2c/gallery/${key}`,
-          lastModified,
-          changeFrequency: "weekly" as const,
-          priority: 0.8,
-        },
-        ...parseDestinations(car.destinations)
-          .filter((destination) => destination.depth === "full")
-          .map((destination) => ({
-            url: `${baseUrl}${destinationPath(key, destination.slug)}`,
-            lastModified,
-            changeFrequency: "weekly" as const,
-            // A rung below the car page itself: it is the more specific page,
-            // but the car page is the one that should rank for the model name.
-            priority: 0.7,
-          })),
-      ];
-    });
+    .map((car: any) => ({
+      url: `${baseUrl}/b2c/gallery/${car.slug || car._id}`,
+      lastModified: latest([car.updatedAt]),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
   // 3. Sales-member profile pages (/team/[slug]) — published only.
   const profiles = await listPublishedProfileSlugs();
   const profileRoutes = profiles.map((p) => ({
     url: `${baseUrl}/team/${p.slug}`,
-    lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+    lastModified: latest([p.updatedAt]),
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));

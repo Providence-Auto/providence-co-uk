@@ -115,8 +115,8 @@ export function DestinationEditor({
                     <p className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">
                       {isFeatured ? "Button" : "Text link"} ·{" "}
                       {destination.depth === "full"
-                        ? "Own page, indexed"
-                        : "Own page, not indexed"}
+                        ? "Market rules shown"
+                        : "No market rules yet"}
                     </p>
                   </div>
 
