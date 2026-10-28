@@ -22,10 +22,12 @@ export default function AudiQ9RightHandDriveImportMarkets() {
         <Strong>Audi Q9</Strong> with a full published specification is the
         British one. Ireland is reported to be getting the car at the end of
         2026. Australia is expected in 2027 but has not been announced. For a
-        dealer anywhere else that drives on the left, that makes the United
-        Kingdom the source of a right-hand-drive Q9 rather than one option among
-        several. This report is written for the dealer first; a private buyer
-        will find their answer under &ldquo;Does this apply to you?&rdquo;.
+        dealer anywhere else that drives on the left, our own teams can export a
+        right-hand-drive Q9 from the United Kingdom, Australia or New Zealand
+        &mdash; and today only the British car has a specification Audi has
+        published in full. This report is written for the dealer first; a
+        private buyer will find their answer under &ldquo;Does this apply to
+        you?&rdquo;.
       </Lead>
 
       <KeyTakeaways
@@ -34,7 +36,9 @@ export default function AudiQ9RightHandDriveImportMarkets() {
             <Strong>Britain is the published right-hand-drive market.</Strong>{" "}
             Audi UK lists two grades and a full configurator. No other
             right-hand-drive Audi market had published a Q9 specification when
-            we checked on 28 October 2026.
+            we checked on 28 October 2026. Our own teams can also export the Q9
+            from Australia and New Zealand, on those markets&rsquo; own
+            specification.
           </>,
           <>
             <Strong>Ireland is reported, Australia is expected.</Strong> Rev.ie
@@ -79,7 +83,7 @@ export default function AudiQ9RightHandDriveImportMarkets() {
             "United Kingdom",
             "On sale, deliveries from November 2026",
             "Audi UK configurator",
-            "The source market for a right-hand-drive Q9",
+            "A source market, and the one with Audi's published specification",
           ],
           [
             "Ireland",
@@ -188,8 +192,10 @@ export default function AudiQ9RightHandDriveImportMarkets() {
         where Audi has not announced the Q9 &mdash; Kenya, Tanzania, Sri Lanka
         and the Caribbean markets among them. Malta and Cyprus drive on the left
         too, but as EU markets they face the same import VAT question as
-        Ireland, so check local Audi supply there first. For those buyers, the
-        British specification is the car.
+        Ireland, so check local Audi supply there first. For those buyers, a
+        right-hand-drive Q9 can come from the United Kingdom, Australia or New
+        Zealand, and the British specification is the one published in full
+        today.
       </P>
 
       <P>

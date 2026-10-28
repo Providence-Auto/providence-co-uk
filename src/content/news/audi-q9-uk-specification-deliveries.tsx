@@ -187,9 +187,11 @@ export default function AudiQ9UkSpecificationDeliveries() {
           time you order.
         </LI>
         <LI>
-          <Strong>The United Kingdom itself</Strong> is the source, not a
+          <Strong>The United Kingdom itself</Strong> is a source, not a
           destination, for this car. A British buyer orders from an Audi
-          retailer.
+          retailer. Our own teams can also export a right-hand-drive Q9 from
+          Australia and New Zealand, where the grade and equipment follow that
+          market&rsquo;s own specification.
         </LI>
       </UL>
 

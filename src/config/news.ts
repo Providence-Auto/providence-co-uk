@@ -330,7 +330,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     description:
       "As of 28 October 2026 only the UK has a published right-hand-drive Audi Q9. What that means for dealers importing into Kenya, Sri Lanka and other RHD markets.",
     excerpt:
-      "Ireland is reported, Australia is expected, and everywhere else that drives on the left is silent. For a dealer, that makes Britain the source of a right-hand-drive Q9 — and the 3.0-litre diesel the only engine to price.",
+      "Ireland is reported, Australia is expected, and everywhere else that drives on the left is silent. For a dealer, a right-hand-drive Q9 can come from Britain, Australia or New Zealand — and the 3.0-litre diesel is the only right-hand-drive engine Audi has published.",
     category: "Industry",
     dateline: "Bratislava, Slovakia",
     keywords: [
