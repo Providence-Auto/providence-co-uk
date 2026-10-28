@@ -142,7 +142,7 @@ export default function Body() {
       </P>
       <UL>
         <CheckLI>
-          <Strong>Battery EV relief (before 31 Dec 2026)</Strong> — up to €5,000
+          <Strong>Battery EV relief (by 31 Dec 2028)</Strong> — up to €5,000
           off VRT, the lowest 7% band, and zero NOx. A closing window.
         </CheckLI>
         <CheckLI>
