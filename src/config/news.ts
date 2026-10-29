@@ -216,6 +216,324 @@ const AUTHOR = "Providence Auto";
 
 export const NEWS_ARTICLES: NewsArticle[] = [
   {
+    slug: "australia-eu-free-trade-agreement-car-tariff",
+    cta: ARTICLE_CTAS.neutral,
+    title: "Australia's 5% duty on European cars is going — but not yet",
+    h1: "Australia–EU Free Trade Agreement: The 5% Duty on European Cars Is Going, but Not Yet",
+    seoTitle: "Australia–EU FTA: When the 5% Car Tariff Goes",
+    description:
+      "The Australia–EU deal removes the 5% duty on EU-built cars, but it is not yet in force. What A$5,000 of duty really costs, LCT, and why not to wait for it.",
+    excerpt:
+      "Dealers are urging Parliament to pass the EU agreement. Signature is expected late 2026 or early 2027, with up to a year of ratification after it. Price a European import with the duty in.",
+    category: "Policy & Tax",
+    dateline: "Canberra",
+    keywords: [
+      "australia eu free trade agreement cars",
+      "5% tariff european cars australia",
+      "australia eu fta luxury car tax",
+      "when will european cars get cheaper in australia",
+      "is the australia eu free trade agreement in force",
+      "luxury car tax threshold 2026-27",
+      "import duty on cars into australia",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 7,
+    heroImage: "/cars/audi-q9/front-three-quarter.webp",
+    heroAlt:
+      "An Audi Q9 in Waitomo blue metallic parked front three-quarter beside palm trees, with no number plate visible",
+    heroCaption:
+      "Audi AG press image of the Slovakia-built Audi Q9, a US-market car. Illustrative of an EU-built car; the Q9 has not been launched in Australia.",
+    toc: [
+      {
+        id: "status",
+        label: "When does the Australia–EU free trade agreement take effect?",
+      },
+      {
+        id: "cost",
+        label: "How much does the 5 per cent duty add to a European car?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Should you wait for the tariff to go?" },
+      {
+        id: "who-benefits",
+        label: "Is this just news, or is someone selling you something?",
+      },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Is the Australia–EU free trade agreement in force?",
+        a: "No. Trade Minister Don Farrell announced its conclusion on 24 March 2026 and said it will enter into force when both Australia and the European Union complete their domestic processes. As of 28 October 2026, GoAuto reports that DFAT expects signature in late 2026 or early 2027, with up to another year of parliamentary and legal process after that.",
+      },
+      {
+        q: "Will European cars be cheaper in Australia after the EU trade deal?",
+        a: "The 5 per cent customs duty on EU-built cars will be removed once the agreement is in force. Because GST and luxury car tax are charged on a value that includes the duty, the saving is larger than the duty alone: on a car with a A$100,000 customs value, about A$7,150 at the border on our worked example. Whether retail prices fall by the same amount is up to sellers.",
+      },
+      {
+        q: "Does the EU trade deal abolish Australia's luxury car tax?",
+        a: "No. DFAT says the agreement adds a new luxury car tax category with a A$120,000 threshold for zero-emission vehicles. Every other car keeps the ATO's 2026–27 thresholds: A$91,661 for fuel-efficient vehicles and A$80,809 for all others, with the tax charged at 33 per cent of the amount above the threshold.",
+      },
+      {
+        q: "Which cars does the Australia–EU agreement apply to?",
+        a: "Cars built in the European Union. GoAuto notes that eligibility depends on where a vehicle is built, not on the maker's nationality, so a European brand built outside the EU gains nothing. Cars built in Japan, Korea or Thailand that qualify under Australia's existing agreements already enter without the 5 per cent duty.",
+      },
+      {
+        q: "Should I wait for the tariff cut before importing a European car to Australia?",
+        a: "Usually not. The agreement has not been signed, no entry-into-force date has been set, and the Nationals oppose it. Waiting means holding a decision open into 2027 or 2028 for a saving that a currency or price move could cancel. Wait only if the car is EU-built and your purchase is genuinely flexible.",
+      },
+    ],
+    sources: [
+      {
+        label: "Australia–European Union Free Trade Agreement",
+        href: "https://www.trademinister.gov.au/minister/don-farrell/media-release/australia-european-union-free-trade-agreement",
+        publisher: "Minister for Trade and Tourism",
+      },
+      {
+        label: "A-EU FTA key outcomes and benefits",
+        href: "https://www.dfat.gov.au/trade/agreements/not-yet-in-force/aeufta/key-outcomes-and-benefits",
+        publisher: "Department of Foreign Affairs and Trade",
+      },
+      {
+        label: "Customs Tariff, Schedule 3, Chapter 87",
+        href: "https://www.abf.gov.au/importing-exporting-and-manufacturing/tariff-classification/current-tariff/schedule-3/section-xvii/chapter-87",
+        publisher: "Australian Border Force",
+      },
+      {
+        label: "Luxury car tax rate and thresholds",
+        href: "https://www.ato.gov.au/tax-rates-and-codes/luxury-car-tax-rate-and-thresholds",
+        publisher: "Australian Taxation Office",
+      },
+      {
+        label: "Working out the LCT on an import",
+        href: "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/luxury-car-tax/working-out-the-lct-amount/working-out-the-lct-on-an-import",
+        publisher: "Australian Taxation Office",
+      },
+      {
+        label: "GST and imported goods",
+        href: "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst/in-detail/rules-for-specific-transactions/international-transactions/gst-and-imported-goods",
+        publisher: "Australian Taxation Office",
+      },
+      {
+        label: "AADA urges Parliament to back EU trade deal",
+        href: "https://premium.goauto.com.au/aada-urges-parliament-to-back-eu-trade-deal",
+        publisher: "GoAuto",
+      },
+      {
+        label:
+          "Australia-EU trade deal signed, set to cut car prices… but Luxury Car Tax lives on",
+        href: "https://www.whichcar.com.au/news/cheaper-european-cars-coming-in-new-free-trade-agreement-with-eu",
+        publisher: "WhichCar",
+      },
+    ],
+    relatedGuides: [
+      "how-to-import-a-car-from-the-uk",
+      "cost-to-import-a-car-from-the-uk",
+      "currency-risk-for-car-importers",
+    ],
+    linkedVehicleSlugs: ["audi-q9-2027"],
+  },
+  {
+    slug: "new-zealand-used-imports-september-2026-yen",
+    cta: ARTICLE_CTAS.dealer,
+    title: "NZ used imports hit their strongest September since 2023",
+    h1: "New Zealand Used Imports Hit Their Strongest September Since 2023 — as the Dollar Slides Against the Yen",
+    seoTitle: "NZ Used Car Imports September 2026: Up 13.6%",
+    description:
+      "New Zealand registered 8,468 used imports in September 2026, up 13.6%. The dealer read, and what the NZ dollar's 7% fall against the yen since July costs.",
+    excerpt:
+      "Japanese hybrids drove the strongest September since 2023. The NZ dollar still buys more yen than a year ago — but less than in July, and that is the part that reaches your next car.",
+    category: "Market",
+    dateline: "Auckland",
+    keywords: [
+      "new zealand used car imports 2026",
+      "nz used import registrations september 2026",
+      "most imported used cars nz",
+      "nzd jpy exchange rate car import",
+      "is it a good time to import a car from japan to nz",
+      "toyota aqua used import nz",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 7,
+    heroImage: "/source-cars/blog/vrt-explained-ireland.webp",
+    heroAlt:
+      "A silver Toyota Prius hybrid photographed front three-quarter, number plate removed",
+    heroCaption:
+      "Illustrative: a Toyota Prius hybrid, the second most-registered used import in New Zealand in September 2026. Photo by TTTNIS, CC0, via Wikimedia Commons. Not a specific vehicle referred to in this article.",
+    toc: [
+      {
+        id: "numbers",
+        label: "How many used cars did New Zealand import in September 2026?",
+      },
+      {
+        id: "currency",
+        label: "What has the New Zealand dollar done against the yen?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "dealer", label: "What should a dealer do with these numbers?" },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "How many used cars did New Zealand import in September 2026?",
+        a: "8,468 used imports were registered in September 2026, up 13.6 per cent on September 2025, according to Autotalk's analysis of NZ Transport Agency data. Passenger imports were 8,005, the highest September since 2023. The Motor Trade Association's dashboard shows 8,407 used light vehicles, up 14.5 per cent, on a slightly different definition.",
+      },
+      {
+        q: "What are the most imported used cars in New Zealand?",
+        a: "In September 2026 the Toyota Aqua led with 915 registrations, followed by the Toyota Prius with 502, the Nissan Note with 446 and the Toyota Corolla with 421, according to Autotalk from NZTA data. Toyota took 39.5 per cent of used passenger imports, and the Nissan Leaf was the most-registered used electric import, up 70.9 per cent.",
+      },
+      {
+        q: "Is the New Zealand dollar strong or weak against the yen?",
+        a: "Both, depending on the comparison. Derived from ECB reference rates, NZD/JPY averaged 90.21 in September 2026 against 87.04 a year earlier, so the New Zealand dollar buys more yen than in 2025. But it fell from 95.18 on 30 July 2026 to a 2026 low of 88.46 on 8 October, about 7 per cent. We report levels and do not forecast them.",
+      },
+      {
+        q: "How does the exchange rate change the cost of a Japanese import to New Zealand?",
+        a: "You bid in yen, so a weaker New Zealand dollar makes the same car dearer in your own money. A ¥1,500,000 car cost about NZ$15,760 at July's 95.18 and about NZ$16,957 at October's 88.46, a NZ$1,197 difference before freight and GST. Part of any currency gain is also absorbed by higher auction prices when the yen is weak.",
+      },
+    ],
+    sources: [
+      {
+        label: "Used imports climb 13.6% for strongest September since 2023",
+        href: "https://autotalk.co.nz/used-imports-climb-13-6-for-strongest-september-since-2023/",
+        publisher: "Autotalk",
+      },
+      {
+        label: "NZ vehicle registration statistics (vstat)",
+        href: "https://vstat.mta.org.nz/",
+        publisher: "Motor Trade Association",
+      },
+      {
+        label: "Euro foreign exchange reference rates (JPY, NZD)",
+        href: "https://data.ecb.europa.eu/data/datasets/EXR",
+        publisher: "European Central Bank",
+      },
+      {
+        label: "Government to retain Clean Vehicle Standard",
+        href: "https://www.beehive.govt.nz/release/government-retain-clean-vehicle-standard",
+        publisher: "New Zealand Government (Beehive)",
+      },
+      {
+        label:
+          "Used vehicles from anywhere else — complying with vehicle standards",
+        href: "https://www.nzta.govt.nz/vehicles/importing-a-vehicle/2-complying-with-vehicle-standards-and-providing-evidence/used-vehicles-from-anywhere-else",
+        publisher: "NZ Transport Agency Waka Kotahi",
+      },
+    ],
+    relatedGuides: [
+      "new-zealand-vs-japan-for-used-imports",
+      "currency-risk-for-car-importers",
+      "importing-a-used-ev-from-new-zealand",
+    ],
+  },
+  {
+    slug: "australia-used-car-prices-october-2026-no-trend",
+    cta: importFromCta("australia", "Australia"),
+    title: "Australian used prices moved for six weeks and went nowhere",
+    h1: "Australian Used Car Prices, October 2026: Six Weeks of Moves, No Trend — the Currency Moved Instead",
+    seoTitle: "Australian Used Car Prices October 2026: No Trend",
+    description:
+      "Datium's weekly index showed HiLux and Everest down 3% in early October 2026, but six weeks net to zero. Why the AUD, up 10% on the NZ dollar, matters more.",
+    excerpt:
+      "One red week for the HiLux is not a buying window. Six weeks of Datium's index compound to almost nothing — and for a New Zealand buyer, the Australian dollar did the real moving.",
+    category: "Market",
+    dateline: "Sydney",
+    keywords: [
+      "australian used car prices october 2026",
+      "used hilux prices australia",
+      "datium used car index",
+      "is it a good time to import a ute from australia",
+      "aud nzd exchange rate car import",
+      "importing a used car from australia to new zealand",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 6,
+    heroImage: "/source-cars/blog/importing-a-ute-or-4x4-from-australia.webp",
+    heroAlt:
+      "An orange Ford Ranger Raptor ute on display under a marquee, number plate removed",
+    heroCaption:
+      "Illustrative: a Ford Ranger Raptor. Photo by Calreyn88, CC BY-SA 4.0, via Wikimedia Commons; number plate removed. Not a specific vehicle referred to in this article.",
+    toc: [
+      {
+        id: "index",
+        label: "What did Australian used-car prices do in October 2026?",
+      },
+      {
+        id: "currency",
+        label: "Is an Australian ute cheaper for a New Zealand buyer now?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      {
+        id: "timing",
+        label: "Should you import now or wait for prices to fall?",
+      },
+      {
+        id: "who-benefits",
+        label: "Is this just news, or is someone selling you something?",
+      },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Are used car prices falling in Australia?",
+        a: "Not on the weekly evidence. Datium Insights' overall price change for the six weeks to 26 October 2026 alternated between rises and falls: +2.0, −1.7, +3.9, −3.1, −2.1 and +1.2 per cent. Compounded, those six figures net to about +0.01 per cent on our arithmetic. Individual models swing more, in both directions.",
+      },
+      {
+        q: "Did used Toyota HiLux prices drop in October 2026?",
+        a: "For one week. Datium's update for the week to 5 October 2026 showed the Toyota HiLux down 3.21 per cent and the Ford Everest down 3.15 per cent, the largest falls among the top 15 traded vehicles, in a week when the overall index rose 3.9 per cent. One week's move is not a trend.",
+      },
+      {
+        q: "Is it cheaper for New Zealanders to import a car from Australia now?",
+        a: "No. Derived from ECB reference rates, one Australian dollar bought an average of 1.2347 New Zealand dollars in September 2026, against 1.1206 in September 2025, about 10 per cent more. A A$40,000 ute cost about NZ$49,388 at September 2026's rate against NZ$44,824 a year earlier, before freight and border costs.",
+      },
+      {
+        q: "Should I wait for Australian used ute prices to fall before importing?",
+        a: "The data does not support waiting. Six weeks of Datium's index show no direction, so a fall is not something it currently shows. Decide on the specific car — condition, kilometres, service history and its price in your own currency on the day you commit — rather than on a weekly index.",
+      },
+    ],
+    sources: [
+      {
+        label: "Weekly Market Update 5th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-5th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 12th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-12th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 19th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-19th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 26th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-26th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 21st September 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-21st-september-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Euro foreign exchange reference rates (AUD, NZD)",
+        href: "https://data.ecb.europa.eu/data/datasets/EXR",
+        publisher: "European Central Bank",
+      },
+    ],
+    relatedGuides: [
+      "importing-a-ute-or-4x4-from-australia",
+      "importing-cars-from-australia-for-dealers",
+      "cost-to-import-a-car-from-australia",
+    ],
+  },
+  {
     slug: "audi-q9-uk-specification-deliveries",
     cta: importFromCta("united-kingdom", "the UK"),
     title:
