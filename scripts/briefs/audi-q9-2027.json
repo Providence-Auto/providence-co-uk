@@ -1,0 +1,198 @@
+{
+  "_comment": "SOURCE MARKETS: the United Kingdom, Australia and New Zealand, by business instruction on 28 October 2026 (the account owner: 'this can be sourced from AUS, UK and NZ as well'). The specification shown is the UK's because it is the only right-hand-drive Q9 Audi had published in full on 28 October 2026; Audi Australia had not formally announced the Q9, so the copy names the three source markets without claiming an Australian or New Zealand grade list or delivery date. Audi Q9, model year 2027 — Audi's first large full-size SUV and the largest Audi built to date. World premiere 29 July 2026 (Audi AG; Audi of America dates its release 28 July). Built at the Volkswagen Group plant in Bratislava, Slovakia. NOT an upcoming car: UK order books are open and Audi AG states deliveries start in November 2026, so isUpcoming is false. This page offers the UK-specification right-hand-drive car only — Audi has published a full UK specification, and Audi has not confirmed the Q9 for any other right-hand-drive market as of 28 October 2026 (Australian coverage, e.g. Chasing Cars, reports a 2027 local launch that Audi Australia has not formally announced). The SQ9 is excluded: it is not offered in the UK. Each environment has its own database, so publishing this page on one does not create it on the others. Recreate it with: node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/audi-q9-2027.json --env staging --publish (or --env production). SOURCES, all checked 28 October 2026: Audi AG, 'Audi Q9: Audi's first large full-size SUV tops the lineup', 29 July 2026 (https://www.audi.com/en/press-releases/audi-q9-audis-first-large-full-size-suv-tops-the-lineup-18158) — dimensions, 220 kW / 630 Nm V6 TDI, MHEV plus with electric powered compressor, quattro with centre differential, adaptive air suspension and rear-axle steering standard, up to 3,500 kg towing, panoramic roof over 1.5 m², automatic doors as an Audi first, Bratislava build, November 2026 deliveries. Audi AG, 'Elegance and space: a first look inside the new Audi Q9', 12 May 2026 (https://www.audi.com/en/press-releases/elegance-and-space-a-first-look-inside-the-new-audi-q9-17903) — B&O 4D with 22 loudspeakers, nine-segment switchable roof, Qi2.2 charging, aluminium cargo rail. Audi UK model and design-and-specification pages (https://www.audi.co.uk/en/models/q9/q9/design-and-specification/) — UK grade names and the Edition 1 and Vorsprung equipment lists, 299 PS, 0–62 mph 6.5 s, 850 / 2,308 litre boot, 11.9-inch virtual cockpit, 14.5-inch MMI touch display, 12.3-inch passenger display with dynamic privacy mode, adaptive cruise assist / 360 cameras / park assist plus as standard, Lounge Pack contents. Audi UK configurator (https://www.audi.co.uk/en/models/q9/q9/configurator/) — the eight UK paint names, the four Fine Nappa upholstery combinations by grade, the wheel and tyre sizes, the WLTP combined consumption and CO2 ranges per grade, and the derivative name 'TDI quattro tiptronic'. The Lounge Pack is listed against Vorsprung because it appears in no Edition 1 option list on the configurator; Auto Express (26 August 2026) and Motoring Research (1 September 2026) also report it as Vorsprung-only. DELIBERATELY LEFT OUT: the number of gears (eight-speed is reported by Auto Express and Motoring Research but not stated by Audi UK or Audi AG, so the page says 'tiptronic automatic' only); displacement in cc (Audi states only '3.0-litre'); kerb weight; top speed; any Euro emissions class. PRICING: none, per the car-landing-page skill — no price was supplied in the request. Audi UK's OTR figures exist but are not printed anywhere on this page. IMAGES: Audi AG press photography from the 'Media world debut Audi Q9 and Audi SQ9' album (https://www.audi.com/en/photos/album/media-world-debut-audi-q9-and-audi-sq9-3139), image numbers A264904 (front-driving), A264901 (front-three-quarter), A264902 (front-dusk), A264899 (side-profile), A264898 (rear-driving), A264895 (rear-cabin), A264905 (grille-detail). Audi's own rights line on each photo reads 'Use for editorial purposes free of charge'; the account owner confirmed on 28 October 2026 that the photos may be used on this commercial page, on the same basis as the Range Rover Electric and Bentley Torcal pages. The photographs are of US-market press cars in Waitomo blue metallic, shot in Utah — illustrative of the model, not the UK-specification car, which is why the left-hand-drive cabin and door shots (A264892, A264893, A264896), the left-hand-drive driving shot (A264894), the duplicate rear shot (A264886 / A264903), the SQ9 group shot (A264915) and the two portrait crops (A264897, A264900) were rejected. PLATE TREATMENT: a legible California plate on A264898 was removed with: node scripts/blur-plate.mjs public/cars/audi-q9/rear-driving.jpg 2030,1150,175,95 — on the 2880 px original, before re-encoding with scripts/optimize-car-images.mjs. No other selected frame carries a plate.",
+
+  "make": "Audi",
+  "model": "Q9",
+  "year": "2027",
+  "trim": "",
+  "condition": "New",
+  "countryOfOrigin": "Slovakia",
+  "slug": "audi-q9-2027",
+
+  "engineConfig": "3.0-litre V6 TDI with MHEV plus mild-hybrid system and electric powered compressor",
+  "displacement": "3.0 litres",
+  "maxPower": "299 PS (220 kW)",
+  "maxTorque": "630 Nm",
+  "transmission": "Tiptronic automatic, quattro permanent all-wheel drive",
+  "fuelSystem": "Diesel, mild hybrid",
+  "emissions": "WLTP combined CO₂ 204–209 g/km",
+  "steeringOptions": ["RHD"],
+
+  "_destinationsComment": "The core five, in the order scripts/backfill-dossier-destinations.mjs uses, so re-running this brief does not reorder what that script would fill in. Right-hand drive only, so the rhdOnly markets (Kenya, Tanzania, Sri Lanka) are open to it.",
+  "destinations": [
+    "ireland",
+    "united-kingdom",
+    "kenya",
+    "tanzania",
+    "sri-lanka"
+  ],
+
+  "upholstery": "Fine Nappa leather, perforated with a dynamic pattern and Steel grey contrast stitching",
+  "infotainment": "Curved MMI panoramic OLED display joining an 11.9-inch Audi virtual cockpit and a 14.5-inch MMI touch display, plus a 12.3-inch passenger display with dynamic privacy mode",
+
+  "isUpcoming": false,
+  "expectedAvailability": "UK order books open; Audi states first deliveries from November 2026",
+  "newsSlug": "audi-q9-uk-specification-deliveries",
+
+  "grades": [
+    {
+      "name": "Edition 1",
+      "isDefault": true,
+      "summary": "The launch grade, with air suspension, all-wheel steering and seven heated seats as standard.",
+      "highlights": [
+        "22\" Audi Sport alloy wheels, 5-twin-spoke, black metallic, gloss turned finish, with 285/40 R22 tyres",
+        "Adaptive air suspension and all-wheel steering",
+        "Panoramic sunroof with switchable transparency, openable",
+        "7-seat layout with heating on all three rows",
+        "Front sport seats plus in Fine Nappa leather with memory, ventilation and massage",
+        "Dinamica headlining",
+        "Upholstery in Black-Red Fine Nappa"
+      ]
+    },
+    {
+      "name": "Vorsprung",
+      "summary": "Everything in Edition 1, plus Audi's new lighting technology, automatic doors and the 4D sound system.",
+      "highlights": [
+        "23\" multi-spoke S alloy wheels with 285/35 R23 tyres",
+        "Digital matrix LED headlights",
+        "Curved digital OLED rear lights, with semi-active light signatures",
+        "Bang & Olufsen 4D Premium sound system, with headrest speakers and seat actuators",
+        "Automatic doors — entry and exit through electrically powered doors",
+        "Exterior ambient lighting pack",
+        "Upholstery choice of Black-Grey, Arras Red or Pastel Silver Fine Nappa",
+        "Lounge Pack available: six seats, with second-row executive chairs either side of a heated, leather-covered centre console, and electric blinds"
+      ]
+    }
+  ],
+
+  "images": [
+    "/cars/audi-q9/front-driving.webp",
+    "/cars/audi-q9/front-three-quarter.webp",
+    "/cars/audi-q9/front-dusk.webp",
+    "/cars/audi-q9/side-profile.webp",
+    "/cars/audi-q9/rear-driving.webp",
+    "/cars/audi-q9/grille-detail.webp",
+    "/cars/audi-q9/rear-cabin.webp"
+  ],
+  "heroImageUrl": "/cars/audi-q9/front-driving.webp",
+
+  "_colorsComment": "Paint and upholstery names are Audi UK's configurator names, checked 28 October 2026. Hex values are our approximation. Every press photograph is Waitomo blue metallic, hence its imageIndex.",
+  "exteriorColors": [
+    { "name": "Waitomo blue metallic", "hex": "#1e2a40", "imageIndex": 0 },
+    { "name": "Carrara white", "hex": "#f0f0ec" },
+    { "name": "Glacier white metallic", "hex": "#e6e8e8" },
+    { "name": "Mythos black metallic", "hex": "#111214" },
+    { "name": "Daytona grey pearl effect", "hex": "#4a4d51" },
+    { "name": "Alopias blue metallic", "hex": "#4b5d6f" },
+    { "name": "Midnight green metallic", "hex": "#1f2d2a" },
+    { "name": "Agave green metallic", "hex": "#6a7462" }
+  ],
+
+  "interiorColors": [
+    {
+      "name": "Black-Red Fine Nappa",
+      "hex": "#161616",
+      "isDualTone": true,
+      "hex2": "#8a1c1f",
+      "secondaryName": "Red"
+    },
+    {
+      "name": "Black-Grey Fine Nappa",
+      "hex": "#161616",
+      "isDualTone": true,
+      "hex2": "#5b5c5e",
+      "secondaryName": "Grey"
+    },
+    { "name": "Arras Red Fine Nappa", "hex": "#6d1f24" },
+    { "name": "Pastel Silver Fine Nappa", "hex": "#c8c5be" }
+  ],
+
+  "features": [
+    "MHEV plus mild-hybrid system with an electric powered compressor",
+    "quattro permanent all-wheel drive with a centre differential",
+    "Adaptive air suspension and all-wheel steering as standard",
+    "Panoramic sunroof of more than 1.5 m², switchable to opaque in nine segments",
+    "Seven seats as standard, heated in all three rows",
+    "Third-row seatbacks that fold electrically, one at a time",
+    "Matrix LED headlights",
+    "Adaptive cruise assist, 360-degree surround-view cameras and park assist plus",
+    "12.3-inch passenger display with dynamic privacy mode",
+    "Self-learning Audi assistant with natural-language voice control",
+    "Aluminium rail system in the boot with sliding hooks and adjustable anchors",
+    "Two Qi2.2 wireless charging pads and USB-C ports up to 100 W"
+  ],
+
+  "customData": [
+    { "label": "Length", "value": "5.31 m" },
+    { "label": "Width, mirror to mirror", "value": "2.21 m" },
+    { "label": "Height", "value": "1.81 m" },
+    { "label": "Wheelbase", "value": "3.14 m" },
+    { "label": "0–62 mph", "value": "6.5 seconds" },
+    {
+      "label": "Boot capacity",
+      "value": "Up to 850 litres with the third row folded; 2,308 litres with the second and third rows folded"
+    },
+    {
+      "label": "Towing capacity",
+      "value": "Up to 3,500 kg braked, measured on a 12% gradient, with the optional electrically deployable tow bar"
+    },
+    {
+      "label": "WLTP combined fuel consumption",
+      "value": "35.5–36.2 mpg (Edition 1); 35.6–36.4 mpg (Vorsprung)"
+    },
+    {
+      "label": "WLTP combined CO₂",
+      "value": "205–209 g/km (Edition 1); 204–208 g/km (Vorsprung)"
+    },
+    {
+      "label": "Seating",
+      "value": "Seven seats as standard; six with the Lounge Pack on Vorsprung"
+    },
+    {
+      "label": "Hybrid system",
+      "value": "MHEV plus, with a belt alternator starter, a lithium iron phosphate battery and an electric powered compressor of 7.5 kW peak"
+    },
+    {
+      "label": "Built at",
+      "value": "Volkswagen Group plant, Bratislava, Slovakia"
+    }
+  ],
+
+  "valuePoints": [
+    {
+      "title": "You import the right-hand-drive car",
+      "description": "The Q9 is built in Bratislava for markets on both sides of the road, and our own teams can export a right-hand-drive Q9 from the United Kingdom, Australia or New Zealand. That gives you three source markets for a market that drives on the left, without waiting for a local launch where you are."
+    },
+    {
+      "title": "You choose the grade before you commit",
+      "description": "Edition 1 or Vorsprung, seven seats or the six-seat Lounge Pack, one of eight paints and four Fine Nappa interiors. Tell us the exact car and your destination port, and the landed figure is worked out against that car — the purchase price, freight, marine cover and the duty and tax lines, itemised, before any money moves."
+    },
+    {
+      "title": "You see the tax line for a 3.0-litre diesel first",
+      "description": "Where a market taxes by CO₂ or engine size, a 299 PS V6 diesel at 204–209 g/km sits near the top of the scale. You get that position confirmed for your own country before you commit, so the number you decide on is the number you pay."
+    },
+    {
+      "title": "Seven seats, and 3,500 kg on the hook",
+      "description": "Audi rates the Q9 to tow up to 3,500 kg braked with the optional tow bar, with seven seats and up to 2,308 litres of load space behind the front row — the capacity of a full-size SUV in the largest Audi built to date."
+    }
+  ],
+
+  "searchTags": [
+    "audi",
+    "q9",
+    "audi-q9",
+    "luxury-suv",
+    "suv",
+    "seven-seater",
+    "diesel",
+    "mild-hybrid",
+    "slovakia",
+    "united-kingdom",
+    "uk",
+    "australia",
+    "new-zealand",
+    "new"
+  ],
+
+  "notes": "The Audi Q9 is the largest Audi built to date — 5.31 metres long on a 3.14-metre wheelbase, with seven seats as standard and every seat in all three rows heated. In right-hand drive it comes as Edition 1 or Vorsprung, with one engine: a 3.0-litre V6 TDI of 299 PS and 630 Nm, with an MHEV plus mild-hybrid system and an electric powered compressor, driving all four wheels through quattro. Adaptive air suspension and all-wheel steering are standard, as is a panoramic roof of more than 1.5 square metres that switches to opaque in nine segments. Vorsprung adds Audi's digital matrix LED headlights, curved digital OLED rear lights, automatic doors and the Bang & Olufsen 4D Premium sound system, and it is the grade that can be ordered as a six-seater with the Lounge Pack. The Q9 is built in Bratislava, Slovakia, and the right-hand-drive specification on this page is the United Kingdom's. Our own teams can export the Q9 from the United Kingdom, Australia or New Zealand; a car from Australia or New Zealand follows that market's own grade and equipment, which we confirm for the exact car before you commit. Choose the grade, the paint and the interior, tell us your destination port, and you see the landed figure for that exact car before anything is committed. Colour swatches are our approximation of the factory paint, not a colour match."
+}

@@ -1,4 +1,6 @@
 import type { ComponentType } from "react";
+import AudiQ9RightHandDriveImportMarkets from "./audi-q9-right-hand-drive-import-markets";
+import AudiQ9UkSpecificationDeliveries from "./audi-q9-uk-specification-deliveries";
 import BentleyTorcalRevealedSpecificationsPrice from "./bentley-torcal-revealed-specifications-price";
 import BentleyTorcalRightHandDriveImportMarkets from "./bentley-torcal-right-hand-drive-import-markets";
 import BentleyTorcalVsRangeRoverElectricBritishLuxuryEv from "./bentley-torcal-vs-range-rover-electric-british-luxury-ev";
@@ -12,6 +14,7 @@ import FerrariLuceChassis040MillionAuction from "./ferrari-luce-chassis-0-40-mil
 import HmrcYenCustomsRateJapaneseCarImportUk from "./hmrc-yen-customs-rate-japanese-car-import-uk";
 import HongKongEvFirstRegistrationTaxConcessionEnds from "./hong-kong-ev-first-registration-tax-concession-ends";
 import ImoSolas2026RoRoEvFireRulesFreightCost from "./imo-solas-2026-ro-ro-ev-fire-rules-freight-cost";
+import IrelandBudget2027VrtIncreaseBands320 from "./ireland-budget-2027-vrt-increase-bands-3-20";
 import IrelandEvIncentivesTaper20262028 from "./ireland-ev-incentives-taper-2026-2028";
 import JapanUsedCarExportsRecordWeakYen2026 from "./japan-used-car-exports-record-weak-yen-2026";
 import Jlr4000JobCuts2026UkSourcingRead from "./jlr-4000-job-cuts-2026-uk-sourcing-read";
@@ -45,6 +48,10 @@ import YenIntervention2026JapanCarImportCost from "./yen-intervention-2026-japan
 // Maps a news slug to its body component. Keep keys in sync with NEWS_ARTICLES
 // in src/config/news.ts.
 export const NEWS_BODIES: Record<string, ComponentType> = {
+  "audi-q9-uk-specification-deliveries": AudiQ9UkSpecificationDeliveries,
+  "audi-q9-right-hand-drive-import-markets": AudiQ9RightHandDriveImportMarkets,
+  "ireland-budget-2027-vrt-increase-bands-3-20":
+    IrelandBudget2027VrtIncreaseBands320,
   "hmrc-yen-customs-rate-japanese-car-import-uk":
     HmrcYenCustomsRateJapaneseCarImportUk,
   "bentley-torcal-revealed-specifications-price":
