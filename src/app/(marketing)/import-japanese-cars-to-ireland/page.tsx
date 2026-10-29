@@ -48,7 +48,7 @@ const IRELAND_FAQS: LandingPageConfig["faqs"] = {
         },
         {
           q: "Is there a VRT relief available for electric vehicle imports?",
-          a: "Yes — until 31 December 2026, battery electric vehicles qualify for up to €5,000 VRT relief, plus the lowest CO2 band (7%) and zero NOx levy. This window closes at year-end. Given 6–10 weeks shipping time, you need to start your inquiry now if you want to register before the deadline.",
+          a: "Yes — until 31 December 2028, battery electric vehicles with an OMSP up to €40,000 qualify for up to €5,000 VRT relief, with reduced relief between €40,000 and €50,000, plus the lowest CO2 band (7%) and zero NOx levy. Budget 2027 extended the relief from its previous end date of 31 December 2026. The deadline is on registration in Ireland, so build the 6–10 weeks of shipping from Japan into your plan.",
         },
       ],
     },
@@ -158,12 +158,12 @@ const PROCESS_STEPS = [
 // ── COUNTDOWN ────────────────────────────────────────────────────────────────
 
 function getTimeLeft() {
-  const deadline = new Date("2027-01-01T00:00:00Z").getTime();
+  const deadline = new Date("2029-01-01T00:00:00Z").getTime();
   const now = Date.now();
   const diff = deadline - now;
   if (diff <= 0) return { months: 0, days: 0, hours: 0 };
   const nowDate = new Date();
-  const deadlineDate = new Date("2027-01-01T00:00:00Z");
+  const deadlineDate = new Date("2029-01-01T00:00:00Z");
   let months =
     (deadlineDate.getFullYear() - nowDate.getFullYear()) * 12 +
     (deadlineDate.getMonth() - nowDate.getMonth());
@@ -222,7 +222,7 @@ const COST_GROUPS = [
 // ── PAGE ────────────────────────────────────────────────────────────────────
 
 export default function ImportJapaneseCarsIreland() {
-  // Countdown to Dec 31, 2026
+  // Countdown to Dec 31, 2028 (EV VRT relief, extended by Budget 2027)
   const [timeLeft, setTimeLeft] = useState(getTimeLeft);
   useEffect(() => {
     const id = setInterval(() => setTimeLeft(getTimeLeft()), 60_000);
@@ -653,16 +653,17 @@ export default function ImportJapaneseCarsIreland() {
             >
               <div className="text-center md:text-left flex-1">
                 <p className="text-xs font-bold tracking-[0.3em] text-[#4da8da] uppercase mb-3">
-                  Closing Window — Act Before 31 December 2026
+                  Extended by Budget 2027 — Until 31 December 2028
                 </p>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
                   Up to €5,000 VRT Relief on Electric Vehicle Imports
                 </h3>
                 <p className="text-white/50 text-sm font-light leading-relaxed">
                   Battery EVs pay the lowest VRT rate (7%), zero NOx levy, and
-                  qualify for up to €5,000 VRT relief — but only if registered
-                  before 31 December 2026. With 6–10 weeks shipping from Japan,
-                  now is the time to act.
+                  qualify for up to €5,000 VRT relief — if registered by 31
+                  December 2028. Budget 2027 extended the relief by two years,
+                  and the date that counts is registration in Ireland, not
+                  purchase or shipping.
                 </p>
               </div>
               <a
