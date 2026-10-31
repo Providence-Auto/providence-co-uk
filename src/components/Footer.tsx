@@ -261,8 +261,18 @@ export default function Footer() {
           Providence Auto is the trading name of Providence Trading Limited.
         </p>
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-zinc-400 tracking-wide">
-          {/* Copyright */}
-          <div>&copy; {currentYear} Providence Auto. All rights reserved.</div>
+          {/* Copyright + legal */}
+          <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
+            <span>
+              &copy; {currentYear} Providence Auto. All rights reserved.
+            </span>
+            <Link
+              href="/privacy-policy"
+              className="text-zinc-300 hover:text-white transition-colors underline decoration-white/20 hover:decoration-white/60 underline-offset-4"
+            >
+              Privacy policy
+            </Link>
+          </div>
 
           {/* Built By Credit */}
           <div>
