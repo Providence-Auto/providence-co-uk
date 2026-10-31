@@ -660,6 +660,9 @@ export type DealerInquiryView = {
   assignedAt: string | null;
   firstContactedAt: string | null;
   isArchived: boolean;
+  /** Set when someone deleted it. Only admins are ever sent a deleted row. */
+  deletedAt: string | null;
+  deletedByName: string | null;
   source: string | null;
   createdAt: string;
   updatedAt: string;
