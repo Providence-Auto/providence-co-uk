@@ -281,11 +281,11 @@ const IRELAND_POSTS: BlogPost[] = [
     faqs: [
       {
         q: "What is the cheapest way to import a car to Ireland?",
-        a: "Import a low-CO₂, right-hand-drive car that qualifies for 0% customs duty (Japanese- or UK-built) with a valid statement of origin, aged 3–8 years with average mileage to keep VRT moderate, and claim any relief you're entitled to (EV VRT relief before end-2026, the 30-year classic rate, or Transfer of Residence relief). Always model the full landed cost before bidding.",
+        a: "Import a low-CO₂, right-hand-drive car that qualifies for 0% customs duty (Japanese- or UK-built) with a valid statement of origin, aged 3–8 years with average mileage to keep VRT moderate, and claim any relief you're entitled to (EV VRT relief before end-2028, the 30-year classic rate, or Transfer of Residence relief). Always model the full landed cost before bidding.",
       },
       {
         q: "How can I legally reduce VRT when importing a car to Ireland?",
-        a: "VRT is set by CO₂ emissions on the car's OMSP, so the legal levers are: choose a low-emission model, import a battery EV before the VRT relief ends on 31 December 2026, use the flat €200 rate for cars over 30 years old, or appeal an OMSP you can show is too high. Petrol/hybrid also avoids the heavy diesel NOx levy.",
+        a: "VRT is set by CO₂ emissions on the car's OMSP, so the legal levers are: choose a low-emission model, import a battery EV before the VRT relief ends on 31 December 2028, use the flat €200 rate for cars over 30 years old, or appeal an OMSP you can show is too high. Petrol/hybrid also avoids the heavy diesel NOx levy.",
       },
       {
         q: "Is it cheaper to import a car yourself or use an import service?",
@@ -405,7 +405,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "What is the lowest rate of VRT in Ireland?",
-        a: "The lowest VRT rate is 7% of OMSP, for cars in the 0–50 g/km CO₂ band — battery EVs and plug-in hybrids. Battery EVs also pay zero NOx levy and qualify for VRT relief of up to €5,000 until 31 December 2026. Cars over 30 years old pay a flat €200.",
+        a: "The lowest VRT rate is 7% of OMSP, for cars in the 0–50 g/km CO₂ band — battery EVs and plug-in hybrids. Battery EVs also pay zero NOx levy and qualify for VRT relief of up to €5,000 until 31 December 2028. Cars over 30 years old pay a flat €200.",
       },
     ],
   },

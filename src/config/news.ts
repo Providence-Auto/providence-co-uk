@@ -462,11 +462,11 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-10-28",
     updatedDate: "2026-10-28",
     readingTimeMins: 8,
-    heroImage: "/country/ireland.webp",
+    heroImage: "/source-cars/blog/vrt-explained-ireland.webp",
     heroAlt:
-      "An Irish coastal road, illustrating Irish vehicle registration tax",
+      "A silver Toyota Prius hybrid photographed front three-quarter, number plate removed",
     heroCaption:
-      "Illustrative image of Ireland. Not a photograph of any vehicle or registration process referred to in this article.",
+      "Illustrative: a Toyota Prius hybrid. Photo by TTTNIS, CC0, via Wikimedia Commons. Not a specific vehicle referred to in this article.",
     toc: [
       { id: "what-changed", label: "What did Budget 2027 change on VRT?" },
       { id: "one-percent", label: "Does “1%” mean one percentage point?" },
@@ -3913,11 +3913,12 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-09-09",
     updatedDate: "2026-09-09",
     readingTimeMins: 8,
-    heroImage: "/country/ireland.webp",
+    heroImage:
+      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
     heroAlt:
-      "An Irish coastal road, illustrating EU member state vehicle markets",
+      "A person signing paperwork at a desk, illustrating EU vehicle regulation",
     heroCaption:
-      "Illustrative image of Ireland. Not a photograph of any vehicle or export process referred to in this article.",
+      "Illustrative image. Not a photograph of any vehicle or export process referred to in this article.",
     toc: [
       { id: "what-it-says", label: "What the Regulation restricts" },
       { id: "who-it-hits", label: "Who this actually reaches" },
