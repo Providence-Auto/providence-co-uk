@@ -9,6 +9,7 @@ import {
   eq,
   ilike,
   inArray,
+  isNotNull,
   isNull,
   ne,
   sql,
@@ -536,6 +537,10 @@ async function requireStaff() {
   return user;
 }
 
+/** Admins are the only people who see, or restore, a deleted inquiry. */
+const isAdminRole = (role: string | null | undefined) =>
+  (role || "").trim().toLowerCase() === "admin";
+
 function toView(row: typeof dealerInquiries.$inferSelect): DealerInquiryView {
   const iso = (d: Date | null) => (d ? new Date(d).toISOString() : null);
   return {
@@ -561,19 +566,28 @@ function toView(row: typeof dealerInquiries.$inferSelect): DealerInquiryView {
     assignedAt: iso(row.assignedAt),
     firstContactedAt: iso(row.firstContactedAt),
     isArchived: row.isArchived,
+    deletedAt: iso(row.deletedAt),
+    deletedByName: row.deletedByName,
     source: row.source,
     createdAt: new Date(row.createdAt).toISOString(),
     updatedAt: new Date(row.updatedAt).toISOString(),
   };
 }
 
-/** Every dealer inquiry, newest first. Archived rows included; the panel filters. */
+/**
+ * Every dealer inquiry, newest first. Archived rows included; the panel
+ * filters. Deleted rows are included for admins only.
+ */
 export async function getDealerInquiries(): Promise<DealerInquiryView[]> {
   try {
-    await requireStaff();
+    const actor = await requireStaff();
+    // A deleted inquiry never leaves the server for anyone but an admin.
     const rows = await db
       .select()
       .from(dealerInquiries)
+      .where(
+        isAdminRole(actor.role) ? undefined : isNull(dealerInquiries.deletedAt),
+      )
       .orderBy(desc(dealerInquiries.createdAt));
     return rows.map(toView);
   } catch (error) {
@@ -717,7 +731,10 @@ export async function updateDealerInquiry(
       .from(dealerInquiries)
       .where(eq(dealerInquiries.id, text(id, 100)))
       .limit(1);
-    if (!existing) return { success: false, message: "Inquiry not found." };
+    // A deleted inquiry does not exist for anyone but an admin.
+    if (!existing || (existing.deletedAt && !isAdminRole(actor.role))) {
+      return { success: false, message: "Inquiry not found." };
+    }
 
     const now = new Date();
     const entries: DealerInquiryHistoryEntry[] = [];
@@ -867,7 +884,10 @@ export async function setDealerInquiryArchived(
       .from(dealerInquiries)
       .where(eq(dealerInquiries.id, text(id, 100)))
       .limit(1);
-    if (!existing) return { success: false, message: "Inquiry not found." };
+    // A deleted inquiry does not exist for anyone but an admin.
+    if (!existing || (existing.deletedAt && !isAdminRole(actor.role))) {
+      return { success: false, message: "Inquiry not found." };
+    }
     if (existing.isArchived === archived) {
       return { success: true, inquiry: toView(existing) };
     }
@@ -902,6 +922,79 @@ export async function setDealerInquiryArchived(
     return { success: true, inquiry: toView(updated) };
   } catch (error) {
     console.error("Failed to archive dealer inquiry:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to save.",
+    };
+  }
+}
+
+/**
+ * Delete or restore (business instruction 2026-11-01). Anyone on the panel can
+ * delete; the inquiry then disappears for everyone except admins, who see it
+ * under Deleted and are the only ones who can restore it. Nothing is removed
+ * from the table — the row, its history and its conversion ledger stay — so a
+ * mistaken delete is always one click from undone.
+ */
+export async function setDealerInquiryDeleted(
+  id: string,
+  deleted: boolean,
+): Promise<UpdateResult> {
+  try {
+    const actor = await requireStaff();
+    const admin = isAdminRole(actor.role);
+    if (!deleted && !admin) {
+      return {
+        success: false,
+        message: "Only an admin can restore a deleted inquiry.",
+      };
+    }
+
+    const [existing] = await db
+      .select()
+      .from(dealerInquiries)
+      .where(eq(dealerInquiries.id, text(id, 100)))
+      .limit(1);
+    if (!existing || (existing.deletedAt && !admin)) {
+      return { success: false, message: "Inquiry not found." };
+    }
+    if (Boolean(existing.deletedAt) === deleted) {
+      return { success: true, inquiry: toView(existing) };
+    }
+
+    const now = new Date();
+    const [updated] = await db
+      .update(dealerInquiries)
+      .set({
+        deletedAt: deleted ? now : null,
+        deletedByName: deleted ? actor.name : null,
+        statusHistory: appendHistory([
+          {
+            id: crypto.randomUUID(),
+            action: deleted ? "Deleted" : "Restored from deleted",
+            performedBy: actor.name,
+            date: now.toISOString(),
+          },
+        ]),
+        updatedAt: now,
+      })
+      // Only if it is not already in that state — two people deleting at once
+      // log it once.
+      .where(
+        and(
+          eq(dealerInquiries.id, existing.id),
+          deleted
+            ? isNull(dealerInquiries.deletedAt)
+            : isNotNull(dealerInquiries.deletedAt),
+        ),
+      )
+      .returning();
+    if (!updated) return { success: false, message: STALE_MESSAGE };
+
+    revalidatePath(ADMIN_PATH);
+    return { success: true, inquiry: toView(updated) };
+  } catch (error) {
+    console.error("Failed to delete dealer inquiry:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to save.",
