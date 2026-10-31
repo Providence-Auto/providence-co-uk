@@ -159,6 +159,11 @@ export interface ConversionLead {
   countryCode?: string | null;
   phone?: string | null;
   condition?: string | null;
+  /**
+   * Overrides `condition` as Meta's `lead_type`. Set to "dealer" for a dealer
+   * inquiry, which has no condition, so custom conversions can split the two.
+   */
+  leadType?: string | null;
   make?: string | null;
   vehicleModel?: string | null;
   countryOfImport?: string | null;
@@ -233,7 +238,7 @@ export async function sendMetaConversion(
     // CRM rather than to site activity.
     lead_event_source: "Providence Auto CRM",
     event_source: "crm",
-    lead_type: lead.condition || undefined,
+    lead_type: lead.leadType || lead.condition || undefined,
     make: lead.make || undefined,
     model: lead.vehicleModel || undefined,
     destination: lead.countryOfImport || undefined,
@@ -394,12 +399,24 @@ export function hashGoogleEmail(
 
 export async function sendGoogleConversion(
   lead: ConversionLead,
-  options: { value?: number | null; currency?: string } = {},
+  options: {
+    value?: number | null;
+    currency?: string;
+    /**
+     * The conversion action to credit. Defaults to the B2C qualified-lead
+     * action; a dealer stage passes its own, and must not fall back to the
+     * B2C one when its own is unset (the caller checks that).
+     */
+    conversionActionId?: string;
+    /** Defaults to the lead id. Unique per conversion action. */
+    orderId?: string;
+  } = {},
 ): Promise<ConversionResult> {
   const customerId = process.env.GOOGLE_ADS_CUSTOMER_ID;
   const devToken = process.env.GOOGLE_DEV_TOKEN;
   const oauthToken = process.env.GOOGLE_OAUTH_TOKEN;
-  const conversionActionId = process.env.GOOGLE_CONVERSION_ACTION_ID;
+  const conversionActionId =
+    options.conversionActionId || process.env.GOOGLE_CONVERSION_ACTION_ID;
   const loginCustomerId = process.env.GOOGLE_ADS_LOGIN_CUSTOMER_ID;
 
   if (!customerId || !devToken || !oauthToken || !conversionActionId) {
@@ -431,7 +448,7 @@ export async function sendGoogleConversion(
     conversionAction: `customers/${customerId}/conversionActions/${conversionActionId}`,
     conversionDateTime: googleTimestamp(new Date()),
     // Lets us retract this exact upload later if it turns out to be wrong.
-    orderId: lead.id,
+    orderId: options.orderId || lead.id,
   };
   if (lead.gclid) conversion.gclid = lead.gclid;
   if (userIdentifiers.length) conversion.userIdentifiers = userIdentifiers;

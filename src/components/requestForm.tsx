@@ -48,6 +48,7 @@ import {
 } from "@/lib/currencies";
 import { springTransition } from "@/lib/fluid";
 import { currentAttribution } from "@/lib/lead-attribution";
+import { pushLeadEvent } from "@/lib/lead-events";
 import { currentRepCode } from "@/lib/rep-link";
 import { formatVehicleTitle, steeringLabel } from "@/lib/vehicle";
 import {
@@ -1132,6 +1133,15 @@ export default function RequestForm({
       });
 
       if (response.success) {
+        // The lead is complete only here: a draft abandoned at this step is
+        // discarded. GTM turns this into Meta's Lead and a GA4 generate_lead
+        // (src/lib/lead-events.ts).
+        pushLeadEvent({
+          leadType: "car_buyer",
+          reference: submittedRequestId,
+          formName: "car_request",
+          destinationCountry: formData.countryOfImport,
+        });
         setSuggestedGuides(response.suggestedGuides || []);
         setIsSuccess(true);
       } else {
