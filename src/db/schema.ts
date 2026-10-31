@@ -332,7 +332,8 @@ export const dealerInquiries = pgTable(
     cars: jsonb("cars").notNull().default([]),
     notes: text("notes"),
     // The inquiry's own vocabulary — DEALER_INQUIRY_STATUSES — never the B2C
-    // lead statuses, which drive the ad-platform conversion ledger.
+    // lead statuses. It drives its own conversion ledger below, through
+    // src/lib/dealerConversion.ts.
     status: text("status").default("New").notNull(),
     statusHistory: jsonb("statusHistory").notNull().default([]),
     assignedToId: text("assignedToId").references(() => users.id, {
@@ -351,6 +352,12 @@ export const dealerInquiries = pgTable(
     fbclid: text("fbclid"),
     fbc: text("fbc"),
     fbp: text("fbp"),
+    // Offline-conversion ledger (drizzle/0009_dealer_conversion_ledger.sql).
+    // NULL = not uploaded yet; a timestamp = accepted, never send again.
+    metaQualifiedSentAt: timestamp("metaQualifiedSentAt"),
+    metaOnboardedSentAt: timestamp("metaOnboardedSentAt"),
+    googleQualifiedSentAt: timestamp("googleQualifiedSentAt"),
+    googleOnboardedSentAt: timestamp("googleOnboardedSentAt"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },

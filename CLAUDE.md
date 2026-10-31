@@ -42,7 +42,9 @@ Required:
 - `GEMINI_API_KEY` — **Sourcing & Profit Analyzer** (admin): Gemini auction-sheet extraction + buy/avoid verdict. Missing → the tool reports "GEMINI_API_KEY is not configured".
 - `APIFY_TOKEN` — **Sourcing & Profit Analyzer** (admin): AutoTrader + PistonHeads market data. Missing → "APIFY_TOKEN is not configured".
 
-Optional: `GEMINI_TOKEN_BUDGET` (the AI token allowance the sourcing tool's usage meter measures against — Google exposes no usage API for a key, so the total must be declared; unset just hides the bar. Apify's monthly spend and cap are read live from `/v2/users/me/limits`, so they need no equivalent), `RESEND_API_KEY` (email), `R2_*` (file storage), social-provider client IDs/secrets, and the Meta/Google ad-conversion keys. See `.env.example` for the full list.
+Optional: `GEMINI_TOKEN_BUDGET` (the AI token allowance the sourcing tool's usage meter measures against — Google exposes no usage API for a key, so the total must be declared; unset just hides the bar. Apify's monthly spend and cap are read live from `/v2/users/me/limits`, so they need no equivalent), `RESEND_API_KEY` (email), `R2_*` (file storage), social-provider client IDs/secrets, and the Meta/Google ad-conversion keys (dealer stages use their own `GOOGLE_DEALER_QUALIFIED_ACTION_ID` / `GOOGLE_DEALER_ONBOARDED_ACTION_ID`). See `.env.example` for the full list.
+
+**Lead tracking** — how both forms reach GTM, Meta and Google Ads, and the manual GTM/Meta/Ads steps the code relies on — is in `tracking-setup.md`. Both forms push `generate_lead` (with `lead_type`) through `src/lib/lead-events.ts` only after the server has stored the lead; never add a second Lead from the server or a click trigger.
 
 ## Architecture Overview
 
@@ -71,7 +73,7 @@ Drizzle tables are defined in `src/db/schema.ts`. Import the `db` client and tab
 - **socialPosts** — Instagram embed posts per page (home/b2c/b2b), ordered via a `page_order_idx`
 - **salesProfiles** — Per-agent public sales landing-page profiles
 - **sourcingAnalyses** — Saved landed-cost / market analyses from the sourcing tool
-- **dealerInquiries** (`dealerinquiry`) — Sourcing requests from `/b2b-inquiry`: the market the dealer checked, the dealership, the contact (WhatsApp stored as E.164), a preferred source market and up to five cars (`cars` jsonb, shape in `src/lib/dealer-inquiry.ts`). Its own status vocabulary (`DEALER_INQUIRY_STATUSES`), never the B2C lead statuses, which drive the ad-conversion ledger. Not the same thing as `dealerProfiles`, which is an account on the dealer *platform*.
+- **dealerInquiries** (`dealerinquiry`) — Sourcing requests from `/b2b-inquiry`: the market the dealer checked, the dealership, the contact (WhatsApp stored as E.164), a preferred source market and up to five cars (`cars` jsonb, shape in `src/lib/dealer-inquiry.ts`). Its own status vocabulary (`DEALER_INQUIRY_STATUSES`), never the B2C lead statuses. It drives its own conversion ledger (`*SentAt` columns): **Qualified** uploads `QualifiedDealerLead` and **Onboarded** uploads `DealerOnboarded` (business instruction 2026-11-01), mapped in `src/lib/dealerConversion.ts`. Not the same thing as `dealerProfiles`, which is an account on the dealer *platform*.
 
 Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). JSON-shaped fields (`pricing`, `statusHistory`, `documents`, testimonials, etc.) use `jsonb`; list fields use Postgres text arrays.
 
@@ -88,6 +90,7 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 - `scripts/apply-destination-column.mjs` — adds `specdossier.destinations` (`drizzle/0006_destination_column.sql`) to one environment. Read-only until `--apply`. Like every column change here, it has to be run against dev, staging and production separately.
 - `scripts/apply-lead-attribution-columns.mjs` — adds `request.landingUrl`, `pageUrl`, `referrer` and `repCode` (`drizzle/0008_lead_attribution_columns.sql`) to one environment. Read-only until `--apply`. **Run it before the deploy** — the build names these columns in every lead select and insert, so without them no lead can be read or written.
 - `scripts/apply-dealer-inquiry-table.mjs` — creates the `dealerinquiry` table from `drizzle/0007_dealer_inquiry_table.sql` in one environment (it reads that file, so the SQL has one source). Read-only until `--apply`, idempotent, and checks every column, index and the foreign key. **Run it against an environment before deploying the dealer page there** — the form's submit fails without the table.
+- `scripts/apply-dealer-conversion-columns.mjs` — adds the dealer-inquiry conversion ledger (`drizzle/0009_dealer_conversion_ledger.sql`) to one environment. Read-only until `--apply`. **Run it before the deploy** — every dealer-inquiry query names these columns.
 - `scripts/backfill-dossier-destinations.mjs` — offers every existing car page into the core five markets (Ireland, UK, Kenya, Tanzania, Sri Lanka). Read-only until `--apply`, idempotent, and **merges** rather than replacing, so a car that already has destinations keeps its ranking. Skips the markets flagged `rhdOnly` for a dossier that can only be sourced LHD, and says so rather than silently listing a car the buyer could not register. `--empty-only` fills only the car pages with no markets at all and leaves every curated list — a market removed on purpose included — untouched; use it to catch up car pages created before the admin defaulted the markets.
 
 ### Sourcing & Profit Analyzer
