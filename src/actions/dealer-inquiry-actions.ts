@@ -28,6 +28,17 @@ import {
 import { db, dealerInquiries, users } from "@/db";
 import { getAgentPhotoUrl } from "@/lib/agent-photo";
 import {
+  type ConversionLead,
+  sendGoogleConversion,
+  sendMetaConversion,
+} from "@/lib/conversions";
+import {
+  DEALER_LEAD_TYPE,
+  DEALER_ONBOARDED_EVENT,
+  DEALER_QUALIFIED_EVENT,
+  dealerUploadsDue,
+} from "@/lib/dealerConversion";
+import {
   checkWhatsApp,
   type DealerCar,
   type DealerCarInput,
@@ -605,6 +616,88 @@ type UpdateResult =
 const appendHistory = (entries: DealerInquiryHistoryEntry[]) =>
   sql`${dealerInquiries.statusHistory} || ${JSON.stringify(entries)}::jsonb`;
 
+type DealerInquiryRow = typeof dealerInquiries.$inferSelect;
+
+/**
+ * Upload what a status change has newly earned (src/lib/dealerConversion.ts)
+ * and record only what a platform actually accepted, so a failed upload is
+ * retried on the next status change rather than lost — and nothing accepted
+ * is ever sent twice, since Meta does no server-to-server deduplication.
+ *
+ * Google Ads uploads need their own conversion actions. When
+ * GOOGLE_DEALER_QUALIFIED_ACTION_ID / GOOGLE_DEALER_ONBOARDED_ACTION_ID are
+ * unset nothing is sent to Google: falling back to the B2C action would count
+ * dealers as car buyers.
+ */
+async function uploadDealerConversions(
+  before: DealerInquiryRow,
+  after: DealerInquiryRow,
+) {
+  const due = dealerUploadsDue(before.status, after.status, after);
+  if (due.length === 0) return;
+
+  const cars = (after.cars as DealerCar[]) ?? [];
+  const lead: ConversionLead = {
+    id: after.id,
+    email: after.email,
+    // Stored as E.164, so it hashes as an international number as it stands.
+    phone: after.whatsapp,
+    leadType: DEALER_LEAD_TYPE,
+    make: cars[0]?.make || null,
+    vehicleModel: cars[0]?.model || null,
+    countryOfImport: after.country,
+    gclid: after.gclid,
+    fbc: after.fbc,
+    fbp: after.fbp,
+    fbclid: after.fbclid,
+    createdAt: after.createdAt,
+  };
+
+  const ledger: Partial<DealerInquiryRow> = {};
+  const google = (actionId: string | undefined, stage: string) =>
+    actionId
+      ? sendGoogleConversion(lead, {
+          conversionActionId: actionId,
+          orderId: `${after.id}:${stage}`,
+        })
+      : Promise.resolve(null);
+
+  await Promise.allSettled(
+    due.map(async (upload) => {
+      if (upload === "metaQualified") {
+        const r = await sendMetaConversion(lead, DEALER_QUALIFIED_EVENT, {
+          eventId: `${after.id}:qualified`,
+        });
+        if (r.ok) ledger.metaQualifiedSentAt = new Date();
+      } else if (upload === "metaOnboarded") {
+        const r = await sendMetaConversion(lead, DEALER_ONBOARDED_EVENT, {
+          eventId: `${after.id}:onboarded`,
+        });
+        if (r.ok) ledger.metaOnboardedSentAt = new Date();
+      } else if (upload === "googleQualified") {
+        const r = await google(
+          process.env.GOOGLE_DEALER_QUALIFIED_ACTION_ID,
+          "qualified",
+        );
+        if (r?.ok) ledger.googleQualifiedSentAt = new Date();
+      } else {
+        const r = await google(
+          process.env.GOOGLE_DEALER_ONBOARDED_ACTION_ID,
+          "onboarded",
+        );
+        if (r?.ok) ledger.googleOnboardedSentAt = new Date();
+      }
+    }),
+  );
+
+  if (Object.keys(ledger).length > 0) {
+    await db
+      .update(dealerInquiries)
+      .set(ledger)
+      .where(eq(dealerInquiries.id, after.id));
+  }
+}
+
 const STALE_MESSAGE =
   "Someone else changed this inquiry a moment ago — reload to see the latest.";
 
@@ -711,6 +804,19 @@ export async function updateDealerInquiry(
       )
       .returning();
     if (!updated) return { success: false, message: STALE_MESSAGE };
+
+    // Report a newly reached Qualified / Onboarded to the ad platforms. Never
+    // lets an upload failure undo the save.
+    if (update.status !== undefined) {
+      try {
+        await uploadDealerConversions(existing, updated);
+      } catch (error) {
+        console.error(
+          `[CONVERSIONS] Dealer upload failed for ${updated.id}:`,
+          error,
+        );
+      }
+    }
 
     // Tell the new owner — a reassignment nobody hears about is a lead that
     // sits. Never lets a mail failure undo the save.
