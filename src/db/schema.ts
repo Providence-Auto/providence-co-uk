@@ -358,6 +358,11 @@ export const dealerInquiries = pgTable(
     metaOnboardedSentAt: timestamp("metaOnboardedSentAt"),
     googleQualifiedSentAt: timestamp("googleQualifiedSentAt"),
     googleOnboardedSentAt: timestamp("googleOnboardedSentAt"),
+    // Soft delete (drizzle/0010_dealer_inquiry_soft_delete.sql). A deleted
+    // inquiry is hidden from everyone but admins, who see it under Deleted and
+    // can restore it. The row itself is never removed.
+    deletedAt: timestamp("deletedAt"),
+    deletedByName: text("deletedByName"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },

@@ -5,6 +5,7 @@ import { emailService } from "@/lib/email";
 import { auth } from "@/utils/auth";
 import {
   setDealerInquiryArchived,
+  setDealerInquiryDeleted,
   submitDealerInquiry,
   updateDealerInquiry,
 } from "../dealer-inquiry-actions";
@@ -825,5 +826,70 @@ describe("setDealerInquiryArchived", () => {
 
     const result = await setDealerInquiryArchived(EXISTING.id, true);
     expect(result.success).toBe(false);
+  });
+});
+
+describe("setDealerInquiryDeleted", () => {
+  const SALES = {
+    id: "u-abd",
+    name: "Abdallah",
+    role: "B2C Sales",
+    isBanned: false,
+  };
+  const ADMIN = {
+    id: "u-admin",
+    name: "Rakeez",
+    role: "Admin",
+    isBanned: false,
+  };
+  const DELETED = {
+    ...EXISTING,
+    deletedAt: new Date("2026-10-30T10:00:00Z"),
+    deletedByName: "Abdallah",
+  };
+
+  it("lets anyone on the panel delete, keeping the row and logging who", async () => {
+    signIn("u-abd");
+    state.results.push([SALES], [EXISTING], [DELETED]);
+
+    const result = await setDealerInquiryDeleted(EXISTING.id, true);
+
+    expect(result.success).toBe(true);
+    expect(state.updated[0]).toMatchObject({ deletedByName: "Abdallah" });
+    expect(state.updated[0].deletedAt).toBeInstanceOf(Date);
+    expect(historyOf(state.updated[0].statusHistory)).toEqual([
+      expect.objectContaining({ action: "Deleted", performedBy: "Abdallah" }),
+    ]);
+  });
+
+  it("lets only an admin restore", async () => {
+    signIn("u-abd");
+    state.results.push([SALES]);
+    const refused = await setDealerInquiryDeleted(EXISTING.id, false);
+    expect(refused.success).toBe(false);
+    expect(state.updated).toHaveLength(0);
+
+    signIn();
+    state.results.push([ADMIN], [DELETED], [EXISTING]);
+    const restored = await setDealerInquiryDeleted(EXISTING.id, false);
+    expect(restored.success).toBe(true);
+    expect(state.updated[0]).toMatchObject({
+      deletedAt: null,
+      deletedByName: null,
+    });
+  });
+
+  it("hides a deleted inquiry from anyone but an admin", async () => {
+    signIn("u-abd");
+    state.results.push([SALES], [DELETED]);
+    const update = await updateDealerInquiry(EXISTING.id, {
+      status: "Contacted",
+    });
+    expect(update).toEqual({ success: false, message: "Inquiry not found." });
+
+    state.results.push([SALES], [DELETED]);
+    const archive = await setDealerInquiryArchived(EXISTING.id, true);
+    expect(archive.success).toBe(false);
+    expect(state.updated).toHaveLength(0);
   });
 });

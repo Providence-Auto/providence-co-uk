@@ -10,14 +10,17 @@ import {
   Loader2,
   Mail,
   MessageCircle,
+  RotateCcw,
   Search,
   Share2,
+  Trash2,
   UserRound,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   setDealerInquiryArchived,
+  setDealerInquiryDeleted,
   updateDealerInquiry,
 } from "@/actions/dealer-inquiry-actions";
 import Flag from "@/components/dealer/Flag";
@@ -98,17 +101,20 @@ export default function DealerInquiriesClient({
   initialInquiries,
   staff,
   currentUserId,
+  isAdmin,
 }: {
   initialInquiries: DealerInquiryView[];
   staff: DealerInquiryStaff[];
   currentUserId: string;
+  /** Draws the Deleted tab. The server only ever sends deleted rows to admins. */
+  isAdmin: boolean;
 }) {
   const [inquiries, setInquiries] = useState(initialInquiries);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [owner, setOwner] = useState("all");
   const [country, setCountry] = useState("all");
-  const [showArchived, setShowArchived] = useState(false);
+  const [view, setView] = useState<"open" | "archived" | "deleted">("open");
   const [pageSize, setPageSize] = useState<number>(25);
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -120,6 +126,12 @@ export default function DealerInquiriesClient({
       prev.map((i) => (i.id === updated.id ? updated : i)),
     );
 
+  // A non-admin who deletes an inquiry no longer sees it at all.
+  const remove = (id: string) => {
+    setInquiries((prev) => prev.filter((i) => i.id !== id));
+    setOpenId(null);
+  };
+
   const countries = useMemo(
     () => [...new Set(inquiries.map((i) => i.country))].sort(),
     [inquiries],
@@ -128,7 +140,11 @@ export default function DealerInquiriesClient({
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return inquiries.filter((i) => {
-      if (i.isArchived !== showArchived) return false;
+      if (view === "deleted") {
+        if (!i.deletedAt) return false;
+      } else if (i.deletedAt || i.isArchived !== (view === "archived")) {
+        return false;
+      }
       if (status !== "all" && i.status !== status) return false;
       if (country !== "all" && i.country !== country) return false;
       if (owner === "mine" && i.assignedToId !== currentUserId) return false;
@@ -159,11 +175,13 @@ export default function DealerInquiriesClient({
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [inquiries, query, status, country, owner, showArchived, currentUserId]);
+  }, [inquiries, query, status, country, owner, view, currentUserId]);
 
   const pageData = paginate(filtered, pageSize, page);
 
-  const live = inquiries.filter((i) => !i.isArchived);
+  const kept = inquiries.filter((i) => !i.deletedAt);
+  const live = kept.filter((i) => !i.isArchived);
+  const deletedCount = inquiries.length - kept.length;
   const stats = [
     { label: "Open inquiries", value: live.length },
     {
@@ -176,7 +194,7 @@ export default function DealerInquiriesClient({
     },
     {
       label: "Onboarded",
-      value: inquiries.filter((i) => i.status === "Onboarded").length,
+      value: kept.filter((i) => i.status === "Onboarded").length,
     },
   ];
 
@@ -269,13 +287,13 @@ export default function DealerInquiriesClient({
             </select>
             <button
               type="button"
-              aria-pressed={showArchived}
+              aria-pressed={view === "archived"}
               onClick={() => {
-                setShowArchived((v) => !v);
+                setView((v) => (v === "archived" ? "open" : "archived"));
                 resetPage();
               }}
               className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm font-medium ${
-                showArchived
+                view === "archived"
                   ? "border-zinc-900 bg-zinc-900 text-white"
                   : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400"
               }`}
@@ -283,6 +301,24 @@ export default function DealerInquiriesClient({
               <Archive size={15} />
               Archived
             </button>
+            {isAdmin && (
+              <button
+                type="button"
+                aria-pressed={view === "deleted"}
+                onClick={() => {
+                  setView((v) => (v === "deleted" ? "open" : "deleted"));
+                  resetPage();
+                }}
+                className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm font-medium ${
+                  view === "deleted"
+                    ? "border-red-700 bg-red-700 text-white"
+                    : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400"
+                }`}
+              >
+                <Trash2 size={15} />
+                Deleted{deletedCount > 0 ? ` (${deletedCount})` : ""}
+              </button>
+            )}
           </div>
         </div>
 
@@ -456,7 +492,9 @@ export default function DealerInquiriesClient({
               inquiry={open}
               staff={staff}
               currentUserId={currentUserId}
+              isAdmin={isAdmin}
               onSaved={replace}
+              onRemoved={remove}
             />
           )}
         </SheetContent>
@@ -469,18 +507,24 @@ function InquiryDetail({
   inquiry,
   staff,
   currentUserId,
+  isAdmin,
   onSaved,
+  onRemoved,
 }: {
   inquiry: DealerInquiryView;
   staff: DealerInquiryStaff[];
   currentUserId: string;
+  isAdmin: boolean;
   onSaved: (inquiry: DealerInquiryView) => void;
+  onRemoved: (id: string) => void;
 }) {
   const [status, setStatus] = useState(inquiry.status);
   const [assignee, setAssignee] = useState(inquiry.assignedToId ?? "");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [archiving, setArchiving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const isDeleted = Boolean(inquiry.deletedAt);
 
   const dirty =
     status !== inquiry.status ||
@@ -542,6 +586,34 @@ function InquiryDetail({
       }
     } finally {
       setArchiving(false);
+    }
+  };
+
+  const toggleDeleted = async () => {
+    if (
+      !isDeleted &&
+      !window.confirm(
+        isAdmin
+          ? `Delete ${inquiry.reference}? It moves to Deleted, where you can restore it.`
+          : `Delete ${inquiry.reference}? It disappears from this list; only an admin can restore it.`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    try {
+      const result = await setDealerInquiryDeleted(inquiry.id, !isDeleted);
+      if (!result.success) {
+        toast.error(result.message);
+      } else if (result.inquiry.deletedAt && !isAdmin) {
+        onRemoved(inquiry.id);
+        toast.success("Deleted");
+      } else {
+        onSaved(result.inquiry);
+        toast.success(result.inquiry.deletedAt ? "Deleted" : "Restored");
+      }
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -758,7 +830,38 @@ function InquiryDetail({
               )}
               {inquiry.isArchived ? "Restore" : "Archive"}
             </button>
+            {(!isDeleted || isAdmin) && (
+              <button
+                type="button"
+                onClick={toggleDeleted}
+                disabled={deleting}
+                className={`inline-flex h-10 items-center gap-2 rounded-xl border px-4 text-sm font-medium disabled:opacity-40 ${
+                  isDeleted
+                    ? "border-zinc-200 text-zinc-700 hover:border-zinc-400"
+                    : "border-red-200 text-red-700 hover:border-red-400 hover:bg-red-50"
+                }`}
+              >
+                {deleting ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : isDeleted ? (
+                  <RotateCcw size={15} />
+                ) : (
+                  <Trash2 size={15} />
+                )}
+                {isDeleted ? "Restore from deleted" : "Delete"}
+              </button>
+            )}
           </div>
+          {isDeleted && (
+            <p className="mt-3 text-sm text-red-700">
+              Deleted
+              {inquiry.deletedByName ? ` by ${inquiry.deletedByName}` : ""}
+              {inquiry.deletedAt
+                ? ` ${formatDistanceToNow(new Date(inquiry.deletedAt), { addSuffix: true })}`
+                : ""}
+              . Only admins can see it.
+            </p>
+          )}
         </DetailSection>
 
         <DetailSection title="History">

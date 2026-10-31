@@ -29,6 +29,9 @@ export default async function DealerInquiriesPage() {
     Boolean(me) &&
     !me.isBanned &&
     STAFF_ROLES.includes((me.role || "").trim().toLowerCase());
+  // Only admins see deleted inquiries (the server never sends them to anyone
+  // else); this flag just decides whether the Deleted tab is drawn.
+  const isAdmin = isStaff && (me.role || "").trim().toLowerCase() === "admin";
 
   if (!isStaff) {
     return (
@@ -64,6 +67,7 @@ export default async function DealerInquiriesPage() {
         initialInquiries={inquiries}
         staff={staff}
         currentUserId={session.user.id}
+        isAdmin={isAdmin}
       />
     </div>
   );
