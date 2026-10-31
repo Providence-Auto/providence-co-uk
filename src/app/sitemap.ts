@@ -91,6 +91,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 1,
   }));
 
+  // The privacy policy is indexable but rarely changes; it carries the date
+  // its own page renders rather than the time of the request.
+  const legalRoutes = [
+    {
+      url: `${baseUrl}/privacy-policy`,
+      lastModified: new Date("2026-11-01"),
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
+  ];
+
   // 1a. Source-country landing pages (one per country we buy in).
   const countryRoutes = SOURCE_COUNTRY_PAGES.map((country) => ({
     url: `${baseUrl}${COUNTRY_BASE_PATH}/${country.slug}`,
@@ -173,6 +184,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...legalRoutes,
     ...countryRoutes,
     ...blogRoutes,
     ...newsRoutes,
