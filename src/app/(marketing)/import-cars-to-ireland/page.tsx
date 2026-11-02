@@ -346,10 +346,10 @@ const RELIEFS: { title: string; body: string; caveat: string }[] = [
       "Age is measured at registration, not at purchase — a car a few months short of 30 pays the full emissions-based rate.",
   },
   {
-    title: "Battery EV relief, until 31 December 2026",
+    title: "Battery EV relief, until 31 December 2028",
     body: "A battery EV registered before the deadline gets VRT relief of up to €5,000, sits in the lowest 7% CO₂ band and pays no NOx levy at all. The relief tapers between €40,000 and €50,000 OMSP and cannot exceed the VRT actually due.",
     caveat:
-      "This is a closing window. Registration — not purchase or shipping — has to happen before 31 December 2026.",
+      "Budget 2027 extended the relief from 31 December 2026 to 31 December 2028. Registration — not purchase or shipping — has to happen by the deadline.",
   },
   {
     title: "A valid statement of origin",
@@ -392,7 +392,7 @@ const BUY: { title: string; body: string }[] = [
   },
   {
     title: "A used battery EV, before the deadline",
-    body: "Lowest CO₂ band, zero NOx, and up to €5,000 off the VRT if it is registered before 31 December 2026. The Nissan Leaf is the obvious UK-built candidate.",
+    body: "Lowest CO₂ band, zero NOx, and up to €5,000 off the VRT if it is registered by 31 December 2028. The Nissan Leaf is the obvious UK-built candidate.",
   },
 ];
 
@@ -489,7 +489,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Can I still get the electric car VRT relief?",
-    a: "Until 31 December 2026. A battery EV registered before that date qualifies for VRT relief of up to €5,000, tapering away between €40,000 and €50,000 OMSP, and cannot claim more relief than the VRT actually due. It also sits in the 7% band and pays zero NOx. The deadline is on registration in Ireland, not on purchase, so the shipping time has to be built into the plan.",
+    a: "Until 31 December 2028, after Budget 2027 extended it by two years. A battery EV registered by that date qualifies for VRT relief of up to €5,000, tapering away between €40,000 and €50,000 OMSP, and cannot claim more relief than the VRT actually due. It also sits in the 7% band and pays zero NOx. The deadline is on registration in Ireland, not on purchase, so the shipping time has to be built into the plan.",
   },
 ];
 

@@ -151,7 +151,7 @@ const faqSchema = {
       name: "What is VRT and how is it calculated in Ireland?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Vehicle Registration Tax is charged at 7% to 41% of the car's OMSP (Open Market Selling Price), with the rate set by the car's WLTP CO₂ emissions. Electric cars fall in the lowest 7% band and qualify for VRT relief of up to €5,000 until 31 December 2026. Classic cars over 30 years old pay a flat €200.",
+        text: "Vehicle Registration Tax is charged at 7% to 41% of the car's OMSP (Open Market Selling Price), with the rate set by the car's WLTP CO₂ emissions. Electric cars fall in the lowest 7% band and qualify for VRT relief of up to €5,000 until 31 December 2028. Classic cars over 30 years old pay a flat €200.",
       },
     },
     {
