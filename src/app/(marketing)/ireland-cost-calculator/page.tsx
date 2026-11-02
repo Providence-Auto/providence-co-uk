@@ -872,7 +872,7 @@ export default function IrelandCostCalculator() {
 
                   {/* EV deadline toggle */}
                   {calc.isEV && (
-                    <Field label="Registering before 31 December 2026?">
+                    <Field label="Registering by 31 December 2028?">
                       <div className="grid grid-cols-2 gap-2">
                         {[true, false].map((v) => (
                           <button
@@ -1386,7 +1386,7 @@ export default function IrelandCostCalculator() {
                           label="BEV VRT Relief (–)"
                           value={`–${fmt(calc.evRelief)}`}
                           accent="green"
-                          sub="Expires 31 December 2026"
+                          sub="Expires 31 December 2028"
                         />
                       )}
                     </div>
@@ -1591,7 +1591,7 @@ export default function IrelandCostCalculator() {
                     "Calculated on CO₂ emissions band (WLTP figure required)",
                     "Plus a NOx levy on petrol and diesel cars",
                     "EVs pay 7% band + zero NOx levy",
-                    "EV relief up to €5,000 until 31 Dec 2026",
+                    "EV relief up to €5,000 until 31 Dec 2028",
                     "Classic cars (30+ yrs) pay a flat €200",
                     "Revenue sets the OMSP — not your purchase price",
                   ],
