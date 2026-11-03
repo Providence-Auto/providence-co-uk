@@ -127,10 +127,9 @@ const IRELAND_POSTS: BlogPost[] = [
     isPillar: true,
     title: "Importing a Car to Ireland in 2026: The Complete Guide",
     h1: "Importing a Car to Ireland in 2026: Costs, Tax & the Best Cars to Import",
-    seoTitle:
-      "Importing Cars to Ireland in 2026: The Complete Guide (Costs, Tax & Best Cars)",
+    seoTitle: "Importing Cars to Ireland in 2026: The Complete Guide",
     description:
-      "The complete 2026 guide to importing a car to Ireland — customs duty, VAT and VRT explained, what it really costs, the cheapest cars to import, and how to do it without overpaying.",
+      "The 2026 guide to importing a car to Ireland: customs duty, VAT and VRT explained, what it really costs, and the cheapest cars to import.",
     excerpt:
       "Everything that decides the price of an Irish import — the three taxes, the best source countries, and the cars that land cheapest — in one place.",
     cluster: "Guides",
@@ -187,10 +186,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "cheapest-cars-to-import-to-ireland",
     title: "The Cheapest Cars to Import to Ireland in 2026",
     h1: "The Cheapest Cars to Import to Ireland in 2026 (Real Landed Costs)",
-    seoTitle:
-      "The Cheapest Cars to Import to Ireland in 2026 (Real Landed Costs by Model)",
+    seoTitle: "The Cheapest Cars to Import to Ireland in 2026",
     description:
-      "The cheapest cars to import to Ireland in 2026, ranked. Specific makes and models with low VRT bands, 0% customs duty and real landed-cost examples — so you know exactly what lands cheapest.",
+      "The cheapest cars to import to Ireland in 2026, ranked: makes and models with low VRT bands, 0% customs duty and real landed-cost examples.",
     excerpt:
       "Not all imports are cheap. These specific models combine 0% duty, low VRT and genuine auction value — with landed costs to prove it.",
     cluster: "Cost & Cheapest",
@@ -243,10 +241,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "cheapest-way-to-import-a-car-to-ireland",
     title: "The Cheapest Way to Import a Car to Ireland",
     h1: "The Cheapest Way to Import a Car to Ireland (Without Cutting Corners)",
-    seoTitle:
-      "The Cheapest Way to Import a Car to Ireland in 2026 (Without Cutting Corners)",
+    seoTitle: "The Cheapest Way to Import a Car to Ireland in 2026",
     description:
-      "The cheapest way to import a car to Ireland in 2026 — a legal cost-minimisation playbook covering origin proof, source country, the right age and mileage, and the reliefs that cut your VRT and VAT.",
+      "The cheapest legal way to import a car to Ireland in 2026: origin proof, the right source country, age and mileage, and reliefs that cut VRT.",
     excerpt:
       "The cheapest import isn't a trick — it's a sequence of legal decisions. Here's the playbook that keeps duty, VAT and VRT as low as the rules allow.",
     cluster: "Cost & Cheapest",
@@ -302,10 +299,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "cost-of-importing-a-car-to-ireland",
     title: "How Much Does It Cost to Import a Car to Ireland?",
     h1: "How Much Does It Cost to Import a Car to Ireland? Full 2026 Breakdown",
-    seoTitle:
-      "How Much Does It Cost to Import a Car to Ireland? Full 2026 Breakdown",
+    seoTitle: "How Much Does It Cost to Import a Car to Ireland?",
     description:
-      "A line-by-line 2026 breakdown of the cost of importing a car to Ireland — purchase price, shipping, customs duty, VAT, VRT and the NOx levy — with worked examples for Japan and the UK.",
+      "A line-by-line 2026 breakdown of importing a car to Ireland: price, shipping, duty, VAT, VRT and the NOx levy, with Japan and UK examples.",
     excerpt:
       "Purchase price is only the start. Here's every line on the bill — duty, VAT, VRT, NOx — with worked totals so there are no surprises at the port.",
     cluster: "Cost & Cheapest",
@@ -359,10 +355,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "vrt-explained-ireland",
     title: "VRT Explained: How Vehicle Registration Tax Works in Ireland",
     h1: "VRT Explained: How Vehicle Registration Tax Is Calculated in Ireland (2026)",
-    seoTitle:
-      "VRT Explained: How Vehicle Registration Tax Is Calculated in Ireland (2026)",
+    seoTitle: "VRT Explained: How Irish Registration Tax Works (2026)",
     description:
-      "VRT explained in plain English: how Vehicle Registration Tax is calculated in Ireland in 2026 — OMSP, the CO₂ bands (7%–41%), the NOx levy, and the NEDC-to-WLTP trap that pushes older cars up a band.",
+      "How Vehicle Registration Tax is calculated in Ireland in 2026: OMSP, the CO₂ bands from 7% to 41%, the NOx levy and the NEDC-to-WLTP trap.",
     excerpt:
       "VRT is the biggest and most controllable cost of any Irish import. Here's exactly how Revenue calculates it — and where buyers get caught.",
     cluster: "Tax & Rules",
@@ -418,10 +413,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "import-car-from-japan-or-uk-to-ireland",
     title: "Japan vs the UK: Where Should You Import Your Car From?",
     h1: "Japan vs the UK: Where Should You Import Your Car From in 2026?",
-    seoTitle:
-      "Import a Car from Japan or the UK to Ireland? The 2026 Comparison",
+    seoTitle: "Import a Car from Japan or the UK to Ireland? 2026",
     description:
-      "Japan vs the UK for importing a car to Ireland in 2026: how customs duty, VAT, shipping and stock compare after Brexit and the EU–Japan 0% tariff — and which is cheaper for your car.",
+      "Japan vs the UK for importing a car to Ireland in 2026: duty, VAT, shipping and stock compared after Brexit and the EU–Japan 0% tariff.",
     excerpt:
       "Brexit ended the UK's automatic advantage and Japan just hit 0% duty. Here's how the two best source countries really compare in 2026.",
     cluster: "Source Country",
@@ -479,10 +473,9 @@ const IRELAND_POSTS: BlogPost[] = [
     title:
       "Why Are Indian-Manufactured Cars Cheaper? (And Is the Quality Low?)",
     h1: "Why Are Indian-Manufactured Cars So Much Cheaper — and Is the Quality Low?",
-    seoTitle:
-      "Why Are Indian-Manufactured Cars Cheaper? The Honest Answer on Price & Quality",
+    seoTitle: "Why Are Indian-Manufactured Cars Cheaper?",
     description:
-      "Indian-built cars cost roughly 30% less than the global average. Here's exactly why — the sub-4-metre tax rule, 95% local supply chains, frugal engineering and massive scale — plus the honest answer on whether the quality is low.",
+      "Why Indian-built cars cost less: the sub-4-metre tax rule, local supply chains, frugal engineering and scale, and the honest answer on quality.",
     excerpt:
       "Roughly 30% cheaper than the global average — and it's not corner-cutting. The five real reasons India builds cars for less, and the truth about quality.",
     cluster: "Source Country",
@@ -551,7 +544,7 @@ const MODEL_POSTS: BlogPost[] = [
     h1: "How to Import a Nissan Patrol",
     seoTitle: "How to Import a Nissan Patrol: Costs, Rules & Corridors",
     description:
-      "How to import a Nissan Patrol: the four source corridors, the seven-part landed-cost stack, age limits, individual vehicle approval and the documents needed.",
+      "How to import a Nissan Patrol: the four source corridors, the seven-part landed-cost stack, age limits, vehicle approval and the documents.",
     excerpt:
       "Gulf Patrols are left-hand drive, Australian and Japanese ones are not, and none are sold new in Ireland or the UK. That decides your corridor before the price does.",
     cluster: "Guides",
@@ -902,7 +895,7 @@ const UK_IVA_POSTS: BlogPost[] = [
     h1: "What an IVA Test Is, and When an Imported Car Needs One",
     seoTitle: "IVA Test Explained: UK Vehicle Approval for Imports",
     description:
-      "What Individual Vehicle Approval is, which imported cars need it, what DVSA inspects, what it costs and how long it takes — checked against GOV.UK on 1 September 2026.",
+      "What Individual Vehicle Approval is, which imported cars need it, what DVSA inspects, what it costs and how long it takes. Checked against GOV.UK.",
     excerpt:
       "An imported car with no UK or EU type approval cannot be registered until DVSA has approved it individually. Here is what that test is and when it applies.",
     cluster: "UK Registration & IVA",
@@ -973,7 +966,7 @@ const UK_IVA_POSTS: BlogPost[] = [
     h1: "Do You Need an IVA Test? The 10-Year Rule and Four Other Routes",
     seoTitle: "Do I Need an IVA Test? UK Import Approval Rules 2026",
     description:
-      "Most imported cars over 10 years old need no vehicle approval at all. Here is the exemption list, the EU certificate-of-conformity route and the GB conversion IVA for left-hand drive.",
+      "Most imported cars over 10 years old need no vehicle approval. The exemption list, the EU certificate-of-conformity route and the LHD conversion IVA.",
     excerpt:
       "The single most valuable question in a UK import is whether the car needs approving at all. For a great many cars, the answer is no.",
     cluster: "UK Registration & IVA",
@@ -1042,7 +1035,7 @@ const UK_IVA_POSTS: BlogPost[] = [
     h1: "What an IVA Test Costs: Every DVSA Fee, Line by Line",
     seoTitle: "IVA Test Cost 2026: Every DVSA Fee, Line by Line",
     description:
-      "DVSA's published IVA fees for cars — inspection, re-inspection and appeal, in and out of working hours — plus the £100 mutual recognition certificate and the £55 DVLA registration fee.",
+      "DVSA's published IVA fees for cars: inspection, re-inspection and appeal, in and out of hours, plus the mutual recognition and DVLA fees.",
     excerpt:
       "The inspection fee is the small number. Here is the whole published fee table, and the costs that sit either side of it.",
     cluster: "UK Registration & IVA",
@@ -1110,7 +1103,7 @@ const UK_IVA_POSTS: BlogPost[] = [
     h1: "How to Pass an IVA Test: DVSA's Own Top Ten Failure Points",
     seoTitle: "IVA Test Requirements: How to Pass It First Time",
     description:
-      "DVSA publishes the top ten reasons cars fail Individual Vehicle Approval — headlamp aim, rear fog lamps, speedometers, brakes and more. Here is the list, and what it means for an import.",
+      "DVSA's top ten reasons cars fail Individual Vehicle Approval, from headlamp aim and rear fog lamps to speedometers and brakes, for an import.",
     excerpt:
       "Headlamps that dip the wrong way and a speedometer in km/h fail more imported cars than mechanical faults do. Both are fixable before the car is booked in.",
     cluster: "UK Registration & IVA",
@@ -1179,7 +1172,7 @@ const UK_IVA_POSTS: BlogPost[] = [
     h1: "Every IVA Test Centre in Great Britain, and Which Ones Take Cars",
     seoTitle: "IVA Test Centres UK: Full List and Which Take Cars",
     description:
-      "All 22 IVA test centres in England, Scotland and Wales, including the seven privately operated sites — what each can test, and how to name one on your DVSA application.",
+      "All 22 IVA test centres in England, Scotland and Wales, including the seven private sites: what each can test and how to name one on your form.",
     excerpt:
       "Twenty-two centres, seven of them privately operated, and only eighteen that take a car. Where you can test is a real constraint on an import.",
     cluster: "UK Registration & IVA",
@@ -1247,7 +1240,7 @@ const UK_IVA_POSTS: BlogPost[] = [
     h1: "Registering an Imported Car in the UK, Step by Step",
     seoTitle: "Registering an Imported Car in the UK: Full Process",
     description:
-      "The full sequence for a car imported into the UK: the 14-day NOVA notification, duty and VAT, vehicle approval, the DVLA pack, the £55 fee and the six-week wait for a V5C.",
+      "Registering an imported car in the UK: the 14-day NOVA notification, duty and VAT, vehicle approval, the DVLA pack, the £55 fee and the V5C wait.",
     excerpt:
       "Six steps, in a fixed order, and each one gates the next. Miss the first and the last cannot happen.",
     cluster: "UK Registration & IVA",

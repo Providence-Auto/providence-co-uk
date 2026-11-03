@@ -165,7 +165,7 @@ step settles the exact slug from SERP research (T-20 wins over the pattern).
 | P-11 | Vehicle class | Landing | `/import-bikes` and `/import/<tag>` (built in PR #323); proposed `/import-<class>-from-<source>` for a class from one source | Partial: `/import-bikes` (motorcycles); `/import/<tag>` for luxury cars, SUVs, electric, hybrid, 7-seater and the motorcycle sub-classes; `/japanese-luxury-cars-lhd`; `/indian-manufactured-cars`. **No trucks, buses/vans, kei, JDM, supercar or classic page** |
 | P-12 | Make | Landing | Proposed `/import-<make>` | **Missing** |
 | P-13 | Model (car or bike page) | Landing | `/b2c/gallery/<model-slug>`; bikes at `/import-bikes/<slug>` | Exists (database rows) |
-| P-14 | Model → destination | Landing | `/b2c/gallery/<model>/import-to-<destination>` | Exists (`full` markets indexed) |
+| P-14 | Model → destination | Landing | `/b2c/gallery/<model>/import-to-<destination>` | Exists; canonicalises to the car page (CLAUDE.md, 2026-10-27) |
 | P-15 | Upcoming model (pre-order) | Landing | P-13 with `isUpcoming` | Exists |
 | P-16 | Service | Landing | Proposed: one slug per service keyword | **Missing** |
 | P-17 | Inventory hub (gallery) | Landing | `/b2c/gallery` | Exists |
@@ -577,7 +577,7 @@ order** (what a plan proposes), **must not**, the **indexing minimum**,
 #### P-14 Model → destination `/b2c/gallery/<model>/import-to-<destination>`
 
 - **Owns:** F-Mo2.
-- **Rules:** as built (`CLAUDE.md`, "Destinations"): `full` destinations indexed and in the sitemap; `listed` ones `noindex, follow`; `formCountry` exact; origin-specific claims in `byOrigin`.
+- **Rules:** as built (`CLAUDE.md`, "Destinations"): **every `/import-to-<destination>` page, `full` or `listed`, canonicalises to its car page and stays out of the sitemap** (decided 2026-10-27 on Search Console evidence; this spec was aligned to it on 2026-11-03). The pages exist for sharing, ads and rep links. `formCountry` exact; origin-specific claims in `byOrigin`. F-Mo2 queries are owned by the car page itself until per-car, per-market content differs.
 - **Index minimum:** the destination is `full` and the car is offered into it.
 - **Schema:** `Car` with `areaServed`-style context in the description, `BreadcrumbList` (car → destination).
 

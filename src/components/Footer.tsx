@@ -70,6 +70,12 @@ export default function Footer() {
             >
               About Us
             </Link>
+            <Link
+              href="/contact"
+              className="hover:text-white transition-colors"
+            >
+              Contact
+            </Link>
             <Link href="/b2c" className="hover:text-white transition-colors">
               For Direct Buyers
             </Link>

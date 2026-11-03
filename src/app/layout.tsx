@@ -154,42 +154,45 @@ export default function RootLayout({
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "B2C Direct Car Import",
+            name: "Car import for private buyers",
             description:
-              "Direct vehicle sourcing for individual buyers to save on local dealer markups.",
+              "Import a car direct from source, inspected before your money moves and shipped CNF to your port, at the price a dealer pays at source.",
+            url: "https://www.providenceauto.co.uk/b2c",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "B2B Dealership Inventory Scaling",
+            name: "Car sourcing for dealers",
             description:
-              "Bulk sourcing and logistical handling for car dealerships worldwide.",
+              "Import stock direct from source for your dealership, inspected before your money moves and shipped CNF to your port.",
+            url: "https://www.providenceauto.co.uk/b2b",
           },
         },
       ],
     },
   };
 
+  // The classes we export, each linked to its own page (seo-page-rules.md
+  // T-43: the list used to name five categories with no URL at all).
   const categorySchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Luxury Sedans" },
-      { "@type": "ListItem", position: 2, name: "7-Seater SUVs" },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Electric Vehicles (BEV/PHEV)",
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: "High-Performance Sports Cars",
-      },
-      { "@type": "ListItem", position: 5, name: "Executive Coupes" },
-    ],
+      ["Import Cars", "/import/cars"],
+      ["Import Luxury Cars", "/import/luxury-cars"],
+      ["Import SUVs", "/import/suvs"],
+      ["Import Electric Cars", "/import/electric-cars"],
+      ["Import Hybrid Cars", "/import/hybrid-cars"],
+      ["Import 7-Seater Cars", "/import/7-seater-cars"],
+      ["Import Bikes", "/import-bikes"],
+    ].map(([name, path], i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name,
+      url: `https://www.providenceauto.co.uk${path}`,
+    })),
   };
 
   return (

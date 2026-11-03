@@ -1,5 +1,6 @@
 import { ArrowRight, Clock } from "lucide-react";
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import Link from "next/link";
 import BlogCTA from "@/components/blog/BlogCTA";
 import MinimalHeader from "@/components/MinimalHeader";
@@ -15,10 +16,9 @@ import { getLeadStory, NEWS_BASE_PATH } from "@/config/news";
 
 const SITE = "https://www.providenceauto.co.uk";
 const PATH = "/blog";
-const TITLE =
-  "Car Import Guides — Japan, the UK, the UAE, India, Thailand & More";
+const TITLE = "Car Import Guides: Japan, UK, UAE & More | Providence";
 const DESCRIPTION =
-  "Practical guides to importing a car from every country we export from — how each market works, what the paperwork proves, what it really costs to land, and the questions dealers and direct buyers ask us most.";
+  "Guides to importing a car from Japan, the UK, the UAE, India, Thailand, Australia and New Zealand: the process, the paperwork and the landed cost.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -40,11 +40,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: { index: true, follow: true },
 };

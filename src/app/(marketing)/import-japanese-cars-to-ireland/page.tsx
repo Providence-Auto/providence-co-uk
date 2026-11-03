@@ -18,88 +18,9 @@ import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
-import type { LandingPageConfig } from "@/config/landing-pages";
+import { IRELAND_FAQS } from "@/config/ireland-japan-faqs";
 
 // ── DATA ────────────────────────────────────────────────────────────────────
-
-const IRELAND_FAQS: LandingPageConfig["faqs"] = {
-  title: "Import to Ireland — Your Questions Answered",
-  subtitle:
-    "Everything you need to know about importing a Japanese car to Ireland with Providence.",
-  categories: [
-    {
-      category: "Irish Import Taxes",
-      items: [
-        {
-          q: "What taxes do I pay when importing a car to Ireland?",
-          a: "Three charges apply: (1) Customs Duty — 0% for Japan-built cars under the EU–Japan EPA since February 2026. (2) VAT at 23%, charged once on the car's landed value. (3) VRT (Vehicle Registration Tax) — 7% to 14% for low-CO2 hybrids and efficient petrols. We calculate all three before you commit and prepare the declarations. They are paid in your name, as the car's owner.",
-        },
-        {
-          q: "What is VRT and how is it calculated?",
-          a: "VRT is a once-off Irish registration tax charged on Revenue's Open Market Selling Price (OMSP) — their estimate of what the car would retail for in Ireland. The rate is set by CO2 emissions. Hybrids and efficient petrols pay 7–14%; large diesel SUVs can pay 35–41%. Choosing a low-emission Japanese hybrid keeps this to a minimum, and we calculate the exact VRT before you commit.",
-        },
-        {
-          q: "Why is a Japanese hybrid the best value import right now?",
-          a: "Japan-built cars enter Ireland at 0% customs duty under the EU–Japan Economic Partnership Agreement, hybrids sit in the low VRT bands, and every car is right-hand drive. You import direct from Japan, and you get a lower-mileage car graded 4 or above, inspected before your money moves.",
-        },
-        {
-          q: "Will I pay VAT twice — once in Japan and again on arrival?",
-          a: "No. Japanese export sales are VAT-free at source. Irish VAT at 23% is charged once, at the Irish port of entry, on the car's landed value. There is no double-taxation. We prepare that declaration and the landed values behind it, and it is filed in your name, because you are the importer of record.",
-        },
-        {
-          q: "Is there a VRT relief available for electric vehicle imports?",
-          a: "Yes — until 31 December 2028, battery electric vehicles with an OMSP up to €40,000 qualify for up to €5,000 VRT relief, with reduced relief between €40,000 and €50,000, plus the lowest CO2 band (7%) and zero NOx levy. Budget 2027 extended the relief from its previous end date of 31 December 2026. The deadline is on registration in Ireland, so build the 6–10 weeks of shipping from Japan into your plan.",
-        },
-      ],
-    },
-    {
-      category: "The Import Process",
-      items: [
-        {
-          q: "How long does the full import take?",
-          a: "Typically 8–12 weeks from inquiry to an Irish port: 1–2 weeks to find and inspect your car in Japan, then 6–10 weeks at sea. Clearance, the NCTS appointment and VRT follow on arrival, in your name, with every document prepared first.",
-        },
-        {
-          q: "What is NCTS and do I need to do anything for it?",
-          a: "The National Car Testing Service (NCTS) is where imported vehicles are registered in Ireland and VRT is assessed. Every imported vehicle must be registered within 30 days of arrival, with an NCTS appointment booked within the first 7 days. We prepare every document it needs and give you the VRT figure well before you get there. The booking, the registration and the VRT payment are in your name, as the car's owner, and we take you through each step.",
-        },
-        {
-          q: "Do I need to be present for any part of the process?",
-          a: "Not for the sourcing or the shipping — we do those, and you get updates throughout. From the Irish port onwards, the customs entry, the NCTS appointment, the VRT payment and collection are in your name, as the car's owner. We prepare every document and stay with you through clearance.",
-        },
-        {
-          q: "What documentation will I receive with my car?",
-          a: "You receive the car's condition grade and inspection report, full vehicle history, Certificate of Conformity with WLTP CO2 and NOx data, and the Bill of Lading — everything your customs entry, the NCTS appointment and your registration require, prepared and checked before you need it.",
-        },
-        {
-          q: "Can I track my car during shipping?",
-          a: "Yes. Once your car is loaded onto the vessel, you receive a live tracking link showing its real-time position from Japan to an Irish port. Our team also sends milestone notifications: sourced, inspected, loaded, in transit, and arrived at the Irish port.",
-        },
-      ],
-    },
-    {
-      category: "Safety & Quality",
-      items: [
-        {
-          q: "What condition grade do you export?",
-          a: "Grade 4 and above only, on Japan's independent auction grading scale, where Grade 5 is close to new and Grade 4 is excellent. You see the grade and our inspection report before we ship anything.",
-        },
-        {
-          q: "What mileage should I expect on a Japanese import?",
-          a: "Japan's shaken inspection regime and high vehicle turnover mean cars are traded at relatively low mileage. A 3–8 year-old Japanese hybrid typically has 30,000–70,000 km — often well below what you'd find on an equivalent Irish used car of the same age. We target average mileage for the best balance of price, condition, and VRT efficiency.",
-        },
-        {
-          q: "How do I know my money is safe?",
-          a: "We have 15+ years of trading history supplying the dealerships Irish buyers already trust. Payment is held securely until your vehicle is confirmed and cleared for shipment. Every car is covered by comprehensive marine insurance for the voyage, to the Irish port of arrival, and we provide a full paper trail from purchase through to landing.",
-        },
-        {
-          q: "What if the car doesn't arrive in the condition described?",
-          a: "Every vehicle undergoes a full independent pre-export inspection before leaving Japan. You receive the condition report, photographs and grade before we authorise shipping. If anything doesn't match the agreed specification, we don't ship it — full stop. Our reputation is built on 15 years of verified shipments.",
-        },
-      ],
-    },
-  ],
-};
 
 const JAPAN_ADVANTAGES = [
   {
