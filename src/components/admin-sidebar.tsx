@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   LogOut,
   Settings,
+  ShieldCheck, // Client KYC
   User,
   UserIcon,
   Users,
@@ -43,6 +44,7 @@ const navItems = [
     url: "/admin/dealer-inquiries",
     icon: Handshake,
   },
+  { title: "Client KYC", url: "/admin/kyc", icon: ShieldCheck },
   { title: "Cars", url: "/admin/dossiers", icon: Car },
   {
     title: "Sourcing Analyzer",
