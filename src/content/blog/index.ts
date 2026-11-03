@@ -41,6 +41,7 @@ import HowToImportACarFromNewZealand from "./how-to-import-a-car-from-new-zealan
 import HowToImportACarFromThailand from "./how-to-import-a-car-from-thailand";
 import HowToImportACarFromTheUae from "./how-to-import-a-car-from-the-uae";
 import HowToImportACarFromTheUk from "./how-to-import-a-car-from-the-uk";
+import HowToImportAMotorcycle from "./how-to-import-a-motorcycle";
 import HowToImportANissanPatrol from "./how-to-import-a-nissan-patrol";
 import HowToImportASuzukiJimny from "./how-to-import-a-suzuki-jimny";
 import HowToSourceCarsOverseas from "./how-to-source-cars-overseas";
@@ -219,6 +220,7 @@ export const BLOG_BODIES: Record<string, ComponentType> = {
 
   // ── Australia ──────────────────────────────────────────────────────────────
   "how-to-import-a-car-from-australia": HowToImportACarFromAustralia,
+  "how-to-import-a-motorcycle": HowToImportAMotorcycle,
   "best-cars-to-import-from-australia": BestCarsToImportFromAustralia,
   "importing-a-ute-or-4x4-from-australia": ImportingAUteOr4x4FromAustralia,
   "cost-to-import-a-car-from-australia": CostToImportACarFromAustralia,

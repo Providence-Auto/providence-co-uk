@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getAllSpecDossiers } from "@/actions/spec-actions";
 import GalleryClient from "@/components/GalleryClient";
+import { isMotorcycle } from "@/lib/vehicle-type";
 
 export const revalidate = 60; // Optional: Revalidate the page every 60 seconds
 
@@ -17,8 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
     status?: string;
     heroImageUrl?: string;
     images?: string[];
+    vehicleType?: string;
   }>;
-  const active = dossiers.filter((d) => d.status === "Active");
+  const active = dossiers.filter(
+    (d) => d.status === "Active" && !isMotorcycle(d),
+  );
 
   const ogImage =
     active.find((d) => d.heroImageUrl)?.heroImageUrl ||
@@ -51,7 +55,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function GalleryPage() {
   const response = await getAllSpecDossiers();
-  const dossiers = response.success ? response.data : [];
+  // Bikes have their own section at /import-bikes.
+  const dossiers = (response.success ? response.data : []).filter(
+    (d: { vehicleType?: unknown }) => !isMotorcycle(d),
+  );
 
   return <GalleryClient dossiers={dossiers} />;
 }

@@ -253,6 +253,13 @@ export const specDossiers = pgTable("specdossier", {
   expectedAvailability: text("expectedAvailability").default("").notNull(),
   /** Slug of the /latest-news announcement this model was launched in. */
   newsSlug: text("newsSlug").default("").notNull(),
+  // --- Motorcycles and landing-page tags (drizzle/0011) ------------------
+  /** "car" or "motorcycle" — see src/lib/vehicle-type.ts. */
+  vehicleType: text("vehicleType").default("car").notNull(),
+  // Landing-page tags as slugs ("luxury-cars"); each has a page at
+  // /import/<tag>. Separate from `searchTags`, which are free-form gallery
+  // filter keywords. Registry and parsing: src/config/vehicle-tags.ts.
+  tags: text("tags").array().notNull().default([]),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });

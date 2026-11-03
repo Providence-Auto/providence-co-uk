@@ -6,10 +6,17 @@ import {
 } from "@/config/contact";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
 import { NEWS_BASE_PATH } from "@/config/news";
+import { FOOTER_TAGS, TAG_COLLECTIONS, tagPath } from "@/config/vehicle-tags";
+import { BIKES_BASE_PATH } from "@/lib/vehicle-type";
 
 // The countries we buy in, listed A–Z. Every one has a page.
 const FOOTER_OFFICES = [...SOURCE_COUNTRY_PAGES].sort((a, b) =>
   a.shortName.localeCompare(b.shortName),
+);
+
+// The motorcycle categories, each an /import/<tag> page.
+const BIKE_TAGS = TAG_COLLECTIONS.filter(
+  (tag) => tag.vehicleType === "motorcycle" && !tag.redirectTo,
 );
 
 export default function Footer() {
@@ -19,7 +26,7 @@ export default function Footer() {
   // it only lets it paint over `fixed` chrome (e.g. the admin sidebar).
   return (
     <footer className="w-full border-t border-white/5 bg-black pt-16 pb-8 relative">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-x-8 gap-y-12 mb-16">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-x-8 gap-y-12 mb-16">
         {/* Brand */}
         <div className="flex flex-col justify-start col-span-2 sm:col-span-1">
           <Link
@@ -87,12 +94,26 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Campaigns: the dedicated landing pages, otherwise unreachable from nav */}
+        {/* Import: for the visitor who knows what kind of vehicle they want
+            but not which page holds it — one link per landing page, named by
+            what is imported. The category links are the /import/<tag> pages
+            (src/config/vehicle-tags.ts). */}
         <div className="flex flex-col gap-4">
           <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
-            Campaigns
+            Import
           </h2>
           <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
+            {FOOTER_TAGS.filter((tag) => tag.vehicleType === "car").map(
+              (tag) => (
+                <Link
+                  key={tag.slug}
+                  href={tagPath(tag.slug)}
+                  className="hover:text-white transition-colors"
+                >
+                  Import {tag.label}
+                </Link>
+              ),
+            )}
             <Link
               href="/import-japanese-cars"
               className="hover:text-white transition-colors"
@@ -103,7 +124,7 @@ export default function Footer() {
               href="/japanese-luxury-cars-lhd"
               className="hover:text-white transition-colors"
             >
-              LHD Japanese Luxury
+              LHD Japanese Luxury Cars
             </Link>
             <Link
               href="/indian-manufactured-cars"
@@ -115,13 +136,43 @@ export default function Footer() {
               href="/import-japanese-cars-to-ireland"
               className="hover:text-white transition-colors"
             >
-              Japan to Ireland
+              Japanese Cars to Ireland
             </Link>
             <Link
               href="/b2c/gallery"
               className="hover:text-white transition-colors"
             >
               Gallery
+            </Link>
+          </nav>
+        </div>
+
+        {/* Bikes: the motorcycle landing page, its categories and its guide */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
+            Bikes
+          </h2>
+          <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
+            <Link
+              href={BIKES_BASE_PATH}
+              className="hover:text-white transition-colors"
+            >
+              Import Bikes
+            </Link>
+            {BIKE_TAGS.map((tag) => (
+              <Link
+                key={tag.slug}
+                href={tagPath(tag.slug)}
+                className="hover:text-white transition-colors"
+              >
+                {tag.label}
+              </Link>
+            ))}
+            <Link
+              href="/blog/how-to-import-a-motorcycle"
+              className="hover:text-white transition-colors"
+            >
+              How to import a motorcycle
             </Link>
           </nav>
         </div>
