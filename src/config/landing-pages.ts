@@ -151,13 +151,15 @@ export const lhdCampaignConfig: LandingPageConfig = {
 export const japanImportCampaignConfig: LandingPageConfig = {
   slug: "import-japanese-cars",
   meta: {
-    title: "Import Japanese Cars — Grade 4 and Above | Providence Auto",
+    // "Import cars from Japan" belongs to /import-cars-from/japan; this page
+    // owns "Japanese import cars" as the Japan routes hub (audit Q1, 2026-11-03).
+    title: "Japanese Import Cars, Direct from Japan | Providence",
     description:
       "Import Japanese cars graded 4 and above — Aqua, Prius, Harrier, Land Cruiser and more — shipped to your port with one landed price. Get your quote.",
   },
   hero: {
     tagline: "Providence Auto · Japan Import Specialists",
-    title: "Now You Can Import Your Dream Car\nDirect from Japan.",
+    title: "Japanese Import Cars,\nDirect from Japan.",
     subtitle:
       "Tell us the car you want. We search dealers and auctions across Japan for a grade 4+ example, inspect it before your money moves, and ship it to your port with one landed price and the paperwork to import it.",
     // Self-hosted (unlike the other campaigns' remote heroes) so the hero has
@@ -304,7 +306,7 @@ export const indianCampaignConfig: LandingPageConfig = {
   },
   hero: {
     tagline: "Providence Auto · India-Built Specialists",
-    title: "Built in India,\nDriven by Value.",
+    title: "Indian-Manufactured Cars,\nDriven by Value.",
     subtitle:
       "Import the badges you already trust — Suzuki, Toyota, Kia, Nissan — direct from India's most efficient factories for around 30% less. Safety-inspected by our own team before your money moves, and quoted as one landed price.",
     backgroundImage:

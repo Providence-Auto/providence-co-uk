@@ -54,8 +54,10 @@ describe("clampDescription", () => {
 });
 
 describe("buildCarMetadata", () => {
-  it("titles the base page with the vehicle alone", () => {
-    expect(buildCarMetadata(CAR, CAR.slug).title).toBe("2027 Nissan Patrol");
+  it("leads the base page title with the verb people search", () => {
+    expect(buildCarMetadata(CAR, CAR.slug).title).toBe(
+      "Import a 2027 Nissan Patrol",
+    );
   });
 
   it("names the destination in the title and canonicalises to the car page", () => {
@@ -200,12 +202,18 @@ describe("buildCarMetadata", () => {
       "Bentley's first battery-electric car and its fourth model line, designed, engineered and built at Crewe. " +
       "A 113 kWh battery of 192 lithium-ion pouch cells runs at 800 volts for up to 375 miles WLTP.";
     const meta = buildCarMetadata({ ...CAR, notes }, CAR.slug);
+    // The first sentence alone is under 120, so it carries the quote line.
     expect(meta.description).toBe(
-      "Bentley's first battery-electric car and its fourth model line, designed, engineered and built at Crewe.",
+      "Bentley's first battery-electric car and its fourth model line, designed, engineered and built at Crewe. Get a landed quote to your port.",
     );
     expect(meta.openGraph?.description).toBe(meta.description);
-    // Short notes still go through whole.
-    expect(buildCarMetadata(CAR, CAR.slug).description).toBe(CAR.notes);
+    // Notes too short for a snippet fall back to a sentence about the car.
+    const short = String(buildCarMetadata(CAR, CAR.slug).description);
+    expect(short).toBe(
+      "Import the 2027 Nissan Patrol: its full specification, the gallery and a landed quote to your port, worked out before you commit.",
+    );
+    expect(short.length).toBeGreaterThanOrEqual(120);
+    expect(short.length).toBeLessThan(155);
   });
 });
 
@@ -225,15 +233,16 @@ describe("carPath", () => {
 });
 
 describe("buildCarJsonLd", () => {
-  it("describes the car as a Product with a breadcrumb trail", () => {
+  it("describes the car as a Car with a breadcrumb trail", () => {
     // biome-ignore lint/suspicious/noExplicitAny: schema.org graph
     const graph = buildCarJsonLd(CAR, CAR.slug)["@graph"] as any[];
-    const product = graph.find((n) => n["@type"] === "Product");
+    const product = graph.find((n) => n["@type"] === "Car");
     const crumbs = graph.find((n) => n["@type"] === "BreadcrumbList");
 
     expect(product.name).toBe("2027 Nissan Patrol");
     expect(product.brand.name).toBe("Nissan");
     expect(product.countryOfOrigin.name).toBe("Australia");
+    expect(product.steeringPosition).toBe("RightHandDriving");
     expect(crumbs.itemListElement).toHaveLength(3);
     expect(crumbs.itemListElement.at(-1).item).toBe(
       "https://www.providenceauto.co.uk/b2c/gallery/nissan-patrol-y63",
@@ -277,6 +286,6 @@ describe("buildCarJsonLd", () => {
       "@graph"
       // biome-ignore lint/suspicious/noExplicitAny: schema.org graph
     ] as any[];
-    expect(graph.find((n) => n["@type"] === "Product").image).toBeUndefined();
+    expect(graph.find((n) => n["@type"] === "Car").image).toBeUndefined();
   });
 });
