@@ -1,0 +1,23 @@
+-- Motorcycles, and landing-page tags, on the same dossier table as cars.
+--
+-- specdossier."vehicleType"  'car' or 'motorcycle'. Every existing dossier is
+--                            a car, so the default makes this a no-op for the
+--                            live gallery. A motorcycle dossier renders at
+--                            /import-bikes/<slug> instead of /b2c/gallery and
+--                            is kept out of every car listing. Values and
+--                            helpers: src/lib/vehicle-type.ts.
+--
+-- specdossier."tags"         landing-page tags, as slugs ("luxury-cars",
+--                            "electric-cars"). Each one has its own page at
+--                            /import/<tag>. Deliberately separate from
+--                            "searchTags", which are free-form gallery filter
+--                            keywords ("pt5654", "graphite-black") that would
+--                            make junk pages if every one became a URL.
+--                            Registry and parsing: src/config/vehicle-tags.ts.
+--
+-- ADD COLUMN IF NOT EXISTS with defaults, so this is safe to apply twice and
+-- safe to apply ahead of the deploy. Apply with
+-- scripts/apply-vehicle-type-tags-columns.mjs (the drizzle migrator is
+-- unusable — see 0002_loving_sprite.sql).
+ALTER TABLE "specdossier" ADD COLUMN IF NOT EXISTS "vehicleType" text DEFAULT 'car' NOT NULL;
+ALTER TABLE "specdossier" ADD COLUMN IF NOT EXISTS "tags" text[] DEFAULT '{}'::text[] NOT NULL;

@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 // canonical". The canonical lives on the www host to match metadataBase, the
 // sitemap and robots.txt.
 const PATH = "/b2b";
-const TITLE = "Dealer Car Sourcing — Inventory On Demand from 40+ Markets";
+const TITLE = "Dealer Car Sourcing — Import Stock Direct";
 const DESCRIPTION =
-  "Import stock direct from 40+ markets, exported to your port by our own teams in seven countries. Import your dream car anywhere in the world.";
+  "Import stock direct from source, exported to your port by our own teams in seven countries. Import your dream car anywhere in the world.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

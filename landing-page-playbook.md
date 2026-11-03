@@ -483,7 +483,7 @@ Never write "zero risk". Write what happens if something goes wrong.
 **8. Proof, translated only with supplied numbers.** Surge restates a yearly
 figure as a monthly one. Providence may use the proof line as written:
 
-> 15+ years trading. Our own teams in seven countries. 200+ dealership clients. 40+ sourcing markets, 34 destinations, one landed price quoted before you commit.
+> 15+ years trading. Our own teams in seven countries. 200+ dealership clients. 34 destinations, one landed price quoted before you commit.
 
 Do not derive a new figure from it ("that's N cars a month") unless the business
 supplies that number.

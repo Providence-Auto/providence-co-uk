@@ -59,6 +59,11 @@ import {
   parseGrades,
   type VehicleGrade,
 } from "@/lib/vehicle-grades";
+import {
+  BIKES_BASE_PATH,
+  isMotorcycle,
+  MOTORCYCLE_MAKES,
+} from "@/lib/vehicle-type";
 
 // Updated Type to include Pricing Matrix
 type PriceEntry = {
@@ -126,6 +131,9 @@ type Dossier = {
   destinations?: string[];
   // The car's public slug, so a destination selection can rewrite the URL.
   slug?: string;
+  // "car" or "motorcycle". A bike renders this same page under /import-bikes,
+  // without the car-only parts: steering, destination rules, the car FAQ.
+  vehicleType?: string;
 };
 
 const FALLBACK_IMAGE = "/home/hero-1920.webp";
@@ -192,6 +200,7 @@ export default function GalleryDetailClient({
 }) {
   const inquiryRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const bike = isMotorcycle(car);
 
   const [specsOpen, setSpecsOpen] = useState(false);
   const [featuresOpen, setFeaturesOpen] = useState(false);
@@ -230,9 +239,11 @@ export default function GalleryDetailClient({
   const selectedGrade = findGrade(grades, selectedGradeId);
 
   // --- Destination, the choice that decides the landed price --------------
+  // A bike offers no destination selector: every brief in the registry states
+  // a car's rules (age limits, duty, drive side), which do not carry over.
   const destinations = useMemo(
-    () => parseDestinations(car.destinations),
-    [car.destinations],
+    () => (bike ? [] : parseDestinations(car.destinations)),
+    [bike, car.destinations],
   );
   const { featured, more } = useMemo(
     () => splitDestinations(destinations),
@@ -300,8 +311,8 @@ export default function GalleryDetailClient({
   };
 
   const steeringOptions = useMemo(
-    () => parseSteeringOptions(car.steeringOptions, car.steering),
-    [car.steeringOptions, car.steering],
+    () => (bike ? [] : parseSteeringOptions(car.steeringOptions, car.steering)),
+    [bike, car.steeringOptions, car.steering],
   );
   const [selectedSteering, setSelectedSteering] = useState(steeringOptions[0]);
   // A dossier edited from RHD-only to LHD-only would otherwise leave the page
@@ -429,10 +440,10 @@ export default function GalleryDetailClient({
 
         <section className="pt-28 px-6 max-w-[1400px] mx-auto">
           <Link
-            href="/b2c/gallery"
+            href={bike ? BIKES_BASE_PATH : "/b2c/gallery"}
             className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-black transition-colors mb-6"
           >
-            <ArrowLeft size={16} /> Back to Gallery
+            <ArrowLeft size={16} /> {bike ? "Back to Bikes" : "Back to Gallery"}
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -684,15 +695,19 @@ export default function GalleryDetailClient({
                   <Mail size={17} />{" "}
                   {car.isUpcoming ? "Register Interest" : "Inquire Now"}
                 </button>
-                <a
-                  href={specSheetHref}
-                  target="_blank"
-                  rel="noopener"
-                  aria-label="Spec sheet (PDF)"
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-black/10 hover:border-black/30 hover:bg-zinc-50 text-black text-sm font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-feedback"
-                >
-                  <FileDown size={17} className="shrink-0" /> Spec sheet
-                </a>
+                {/* The PDF is laid out for a car (steering, hands), so a
+                  bike page does not offer it. */}
+                {!bike && (
+                  <a
+                    href={specSheetHref}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="Spec sheet (PDF)"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-white border border-black/10 hover:border-black/30 hover:bg-zinc-50 text-black text-sm font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-feedback"
+                  >
+                    <FileDown size={17} className="shrink-0" /> Spec sheet
+                  </a>
+                )}
               </div>
             </Reveal>
 
@@ -984,6 +999,7 @@ export default function GalleryDetailClient({
             <div className="lg:col-span-8">
               <RequestForm
                 prefill={prefillData}
+                makeOptions={bike ? MOTORCYCLE_MAKES : undefined}
                 exteriorColorOptions={exteriorColors}
                 interiorColorOptions={interiorColors}
                 gradeOptions={grades.map((g) => g.name)}
@@ -1007,7 +1023,8 @@ export default function GalleryDetailClient({
           />
         )}
 
-        <FAQSection />
+        {/* The shared FAQ answers questions about cars. */}
+        {!bike && <FAQSection />}
       </div>
     </main>
   );

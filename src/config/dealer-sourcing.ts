@@ -28,10 +28,11 @@ export const DEALER_SOURCING_H1 =
 /**
  * The direct answer under the H1 — the BLUF paragraph and the likeliest AI
  * extract. Wording by business instruction (2026-10-10); it opens on the
- * dealership as the subject (tested). Every claim in it is already on the
- * site: the seven source countries plus the 100+ dealer sourcing markets
- * (`brand-position.md` §4, pillar 1), our own teams, and the inspection before
- * payment (`INSPECTION_STANDARD`).
+ * dealership as the subject (tested). Its claims: the seven source countries,
+ * our own teams, and the inspection before payment (`INSPECTION_STANDARD`).
+ * "Many other countries" once rested on the 100+ dealer sourcing markets
+ * figure, withdrawn on 2026-11-03 (`business-context.md` §1). The business was
+ * asked the same day and chose to keep the phrase: leave it as written.
  */
 export const DEALER_SOURCING_ANSWER =
   "Your dealership can import cars directly from Japan, the UK, Australia, New Zealand, Thailand, India, the UAE, and many other countries, shipped to your own port. Our own teams find and inspect each car before your money moves.";
