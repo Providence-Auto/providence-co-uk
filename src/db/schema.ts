@@ -379,6 +379,69 @@ export const dealerInquiries = pgTable(
   ],
 );
 
+// Client KYC records from /kyc (drizzle/0012_kyc_submission_table.sql). The
+// rules and the wording of the declarations live in src/lib/kyc.ts.
+export const kycSubmissions = pgTable(
+  "kycsubmission",
+  {
+    id: text("id").primaryKey(),
+    fullName: text("fullName").notNull(),
+    // YYYY-MM-DD, kept as text so no timezone can move the day.
+    dateOfBirth: text("dateOfBirth").notNull(),
+    // Country names, spelled as COUNTRIES spells them.
+    nationality: text("nationality").notNull(),
+    addressLine1: text("addressLine1").notNull(),
+    addressLine2: text("addressLine2"),
+    city: text("city").notNull(),
+    region: text("region"),
+    postcode: text("postcode"),
+    country: text("country").notNull(),
+    // E.164, checked against its dial code before it is stored.
+    phone: text("phone").notNull(),
+    email: text("email").notNull(),
+    // "passport", "national-id" or "driving-licence" (ID_DOCUMENT_TYPES).
+    idDocumentType: text("idDocumentType").notNull(),
+    // Object keys in the KYC bucket, never public URLs: the files are only
+    // ever read through the staff-only route at /admin/kyc/<id>/document/<side>.
+    idFrontKey: text("idFrontKey").notNull(),
+    idFrontType: text("idFrontType").notNull(),
+    // Null for a passport, which has no back worth photographing.
+    idBackKey: text("idBackKey"),
+    idBackType: text("idBackType"),
+    paymentCountry: text("paymentCountry").notNull(),
+    bankName: text("bankName").notNull(),
+    sourceOfFunds: text("sourceOfFunds").notNull(),
+    sourceOfFundsDetail: text("sourceOfFundsDetail"),
+    // The two declarations are required to submit, so both are always true;
+    // they are stored anyway, with when and from where they were made.
+    sanctionsDeclared: boolean("sanctionsDeclared").notNull(),
+    pepDeclared: boolean("pepDeclared").notNull(),
+    declaredAt: timestamp("declaredAt").notNull(),
+    submittedIp: text("submittedIp"),
+    userAgent: text("userAgent"),
+    // KYC_STATUSES. The office checks are the staff's own screening, apart
+    // from the customer's declarations; Approved needs both.
+    status: text("status").default("Submitted").notNull(),
+    idVerified: boolean("idVerified").default(false).notNull(),
+    sanctionsScreened: boolean("sanctionsScreened").default(false).notNull(),
+    reviewNotes: text("reviewNotes"),
+    reviewedById: text("reviewedById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    reviewedByName: text("reviewedByName"),
+    reviewedAt: timestamp("reviewedAt"),
+    // The salesperson whose ?rep= link the customer arrived on, if any.
+    repCode: text("repCode"),
+    assignedToId: text("assignedToId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    assignedToName: text("assignedToName"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [index("kycsubmission_created_idx").on(table.createdAt)],
+);
+
 export const dealerProfiles = pgTable("dealerprofile", {
   id: text("id").primaryKey(),
   userId: text("userId")

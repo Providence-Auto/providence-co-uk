@@ -14,6 +14,9 @@ import DealerInquiryAlertEmail, {
 import DealerInquiryConfirmationEmail, {
   type DealerInquiryConfirmationProps,
 } from "@/emails/dealer-inquiry-confirmation";
+import KycSubmittedAlertEmail, {
+  type KycSubmittedAlertProps,
+} from "@/emails/kyc-submitted-alert";
 import LeadQualifiedAlertEmail from "@/emails/lead-qualified-alert";
 import StaffAlertEmail from "@/emails/staff-alert";
 import type { BreakdownData } from "@/lib/ireland-cost";
@@ -259,6 +262,19 @@ export const emailService = {
       to: targetEmail,
       subject: `✅ Lead Qualified: ${data.name} - ${data.make} ${data.vehicle_model}`,
       component: LeadQualifiedAlertEmail({ data, requestId }),
+    });
+  },
+
+  /**
+   * Tells the assigned salesperson (or the general inbox) that a customer sent
+   * their KYC details. The subject carries only our reference — the name is
+   * customer-typed text — and the body carries no ID, address or bank detail.
+   */
+  sendKycSubmittedAlert: async (to: string, data: KycSubmittedAlertProps) => {
+    await sendEmail({
+      to,
+      subject: `New KYC submission · ${data.reference}`,
+      component: KycSubmittedAlertEmail(data),
     });
   },
 };
