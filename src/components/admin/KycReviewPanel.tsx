@@ -49,7 +49,7 @@ export default function KycReviewPanel({ record }: { record: KycView }) {
   };
 
   return (
-    <section className="sticky top-6 rounded-2xl border border-zinc-200 bg-white p-6">
+    <section className="rounded-2xl border border-zinc-200 bg-white p-6">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
         Office use
       </h2>

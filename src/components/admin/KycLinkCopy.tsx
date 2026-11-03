@@ -3,15 +3,9 @@
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 
-// The link a salesperson sends a customer. It carries their own rep code, so
-// the record that comes back is assigned to them.
-export default function KycLinkCopy({
-  link,
-  personal,
-}: {
-  link: string;
-  personal: boolean;
-}) {
+// The link the team sends a customer. Records sent through it arrive
+// unassigned, and are linked to a lead and assigned from the record.
+export default function KycLinkCopy({ link }: { link: string }) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -26,13 +20,9 @@ export default function KycLinkCopy({
 
   return (
     <div className="w-full max-w-xl rounded-2xl border border-zinc-200 bg-white p-4">
-      <p className="text-sm font-semibold text-zinc-900">
-        {personal ? "Your KYC link" : "KYC link"}
-      </p>
+      <p className="text-sm font-semibold text-zinc-900">KYC link</p>
       <p className="mt-0.5 text-xs text-zinc-500">
-        {personal
-          ? "Records sent through it are assigned to you."
-          : "Records sent through it arrive unassigned."}
+        Records arrive unassigned; link each one to its lead.
       </p>
       <div className="mt-3 flex gap-2">
         <input

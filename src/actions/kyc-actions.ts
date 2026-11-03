@@ -2,17 +2,18 @@
 "use server";
 
 import crypto from "node:crypto";
-import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { parsePhoneNumberFromString } from "libphonenumber-js/max";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { CONTACT_EMAIL } from "@/config/contact";
-import { db, kycSubmissions, users } from "@/db";
+import { db, kycSubmissions } from "@/db";
 import { emailService } from "@/lib/email";
 import {
   checkIdFile,
   emptyKycInput,
   hasErrors,
+  isKycAssignmentMethod,
   isKycStatus,
   KYC_ADMIN_PATH,
   type KycErrors,
@@ -27,9 +28,7 @@ import {
 } from "@/lib/kyc";
 import { kycStaff } from "@/lib/kyc-access";
 import { putKycDocument } from "@/lib/kyc-storage";
-import { SALES_ROLES } from "@/lib/lead-routing";
 import { clientAddress, createRateLimiter } from "@/lib/rate-limit";
-import { normaliseRepCode, repLinkEmail } from "@/lib/rep-link";
 
 // A public form that writes files to storage, so it is throttled per address.
 const submitsPerAddress = createRateLimiter({
@@ -144,24 +143,8 @@ export async function submitKyc(form: FormData): Promise<SubmitKycResult> {
         ? await putKycDocument(id, "back", backBytes, backKind)
         : null;
 
-    // A rep link (?rep=shaq) the customer arrived on puts the record with
-    // that salesperson; without one it stays unassigned for the team.
-    const repCode = normaliseRepCode(form.get("repCode"));
-    let rep: { id: string; name: string; email: string } | undefined;
-    if (repCode) {
-      [rep] = await db
-        .select({ id: users.id, name: users.name, email: users.email })
-        .from(users)
-        .where(
-          and(
-            sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
-            inArray(sql`lower(trim(${users.role}))`, SALES_ROLES),
-            ne(users.isBanned, true),
-          ),
-        )
-        .limit(1);
-    }
-
+    // A new record arrives unassigned (business instruction 2026-11-03): the
+    // team assigns it by hand, or from the lead it is linked to.
     const now = new Date();
     await db.insert(kycSubmissions).values({
       id,
@@ -193,19 +176,15 @@ export async function submitKyc(form: FormData): Promise<SubmitKycResult> {
       declaredAt: now,
       submittedIp: address,
       userAgent: requestHeaders.get("user-agent")?.slice(0, 400) ?? null,
-      repCode,
-      assignedToId: rep?.id ?? null,
-      assignedToName: rep?.name ?? null,
       createdAt: now,
       updatedAt: now,
     });
 
     try {
-      await emailService.sendKycSubmittedAlert(rep?.email || CONTACT_EMAIL, {
+      await emailService.sendKycSubmittedAlert(CONTACT_EMAIL, {
         reference,
         fullName: input.fullName,
         id,
-        assignedToName: rep?.name ?? null,
       });
     } catch (error) {
       // The record is stored; a failed alert must not tell the customer otherwise.
@@ -261,7 +240,12 @@ function toView(row: typeof kycSubmissions.$inferSelect): KycView {
     reviewNotes: row.reviewNotes,
     reviewedByName: row.reviewedByName,
     reviewedAt: iso(row.reviewedAt),
+    assignedToId: row.assignedToId,
     assignedToName: row.assignedToName,
+    assignmentMethod: isKycAssignmentMethod(row.assignmentMethod)
+      ? row.assignmentMethod
+      : null,
+    requestId: row.requestId,
     repCode: row.repCode,
     createdAt: new Date(row.createdAt).toISOString(),
   };

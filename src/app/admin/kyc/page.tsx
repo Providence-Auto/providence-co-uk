@@ -3,7 +3,6 @@ import { getKycSubmissions } from "@/actions/kyc-actions";
 import KycLinkCopy from "@/components/admin/KycLinkCopy";
 import { KYC_ADMIN_PATH, KYC_PATH } from "@/lib/kyc";
 import { kycStaff } from "@/lib/kyc-access";
-import { REP_EMAIL_DOMAIN, REP_LINK_ALIASES } from "@/lib/rep-link";
 import KycStatusBadge from "./KycStatusBadge";
 
 // Reads the database on every request — never prerendered, because the build
@@ -12,17 +11,6 @@ export const dynamic = "force-dynamic";
 
 const SITE =
   process.env.NEXT_PUBLIC_BASE_URL || "https://www.providenceauto.co.uk";
-
-/** The rep code that routes a KYC to this person: their alias, else their email name. */
-function repCodeFor(email: string): string | null {
-  const lower = email.trim().toLowerCase();
-  const alias = Object.entries(REP_LINK_ALIASES).find(
-    ([, target]) => target.toLowerCase() === lower,
-  );
-  if (alias) return alias[0];
-  const [name, domain] = lower.split("@");
-  return domain === REP_EMAIL_DOMAIN ? name : null;
-}
 
 const dateTime = (iso: string) =>
   new Date(iso).toLocaleString("en-GB", {
@@ -50,8 +38,9 @@ export default async function KycAdminPage() {
   }
 
   const records = (await getKycSubmissions()) ?? [];
-  const code = repCodeFor(staff.email);
-  const link = `${SITE.replace(/\/$/, "")}${KYC_PATH}${code ? `?rep=${code}` : ""}`;
+  // One link for everyone: a record arrives unassigned and is linked to its
+  // lead, and assigned, from the record itself.
+  const link = `${SITE.replace(/\/$/, "")}${KYC_PATH}`;
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-8 p-6 lg:p-10">
@@ -64,12 +53,12 @@ export default async function KycAdminPage() {
             Identity, address and payment details sent from the KYC form.
           </p>
         </div>
-        <KycLinkCopy link={link} personal={Boolean(code)} />
+        <KycLinkCopy link={link} />
       </div>
 
       {records.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">
-          No KYC records yet. Send a customer your link above.
+          No KYC records yet. Send a customer the link above.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white">
@@ -81,6 +70,7 @@ export default async function KycAdminPage() {
                 <th className="px-5 py-3 font-semibold">Nationality</th>
                 <th className="px-5 py-3 font-semibold">Paying from</th>
                 <th className="px-5 py-3 font-semibold">Status</th>
+                <th className="px-5 py-3 font-semibold">Lead</th>
                 <th className="px-5 py-3 font-semibold">Assigned</th>
                 <th className="px-5 py-3 font-semibold">Received</th>
                 <th className="px-5 py-3" />
@@ -105,6 +95,13 @@ export default async function KycAdminPage() {
                   </td>
                   <td className="px-5 py-4">
                     <KycStatusBadge status={r.status} />
+                  </td>
+                  <td className="px-5 py-4">
+                    {r.requestId ? (
+                      <span className="text-emerald-700">Linked</span>
+                    ) : (
+                      <span className="text-zinc-400">Not linked</span>
+                    )}
                   </td>
                   <td className="px-5 py-4 text-zinc-700">
                     {r.assignedToName ?? (
