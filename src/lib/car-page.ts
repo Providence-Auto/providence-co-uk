@@ -15,7 +15,7 @@ import { destinationCopy, destinationPath } from "@/config/destinations";
 import { formatVehicleTitle, parseSteeringOptions } from "@/lib/vehicle";
 import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
-const DEFAULT_OG_IMAGE = "/og/default.jpg";
+const DEFAULT_OG_IMAGE = "/og/default-audi-r8.jpg";
 
 // CLAUDE.md, SEO & AEO: *under* 60 and *under* 155, so both comparisons below
 // are strict — a title of exactly 60 characters is one over the rule, and one

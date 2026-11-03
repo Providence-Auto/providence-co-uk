@@ -82,7 +82,7 @@ export async function generateMetadata({
   const withImage = vehicles.find((v) => v.heroImageUrl || v.images?.length);
   const ogImage = withImage
     ? carOgImagePath(withImage, withImage._id)
-    : "/og/default.jpg";
+    : "/og/default-audi-r8.jpg";
 
   return {
     title,

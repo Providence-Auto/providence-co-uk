@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const ogImage =
     active.find((d) => d.heroImageUrl)?.heroImageUrl ||
     active.find((d) => d.images?.length)?.images?.[0] ||
-    "/og/default.jpg";
+    "/og/default-audi-r8.jpg";
 
   return {
     title: PAGE_TITLE,

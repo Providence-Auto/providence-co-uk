@@ -9,7 +9,6 @@ export interface KycSubmittedAlertProps {
   reference: string;
   fullName: string;
   id: string;
-  assignedToName: string | null;
 }
 
 export const KycSubmittedAlertEmail = (props: KycSubmittedAlertProps) => {
@@ -20,10 +19,8 @@ export const KycSubmittedAlertEmail = (props: KycSubmittedAlertProps) => {
       heading="New KYC Submission"
     >
       <Text style={textStyle}>
-        {props.fullName} has sent their KYC details ({props.reference})
-        {props.assignedToName
-          ? `. It is assigned to ${props.assignedToName}.`
-          : ". It came in without a rep link, so it is not assigned to anyone."}
+        {props.fullName} has sent their KYC details ({props.reference}). Link it
+        to their lead and assign it from the record.
       </Text>
       <Text style={textStyle}>
         Review the ID and download the record from the admin panel:{" "}

@@ -10,7 +10,7 @@ export const SITE_URL = "https://www.providenceauto.co.uk";
 
 /** The site-wide 1200×630 preview image, with the dimensions T-05 requires. */
 export const DEFAULT_OG_IMAGE = {
-  url: "/og/default.jpg",
+  url: "/og/default-audi-r8.jpg",
   width: 1200,
   height: 630,
   alt: "Providence Auto — import your dream car anywhere in the world",
