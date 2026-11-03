@@ -148,7 +148,7 @@ News-only prose components (`PullQuote`, `Timeline`, `ProfileCard`, `ConfirmedLe
 
 Feeds and discovery, all automatic: `/news-sitemap.xml` (Google News, 48-hour window), `/latest-news/rss.xml`, and `/latest-news/category/[category]` archives generated from `NEWS_CATEGORIES` (categories with no articles 404 by design).
 
-**Before writing any news article, read `news-editorial-playbook.md` at the repo root.** It defines the target market (all RHD destinations, plus LHD for luxury only), the two reader segments, the relevance gate, the seven landed-cost lenses, the "Landed Desk" voice, the SEO/AEO spec and the mandatory fact-checking protocol. The repeatable weekly run — 20 publish-ready stories — is the `news-desk` skill (`/news-desk`).
+**Before writing any news article, read `news-editorial-playbook.md` at the repo root.** It defines the target market (all RHD destinations, plus LHD for luxury, sports and hyper cars from Japan), the two reader segments, the relevance gate, the seven landed-cost lenses, the "Landed Desk" voice, the SEO/AEO spec and the mandatory fact-checking protocol. The repeatable weekly run — 20 publish-ready stories — is the `news-desk` skill (`/news-desk`).
 
 **Every article carries three brand touchpoints** (`brand-position.md` §12, decided 2026-10-07): a publisher note under the byline, at most one contextual sentence-link in the body, and the closing CTA — all pointing at the one landing page that matches the article. They are wired through `src/config/article-ctas.ts`: a blog post sets its CTA with `blogCtaFields(ARTICLE_CTAS.<preset>)`, a news article with its `cta` field; `ArticleShell` and `NewsShell` render the publisher note and CTA from it. `src/config/__tests__/japan-uk.test.ts` fails any article whose CTA points outside `ARTICLE_CTA_ROUTES`.
 
@@ -227,6 +227,8 @@ The rules:
 ### SEO & AEO: standing requirement for every new page
 
 **Before creating or publishing any new page** — marketing/campaign page, car page (spec dossier), blog post, or news article — read `seo-aeo-optimization-guide.md` at the repo root. It is the canonical SEO/AEO playbook: user-intent identification, keyword/entity research, on-page copywriting (title tags, meta descriptions, header hierarchy), the technical SEO checklist, JSON-LD structured-data selection, and AEO/LLM optimization (featured-snippet answers, tables/lists, E-E-A-T). Run every new page through its Phase 1–5 process and the final pre-publishing checklist before treating the page as done.
+
+**Before auditing the site, or planning or building any public page, read `seo-page-rules.md` at the repo root.** It maps every search for what we offer — source, destination, vehicle class (cars, motorcycles, trucks), make, model, audience (direct buyers, dealerships, vehicle brokers) and service — to the one page type that owns it, and gives each page type its agreed structure (elements, H1, H2s), its technical rules (metadata, served HTML, schema, links, sitemap, indexing minimum) and its tests. Its section sets are the agreed structure under `page-types.md` §3 (2026-11-03): they fix structure, not wording, so a landing-page plan is still agreed before copy. The term pool behind it is `search-query-map.md`.
 
 Every new page ships with all of the following by default — a page missing any of these is incomplete, not "SEO to follow up later":
 

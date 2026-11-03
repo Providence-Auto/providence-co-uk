@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 const PATH = "/request";
 const TITLE = "Request a Car — Tell Us the Spec, We Find It";
 const DESCRIPTION =
-  "Tell us the make, model, grade and budget you want. Our teams search the auctions and trade channels of 40+ markets and come back with what is actually available.";
+  "Tell us the make, model, grade and budget. Our teams in seven countries search dealers, and Japan's auctions, and tell you what is actually available.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },

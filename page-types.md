@@ -211,6 +211,17 @@ title, H1 and H2s, and the current agreed section list for the
 keyword, one simple template". That list is **the agreed outcome of this process
 for one family of pages**, not a default to apply to the next page.
 
+**Agreed structure for every page family** (decided 2026-11-03). The section
+sets in `seo-page-rules.md` Part 2 are the business-agreed structure for the
+page families it defines: which elements a page carries, in what order, and
+what its H1 and H2s say. A plan that follows them does not have to ask for each
+section again — that answers step 3 for those families. They fix the
+**structure, not the wording**: the plan is still agreed before copy is written,
+any claim about Providence that `business-context.md` does not document is still
+a question first (step 4), and general offer copy still goes on only when it is
+asked for (step 5). Where `seo-page-rules.md` and this document disagree, this
+document wins and the disagreement is raised.
+
 ---
 
 ## 3A. Tool pages — both standards, and show the working
