@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
+        // The client KYC form is sent to customers by link and must never be
+        // indexed, on any host. The page's own robots meta says the same.
+        source: "/kyc",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
         // Static imagery under public/ was being served with max-age=14400 —
         // four hours — so a returning visitor re-downloaded every logo, flag
         // and car photograph several times a day. PageSpeed booked it as
