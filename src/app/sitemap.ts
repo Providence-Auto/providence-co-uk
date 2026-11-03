@@ -16,11 +16,12 @@ import {
   NEWS_CATEGORY_BASE_PATH,
 } from "@/config/news";
 import {
+  classPageIndexable,
   resolveTag,
   TAG_BASE_PATH,
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
-import { BIKES_BASE_PATH, vehiclePath } from "@/lib/vehicle-type";
+import { BIKES_BASE_PATH, isMotorcycle, vehiclePath } from "@/lib/vehicle-type";
 
 /**
  * The sitemap is DB-backed, so it must never be prerendered.
@@ -65,11 +66,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 1. Static Routes
   //
   // Every entry here must be a URL that returns 200 and is meant to be indexed.
-  // Two used to fail that: "/contact", which has no route at all and 404s, and
-  // "/dealer-dashboard", which is auth-gated and answers 307. Google reported
-  // both under "Discovered - currently not indexed", which is what advertising
-  // a dead URL in your own sitemap looks like from the outside. If a contact
-  // page is built later, add it back — but only once it serves a 200.
+  // "/dealer-dashboard" used to fail that (auth-gated, it answers 307), as did
+  // "/contact" before it existed. Google reported both under "Discovered -
+  // currently not indexed", which is what advertising a dead URL in your own
+  // sitemap looks like from the outside. /contact was built on 2026-11-03.
   const staticRoutes = [
     "",
     "/b2c",
@@ -78,6 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/saas",
     "/japanese-luxury-cars-lhd",
     "/about-us",
+    "/contact",
     "/import-cars-to-ireland",
     "/import-japanese-cars",
     "/import-japanese-cars/uk",
@@ -203,7 +204,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const tag = resolveTag(slug);
       if (tag.redirectTo) return null;
       const result = await getVehiclesForTag(tag);
-      if (!result.success || result.data.length === 0) return null;
+      // Below the class-page floor the page is noindex (vehicle-tags.ts).
+      if (!result.success || !classPageIndexable(result.data.length)) {
+        return null;
+      }
       return {
         url: `${baseUrl}${TAG_BASE_PATH}/${tag.slug}`,
         lastModified: latest(
@@ -227,8 +231,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // /import-bikes is a class page too: listed only once it links enough bikes.
+  const liveBikes = dossierResult.data.filter(
+    (car: any) => LIVE_DOSSIER_STATUSES.has(car.status) && isMotorcycle(car),
+  ).length;
+  const indexableStatic = staticRoutes.filter(
+    (route) =>
+      route.url !== `${baseUrl}${BIKES_BASE_PATH}` ||
+      classPageIndexable(liveBikes),
+  );
+
   return [
-    ...staticRoutes,
+    ...indexableStatic,
     ...legalRoutes,
     ...countryRoutes,
     ...blogRoutes,

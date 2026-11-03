@@ -24,6 +24,7 @@ import VehicleListingGrid, {
   type ListingVehicle,
 } from "@/components/VehicleListingGrid";
 import { BLOG_BASE_PATH } from "@/config/blog";
+import { classPageIndexable } from "@/config/vehicle-tags";
 import { carOgImagePath } from "@/lib/car-page";
 import { BIKES_BASE_PATH, MOTORCYCLE_MAKES } from "@/lib/vehicle-type";
 
@@ -75,7 +76,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: DESCRIPTION,
       images: [ogImage],
     },
-    robots: { index: true, follow: true },
+    robots: classPageIndexable(bikes.length)
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
   };
 }
 

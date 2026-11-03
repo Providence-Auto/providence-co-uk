@@ -11,6 +11,25 @@ import {
   SOURCE_COUNTRY_PAGES,
 } from "@/config/countries";
 
+/** The source countries grouped by the region people search for. */
+const SOURCE_REGIONS = [
+  { name: "Asia", slugs: ["japan", "india", "thailand"] },
+  { name: "Europe", slugs: ["united-kingdom"] },
+  { name: "the Middle East", slugs: ["uae"] },
+  { name: "Oceania", slugs: ["australia", "new-zealand"] },
+].map((region) => ({
+  ...region,
+  countries: SOURCE_COUNTRY_PAGES.filter((c) => region.slugs.includes(c.slug)),
+}));
+
+// A source country left out of every region would vanish from the page.
+if (
+  SOURCE_REGIONS.flatMap((r) => r.countries).length !==
+  SOURCE_COUNTRY_PAGES.length
+) {
+  throw new Error("import-cars-from: a source country has no region");
+}
+
 const SITE = "https://www.providenceauto.co.uk";
 const TITLE = "Import Cars from 7 Countries | Providence Auto";
 // 1200×630, self-hosted, so link previews never depend on a third-party CDN.
@@ -197,53 +216,60 @@ export default function ImportCarsFromPage() {
             </Reveal>
           </section>
 
-          {/* ── COUNTRY GRID ─────────────────────────── */}
-          <section className="px-6 max-w-6xl mx-auto pb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {SOURCE_COUNTRY_PAGES.map((c, i) => (
-                <Reveal
-                  as="div"
-                  key={c.slug}
-                  y={24}
-                  delay={i * 0.05}
-                  duration={0.5}
-                >
-                  <Link
-                    href={`${COUNTRY_BASE_PATH}/${c.slug}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-feedback hover:border-sky-500/20 hover:shadow-[0_24px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1"
+          {/* ── COUNTRY GRID, BY REGION ────────────────
+              One H2 per region carrying the region query ("import cars from
+              Asia"), each country an H3 under it (seo-page-rules.md P-07). */}
+          {SOURCE_REGIONS.map((region) => (
+            <section key={region.name} className="px-6 max-w-6xl mx-auto pb-12">
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tighter text-black mb-6">
+                Import cars from {region.name}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {region.countries.map((c, i) => (
+                  <Reveal
+                    as="div"
+                    key={c.slug}
+                    y={24}
+                    delay={i * 0.05}
+                    duration={0.5}
                   >
-                    <div className="relative h-44 overflow-hidden bg-zinc-900">
-                      {/* biome-ignore lint/performance/noImgElement: static hero image, intentional <img> per site convention */}
-                      <img
-                        src={c.hero.backgroundImage}
-                        alt={c.hero.imageAlt}
-                        loading="lazy"
-                        className="absolute inset-0 h-full w-full object-cover opacity-90 transition-feedback group-hover:scale-[1.03]"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-5">
-                        <h2 className="text-2xl font-bold tracking-tight text-white drop-shadow-sm">
-                          {c.shortName}
-                        </h2>
-                      </div>
-                    </div>
-                    <div className="flex flex-1 flex-col p-6">
-                      <p className="text-base text-zinc-500 font-light leading-relaxed flex-1">
-                        {c.cardBlurb}
-                      </p>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-sky-600">
-                        Import cars from {c.country}
-                        <ArrowRight
-                          size={14}
-                          className="group-hover:translate-x-1 transition-feedback"
+                    <Link
+                      href={`${COUNTRY_BASE_PATH}/${c.slug}`}
+                      className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-feedback hover:border-sky-500/20 hover:shadow-[0_24px_50px_rgba(0,0,0,0.08)] hover:-translate-y-1"
+                    >
+                      <div className="relative h-44 overflow-hidden bg-zinc-900">
+                        {/* biome-ignore lint/performance/noImgElement: static hero image, intentional <img> per site convention */}
+                        <img
+                          src={c.hero.backgroundImage}
+                          alt={c.hero.imageAlt}
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full object-cover opacity-90 transition-feedback group-hover:scale-[1.03]"
                         />
-                      </span>
-                    </div>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          </section>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <div className="absolute inset-x-0 bottom-0 p-5">
+                          <h3 className="text-2xl font-bold tracking-tight text-white drop-shadow-sm">
+                            {c.shortName}
+                          </h3>
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col p-6">
+                        <p className="text-base text-zinc-500 font-light leading-relaxed flex-1">
+                          {c.cardBlurb}
+                        </p>
+                        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-sky-600">
+                          Import cars from {c.country}
+                          <ArrowRight
+                            size={14}
+                            className="group-hover:translate-x-1 transition-feedback"
+                          />
+                        </span>
+                      </div>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
+            </section>
+          ))}
 
           {/* ── WHICH COUNTRY: the direct answer + the comparison table ── */}
           <section className="py-20 md:py-28 px-6 mt-16">
