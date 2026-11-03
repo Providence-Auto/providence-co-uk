@@ -31,10 +31,9 @@ export const revalidate = 300;
 // time — which lets the OG/Twitter card carry a real image instead of nothing.
 const LEAD = getNewsArticles()[0];
 
-const TITLE =
-  "Automotive News — New Car Releases, Industry & Market Analysis | Providence Auto";
+const TITLE = "Car Import News and New Releases | Providence Auto";
 const DESCRIPTION =
-  "Automotive news covering new car releases, manufacturer and industry moves, auction records, market data and the tax and policy changes that move what a car actually costs — sourced, dated and checked.";
+  "New car releases, industry moves, auction results, market data and the tax changes that move what an imported car costs. Sourced, dated, checked.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },

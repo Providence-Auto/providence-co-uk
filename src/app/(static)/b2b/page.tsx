@@ -5,6 +5,8 @@ import Link from "next/link";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
+import FAQSection from "@/components/faqSection";
+import { B2B_FAQS } from "@/config/b2b-faqs";
 
 export default function B2BLanding() {
   return (
@@ -24,9 +26,9 @@ export default function B2BLanding() {
             {/* Above-the-fold hero content animates on mount so it shows immediately on load. */}
             <Reveal immediate y={30} scale={0.95} duration={1}>
               <h1 className="pa-headline-gradient text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[1.05] drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]">
-                Inventory.
+                Car Sourcing for Dealers.
                 <br />
-                On Demand.
+                Inventory on Demand.
               </h1>
             </Reveal>
 
@@ -49,16 +51,16 @@ export default function B2BLanding() {
               className="flex flex-col sm:flex-row gap-6 w-full justify-center"
             >
               <Link
-                href="/request"
+                href="/b2b-inquiry"
                 className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-black rounded-full overflow-hidden transition-feedback hover:scale-[1.03] shadow-[0_10px_40px_rgba(0,0,0,0.1)]"
               >
-                <span className="relative z-10">Request a Car Now</span>
+                <span className="relative z-10">Send a Sourcing Inquiry</span>
               </Link>
               <Link
                 href="/saas"
                 className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black bg-white border border-black/10 rounded-full backdrop-blur-xl transition-feedback hover:bg-black hover:text-white shadow-md"
               >
-                Sign Up for the Platform
+                Apply for the Platform
               </Link>
             </Reveal>
           </div>
@@ -179,6 +181,9 @@ export default function B2BLanding() {
             </Reveal>
           </div>
         </section>
+
+        {/* Dealer FAQ: answers in the HTML, read by the FAQPage in layout.tsx. */}
+        <FAQSection data={B2B_FAQS} />
 
         {/* SECTION 5: Final Call to Action */}
         <section className="relative py-32 px-6 flex justify-center border-t border-black/5 bg-zinc-50 overflow-hidden">

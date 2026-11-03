@@ -67,6 +67,18 @@ const nextConfig: NextConfig = {
         destination: "/japanese-luxury-cars-lhd",
         permanent: true,
       },
+      // The other two campaign slugs live on their own landing pages. Every
+      // other /campaigns/* URL 404s (src/app/campaigns/[slug]/page.tsx).
+      {
+        source: "/campaigns/import-japanese-cars",
+        destination: "/import-japanese-cars",
+        permanent: true,
+      },
+      {
+        source: "/campaigns/indian-manufactured-cars",
+        destination: "/indian-manufactured-cars",
+        permanent: true,
+      },
       {
         source: "/source-cars-from/sri-lanka",
         destination: "/import-cars-from",

@@ -25,7 +25,9 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
   },
-  robots: { index: true, follow: true },
+  // A funnel utility (page-types.md §5), not a page to rank: every landing
+  // page carries its own form, and this one serves no H1 in its HTML.
+  robots: { index: false, follow: true },
 };
 
 export default function RequestLayout({

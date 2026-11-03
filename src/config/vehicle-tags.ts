@@ -21,6 +21,20 @@ import type { VehicleType } from "@/lib/vehicle-type";
 
 export const TAG_BASE_PATH = "/import";
 
+/**
+ * A class page (a tag page, or /import-bikes) is indexed only once it links at
+ * least this many live vehicles — below that it is a heading and a form, which
+ * is thin content (seo-page-rules.md P-11 index minimum, L-4; agreed
+ * 2026-11-03). It still renders, as `noindex, follow`, and stays out of the
+ * sitemap until it reaches the floor.
+ */
+export const CLASS_PAGE_INDEX_MIN = 8;
+
+/** Whether a class page with this many live vehicles may be indexed. */
+export function classPageIndexable(vehicleCount: number): boolean {
+  return vehicleCount >= CLASS_PAGE_INDEX_MIN;
+}
+
 export type TagCollection = {
   /** URL segment: /import/<slug>. Also the value stored in `tags`. */
   slug: string;

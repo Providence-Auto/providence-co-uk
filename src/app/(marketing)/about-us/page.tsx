@@ -672,6 +672,15 @@ export default function AboutUsPage() {
                   ourselves — through our own people in the source country,
                   never a chain of intermediaries who never see the vehicle.
                 </p>
+                {/* The limits, in plain text, so an assistant asked "does
+                    Providence deliver to my door?" finds the answer rather
+                    than guessing (seo-page-rules.md T-82). */}
+                <p className="text-lg text-zinc-500 font-light mt-4">
+                  We ship CNF to your destination port and support the clearance
+                  there with the documents; the import entry, the duty and the
+                  taxes are in your name. Auction bidding is in Japan only, and
+                  every service we offer is part of an import with us.
+                </p>
               </Reveal>
             </div>
           </section>

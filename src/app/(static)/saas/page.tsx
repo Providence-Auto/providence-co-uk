@@ -60,9 +60,9 @@ export default function SaaSSignup() {
           <div className="text-center mb-32 max-w-4xl mx-auto">
             <Reveal immediate y={30} scale={0.95} delay={0.1} duration={1}>
               <h1 className="pa-headline-gradient text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 leading-[1.05]">
-                Welcome to the
+                The Dealer Platform
                 <br />
-                Global Portal.
+                for Imported Stock.
               </h1>
             </Reveal>
 
@@ -206,7 +206,7 @@ export default function SaaSSignup() {
               href="/signup"
               className="group inline-flex items-center justify-center gap-3 bg-black text-white px-10 py-5 rounded-full text-xl font-bold hover:scale-[1.03] shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-feedback"
             >
-              Sign up now — Free Forever
+              Apply to join — it&apos;s free
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-feedback" />
             </Link>
           </Reveal>

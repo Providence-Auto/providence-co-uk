@@ -1,5 +1,6 @@
 import { ArrowRight, Award, Globe, MapPin, UserRound } from "lucide-react";
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import Link from "next/link";
 import { listPublishedProfiles } from "@/actions/sales-profile-actions";
 import MinimalHeader from "@/components/MinimalHeader";
@@ -7,8 +8,9 @@ import { Reveal } from "@/components/Reveal";
 import { OFFICE_COUNTRIES_SENTENCE } from "@/config/countries";
 
 const SITE = "https://www.providenceauto.co.uk";
-const TITLE = "Our Sales Team — The People Behind Your Car | Providence Auto";
-const DESCRIPTION = `Meet the Providence Auto sales team. Every import is owned by one named person, from first message to your port, with people on the ground in ${OFFICE_COUNTRIES_SENTENCE} — not a shared inbox.`;
+const TITLE = "Our Sales Team | Providence Auto";
+const DESCRIPTION =
+  "Meet the Providence Auto sales team. One named person owns each import, from first message to your port, with our own people in seven countries.";
 
 // A profile can be published or unpublished at any time, so this index is
 // rebuilt on the same cadence as the profile pages themselves.
@@ -32,11 +34,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: { index: true, follow: true },
 };

@@ -5,6 +5,7 @@ import {
   Calculator, // Sourcing & profit analyzer
   Car,
   ChevronRight,
+  Database, // DBFlex sign-in
   FilePlus2,
   Handshake, // Dealer inquiries
   IdCard,
@@ -50,6 +51,7 @@ const navItems = [
   },
   { title: "Create Spec", url: "/admin/specs", icon: FilePlus2 },
   { title: "Social Posts", url: "/admin/social-posts", icon: Instagram },
+  { title: "DBFlex", url: "/admin/dbflex", icon: Database },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
