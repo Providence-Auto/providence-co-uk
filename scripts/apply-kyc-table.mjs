@@ -1,7 +1,9 @@
-// Creates the client KYC table in one environment's database.
+// Creates the client KYC table, and keeps it current, in one environment's
+// database.
 //
-// This is drizzle/0012_kyc_submission_table.sql, read from that file and run
-// statement by statement, so the SQL has one source. It's applied with this
+// This is drizzle/0012_kyc_submission_table.sql followed by
+// drizzle/0013_kyc_lead_link.sql (the lead link and assignment method), read
+// from those files and run statement by statement, so the SQL has one source. It's applied with this
 // script rather than scripts/migrate.mjs because the drizzle migrator is
 // currently unusable: migration 0001 is listed in drizzle/meta/_journal.json
 // but its .sql file was never committed, so readMigrationFiles throws before
@@ -29,15 +31,18 @@ const ENVS = {
   production: "DATABASE_URL_PRODUCTION",
 };
 
-const SQL_FILE = new URL(
+// In order: the table first, then what was added to it.
+const SQL_FILES = [
   "../drizzle/0012_kyc_submission_table.sql",
-  import.meta.url,
-);
+  "../drizzle/0013_kyc_lead_link.sql",
+].map((file) => new URL(file, import.meta.url));
 
-const STATEMENTS = readFileSync(SQL_FILE, "utf8")
-  .split("--> statement-breakpoint")
-  .map((statement) => statement.trim())
-  .filter(Boolean);
+const STATEMENTS = SQL_FILES.flatMap((file) =>
+  readFileSync(file, "utf8")
+    .split("--> statement-breakpoint")
+    .map((statement) => statement.trim())
+    .filter(Boolean),
+);
 
 const TABLE = "kycsubmission";
 
@@ -80,14 +85,17 @@ const COLUMNS = [
   "repCode",
   "assignedToId",
   "assignedToName",
+  "assignmentMethod",
+  "requestId",
   "createdAt",
   "updatedAt",
 ];
 
-const INDEXES = ["kycsubmission_created_idx"];
+const INDEXES = ["kycsubmission_created_idx", "kycsubmission_request_idx"];
 const CONSTRAINTS = [
   "kycsubmission_reviewedById_user_id_fk",
   "kycsubmission_assignedToId_user_id_fk",
+  "kycsubmission_requestId_request_id_fk",
 ];
 
 const EXPECTED = [

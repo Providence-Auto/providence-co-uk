@@ -340,7 +340,50 @@ export interface KycView {
   reviewNotes: string | null;
   reviewedByName: string | null;
   reviewedAt: string | null;
+  assignedToId: string | null;
   assignedToName: string | null;
+  assignmentMethod: KycAssignmentMethod | null;
+  requestId: string | null;
   repCode: string | null;
   createdAt: string;
+}
+
+/** How a KYC record came to its consultant. */
+export type KycAssignmentMethod = "manual" | "lead";
+
+export function isKycAssignmentMethod(
+  value: unknown,
+): value is KycAssignmentMethod {
+  return value === "manual" || value === "lead";
+}
+
+/** A system lead, as the KYC panel shows it for linking. */
+export interface KycLeadSummary {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  vehicle: string;
+  countryOfImport: string;
+  status: string;
+  assignedToId: string | null;
+  assignedToName: string | null;
+  createdAt: string;
+  /** Why it was suggested: the same email, the same phone, or both. */
+  matchedOn?: ("email" | "phone")[];
+}
+
+/** Someone a KYC record may be assigned to. */
+export interface KycAssignee {
+  id: string;
+  name: string;
+  role: string;
+}
+
+/**
+ * The dashboard link that opens one lead: the leads table filtered to it.
+ * The table searches name, email and car; the email is the unique part.
+ */
+export function leadDashboardHref(lead: { email: string }): string {
+  return `/admin?q=${encodeURIComponent(lead.email)}`;
 }

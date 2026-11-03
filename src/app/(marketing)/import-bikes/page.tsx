@@ -185,7 +185,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const withImage = bikes.find((b) => b.heroImageUrl || b.images?.length);
   const ogImage = withImage
     ? carOgImagePath(withImage, withImage._id)
-    : "/og/default.jpg";
+    : "/og/default-audi-r8.jpg";
 
   return {
     title: { absolute: `${TITLE} | Providence Auto` },

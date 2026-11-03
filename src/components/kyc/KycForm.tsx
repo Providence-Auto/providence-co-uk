@@ -19,7 +19,6 @@ import {
   SOURCE_OF_FUNDS,
   validateKyc,
 } from "@/lib/kyc";
-import { currentRepCode } from "@/lib/rep-link";
 
 // The order the fields appear in, so a failed submit can move focus to the
 // first problem rather than leave the customer hunting for it.
@@ -127,8 +126,6 @@ export default function KycForm() {
     }
     if (files.front) data.set("idFront", files.front);
     if (backNeeded && files.back) data.set("idBack", files.back);
-    const rep = currentRepCode();
-    if (rep) data.set("repCode", rep);
 
     setSending(true);
     try {

@@ -7,7 +7,7 @@
 
 import { eq } from "drizzle-orm";
 import { getKycSubmission } from "@/actions/kyc-actions";
-import { db, kycSubmissions } from "@/db";
+import { db, kycSubmissions, requests } from "@/db";
 import { kycStaff } from "@/lib/kyc-access";
 import { kycPdfFileName, renderKycPdf } from "@/lib/kyc-pdf";
 import { getKycDocument } from "@/lib/kyc-storage";
@@ -43,14 +43,31 @@ export async function GET(
   }
 
   try {
-    const [frontBytes, backBytes] = await Promise.all([
+    const [frontBytes, backBytes, [lead]] = await Promise.all([
       getKycDocument(keys.frontKey),
       keys.backKey ? getKycDocument(keys.backKey) : null,
+      record.requestId
+        ? db
+            .select({
+              make: requests.make,
+              model: requests.vehicleModel,
+              status: requests.status,
+            })
+            .from(requests)
+            .where(eq(requests.id, record.requestId))
+            .limit(1)
+        : [],
     ]);
-    const pdf = await renderKycPdf(record, {
-      front: { bytes: frontBytes, type: keys.frontType },
-      back: keys.backKey ? { bytes: backBytes, type: keys.backType } : null,
-    });
+    const pdf = await renderKycPdf(
+      record,
+      {
+        front: { bytes: frontBytes, type: keys.frontType },
+        back: keys.backKey ? { bytes: backBytes, type: keys.backType } : null,
+      },
+      lead
+        ? { vehicle: `${lead.make} ${lead.model}`.trim(), status: lead.status }
+        : null,
+    );
 
     return new Response(new Uint8Array(pdf), {
       headers: {

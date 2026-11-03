@@ -194,7 +194,7 @@ describe("buildCarMetadata", () => {
     expect(carOgSource({ ...CAR, heroImageUrl: "" })).toBe(CAR.images[0]);
     expect(
       carOgImagePath({ ...CAR, heroImageUrl: "", images: [] }, CAR.slug),
-    ).toBe("/og/default.jpg");
+    ).toBe("/og/default-audi-r8.jpg");
   });
 
   it("keeps a long-form notes description under 155", () => {

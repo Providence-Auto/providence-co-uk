@@ -2,6 +2,8 @@ import { ArrowLeft, Download, ExternalLink, FileText } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getKycSubmission } from "@/actions/kyc-actions";
+import { getKycLeadPanel } from "@/actions/kyc-lead-actions";
+import KycLeadPanel from "@/components/admin/KycLeadPanel";
 import KycReviewPanel from "@/components/admin/KycReviewPanel";
 import {
   formatAddress,
@@ -33,7 +35,10 @@ export default async function KycRecordPage({
 }) {
   const { id } = await params;
   if (!(await kycStaff())) notFound();
-  const r = await getKycSubmission(id);
+  const [r, panel] = await Promise.all([
+    getKycSubmission(id),
+    getKycLeadPanel(id),
+  ]);
   if (!r) notFound();
 
   const base = `${KYC_ADMIN_PATH}/${r.id}`;
@@ -168,7 +173,20 @@ export default async function KycRecordPage({
           </Card>
         </div>
 
-        <div>
+        <div className="space-y-6">
+          {panel && (
+            <KycLeadPanel
+              // Remount when the link or assignee changes, so the form state
+              // starts from what was saved.
+              key={`${r.requestId ?? ""}:${r.assignedToId ?? ""}`}
+              kycId={r.id}
+              country={r.country}
+              panel={panel}
+              assignedToId={r.assignedToId}
+              assignedToName={r.assignedToName}
+              assignmentMethod={r.assignmentMethod}
+            />
+          )}
           <KycReviewPanel record={r} />
         </div>
       </div>
