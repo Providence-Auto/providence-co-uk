@@ -15,7 +15,7 @@ const SITE = "https://www.providenceauto.co.uk";
 const TITLE = "Import Cars from 7 Countries | Providence Auto";
 // 1200×630, self-hosted, so link previews never depend on a third-party CDN.
 const OG_IMAGE = `${SITE}/source-cars/og/network.jpg`;
-const DESCRIPTION = `Import a car from ${SOURCE_COUNTRIES_SENTENCE} through our own teams. Inspected before you pay, one landed price to your port. Get a quote.`;
+const DESCRIPTION = `Import a car from ${SOURCE_COUNTRIES_SENTENCE} through our own teams, with one landed price to your port.`;
 
 // The direct answer to "which country should I import my car from?" — the
 // question this page exists to rank for, answered before the table.

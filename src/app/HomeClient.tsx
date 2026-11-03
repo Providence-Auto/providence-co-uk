@@ -193,7 +193,7 @@ export default function HomeClient() {
             <div className="text-center max-w-5xl mx-auto mt-8 md:mt-12">
               <Reveal
                 immediate
-                as="h1"
+                as="p"
                 y={20}
                 scale={0.95}
                 delay={0.18}
@@ -205,13 +205,15 @@ export default function HomeClient() {
 
               <Reveal
                 immediate
-                as="p"
+                as="h1"
                 y={15}
                 delay={0.36}
                 duration={0.8}
                 className="text-xl sm:text-2xl md:text-3xl text-zinc-700 font-medium tracking-tight mt-6 md:mt-8 mb-4 md:mb-6"
               >
-                {/* Business instruction 2026-10-09: "Import", "From" and
+                {/* The H1 since 2026-11-03: the offer stated as scope (seo-page-rules.md
+                    P-01), with the showroom line above it as a plain line.
+                    Business instruction 2026-10-09: "Import", "From" and
                     "To" read in the accent colour, so the line says what the
                     customer does — they import (writing-angle.md §10). Each
                     phrase is kept on one line so a phone never strands "To"
