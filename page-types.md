@@ -295,7 +295,8 @@ than naming the remainder honestly.
 
 | Page | What it is | Rule it follows |
 |---|---|---|
-| `/about-us`, `/team`, `/team/[slug]` | Navigational — brand, proof, people | `brand-position.md` §9 boilerplate; `sales-profile-spec.md` for profiles |
+| `/about-us`, `/team`, `/team/[slug]`, `/contact` | Navigational — brand, proof, people, how to reach us | `brand-position.md` §9 boilerplate; `sales-profile-spec.md` for profiles; `/contact` reads `src/config/contact.ts` (added 2026-11-03) |
+| `/privacy-policy` | Legal | Follows `writing-angle.md` for phrasing, states only what the code and the business actually do (every data flow traceable to the codebase), and changes only on business sign-off (decided 2026-11-03) |
 | `/request`, `/track/[id]`, `/signup`, `/auth/*` | Funnel utility — the transaction itself | No editorial rules; form microcopy follows `writing-angle.md` |
 | `/admin/*`, `/dealer-dashboard` | Internal / logged-in product | Not public copy |
 
@@ -369,6 +370,10 @@ unclassified page is the state this document exists to prevent.
 |---|---|---|---|
 | `/blog/[slug]` | 102 | Informational | `src/config/blog.ts` (18), `src/config/blog-countries.ts` (40), `src/config/blog-japan-uk.ts` (11, added 2026-10-07), `src/config/blog-dealer-sourcing.ts` (33, added 2026-10-27: the dealer-sourcing cluster, written for the dealer reader, every post ending on `/b2b-inquiry`; the India dealer guide moved into it from `blog-countries.ts` with its slug unchanged). Counts recounted from the registries on 2026-10-27 |
 | `/latest-news/[slug]` | 40 | Informational | `src/config/news.ts`; also the category archives, RSS and news sitemap. Recounted 2026-10-07 |
+| `/blog/how-to-import-a-motorcycle` | 1 | Informational | The Motorcycles cluster (`src/config/blog-motorcycles.ts`), CTA `/import-bikes`; takes the blog count to 103. Added 2026-11-03 |
+| `/import-bikes` | 1 | Landing | The motorcycle class page (`seo-page-rules.md` P-11). Added 2026-11-03 |
+| `/import-bikes/[slug]` | dynamic | Landing | One page per motorcycle dossier (`vehicleType: "motorcycle"`). Database rows, like car pages |
+| `/import/[tag]` | dynamic | Landing | One class page per landing-page tag (`src/config/vehicle-tags.ts`). Section set agreed 2026-11-03: the P-11 set in `seo-page-rules.md` — direct answer, facts table, models as text links, steps, FAQ. A class page with fewer than eight live models is `noindex, follow` and out of the sitemap until it has them |
 | `/import-cars-from/[country]` | 7 | Landing | Agreed section list in `CLAUDE.md`; enforced by `src/config/__tests__/countries.test.ts` |
 | `/import-cars-from` | 1 | Landing | Hub |
 | `/campaigns/[slug]` | 3 | Landing | `src/config/landing-pages.ts` |
