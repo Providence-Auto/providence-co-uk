@@ -72,7 +72,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // page is built later, add it back — but only once it serves a 200.
   const staticRoutes = [
     "",
+    "/b2c",
     "/b2c/gallery",
+    "/b2b",
+    "/saas",
+    "/japanese-luxury-cars-lhd",
     "/about-us",
     "/import-cars-to-ireland",
     "/import-japanese-cars",
