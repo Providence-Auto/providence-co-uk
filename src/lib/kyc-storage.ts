@@ -8,7 +8,9 @@
 // - It goes to R2_KYC_BUCKET_NAME when that is set — a bucket with no public
 //   access. Without it the file lands in the main bucket under kyc/ with an
 //   unguessable key, which keeps it out of reach only for as long as nobody
-//   learns the key; set the private bucket on every environment.
+//   learns the key. Only production sets the private bucket (business
+//   decision 2026-11-03); dev and staging use the fallback, so test them
+//   with dummy images, never a real customer's ID.
 // - It is marked private, no-store, so no cache in between keeps a copy.
 
 import crypto from "node:crypto";
