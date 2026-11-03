@@ -49,17 +49,19 @@ export type LandingPageConfig = {
 export const lhdCampaignConfig: LandingPageConfig = {
   slug: "luxury-lhd-japan",
   meta: {
-    title: "Left-Hand Drive Luxury Cars from Japan | Providence Auto",
+    title: "LHD Luxury and Sports Cars from Japan | Providence Auto",
     description:
-      "Import left-hand drive (LHD) luxury cars — Rolls-Royce, Ferrari, Lamborghini, Porsche, Bentley and more — direct from Japan's grade-verified auctions. Shipped to your port across Europe, the Middle East and the Americas.",
+      "Import left-hand-drive luxury, sports and hyper cars from Japan’s dealers and auctions to Europe, the Gulf, the US and Canada. Get a landed quote.",
   },
   hero: {
     tagline: "Providence Auto · Left-Hand Drive Specialists",
-    title: "Japanese Luxury,\nLeft-Hand Drive.",
+    // Widened from luxury only on 2026-11-03: luxury, sports and hyper cars
+    // from Japan into left-hand-drive markets, the US and Canada included
+    // (business-context.md §3). No market's hand or age rule is stated here.
+    title: "Left-Hand Drive Luxury\nand Sports Cars from Japan.",
     subtitle:
       "Import grade-verified LHD supercars and luxury saloons direct from Japan's auctions and certified dealers — genuine factory left-hand drive, landed at your port. No conversions, no compromise.",
-    backgroundImage:
-      "/stock/classic-car.webp",
+    backgroundImage: "/stock/classic-car.webp",
   },
   intro: {
     highlight: "No conversions. No compromise.",

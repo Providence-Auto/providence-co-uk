@@ -10,7 +10,8 @@
 import { Reveal } from "@/components/Reveal";
 import type { LandingPageConfig } from "@/config/landing-pages";
 
-const FAQ_DATA = [
+/** The general questions, shown where a page has no FAQ of its own. */
+export const DEFAULT_FAQ_CATEGORIES = [
   {
     category: "Safety & Security",
     items: [
@@ -100,7 +101,7 @@ const DEFAULT_FAQ_CONFIG: LandingPageConfig["faqs"] = {
   title: "Frequently Asked Questions",
   subtitle:
     "Everything you need to know about our global direct import network.",
-  categories: FAQ_DATA,
+  categories: DEFAULT_FAQ_CATEGORIES,
 };
 
 type FAQSectionProps = {

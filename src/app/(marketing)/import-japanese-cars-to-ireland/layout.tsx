@@ -1,4 +1,12 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { IRELAND_FAQS } from "@/config/ireland-japan-faqs";
+import {
+  breadcrumbJsonLd,
+  DEFAULT_OG_IMAGE,
+  faqJsonLd,
+  serviceJsonLd,
+} from "@/lib/seo";
 
 // Search Console listed https://www.providenceauto.co.uk/import-japanese-cars-to-ireland
 // under "Duplicate without user-selected canonical" — on the production host,
@@ -14,7 +22,7 @@ import type { Metadata } from "next";
 // one of the three that answers it, so it is self-canonical. The title below
 // leads with that intersection rather than repeating either sibling's angle.
 const PATH = "/import-japanese-cars-to-ireland";
-const TITLE = "Import a Japanese Car to Ireland (2026) — Cost, VRT & Shipping";
+const TITLE = "Import a Japanese Car to Ireland";
 const DESCRIPTION =
   "Grade 4+ cars from across Japan, shipped to an Irish port: 0% duty under the EU–Japan EPA, 23% VAT, VRT on OMSP, clearance file prepared. Get your quote.";
 
@@ -29,11 +37,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: {
     index: true,
@@ -53,5 +63,24 @@ export default function ImportJapaneseCarsToIrelandLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Import a Japanese Car to Ireland", path: PATH },
+          ]),
+          serviceJsonLd({
+            name: TITLE,
+            serviceType: "Japanese car import to Ireland",
+            path: PATH,
+            description: DESCRIPTION,
+            audience: "people",
+          }),
+          faqJsonLd(IRELAND_FAQS.categories.flatMap((c) => c.items)),
+        ]}
+      />
+      {children}
+    </>
+  );
 }

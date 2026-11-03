@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { getAllSpecDossiers } from "@/actions/spec-actions";
 import GalleryClient from "@/components/GalleryClient";
 import { isMotorcycle } from "@/lib/vehicle-type";
 
 export const revalidate = 60; // Optional: Revalidate the page every 60 seconds
 
-const PAGE_TITLE = "The Gallery";
+const PAGE_TITLE = "Cars to Import: The Gallery";
 const PAGE_DESCRIPTION =
-  "A curated selection of globally-sourced vehicle specifications, ready to be commissioned to your exact requirements.";
+  "Browse the cars you can import with Providence Auto, each with its specification, grades and colours. Choose one and get a landed quote to your port.";
 
 // Give the listing page the same rich link preview as the detail pages:
 // honour an admin-selected hero image from the newest active dossier, then
@@ -60,5 +62,12 @@ export default async function GalleryPage() {
     (d: { vehicleType?: unknown }) => !isMotorcycle(d),
   );
 
-  return <GalleryClient dossiers={dossiers} />;
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([{ name: "Gallery", path: "/b2c/gallery" }])}
+      />
+      <GalleryClient dossiers={dossiers} />
+    </>
+  );
 }
