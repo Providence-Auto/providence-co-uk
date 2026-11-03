@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 import type { DestinationConfig } from "@/config/destinations";
 import { destinationCopy, destinationPath } from "@/config/destinations";
 import { formatVehicleTitle } from "@/lib/vehicle";
+import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
 const DEFAULT_OG_IMAGE = "/og/default.jpg";
 
@@ -109,13 +110,18 @@ export function carOgImagePath(car: CarRecord, fallbackId: string): string {
   return `/og/car/${car.slug || fallbackId}.jpg?v=${shortHash(source)}`;
 }
 
-/** `/b2c/gallery/<slug-or-id>`, with the destination segment when there is one. */
+/**
+ * `/b2c/gallery/<slug-or-id>`, with the destination segment when there is one
+ * — or `/import-bikes/<slug-or-id>` for a motorcycle, which has no destination
+ * variants (the destination registry's rules are written for cars).
+ */
 export function carPath(
   car: CarRecord,
   fallbackId: string,
   destination?: DestinationConfig | null,
 ): string {
   const key = car.slug || fallbackId;
+  if (isMotorcycle(car)) return `${BIKES_BASE_PATH}/${key}`;
   return destination
     ? destinationPath(key, destination.slug)
     : `/b2c/gallery/${key}`;
@@ -151,13 +157,21 @@ export function buildCarMetadata(
   // "Import a <car> to <country>" is the query, so it leads. The shorter forms
   // exist for the long country names — "United Kingdom" costs eleven characters
   // that "UK" does not, and "UK" is what people search anyway.
-  const title = destination
+  // A bike page is the page for "import <make> <model>", so the verb leads.
+  const bike = isMotorcycle(car);
+  const title = bike
     ? pickTitle([
-        `Import a ${vehicle} to ${destination.name}`,
-        `Import a ${vehicle} to ${destination.shortName}`,
-        `${vehicle} to ${destination.shortName}`,
+        `Import a ${vehicle}`,
+        `Import ${formatVehicleTitle(car.make, car.model)}`,
+        vehicle,
       ])
-    : vehicle;
+    : destination
+      ? pickTitle([
+          `Import a ${vehicle} to ${destination.name}`,
+          `Import a ${vehicle} to ${destination.shortName}`,
+          `${vehicle} to ${destination.shortName}`,
+        ])
+      : vehicle;
 
   // The headline the PAGE will show, not the registry's base one. Origin
   // decides the rule — a Japan-built car enters Ireland duty-free and an
@@ -184,7 +198,9 @@ export function buildCarMetadata(
         // description. The full notes when they fit, else their first
         // sentence, else a word-boundary trim.
         clampDescription([car.notes.trim(), firstSentence(car.notes.trim())])
-      : `View full specifications, gallery, and details for the ${vehicle}.`;
+      : bike
+        ? `Import the ${vehicle}: the full specification, the gallery and a landed quote to your port, worked out before you commit.`
+        : `View full specifications, gallery, and details for the ${vehicle}.`;
 
   const ogImage = carOgImagePath(car, fallbackId);
   const path = carPath(car, fallbackId, destination);
@@ -247,9 +263,12 @@ export function buildCarJsonLd(
     (src: unknown): src is string => typeof src === "string" && src.length > 0,
   );
 
+  const bike = isMotorcycle(car);
   const crumbs = [
     { name: "Home", item: SITE_URL },
-    { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
+    bike
+      ? { name: "Import Bikes", item: `${SITE_URL}${BIKES_BASE_PATH}` }
+      : { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
     { name: vehicle, item: `${SITE_URL}${carPath(car, fallbackId)}` },
     ...(destination
       ? [{ name: `Import to ${destination.name}`, item: `${SITE_URL}${path}` }]
@@ -266,7 +285,7 @@ export function buildCarJsonLd(
           ? `${vehicle} — import to ${destination.name}`
           : vehicle,
         brand: { "@type": "Brand", name: car.make },
-        category: "Vehicle",
+        category: bike ? "Motorcycle" : "Vehicle",
         ...(images.length > 0 ? { image: images.slice(0, 6) } : {}),
         // Same rule as the meta description above: the origin-resolved
         // headline, never the registry's base one.

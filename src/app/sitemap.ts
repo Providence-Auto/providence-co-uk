@@ -1,7 +1,11 @@
 import type { MetadataRoute } from "next";
 import { listPublishedProfileSlugs } from "@/actions/sales-profile-actions";
 // Import your DB logic or Action
-import { getAllSpecDossiers } from "@/actions/spec-actions";
+import {
+  getAllSpecDossiers,
+  getTagsInUse,
+  getVehiclesForTag,
+} from "@/actions/spec-actions";
 import { BLOG_BASE_PATH, BLOG_POSTS } from "@/config/blog";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
 import { DEALER_SOURCING_PATH } from "@/config/dealer-sourcing";
@@ -11,6 +15,12 @@ import {
   NEWS_BASE_PATH,
   NEWS_CATEGORY_BASE_PATH,
 } from "@/config/news";
+import {
+  resolveTag,
+  TAG_BASE_PATH,
+  TAG_COLLECTIONS,
+} from "@/config/vehicle-tags";
+import { BIKES_BASE_PATH, vehiclePath } from "@/lib/vehicle-type";
 
 /**
  * The sitemap is DB-backed, so it must never be prerendered.
@@ -72,6 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/import-japanese-cars-to-ireland",
     "/indian-manufactured-cars",
     "/ireland-cost-calculator",
+    BIKES_BASE_PATH,
     DEALER_SOURCING_PATH,
     "/team",
     BLOG_BASE_PATH,
@@ -167,11 +178,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const carRoutes = dossierResult.data
     .filter((car: any) => LIVE_DOSSIER_STATUSES.has(car.status))
     .map((car: any) => ({
-      url: `${baseUrl}/b2c/gallery/${car.slug || car._id}`,
+      // A motorcycle's page is /import-bikes/<slug>, a car's /b2c/gallery/<slug>.
+      url: `${baseUrl}${vehiclePath(car)}`,
       lastModified: latest([car.updatedAt]),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));
+
+  // 2a. Landing-page tags (/import/<tag>). Only a tag with at least one live
+  // vehicle is indexable — the page is noindex otherwise — so only those are
+  // listed. A tag with its own landing page (bikes) is already listed above.
+  const tagSlugs = [
+    ...new Set([
+      ...TAG_COLLECTIONS.filter((c) => !c.redirectTo).map((c) => c.slug),
+      ...(await getTagsInUse()),
+    ]),
+  ];
+  const tagResults = await Promise.all(
+    tagSlugs.map(async (slug) => {
+      const tag = resolveTag(slug);
+      if (tag.redirectTo) return null;
+      const result = await getVehiclesForTag(tag);
+      if (!result.success || result.data.length === 0) return null;
+      return {
+        url: `${baseUrl}${TAG_BASE_PATH}/${tag.slug}`,
+        lastModified: latest(
+          result.data.map((v: { updatedAt?: string }) => v.updatedAt),
+        ),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      };
+    }),
+  );
+  const tagRoutes = tagResults.filter(
+    (route): route is NonNullable<typeof route> => route !== null,
+  );
 
   // 3. Sales-member profile pages (/team/[slug]) — published only.
   const profiles = await listPublishedProfileSlugs();
@@ -190,6 +231,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...newsRoutes,
     ...newsCategoryRoutes,
     ...carRoutes,
+    ...tagRoutes,
     ...profileRoutes,
   ];
 }

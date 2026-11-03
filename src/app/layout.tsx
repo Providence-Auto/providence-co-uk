@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Providence Auto",
   },
   description:
-    "Import your dream car anywhere in the world, from 40+ markets. Our teams in seven countries export it to your port, with clearance support. Get a quote.",
+    "Import your dream car anywhere in the world. Our own teams in seven countries export it to your port, with clearance support. Get a quote.",
   keywords: [
     "Global car sourcing",
     "direct car import service",
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Providence Auto | Global Car Sourcing & Direct Import",
     description:
-      "Import your dream car anywhere in the world, from 40+ global markets.",
+      "Import your dream car anywhere in the world, exported by our own teams in seven countries.",
     // `summary_large_image` crops to 1200x630; the square logo was being
     // letterboxed. Same card as Open Graph above.
     images: ["/og/default.jpg"],
@@ -126,7 +126,7 @@ export default function RootLayout({
     url: "https://www.providenceauto.co.uk/",
     logo: "https://www.providenceauto.co.uk/logo.png",
     description:
-      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand, exporting premium vehicles from 40+ markets.",
+      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "468 Church Lane, Kingsbury",

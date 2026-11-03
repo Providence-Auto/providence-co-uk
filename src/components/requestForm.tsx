@@ -606,6 +606,7 @@ export default function RequestForm({
   steeringOptions = [],
   selectedSteering,
   selectedDestination,
+  makeOptions = CAR_MAKES,
 }: {
   prefill?: Partial<typeof initialFormState>;
   defaultPhoneCountry?: string;
@@ -637,6 +638,12 @@ export default function RequestForm({
    * the effect below mirrors what picking the country in the dropdown does.
    */
   selectedDestination?: string;
+  /**
+   * The make dropdown's list. Car makes by default; a bike page passes
+   * MOTORCYCLE_MAKES (src/lib/vehicle-type.ts), because the dropdown can only
+   * show a prefilled make that is one of its options.
+   */
+  makeOptions?: readonly string[];
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -1338,7 +1345,7 @@ export default function RequestForm({
                   <SelectDropdown
                     id="make"
                     placeholder="Select Make"
-                    options={CAR_MAKES.map((m) => ({ label: m, value: m }))}
+                    options={makeOptions.map((m) => ({ label: m, value: m }))}
                     value={formData.make}
                     onChange={handleDropdownChange}
                     error={errors.make}
