@@ -1,12 +1,12 @@
 {
-  "_comment": "Suzuki Jimny Nomade (JC74W, grade FC), Jungle Green, four-speed automatic, stock reference PT5608. Engine figures are from suzuki.co.jp/car/jimny_nomade/performance_eco/ (K15B, 1.460 L, 74 kW / 101 PS at 6,000 rpm, 130 Nm at 4,000 rpm), and the grade, launch date, colour name, 340 mm longer wheelbase than the Jimny Sierra, ladder frame, part-time 4WD with low range, three-link rigid axles, Dual Camera Brake Support and ACC on the 4AT are from Suzuki's launch release suzuki.co.jp/release/a/2025/0130/, both checked 2026-10-09. Built in India and imported to Japan, per bestcarweb.jp and kuruma-news.jp (not stated on Suzuki's own pages). The model year is not visible in the photographs and is left blank rather than guessed. Condition, mileage and price are deliberately left off the page (business instruction 2026-10-09), which is also why there are no destinations. Photographs are of this car, cropped to 16:10 and stored under public/cars/suzuki-jimny-nomade-pt5608/; the odometer photo is left out. Recreate on another environment with node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/suzuki-jimny-nomade-pt5608.json --env staging --publish (or --env production), once the images have been deployed there.",
+  "_comment": "Suzuki Jimny Nomade (JC74W, grade FC), Jungle Green, four-speed automatic, stock reference PT5608. Engine figures are from suzuki.co.jp/car/jimny_nomade/performance_eco/ (K15B, 1.460 L, 74 kW / 101 PS at 6,000 rpm, 130 Nm at 4,000 rpm), and the grade, launch date, colour name, 340 mm longer wheelbase than the Jimny Sierra, ladder frame, part-time 4WD with low range, three-link rigid axles, Dual Camera Brake Support and ACC on the 4AT are from Suzuki's launch release suzuki.co.jp/release/a/2025/0130/, both checked 2026-10-09. Origin is left blank on the page (business instruction 2026-10-10); bestcarweb.jp and kuruma-news.jp report it is built in India. The model year is not visible in the photographs and is left blank rather than guessed. Condition, mileage and price are deliberately left off the page (business instruction 2026-10-09), which is also why there are no destinations. Photographs are of this car, cropped to 16:10 and stored under public/cars/suzuki-jimny-nomade-pt5608/; the odometer photo is left out. Recreate on another environment with node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/suzuki-jimny-nomade-pt5608.json --env staging --publish (or --env production), once the images have been deployed there.",
 
   "make": "Suzuki",
   "model": "Jimny Nomade",
   "year": "",
   "trim": "FC",
   "slug": "suzuki-jimny-nomade-pt5608",
-  "countryOfOrigin": "India",
+  "countryOfOrigin": "",
   "steeringOptions": ["RHD"],
 
   "engineConfig": "1.5-litre K15B inline-4 DOHC petrol",
@@ -41,7 +41,7 @@
     { "label": "Wheelbase", "value": "340 mm longer than the Jimny Sierra" }
   ],
 
-  "notes": "This Suzuki Jimny Nomade is the five-door Jimny, finished in Jungle Green with a four-speed automatic and right-hand drive. It keeps the ladder frame, part-time four-wheel drive with low range and three-link rigid axles, on a wheelbase 340 mm longer than the Jimny Sierra's, which makes room for rear doors and four seats. The 1.5-litre K15B makes 74 kW, and the automatic adds adaptive cruise control. Stock reference PT5608.",
+  "notes": "This Suzuki Jimny Nomade is the five-door Jimny, finished in Jungle Green with a four-speed automatic and right-hand drive. It keeps the ladder frame, part-time four-wheel drive with low range and three-link rigid axles, on a wheelbase 340 mm longer than the Jimny Sierra's, which makes room for rear doors and four seats. The 1.5-litre K15B makes 74 kW, and the automatic adds adaptive cruise control.",
 
   "images": [
     "/cars/suzuki-jimny-nomade-pt5608/01-front-three-quarter.webp",
