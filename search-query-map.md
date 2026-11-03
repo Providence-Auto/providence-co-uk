@@ -763,7 +763,7 @@ India → Africa, South Asia.
 - "Best Japanese bikes I can't buy new in Ireland?"
 - "How are motorcycles shipped from Japan — crate or container?"
 
-**Site mapping:** none. **Gap:** the whole class — class page, pillar guide, model pages. **Code:** no vehicle class field exists yet, so the forms cannot take a motorcycle inquiry (`seo-page-rules.md` T-96).
+**Site mapping:** `/import-bikes` (class page), `/import-bikes/<slug>` (one per bike), `/import/<tag>` for electric, cruiser and adventure motorcycles and scooters, and `/blog/how-to-import-a-motorcycle` — all from PR #323. **Gap:** bike model pages for the volume Japan-market models; motorcycles by source (`-from-japan`, `-from-the-uk`); bike best-of and comparison guides. **Code:** dossiers carry `vehicleType`; leads don't record it yet (`seo-page-rules.md` T-96).
 **Cautions:** no grade or inspection standard is published for motorcycles (or trucks), so no page states one — the 4.0 grade is a car rule.
 
 ---

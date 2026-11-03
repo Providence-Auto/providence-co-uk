@@ -9,6 +9,7 @@ import {
 import { canViewCar, loadCar } from "@/lib/car-page-data";
 import { guidesByDestination } from "@/lib/destination-guides";
 import { parseDestinations } from "@/lib/vehicle-destinations";
+import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
 export const revalidate = 60;
 
@@ -33,6 +34,12 @@ export default async function GalleryDetailPage({
 
   if (!car) {
     notFound();
+  }
+
+  // A motorcycle's page lives under /import-bikes; every older link to it
+  // through the gallery moves there.
+  if (isMotorcycle(car)) {
+    permanentRedirect(`${BIKES_BASE_PATH}/${car.slug || id}`);
   }
 
   // Collapse the two URLs for this car into one. The dossier resolves by slug

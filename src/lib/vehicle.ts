@@ -35,10 +35,13 @@ export function galleryPathForDossier(d: {
   _id?: string;
   slug?: string;
   status?: string;
+  vehicleType?: string;
 }): string | null {
-  if (isLiveStatus(d.status) && d.slug) return `/b2c/gallery/${d.slug}`;
-  if (d.slug) return `/b2c/gallery/${d.slug}`;
-  if (d._id) return `/b2c/gallery/${d._id}`;
+  // A motorcycle's public page is under /import-bikes (src/lib/vehicle-type.ts).
+  const base =
+    d.vehicleType === "motorcycle" ? "/import-bikes" : "/b2c/gallery";
+  if (d.slug) return `${base}/${d.slug}`;
+  if (d._id) return `${base}/${d._id}`;
   return null;
 }
 

@@ -72,7 +72,7 @@ queries are built on.
 | **Source (S)** — where cars come from | We export from the seven countries we buy in, and nowhere else. There is no "40+ markets" figure (withdrawn 2026-11-03) | Japan, United Kingdom, UAE, India, Thailand, Australia, New Zealand. **South Africa for dealers only.** | `SOURCE_COUNTRY_PAGES` (`src/config/countries.ts`); `DEALER_SOURCE_MARKETS` (`src/config/dealer-sourcing.ts`) |
 | **Destination (D)** — where we ship | The **34 destinations** on the list: 33 drive on the left, and Germany is the one LHD market on it. The other **40 left-driving countries are out for now** (`business-context.md` §3) | 34 | `DESTINATIONS` (`src/config/destinations.ts`) and `DESTINATION_REGIONS` (`/about-us`); the 40 are the rest of `LEFT_TRAFFIC_COUNTRIES` (`src/config/dealer-sourcing.ts`) |
 | **Destination, LHD** | **Luxury, sports and hyper cars from Japan** into left-hand-drive countries, **the US and Canada included** | §1.4 | `/japanese-luxury-cars-lhd` (still worded for luxury only — widen it) |
-| **Vehicle class (V)** | **Cars, motorcycles, trucks.** No grade or inspection standard is stated for motorcycles or trucks (`business-context.md` §1) | Car body/use classes, motorcycles, trucks, buses and vans (§1.3) | None in code yet: no vehicle-class field on dossiers, leads or forms (T-96) |
+| **Vehicle class (V)** | **Cars, motorcycles, trucks.** No grade or inspection standard is stated for motorcycles or trucks (`business-context.md` §1) | Car body/use classes, motorcycles, trucks, buses and vans (§1.3) | `specdossier.vehicleType` (car / motorcycle) and `specdossier.tags`, with the tag registry in `src/config/vehicle-tags.ts` (PR #323). No truck type, and no vehicle class on leads (T-96) |
 | **Make (M)** | **Every brand** | §1.5 | — |
 | **Model (Mo)** | Every model, by generation and grade | — | Spec dossiers (`specdossier` table) |
 | **Audience (A)** | **Direct buyers, dealerships, vehicle brokers.** Brokers are B2B, and their inquiries go to the **B2B sales team** | 3 | `/b2c`, `/b2b`, `/b2b-inquiry`; no broker page |
@@ -162,9 +162,9 @@ step settles the exact slug from SERP research (T-20 wins over the pattern).
 | P-08 | Destination country | Landing | Proposed `/import-cars-to/<destination>`; Ireland's legacy `/import-cars-to-ireland` | **1 of 34** |
 | P-09 | Destination hub, by region | Landing | Proposed `/import-cars-to` | **Missing** |
 | P-10 | Route (source → destination) | Landing | Proposed `/import-cars-from/<source>/<destination>`; legacy `/import-japanese-cars/uk`, `/import-japanese-cars-to-ireland` | **2 of up to 238** (7 sources × 34 destinations) |
-| P-11 | Vehicle class | Landing | Proposed `/import-<class>` and `/import-<class>-from-<source>` | Partial: `/japanese-luxury-cars-lhd`, `/indian-manufactured-cars`; **no motorcycles, trucks, kei, JDM, supercar, classic, EV** |
+| P-11 | Vehicle class | Landing | `/import-bikes` and `/import/<tag>` (built in PR #323); proposed `/import-<class>-from-<source>` for a class from one source | Partial: `/import-bikes` (motorcycles); `/import/<tag>` for luxury cars, SUVs, electric, hybrid, 7-seater and the motorcycle sub-classes; `/japanese-luxury-cars-lhd`; `/indian-manufactured-cars`. **No trucks, buses/vans, kei, JDM, supercar or classic page** |
 | P-12 | Make | Landing | Proposed `/import-<make>` | **Missing** |
-| P-13 | Model (car page) | Landing | `/b2c/gallery/<model-slug>` | Exists (database rows) |
+| P-13 | Model (car or bike page) | Landing | `/b2c/gallery/<model-slug>`; bikes at `/import-bikes/<slug>` | Exists (database rows) |
 | P-14 | Model → destination | Landing | `/b2c/gallery/<model>/import-to-<destination>` | Exists (`full` markets indexed) |
 | P-15 | Upcoming model (pre-order) | Landing | P-13 with `isUpcoming` | Exists |
 | P-16 | Service | Landing | Proposed: one slug per service keyword | **Missing** |
@@ -174,7 +174,7 @@ step settles the exact slug from SERP research (T-20 wins over the pattern).
 | P-22 | Team and consultant | Navigational | `/team`, `/team/<slug>` | Exists |
 | P-30 | Landed-cost calculator | Tool | `/<destination>-…-calculator` | Ireland only |
 | P-31 | Eligibility checker (age, hand) | Tool | Proposed `/can-i-import-this-car` | **Missing** (the market check inside `/b2b-inquiry` is a widget, not a page) |
-| P-40 | Pillar guide, per vehicle class | Informational | `/blog/how-to-import-a-car`, `-motorcycle`, `-truck` | Dealer pillar only; **no buyer pillar, no bike/truck pillar** |
+| P-40 | Pillar guide, per vehicle class | Informational | `/blog/how-to-import-a-car`, `-motorcycle`, `-truck` | Dealer pillar and `/blog/how-to-import-a-motorcycle`; **no buyer car pillar, no truck pillar** |
 | P-41 | Source-country guide cluster | Informational | `/blog/…` | Exists (7) |
 | P-42 | Destination guide cluster | Informational | `/blog/…` | Ireland, UK, Sri Lanka; **rest missing** |
 | P-43 | Route guide | Informational | `/blog/…` | Japan → UK, Japan/UK → Ireland |
@@ -412,7 +412,7 @@ order, what it must not do, its indexing minimum, its schema and its links.
 | T-91 | Leads push `generate_lead` through `src/lib/lead-events.ts` only, after the server has stored the lead (`tracking-setup.md`). Never a second Lead event. |
 | T-92 | `?rep=` links keep working on every new page (`<RepLinkCapture />` is in the root layout; a URL-rewriting picker keeps `repSearch`). |
 | T-95 | Every registry-driven page family ships with a test that asserts, for every entry: title ≤ 60, description 120–155, H1 contains the keyword, direct answer 40–55 words, FAQ JSON-LD = the rendered FAQ, CTA route valid, slug in the ownership registry. `countries.test.ts` and `japan-uk.test.ts` are the pattern. |
-| T-96 | **Vehicle class in code (Wave 1).** Spec dossiers, B2C leads, dealer-inquiry cars and both forms carry a vehicle class (car / motorcycle / truck, plus sub-class). Today none of them can record a motorcycle or a truck, so a P-11 motorcycles page would send leads into a form that asks for a car. Schema changes ship as idempotent per-environment SQL scripts (`CLAUDE.md`, migration scripts), run before the deploy. |
+| T-96 | **Vehicle class in code (Wave 1).** Spec dossiers, B2C leads, dealer-inquiry cars and both forms carry a vehicle class (car / motorcycle / truck, plus sub-class). Since PR #323 dossiers carry `vehicleType` (car, motorcycle) and the bike page's form offers motorcycle makes, but leads and dealer-inquiry cars still record no class, and there is no truck type — so a trucks page would send leads into a form built for cars. Schema changes ship as idempotent per-environment SQL scripts (`CLAUDE.md`, migration scripts), run before the deploy. |
 | T-99 | **Never target a sanctioned or export-restricted destination.** Check the current UK, EU, US and Japanese positions before planning any destination or route page; a market under an export restriction for vehicles gets no page and no ad. |
 
 ### 2.2 Content rules — every page
@@ -550,9 +550,9 @@ order** (what a plan proposes), **must not**, the **indexing minimum**,
   6. The form with the class preselected (T-96).
   7. FAQ · class guides (P-40, P-44, P-46) · secondary CTA.
 - **Must not:** imply that a class's rules match cars' rules; state any grade or inspection standard on a motorcycle or truck page (none is published — `business-context.md` §1).
-- **Index minimum:** facts table complete for at least one source, at least eight makes or models linked, and the form able to record the class (T-96). **No P-11 motorcycles or trucks page is indexable before T-96 ships.**
+- **Index minimum:** facts table complete for at least one source, at least eight makes or models linked, and the form able to record the class (T-96). **No P-11 trucks page is indexable before a truck vehicle type exists (T-96).**
 - **Schema:** `Service` (`serviceType` "Motorcycle export from Japan"), `ItemList` of the linked models, `FAQPage`, `BreadcrumbList`.
-- **Existing:** `/japanese-luxury-cars-lhd` (Japan luxury into LHD markets) and `/indian-manufactured-cars` (an origin class) are P-11 pages; `/japanese-luxury-cars-lhd` is still worded for luxury only; it widens to sports and hyper cars, with the US and Canada named (decided 2026-11-03).
+- **Existing:** `/import-bikes` (motorcycles), the `/import/<tag>` pages (one per landing-page tag in `src/config/vehicle-tags.ts`, empty tags `noindex`), `/japanese-luxury-cars-lhd` (Japan luxury into LHD markets) and `/indian-manufactured-cars` (an origin class) are P-11 pages. The tag pages' section list was set by the build and is pending agreement (`brand-position.md` §11.3, 2026-11-03); audit them against this spec when it is agreed. `/japanese-luxury-cars-lhd` is still worded for luxury only; it widens to sports and hyper cars, with the US and Canada named (decided 2026-11-03).
 
 #### P-12 Make `/import-<make>`
 
@@ -739,10 +739,10 @@ Found while writing this document; confirm each in the audit.
 
 | # | Gap | Rule | Severity |
 |---|---|---|---|
-| 1 | No page for **motorcycles, trucks, buses/vans, vehicle brokers**, any **service**, any **make**; destination landing pages for 1 of the 34 destinations; no LHD route page for the US or Canada | L-1 | S1 |
+| 1 | No page for **trucks, buses/vans, vehicle brokers**, any **service**, any **make**; destination landing pages for 1 of the 34 destinations; no LHD route page for the US or Canada | L-1 | S1 |
 | 1a | `/japanese-luxury-cars-lhd` is worded for luxury only; the scope is now luxury, sports and hyper cars, with the US and Canada named | C-03 | S3 |
 | 1b | ~~`DEALER_SOURCING_ANSWER` (`/b2b-inquiry`'s direct answer) says dealers can import from the seven "and many other countries".~~ **Closed 2026-11-03 — kept by business decision.** Do not flag it again | — | — |
-| 2 | **No vehicle class anywhere in code** — dossiers, leads, dealer-inquiry cars and both forms assume a car | T-96 | S1 |
+| 2 | **Vehicle class only half in code** — dossiers have `vehicleType` (car, motorcycle) since PR #323, but leads and dealer-inquiry cars record no class and there is no truck type | T-96 | S1 |
 | 3 | `/campaigns/[slug]` exports **no metadata**: it inherits the root title (73 characters) and description and has **no canonical** | T-01, T-02, T-03 | S2 |
 | 4 | `src/app/sitemap.ts` leaves out `/b2c`, `/b2b`, `/saas`, `/japanese-luxury-cars-lhd` and the campaign pages, all of which are indexable | T-60 | S2 |
 | 5 | Static routes and news categories use `lastModified: new Date()` | T-61 | S4 |

@@ -79,6 +79,13 @@ export const ARTICLE_CTAS = {
     heading: "Importing stock for a dealership? Send a sourcing inquiry.",
     body: "Name up to five cars, or just the market you want to import from. Your first quote comes back within 24 hours, landed per unit to your port.",
   },
+  /** /import-bikes — motorcycles, any market. */
+  bikes: {
+    href: "/import-bikes#inquiry",
+    label: "Import bikes",
+    heading: "Ready to import a bike? Tell us your market and the models.",
+    body: "Name the market, the quantities and the models you want, from Honda to Harley-Davidson, and we'll provide a tailored quote and shipping options before you commit.",
+  },
   /** /b2c — market-neutral default for a story with no matching page. */
   neutral: {
     href: "/b2c#inquiry",
@@ -113,6 +120,7 @@ export const ARTICLE_CTA_ROUTES = [
   "/japanese-luxury-cars-lhd",
   "/b2b-inquiry",
   "/b2c",
+  "/import-bikes",
   "/import-cars-from/japan",
   "/import-cars-from/united-kingdom",
   "/import-cars-from/uae",
