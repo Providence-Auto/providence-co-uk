@@ -399,7 +399,7 @@ export default function HomeClient() {
                     icon: (
                       <Globe className="text-sky-500 h-7 w-7 md:h-8 md:w-8 group-hover:text-white transition-colors duration-500" />
                     ),
-                    desc: "We search 40+ global markets to find your exact spec at the most tax-efficient price, exporting through our own teams in seven of them. Currency, supply, and timing all factored in. You see the comparison and approve the quote — nothing moves until you do.",
+                    desc: "We search the seven countries where we have our own teams to find your exact spec at the most tax-efficient price, and export it from there. Currency, supply, and timing all factored in. You see the comparison and approve the quote — nothing moves until you do.",
                   },
                   {
                     step: "",
@@ -504,9 +504,9 @@ export default function HomeClient() {
                       For Dealerships
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
-                      Import stock direct from 100+ global markets, in the exact
-                      trims and specifications your customers ask for — and sell
-                      it without floor-planning it first.
+                      Import stock direct from our seven source countries, in
+                      the exact trims and specifications your customers ask for
+                      — and sell it without floor-planning it first.
                     </p>
                   </div>
 

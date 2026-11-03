@@ -79,13 +79,11 @@ export default function B2BLanding() {
                 Virtual Warehouse
               </span>
               , giving your dealership the inventory power of a global
-              conglomerate. Access over{" "}
-              <span className="text-black drop-shadow-sm">
-                100 global markets
-              </span>{" "}
+              conglomerate. Import direct from{" "}
+              <span className="text-black drop-shadow-sm">seven countries</span>{" "}
               — with{" "}
               <span className="text-black drop-shadow-sm">
-                our own teams in seven of them
+                our own team in every one of them
               </span>{" "}
               — to find the exact trims your customers are begging for.
             </Reveal>
