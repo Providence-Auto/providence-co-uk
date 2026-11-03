@@ -166,7 +166,7 @@ export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
             className="relative z-10 text-center max-w-4xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter mb-6 text-black leading-[1.1]">
-              The Gallery.
+              The cars you can import.
             </h1>
             <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
               A curated selection of globally-sourced vehicle specifications,

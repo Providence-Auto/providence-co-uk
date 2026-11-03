@@ -5,10 +5,9 @@ import type { Metadata } from "next";
 const PATH = "/ireland-cost-calculator";
 const URL = `https://www.providenceauto.co.uk${PATH}`;
 
-const TITLE =
-  "Ireland Car Import Cost Calculator 2026 – VRT, VAT & Customs Duty";
+const TITLE = "Ireland Car Import Cost Calculator: VRT, VAT, Duty";
 const DESCRIPTION =
-  "Free calculator for the cost of importing a car to Ireland — VRT, VAT, customs duty and the NOx levy on 2026 Revenue rates. Covers cars from the UK, Japan, the EU and beyond, with live exchange rates.";
+  "Work out the cost of importing a car to Ireland: VRT, VAT, customs duty and the NOx levy on 2026 Revenue rates, for cars from the UK, Japan and the EU.";
 
 // A static file, not an opengraph-image route: the generated card was served
 // `max-age=0` and uncached at the edge, slow enough on a cold render for
@@ -110,6 +109,7 @@ const breadcrumbSchema = {
   ],
 };
 
+// biome-ignore lint/correctness/noUnusedVariables: held back until verified, see below
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -182,11 +182,10 @@ export default function IrelandCostCalculatorLayout({
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/* faqSchema is held back (audit Q14, 2026-11-03): its six answers are
+          not shown on the page, and their VRT and relief figures are to be
+          re-verified against Revenue before they are. Render them and restore
+          this block together — never the markup without the visible text. */}
       {children}
     </>
   );

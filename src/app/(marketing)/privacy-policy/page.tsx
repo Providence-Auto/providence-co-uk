@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import MinimalHeader from "@/components/MinimalHeader";
@@ -178,6 +180,11 @@ export default function PrivacyPolicyPage() {
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Privacy Policy", path: "/privacy-policy" },
+        ])}
       />
       <MinimalHeader />
 

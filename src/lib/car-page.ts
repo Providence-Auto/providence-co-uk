@@ -12,7 +12,7 @@
 import type { Metadata } from "next";
 import type { DestinationConfig } from "@/config/destinations";
 import { destinationCopy, destinationPath } from "@/config/destinations";
-import { formatVehicleTitle } from "@/lib/vehicle";
+import { formatVehicleTitle, parseSteeringOptions } from "@/lib/vehicle";
 import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
 const DEFAULT_OG_IMAGE = "/og/default.jpg";
@@ -157,21 +157,20 @@ export function buildCarMetadata(
   // "Import a <car> to <country>" is the query, so it leads. The shorter forms
   // exist for the long country names — "United Kingdom" costs eleven characters
   // that "UK" does not, and "UK" is what people search anyway.
-  // A bike page is the page for "import <make> <model>", so the verb leads.
+  // A car or bike page is the page for "import <make> <model>", so the verb
+  // leads (seo-page-rules.md P-13; it was the bare "2027 Nissan Patrol").
   const bike = isMotorcycle(car);
-  const title = bike
+  const title = !destination
     ? pickTitle([
         `Import a ${vehicle}`,
         `Import ${formatVehicleTitle(car.make, car.model)}`,
         vehicle,
       ])
-    : destination
-      ? pickTitle([
-          `Import a ${vehicle} to ${destination.name}`,
-          `Import a ${vehicle} to ${destination.shortName}`,
-          `${vehicle} to ${destination.shortName}`,
-        ])
-      : vehicle;
+    : pickTitle([
+        `Import a ${vehicle} to ${destination.name}`,
+        `Import a ${vehicle} to ${destination.shortName}`,
+        `${vehicle} to ${destination.shortName}`,
+      ]);
 
   // The headline the PAGE will show, not the registry's base one. Origin
   // decides the rule — a Japan-built car enters Ireland duty-free and an
@@ -192,15 +191,7 @@ export function buildCarMetadata(
         `${headline} The paperwork and one landed cost into ${destination.name}, before you commit.`,
         `Importing a ${vehicle} to ${destination.name}: the rules, the paperwork and one landed cost, confirmed before you commit.`,
       ])
-    : car.notes?.trim()
-      ? // The notes are the page's long-form description — the Torcal's runs
-        // to 1,500 characters, which shipped whole as the meta and OG
-        // description. The full notes when they fit, else their first
-        // sentence, else a word-boundary trim.
-        clampDescription([car.notes.trim(), firstSentence(car.notes.trim())])
-      : bike
-        ? `Import the ${vehicle}: the full specification, the gallery and a landed quote to your port, worked out before you commit.`
-        : `View full specifications, gallery, and details for the ${vehicle}.`;
+    : baseDescription(car, vehicle);
 
   const ogImage = carOgImagePath(car, fallbackId);
   const path = carPath(car, fallbackId, destination);
@@ -234,6 +225,39 @@ export function buildCarMetadata(
       images: [ogImage],
     },
   };
+}
+
+/** The shortest description a search result is worth (seo-page-rules.md T-02). */
+const DESCRIPTION_FLOOR = 120;
+
+/**
+ * The car page's own description. The notes are its long-form copy — the
+ * Torcal's run to 1,500 characters, which shipped whole as the meta and OG
+ * description — so the full notes when they fit, else their first sentence,
+ * else a word-boundary trim. Notes that come out shorter than a useful snippet
+ * (14 of 21 live car pages were under 120) fall back to a sentence built from
+ * the vehicle itself.
+ */
+function baseDescription(car: CarRecord, vehicle: string): string {
+  const notes = car.notes?.trim();
+  if (notes) {
+    const first = firstSentence(notes);
+    const tail = " Get a landed quote to your port.";
+    const fromNotes = [notes, first, `${first}${tail}`, `${notes}${tail}`].find(
+      (c) => c.length >= DESCRIPTION_FLOOR && c.length < META_DESCRIPTION_LIMIT,
+    );
+    if (fromNotes) return fromNotes;
+  }
+  const built = `Import the ${vehicle}: its full specification, the gallery and a landed quote to your port, worked out before you commit.`;
+  return built.length >= DESCRIPTION_FLOOR
+    ? clampDescription([built])
+    : `${built} Get your quote.`;
+}
+
+/** schema.org steering position for the dossier's primary hand. */
+function steeringPosition(car: CarRecord): string {
+  const [primary] = parseSteeringOptions(car.steeringOptions, car.steering);
+  return primary === "LHD" ? "LeftHandDriving" : "RightHandDriving";
 }
 
 const SITE_URL = "https://www.providenceauto.co.uk";
@@ -279,13 +303,28 @@ export function buildCarJsonLd(
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Product",
+        // Car / Motorcycle are Product subtypes that expose the vehicle's own
+        // properties — steering position above all, for a site whose markets
+        // are split by hand (seo-page-rules.md P-13, T-41).
+        "@type": bike ? "Motorcycle" : "Car",
         "@id": `${SITE_URL}${path}#product`,
         name: destination
           ? `${vehicle} — import to ${destination.name}`
           : vehicle,
         brand: { "@type": "Brand", name: car.make },
-        category: bike ? "Motorcycle" : "Vehicle",
+        ...(car.model ? { model: car.model } : {}),
+        ...(car.year ? { vehicleModelDate: String(car.year) } : {}),
+        ...(car.transmission ? { vehicleTransmission: car.transmission } : {}),
+        ...(car.fuelSystem ? { fuelType: car.fuelSystem } : {}),
+        ...(car.engineConfig
+          ? {
+              vehicleEngine: {
+                "@type": "EngineSpecification",
+                name: car.engineConfig,
+              },
+            }
+          : {}),
+        ...(bike ? {} : { steeringPosition: steeringPosition(car) }),
         ...(images.length > 0 ? { image: images.slice(0, 6) } : {}),
         // Same rule as the meta description above: the origin-resolved
         // headline, never the registry's base one.

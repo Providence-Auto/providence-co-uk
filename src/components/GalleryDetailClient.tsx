@@ -478,7 +478,14 @@ export default function GalleryDetailClient({
                 300 lines down — and so the two URLs are not competing in search
                 with byte-identical headings. */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[0.95] mb-3 uppercase">
-                {car.make} <span className="text-zinc-400">{car.model}</span>{" "}
+                {/* A model stored with its make ("Lexus LX500d") would read
+                    "Lexus Lexus LX500d" — strip the repeat, as the title does. */}
+                {car.make}{" "}
+                <span className="text-zinc-400">
+                  {formatVehicleTitle(car.make, car.model)
+                    .slice(car.make?.length ?? 0)
+                    .trim() || car.model}
+                </span>{" "}
                 <span className="text-zinc-300">{car.year}</span>
                 {selectedDestination && (
                   <>

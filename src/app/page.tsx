@@ -14,6 +14,9 @@ import HomeClient from "./HomeClient";
 // the canonical is added here, on the www host to match metadataBase, the
 // sitemap and robots.txt.
 export const metadata: Metadata = {
+  // The root default title is 73 characters; the home page states the offer
+  // in under 60 (seo-page-rules.md T-01).
+  title: { absolute: "Import Any Car, From Any Country | Providence Auto" },
   alternates: { canonical: "/" },
 };
 

@@ -25,6 +25,7 @@ import VehicleListingGrid, {
   type ListingVehicle,
 } from "@/components/VehicleListingGrid";
 import {
+  classPageIndexable,
   inSentence,
   isRegisteredTag,
   resolveTag,
@@ -102,10 +103,9 @@ export async function generateMetadata({
       description,
       images: [ogImage],
     },
-    robots:
-      vehicles.length > 0
-        ? { index: true, follow: true }
-        : { index: false, follow: true },
+    robots: classPageIndexable(vehicles.length)
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
   };
 }
 
