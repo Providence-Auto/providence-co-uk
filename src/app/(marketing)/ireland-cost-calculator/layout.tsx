@@ -109,6 +109,7 @@ const breadcrumbSchema = {
   ],
 };
 
+// biome-ignore lint/correctness/noUnusedVariables: held back until verified, see below
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -181,11 +182,10 @@ export default function IrelandCostCalculatorLayout({
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/* faqSchema is held back (audit Q14, 2026-11-03): its six answers are
+          not shown on the page, and their VRT and relief figures are to be
+          re-verified against Revenue before they are. Render them and restore
+          this block together — never the markup without the visible text. */}
       {children}
     </>
   );
