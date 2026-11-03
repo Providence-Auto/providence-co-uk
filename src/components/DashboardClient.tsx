@@ -41,6 +41,13 @@ export default function DashboardClient({
 }: any) {
   // Filter & Sort States
   const [searchQuery, setSearchQuery] = useState("");
+  // `/admin?q=<email>` opens the table already searched — how a KYC record's
+  // "Open lead" link lands on its lead. Read after mount so the server render
+  // and the first client render agree.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) setSearchQuery(q);
+  }, []);
   const [stageFilter, setStageFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [staffFilter, setStaffFilter] = useState("All");

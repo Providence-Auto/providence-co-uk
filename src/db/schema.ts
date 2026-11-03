@@ -430,16 +430,29 @@ export const kycSubmissions = pgTable(
     }),
     reviewedByName: text("reviewedByName"),
     reviewedAt: timestamp("reviewedAt"),
-    // The salesperson whose ?rep= link the customer arrived on, if any.
+    // Records sent before 2026-11-03 carry the ?rep= code they arrived on.
+    // Nothing is assigned from it any more: a KYC is assigned by hand, or
+    // from the lead it is linked to.
     repCode: text("repCode"),
     assignedToId: text("assignedToId").references(() => users.id, {
       onDelete: "set null",
     }),
     assignedToName: text("assignedToName"),
+    // "manual" or "lead" (taken from the linked lead's consultant); null when
+    // unassigned (drizzle/0013_kyc_lead_link.sql).
+    assignmentMethod: text("assignmentMethod"),
+    // The system lead this customer's KYC belongs to — linked from the admin
+    // panel, or created there from the KYC itself.
+    requestId: text("requestId").references(() => requests.id, {
+      onDelete: "set null",
+    }),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
-  (table) => [index("kycsubmission_created_idx").on(table.createdAt)],
+  (table) => [
+    index("kycsubmission_created_idx").on(table.createdAt),
+    index("kycsubmission_request_idx").on(table.requestId),
+  ],
 );
 
 export const dealerProfiles = pgTable("dealerprofile", {

@@ -67,15 +67,19 @@ export const metadata: Metadata = {
     // broken image. CLAUDE.md makes 1200x630 a standing requirement for every
     // page; the site-wide default was the one place still failing it.
     //
-    // The photograph is ours (vehicles being loaded into a shipping container)
-    // and is the same asset the gallery already used. Swap the file if the
-    // brand wants a different card — the shape is the part that matters.
+    // A single car, cut from the homepage hero (public/home/hero-1920.webp,
+    // plate already blurred). It replaced /og/default.jpg on 2026-11-03: that
+    // photo — a car inside a transporter — had been saved sideways, so every
+    // preview showed it rotated (business instruction: one clear car, upright).
+    // It has a new filename because WhatsApp and Facebook cache a preview by
+    // image URL; overwriting default.jpg would have kept the sideways card.
     images: [
       {
-        url: "/og/default.jpg",
+        url: "/og/default-audi-r8.jpg",
         width: 1200,
         height: 630,
-        alt: "Vehicles being loaded into a shipping container for export",
+        type: "image/jpeg",
+        alt: "A grey Audi R8 on an open road at sunset",
       },
     ],
   },
@@ -86,7 +90,7 @@ export const metadata: Metadata = {
       "Import your dream car anywhere in the world, exported by our own teams in seven countries.",
     // `summary_large_image` crops to 1200x630; the square logo was being
     // letterboxed. Same card as Open Graph above.
-    images: ["/og/default.jpg"],
+    images: ["/og/default-audi-r8.jpg"],
   },
   robots: {
     index: true,

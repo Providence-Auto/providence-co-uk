@@ -12,7 +12,7 @@ const URL = `${SITE}${PATH}`;
 const TITLE = "Privacy Policy | Providence Auto";
 const DESCRIPTION =
   "How Providence Auto collects, uses and shares your personal data, how long we keep it and how to use your rights. Contact us with any privacy request.";
-const OG_IMAGE = `${SITE}/og/default.jpg`;
+const OG_IMAGE = `${SITE}/og/default-audi-r8.jpg`;
 
 // Bump this, and the "Last updated" line renders it, whenever the policy text
 // changes in substance.
