@@ -42,6 +42,30 @@ export const takesB2cLeads = (role: string | null | undefined) =>
 export const takesDealerLeads = (role: string | null | undefined) =>
   DEALER_LEAD_ROLES.includes(normaliseRole(role));
 
+// ── Hard rule: every lead to one person (business instruction 2026-11-11) ──
+//
+// While this is set, every incoming inquiry — the B2C lead forms (car pages,
+// campaign pages, the request form, profile pages) and the dealer inquiry
+// form alike — is assigned to this account, ahead of a profile-page pin, a
+// rep link, a country owner and the rotation. Recorded as
+// `assignmentMethod: "hard-rule"`, which keeps it out of both rotations'
+// history.
+//
+// It is keyed on the account email, compared case-insensitively, and asks
+// only that the account exists and is not banned — no particular position.
+// If the account is missing or banned the lead falls through to the normal
+// routing below and the server logs a warning, so a lead is never stranded.
+// A consultant can still reassign a lead by hand in the admin.
+//
+// Set to null to retire the rule and return to the routing below.
+export const ALL_LEADS_OWNER_EMAIL: string | null = "amy@providenceauto.uk.com";
+
+/** The account every lead goes to, lower-cased, or null when the rule is off. */
+export function allLeadsOwnerEmail(): string | null {
+  const email = ALL_LEADS_OWNER_EMAIL?.trim().toLowerCase();
+  return email ? email : null;
+}
+
 // ── Country owners ─────────────────────────────────────────────────────────
 //
 // Markets owned by a named member rather than the rotation: an inquiry into
