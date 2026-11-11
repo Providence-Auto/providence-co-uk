@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  ALL_LEADS_OWNER_EMAIL,
+  allLeadsOwnerEmail,
   COUNTRY_OWNER_EMAILS,
   isSalesRole,
   SALES_POSITIONS,
@@ -10,6 +12,7 @@ import {
   isExcludedFromDealerRotation,
   pickNextInRotation,
 } from "@/lib/lead-routing";
+import { repLinkEmail } from "@/lib/rep-link";
 
 const member = (id: string, name: string) => ({ id, name });
 
@@ -161,5 +164,16 @@ describe("sales positions", () => {
     for (const position of SALES_POSITIONS) {
       expect(isSalesRole(position), position).toBe(true);
     }
+  });
+});
+
+describe("the all-leads hard rule (business instruction 2026-11-11)", () => {
+  it("sends every lead to Amy", () => {
+    expect(ALL_LEADS_OWNER_EMAIL).toBe("amy@providenceauto.uk.com");
+    expect(allLeadsOwnerEmail()).toBe("amy@providenceauto.uk.com");
+  });
+
+  it("matches the address Amy's rep link resolves to", () => {
+    expect(allLeadsOwnerEmail()).toBe(repLinkEmail("amy"));
   });
 });

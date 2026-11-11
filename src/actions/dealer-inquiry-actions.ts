@@ -62,6 +62,7 @@ import {
 import { marketStatusFor } from "@/lib/dealer-markets";
 import { emailService } from "@/lib/email";
 import {
+  allLeadsOwnerEmail,
   COUNTRY_OWNER_EMAILS,
   DEALER_ROTATION_EXCLUDED,
   dealerCountryLeadOwner,
@@ -290,14 +291,42 @@ export async function submitDealerInquiry(
       if (lockedAt) now = new Date(lockedAt);
 
       let chosen: typeof users.$inferSelect | null = null;
-      let method: "rep-link" | "country" | "round-robin" = "round-robin";
+      let method: "hard-rule" | "rep-link" | "country" | "round-robin" =
+        "round-robin";
+
+      // 0. The hard rule (business instruction 2026-11-11): while
+      //    ALL_LEADS_OWNER_EMAIL is set, every dealer inquiry goes to that
+      //    account, ahead of a rep link, a country owner and the rotation.
+      //    Only an existing, unbanned account; otherwise the routing below
+      //    carries on as usual.
+      const hardRuleEmail = allLeadsOwnerEmail();
+      if (hardRuleEmail) {
+        const [owner] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              sql`lower(trim(${users.email})) = ${hardRuleEmail}`,
+              ne(users.isBanned, true),
+            ),
+          )
+          .limit(1);
+        if (owner) {
+          chosen = owner;
+          method = "hard-rule";
+        } else {
+          console.warn(
+            `[dealer-inquiry] ALL_LEADS_OWNER_EMAIL (${hardRuleEmail}) matched no active account — inquiry routed normally.`,
+          );
+        }
+      }
 
       // 1. A rep link (?rep=shaq) the dealer arrived through — it beats a
       //    country owner (business instruction 2026-10-16). Any sales
       //    position, as for a profile-page lead — DEALER_ROTATION_EXCLUDED
       //    included: the exclusion keeps someone out of the rotation, but a
       //    dealer who came through their own link is theirs (2026-10-16).
-      if (repCode) {
+      if (!chosen && repCode) {
         const [rep] = await tx
           .select()
           .from(users)
