@@ -62,9 +62,77 @@ vi.mock("@/lib/mongoose", () => ({
   default: vi.fn().mockResolvedValue(true),
 }));
 
+// The all-leads hard rule (ALL_LEADS_OWNER_EMAIL) is off by default here so
+// the tests below exercise the routing it sits in front of; its own tests
+// switch it on.
+const routing = vi.hoisted(() => ({ owner: null as string | null }));
+vi.mock("@/lib/lead-routing", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/lead-routing")>()),
+  allLeadsOwnerEmail: () => routing.owner,
+}));
+
 describe("request-actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    routing.owner = null;
+  });
+
+  describe("submitCarRequest — the all-leads hard rule", () => {
+    const amy = {
+      id: "amy-1",
+      name: "Amy",
+      email: "amy@providenceauto.uk.com",
+      role: "Sales",
+      isBanned: false,
+    };
+    const lead = {
+      make: "Lexus",
+      vehicle_model: "LX 500d",
+      condition: "Used",
+      name: "Hard Rule Customer",
+      email: "hardrule@test.com",
+      countryCode: "IE",
+      phone: "+353871234567",
+      countryOfImport: "Ireland",
+    };
+
+    it("gives Amy the lead ahead of a profile-page pin and a rep link", async () => {
+      routing.owner = "amy@providenceauto.uk.com";
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([amy])) // Amy
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({
+        ...lead,
+        assignedAgentId: "agent-123",
+        repCode: "shaq",
+      });
+
+      expect(result.agent?.id).toBe("amy-1");
+      expect(db.then).toHaveBeenCalledTimes(2);
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({
+          assignedToId: "amy-1",
+          assignmentMethod: "hard-rule",
+        }),
+      );
+    });
+
+    it("routes normally when Amy's account cannot be found", async () => {
+      routing.owner = "amy@providenceauto.uk.com";
+      const shaq = { id: "shaq-1", name: "Shaq", role: "Sales" };
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // no Amy
+        .mockImplementationOnce((onFulfilled) => onFulfilled([shaq])) // rep
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({ ...lead, repCode: "shaq" });
+
+      expect(result.agent?.id).toBe("shaq-1");
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ assignmentMethod: "rep-link" }),
+      );
+    });
   });
 
   describe("submitCarRequest", () => {
