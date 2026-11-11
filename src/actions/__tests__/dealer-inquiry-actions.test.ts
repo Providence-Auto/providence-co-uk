@@ -92,6 +92,15 @@ vi.mock("@/utils/auth", () => ({
 vi.mock("next/headers", () => ({ headers: vi.fn(async () => new Headers()) }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
+// The all-leads hard rule (ALL_LEADS_OWNER_EMAIL) is off by default here so
+// the tests below exercise the routing it sits in front of; its own tests
+// switch it on.
+const routing = vi.hoisted(() => ({ owner: null as string | null }));
+vi.mock("@/lib/lead-routing", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/lead-routing")>()),
+  allLeadsOwnerEmail: () => routing.owner,
+}));
+
 // ── Fixtures ─────────────────────────────────────────────────────────────────
 
 const user = (id: string, name: string, email: string, role = "Sales") => ({
@@ -170,6 +179,7 @@ beforeEach(() => {
   state.updated = [];
   state.transactions = 0;
   state.executes = 0;
+  routing.owner = null;
 });
 
 // ── submitDealerInquiry ──────────────────────────────────────────────────────
@@ -302,6 +312,41 @@ describe("submitDealerInquiry", () => {
     expect(state.inserted[0]).toMatchObject({
       assignedToId: "u-shaq",
       assignmentMethod: "country",
+    });
+  });
+
+  it("gives Amy every inquiry under the hard rule, over a rep link and the country owner", async () => {
+    routing.owner = "amy@providenceauto.uk.com";
+    const AMY = user("u-amy", "Amy", "amy@providenceauto.uk.com", "B2C Sales");
+    state.results.push([AMY], []);
+
+    const result = await submitDealerInquiry(
+      validInput({
+        country: "Malta",
+        whatsapp: "7912 3456",
+        repCode: "Dilshard",
+      }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-amy",
+      assignmentMethod: "hard-rule",
+    });
+  });
+
+  it("routes normally when the hard rule's account cannot be found", async () => {
+    routing.owner = "amy@providenceauto.uk.com";
+    state.results.push([], [DILSHARD], []);
+
+    const result = await submitDealerInquiry(
+      validInput({ repCode: "Dilshard" }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-dil",
+      assignmentMethod: "rep-link",
     });
   });
 
