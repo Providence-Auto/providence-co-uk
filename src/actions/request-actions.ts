@@ -26,6 +26,7 @@ import { formatBudget } from "@/lib/currencies";
 import { emailService } from "@/lib/email";
 import { cleanAttributionUrl } from "@/lib/lead-attribution";
 import {
+  allLeadsOwnerEmail,
   B2C_LEAD_ROLES,
   b2cCountryLeadOwner,
   COUNTRY_OWNER_EMAILS,
@@ -159,6 +160,9 @@ export async function submitCarRequest(data: {
     }
 
     // 1. Assign an agent, in precedence order:
+    //      hard-rule   — while ALL_LEADS_OWNER_EMAIL is set, every lead goes
+    //                    to that account (business instruction 2026-11-11),
+    //                    ahead of everything below.
     //      direct      — a profile-page inquiry carrying assignedAgentId is
     //                    pinned to that member; the customer picked them, so
     //                    any sales position will do, B2B Sales included
@@ -170,13 +174,42 @@ export async function submitCarRequest(data: {
     //      round-robin — everything else rotates through B2C Sales and
     //                    Sales alphabetically.
     let assignedAgent = null;
-    let assignmentMethod: "direct" | "rep-link" | "country" | "round-robin" =
-      "round-robin";
+    let assignmentMethod:
+      | "hard-rule"
+      | "direct"
+      | "rep-link"
+      | "country"
+      | "round-robin" = "round-robin";
+
+    // 1. The hard rule — one account takes every lead. Only an existing,
+    //    unbanned account; otherwise the routing below carries on as usual.
+    const hardRuleEmail = allLeadsOwnerEmail();
+    if (hardRuleEmail) {
+      const [owner] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            sql`lower(trim(${users.email})) = ${hardRuleEmail}`,
+            ne(users.isBanned, true),
+          ),
+        )
+        .limit(1);
+
+      if (owner) {
+        assignedAgent = { ...owner, _id: owner.id };
+        assignmentMethod = "hard-rule";
+      } else {
+        console.warn(
+          `[lead-routing] ALL_LEADS_OWNER_EMAIL (${hardRuleEmail}) matched no active account — lead routed normally.`,
+        );
+      }
+    }
 
     // 1a. Direct assignment — only honoured if the id resolves to a real
     //     user whose role can actually own leads. Never trust the client
     //     value blindly; an invalid id silently falls back to round-robin.
-    if (data.assignedAgentId) {
+    if (!assignedAgent && data.assignedAgentId) {
       const [directAgent] = await db
         .select()
         .from(users)
@@ -276,6 +309,7 @@ export async function submitCarRequest(data: {
           .from(requests)
           .where(
             notInArray(requests.assignmentMethod, [
+              "hard-rule",
               "direct",
               "rep-link",
               "country",
