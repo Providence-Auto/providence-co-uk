@@ -10,8 +10,11 @@ import {
   b2cCountryLeadOwner,
   dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
+  PAGE_LEAD_OWNERS,
+  pageLeadOwner,
   pickNextInRotation,
 } from "@/lib/lead-routing";
+import { JAPAN_UK_PATHS } from "@/config/japan-uk";
 import { repLinkEmail } from "@/lib/rep-link";
 
 const member = (id: string, name: string) => ({ id, name });
@@ -175,5 +178,46 @@ describe("the all-leads hard rule (business instruction 2026-11-11)", () => {
 
   it("matches the address Amy's rep link resolves to", () => {
     expect(allLeadsOwnerEmail()).toBe(repLinkEmail("amy"));
+  });
+});
+
+describe("page owners (business instruction 2026-11-12)", () => {
+  it("sends every UK-dealership Japan inquiry to Ishak", () => {
+    expect(pageLeadOwner(JAPAN_UK_PATHS.dealer)).toBe(
+      "ishak@providenceauto.uk.com",
+    );
+    expect(pageLeadOwner(JAPAN_UK_PATHS.dealer)).toBe(repLinkEmail("ishak"));
+  });
+
+  it("ignores a trailing slash, a query, a hash and case", () => {
+    for (const path of [
+      "/import-japanese-cars/dealership/",
+      "/import-japanese-cars/dealership?rep=shaq",
+      "/import-japanese-cars/dealership#inquiry-form",
+      "/Import-Japanese-Cars/Dealership",
+    ]) {
+      expect(pageLeadOwner(path), path).toBe("ishak@providenceauto.uk.com");
+    }
+  });
+
+  it("owns no other page", () => {
+    for (const path of [
+      "/b2b-inquiry",
+      JAPAN_UK_PATHS.main,
+      JAPAN_UK_PATHS.personal,
+      "/import-japanese-cars",
+      "",
+      undefined,
+      null,
+    ]) {
+      expect(pageLeadOwner(path), String(path)).toBeNull();
+    }
+  });
+
+  it("keys every owner on a lower-cased pathname", () => {
+    for (const path of Object.keys(PAGE_LEAD_OWNERS)) {
+      expect(path).toBe(path.toLowerCase());
+      expect(path.startsWith("/")).toBe(true);
+    }
   });
 });

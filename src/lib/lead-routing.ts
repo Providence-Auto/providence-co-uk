@@ -66,6 +66,34 @@ export function allLeadsOwnerEmail(): string | null {
   return email ? email : null;
 }
 
+// ── Page owners (business instruction 2026-11-12) ──────────────────────────
+//
+// A landing page whose every inquiry belongs to one named person, ahead of
+// everything else — the hard rule above, a rep link, a country owner and the
+// rotation — because the page was built for that person's channel. Recorded
+// as `assignmentMethod: "page-owner"`, kept out of both rotations' history
+// like the hard rule.
+//
+// Keyed on the page's pathname (never the `?ref=` the form may store as its
+// source) and valued by account email, compared case-insensitively. Like the
+// hard rule it asks only for an existing, unbanned account; a missing one
+// falls through to the routing below with a warning in the server log.
+export const PAGE_LEAD_OWNERS: Record<string, string> = {
+  // UK dealerships importing Japanese stock → Ishak.
+  "/import-japanese-cars/dealership": "ishak@providenceauto.uk.com",
+};
+
+/** The owner of the page a form was sent from, lower-cased, or null. */
+export function pageLeadOwner(path: string | null | undefined): string | null {
+  const key = (path ?? "")
+    .trim()
+    .split(/[?#]/)[0]
+    .replace(/\/+$/, "")
+    .toLowerCase();
+  const email = key ? PAGE_LEAD_OWNERS[key] : undefined;
+  return email ? email.trim().toLowerCase() : null;
+}
+
 // ── Country owners ─────────────────────────────────────────────────────────
 //
 // Markets owned by a named member rather than the rotation: an inquiry into
