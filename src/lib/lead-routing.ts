@@ -58,12 +58,73 @@ export const takesDealerLeads = (role: string | null | undefined) =>
 // A consultant can still reassign a lead by hand in the admin.
 //
 // Set to null to retire the rule and return to the routing below.
-export const ALL_LEADS_OWNER_EMAIL: string | null = "amy@providenceauto.uk.com";
+//
+// Retired 2026-11-12 (business instruction): Amy, who held it, now takes only
+// /japanese-luxury-cars-lhd (a page owner below) and her own rep link.
+export const ALL_LEADS_OWNER_EMAIL: string | null = null;
 
 /** The account every lead goes to, lower-cased, or null when the rule is off. */
 export function allLeadsOwnerEmail(): string | null {
   const email = ALL_LEADS_OWNER_EMAIL?.trim().toLowerCase();
   return email ? email : null;
+}
+
+// ── Page owners (business instruction 2026-11-12) ──────────────────────────
+//
+// A landing page whose every inquiry belongs to one named person, ahead of
+// everything else — the hard rule above, a rep link, a country owner and the
+// rotation — because the page was built for that person's channel. Recorded
+// as `assignmentMethod: "page-owner"`, kept out of both rotations' history
+// like the hard rule.
+//
+// Keyed on the page's pathname (never the `?ref=` the form may store as its
+// source) and valued by account email, compared case-insensitively. Like the
+// hard rule it asks only for an existing, unbanned account; a missing one
+// falls through to the routing below with a warning in the server log.
+//
+// The dealer form sends its pathname as `pagePath`; the B2C lead form sends
+// the full `pageUrl`, read through `pagePathFromUrl`.
+export const PAGE_LEAD_OWNERS: Record<string, string> = {
+  // UK dealerships importing Japanese stock → Ishak.
+  "/import-japanese-cars/dealership": "ishak@providenceauto.uk.com",
+  // Japanese luxury cars, left-hand drive → Amy (business instruction
+  // 2026-11-12).
+  "/japanese-luxury-cars-lhd": "amy@providenceauto.uk.com",
+};
+
+/** The pathname of a page URL as the browser sent it, or null. */
+export function pagePathFromUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  try {
+    return new URL(value).pathname;
+  } catch {
+    return null;
+  }
+}
+
+// ── Held out of every rotation (business instruction 2026-11-12) ───────────
+//
+// People who take only what is routed to them by name — a page they own, a
+// rep link with their name, their own profile page — and never a rotation
+// turn, whatever their position. Strict: an exclusion that would empty a
+// rotation leaves the lead unassigned rather than fall back to them. Keyed on
+// the account email, compared case-insensitively.
+export const ROTATION_EXCLUDED = ["amy@providenceauto.uk.com"];
+
+export function isHeldOutOfRotations(email: string | null | undefined) {
+  const key = (email ?? "").trim().toLowerCase();
+  return ROTATION_EXCLUDED.some((excluded) => excluded === key);
+}
+
+/** The owner of the page a form was sent from, lower-cased, or null. */
+export function pageLeadOwner(path: string | null | undefined): string | null {
+  const key = (path ?? "")
+    .trim()
+    .split(/[?#]/)[0]
+    .replace(/\/+$/, "")
+    .toLowerCase();
+  const email = key ? PAGE_LEAD_OWNERS[key] : undefined;
+  return email ? email.trim().toLowerCase() : null;
 }
 
 // ── Country owners ─────────────────────────────────────────────────────────

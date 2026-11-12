@@ -10,8 +10,14 @@ import {
   b2cCountryLeadOwner,
   dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
+  isHeldOutOfRotations,
+  PAGE_LEAD_OWNERS,
+  pageLeadOwner,
+  pagePathFromUrl,
   pickNextInRotation,
 } from "@/lib/lead-routing";
+import { LHD_LANDING_PATH } from "@/lib/leadSource";
+import { JAPAN_UK_PATHS } from "@/config/japan-uk";
 import { repLinkEmail } from "@/lib/rep-link";
 
 const member = (id: string, name: string) => ({ id, name });
@@ -167,13 +173,89 @@ describe("sales positions", () => {
   });
 });
 
-describe("the all-leads hard rule (business instruction 2026-11-11)", () => {
-  it("sends every lead to Amy", () => {
-    expect(ALL_LEADS_OWNER_EMAIL).toBe("amy@providenceauto.uk.com");
-    expect(allLeadsOwnerEmail()).toBe("amy@providenceauto.uk.com");
+describe("the all-leads hard rule (retired 2026-11-12)", () => {
+  it("is off — Amy no longer takes every lead", () => {
+    expect(ALL_LEADS_OWNER_EMAIL).toBeNull();
+    expect(allLeadsOwnerEmail()).toBeNull();
+  });
+});
+
+describe("Amy (business instruction 2026-11-12)", () => {
+  it("owns /japanese-luxury-cars-lhd, at her rep link's address", () => {
+    expect(pageLeadOwner(LHD_LANDING_PATH)).toBe("amy@providenceauto.uk.com");
+    expect(pageLeadOwner(LHD_LANDING_PATH)).toBe(repLinkEmail("amy"));
   });
 
-  it("matches the address Amy's rep link resolves to", () => {
-    expect(allLeadsOwnerEmail()).toBe(repLinkEmail("amy"));
+  it("reads the LHD page out of the full URL the lead form sends", () => {
+    for (const url of [
+      "https://www.providenceauto.co.uk/japanese-luxury-cars-lhd",
+      "https://www.providenceauto.co.uk/japanese-luxury-cars-lhd/?rep=shaq#form",
+      "https://www.providenceauto.co.uk/japanese-luxury-cars-lhd?ref=meta",
+    ]) {
+      expect(pageLeadOwner(pagePathFromUrl(url)), url).toBe(
+        "amy@providenceauto.uk.com",
+      );
+    }
+  });
+
+  it("owns no other page — a ?ref naming the LHD page is not the page", () => {
+    for (const url of [
+      "https://www.providenceauto.co.uk/",
+      "https://www.providenceauto.co.uk/?ref=/japanese-luxury-cars-lhd",
+      "https://www.providenceauto.co.uk/b2c/gallery/lexus-lx-500d",
+      "https://www.providenceauto.co.uk/japanese-luxury-cars-lhd-old",
+      "not a url",
+      undefined,
+    ]) {
+      expect(pageLeadOwner(pagePathFromUrl(url)), String(url)).toBeNull();
+    }
+  });
+
+  it("is held out of every rotation, by email in any case", () => {
+    expect(isHeldOutOfRotations("amy@providenceauto.uk.com")).toBe(true);
+    expect(isHeldOutOfRotations(" Amy@ProvidenceAuto.uk.com ")).toBe(true);
+    expect(isHeldOutOfRotations("shaq@providenceauto.uk.com")).toBe(false);
+    expect(isHeldOutOfRotations(null)).toBe(false);
+  });
+});
+
+describe("page owners (business instruction 2026-11-12)", () => {
+  it("sends every UK-dealership Japan inquiry to Ishak", () => {
+    expect(pageLeadOwner(JAPAN_UK_PATHS.dealer)).toBe(
+      "ishak@providenceauto.uk.com",
+    );
+    expect(pageLeadOwner(JAPAN_UK_PATHS.dealer)).toBe(repLinkEmail("ishak"));
+  });
+
+  it("ignores a trailing slash, a query, a hash and case", () => {
+    for (const path of [
+      "/import-japanese-cars/dealership/",
+      "/import-japanese-cars/dealership?rep=shaq",
+      "/import-japanese-cars/dealership#inquiry-form",
+      "/Import-Japanese-Cars/Dealership",
+    ]) {
+      expect(pageLeadOwner(path), path).toBe("ishak@providenceauto.uk.com");
+    }
+  });
+
+  it("owns no other page", () => {
+    for (const path of [
+      "/b2b-inquiry",
+      JAPAN_UK_PATHS.main,
+      JAPAN_UK_PATHS.personal,
+      "/import-japanese-cars",
+      "",
+      undefined,
+      null,
+    ]) {
+      expect(pageLeadOwner(path), String(path)).toBeNull();
+    }
+  });
+
+  it("keys every owner on a lower-cased pathname", () => {
+    for (const path of Object.keys(PAGE_LEAD_OWNERS)) {
+      expect(path).toBe(path.toLowerCase());
+      expect(path.startsWith("/")).toBe(true);
+    }
   });
 });
