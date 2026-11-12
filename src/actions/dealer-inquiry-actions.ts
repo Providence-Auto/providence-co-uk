@@ -67,6 +67,7 @@ import {
   DEALER_ROTATION_EXCLUDED,
   dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
+  isHeldOutOfRotations,
   pageLeadOwner,
   pickNextInRotation,
   SALES_ROLES,
@@ -402,7 +403,11 @@ export async function submitDealerInquiry(
           .where(inSalesPosition())
           .orderBy(asc(users.name));
         const sales = salesTeam.filter((u) => takesDealerLeads(u.role));
-        const eligible = sales.filter((u) => !isExcludedFromDealerRotation(u));
+        // Also minus anyone held out of every rotation (ROTATION_EXCLUDED —
+        // Amy, 2026-11-12), strictly, like the dealer exclusion.
+        const eligible = sales.filter(
+          (u) => !isExcludedFromDealerRotation(u) && !isHeldOutOfRotations(u.email),
+        );
         // An exclusion that matches nobody fails silently — the person it was
         // meant for would simply get their turn. Say so, once per process, so
         // a renamed account shows up in the logs rather than in their inbox.
