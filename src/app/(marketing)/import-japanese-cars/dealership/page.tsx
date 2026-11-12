@@ -2,9 +2,13 @@ import {
   ArrowRight,
   Clock,
   FileCheck2,
-  Globe2,
+  Gavel,
+  MapPin,
+  Phone,
   ScanSearch,
+  Ship,
   UsersRound,
+  Wallet,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -15,6 +19,7 @@ import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
 import SectionRule from "@/components/SectionRule";
 import { BLOG_BASE_PATH, getPost } from "@/config/blog";
+import { HEAD_OFFICE_PHONE } from "@/config/contact";
 import { OFFICE_COUNTRY_NAMES } from "@/config/countries";
 import { JAPAN_UK_DEALER, JAPAN_UK_DEALER_GUIDES } from "@/config/japan-uk";
 import { buildMarketOptions } from "@/lib/dealer-markets";
@@ -24,17 +29,22 @@ import { japanUkMetadata, SITE } from "../uk/metadata";
 // /import-japanese-cars/dealership — B2B landing page for UK dealerships
 // buying Japanese stock (UK market only, business decision 2026-10-07).
 //
-// Sections are the list approved on 2026-10-07 and nothing else:
+// Sections are the list approved on 2026-10-07, extended on 2026-11-12 from
+// Ishak's dealer video (business instruction: every inquiry here is his —
+// PAGE_LEAD_OWNERS in src/lib/lead-routing.ts):
 //   1. H1, the direct answer and the dealer inquiry form (the primary CTA),
 //      opened on the United Kingdom and Japan;
 //   2. the proof tiles (brand-position.md §9);
 //   3. the shared value proposition with the B2B second line — stock you do
-//      not floor-plan (brand-position.md §5), without the dealer platform;
+//      not floor-plan (brand-position.md §5), without the dealer platform —
+//      and six tiles for what the video names: the auctions, the condition,
+//      the logistics, the paperwork, the payment terms and the people;
 //   4. Japan facts for stock;
 //   5. the landed figure per car — components, never a duty rate;
 //   6. how a dealer order runs;
-//   7. the pre-purchase FAQ as plain headings and paragraphs;
-//   8. the dealer guides.
+//   7. Ishak and the London office (business-context.md §4.4);
+//   8. the pre-purchase FAQ as plain headings and paragraphs;
+//   9. the dealer guides.
 // Copy: src/config/japan-uk.ts.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -51,7 +61,7 @@ const PROOF = [
   { value: "200+", label: "dealership clients" },
 ];
 
-const PILLAR_ICONS = [Globe2, ScanSearch, FileCheck2, UsersRound];
+const PILLAR_ICONS = [Gavel, ScanSearch, Ship, FileCheck2, Wallet, UsersRound];
 
 export default function JapaneseCarsForDealershipsPage() {
   const markets = buildMarketOptions();
@@ -73,7 +83,19 @@ export default function JapaneseCarsForDealershipsPage() {
         "@type": "BusinessAudience",
         audienceType: "Car dealerships",
       },
-      provider: { "@type": "Organization", name: "Providence Auto", url: SITE },
+      provider: {
+        "@type": "Organization",
+        name: "Providence Auto",
+        url: SITE,
+        telephone: HEAD_OFFICE_PHONE,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "468 Church Lane",
+          addressLocality: "London",
+          postalCode: "NW9 8UA",
+          addressCountry: "GB",
+        },
+      },
     },
     {
       "@context": "https://schema.org",
@@ -196,7 +218,7 @@ export default function JapaneseCarsForDealershipsPage() {
                 floor-planning them on spec.
               </p>
             </Reveal>
-            <div className="mt-14 grid gap-5 md:grid-cols-2">
+            <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {D.pillars.map((pillar, index) => {
                 const Icon = PILLAR_ICONS[index];
                 return (
@@ -338,7 +360,75 @@ export default function JapaneseCarsForDealershipsPage() {
           </div>
         </section>
 
-        {/* ── 7. FAQ — plain h3 + p so the answers are in the served HTML ── */}
+        {/* ── 7. Ishak and the London office ──────────────────────────── */}
+        <section className="bg-white px-6 py-20 md:py-28">
+          <div className="mx-auto max-w-5xl">
+            <Reveal
+              y={24}
+              className="grid items-center gap-10 overflow-hidden rounded-[2rem] border border-black/5 bg-zinc-50 p-6 sm:p-8 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-12 md:p-12"
+            >
+              <figure className="mx-auto w-full max-w-[15rem]">
+                {/* biome-ignore lint/performance/noImgElement: static portrait, intentional <img> per site convention */}
+                <img
+                  src={D.consultant.photo}
+                  alt={D.consultant.photoAlt}
+                  width={340}
+                  height={340}
+                  loading="lazy"
+                  className="aspect-square w-full rounded-[1.5rem] object-cover shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
+                />
+                <figcaption className="mt-4 text-center">
+                  <span className="block text-lg font-bold tracking-tight text-black">
+                    {D.consultant.name}
+                  </span>
+                  <span className="block text-sm text-zinc-500">
+                    {D.consultant.role}, Providence Auto
+                  </span>
+                </figcaption>
+              </figure>
+
+              <div className="min-w-0">
+                <SectionRule align="left" />
+                <h2 className="text-3xl font-bold tracking-tighter text-black md:text-4xl">
+                  Meet Ishak at our London office, or let him reach out to you.
+                </h2>
+                <address className="mt-6 flex gap-3 not-italic leading-relaxed text-zinc-600">
+                  <MapPin
+                    size={18}
+                    aria-hidden
+                    className="mt-1 shrink-0 text-zinc-400"
+                  />
+                  <span>
+                    Providence Auto head office
+                    {D.office.lines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </span>
+                </address>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href="#inquiry-form"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white transition-feedback hover:scale-[1.03]"
+                  >
+                    Send your inquiry to Ishak
+                    <ArrowRight size={16} aria-hidden />
+                  </a>
+                  <a
+                    href={`tel:${HEAD_OFFICE_PHONE.replace(/\s+/g, "")}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-bold text-black transition-feedback hover:scale-[1.03]"
+                  >
+                    <Phone size={16} aria-hidden />
+                    Arrange a visit: {HEAD_OFFICE_PHONE}
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── 8. FAQ — plain h3 + p so the answers are in the served HTML ── */}
         <section className="bg-white px-6 py-20 md:py-28 border-b border-black/5">
           <div className="mx-auto max-w-3xl">
             <Reveal y={24} duration={0.7} className="text-center mb-12">
@@ -363,7 +453,7 @@ export default function JapaneseCarsForDealershipsPage() {
           </div>
         </section>
 
-        {/* ── 8. Dealer guides ─────────────────────────────────────────── */}
+        {/* ── 9. Dealer guides ─────────────────────────────────────────── */}
         {guides.length > 0 && (
           <section className="bg-[#FAFAFA] px-6 py-20 md:py-28">
             <div className="mx-auto max-w-6xl">
