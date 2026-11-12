@@ -429,6 +429,28 @@ describe("submitDealerInquiry", () => {
     expect(state.inserted[0]).toMatchObject({ assignedToId: "u-dil" });
   });
 
+  it("never gives Amy a dealer rotation turn (2026-11-12)", async () => {
+    const AMY = user("u-amy", "Amy", "amy@providenceauto.uk.com", "Sales");
+    state.results.push([AMY, DILSHARD], [], []);
+
+    await submitDealerInquiry(validInput() as Submit);
+
+    // Alphabetically Amy would come first; she takes only her page and link.
+    expect(state.inserted[0]).toMatchObject({ assignedToId: "u-dil" });
+  });
+
+  it("still gives Amy a dealer inquiry sent through her own rep link", async () => {
+    const AMY = user("u-amy", "Amy", "amy@providenceauto.uk.com", "Sales");
+    state.results.push([AMY], []);
+
+    await submitDealerInquiry(validInput({ repCode: "amy" }) as Submit);
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-amy",
+      assignmentMethod: "rep-link",
+    });
+  });
+
   it("sends the consultant's alert and the dealer's receipt", async () => {
     state.results.push([ABDALLAH], [], []);
     const input = validInput();
