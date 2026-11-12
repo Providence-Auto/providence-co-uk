@@ -135,6 +135,79 @@ describe("request-actions", () => {
     });
   });
 
+  describe("submitCarRequest — Amy (business instruction 2026-11-12)", () => {
+    const amy = {
+      id: "amy-1",
+      name: "Amy",
+      email: "amy@providenceauto.uk.com",
+      role: "Sales",
+      isBanned: false,
+    };
+    const lead = {
+      make: "Lexus",
+      vehicle_model: "LX 600",
+      condition: "New",
+      name: "LHD Customer",
+      email: "lhd@test.com",
+      countryCode: "DE",
+      phone: "+4915112345678",
+      countryOfImport: "Germany",
+    };
+
+    it("gives Amy every lead sent from /japanese-luxury-cars-lhd", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([amy])) // Amy
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({
+        ...lead,
+        repCode: "shaq",
+        pageUrl:
+          "https://www.providenceauto.co.uk/japanese-luxury-cars-lhd?rep=shaq",
+      });
+
+      expect(result.agent?.id).toBe("amy-1");
+      expect(db.then).toHaveBeenCalledTimes(2);
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({
+          assignedToId: "amy-1",
+          assignmentMethod: "page-owner",
+        }),
+      );
+    });
+
+    it("never gives Amy a rotation turn, even first alphabetically", async () => {
+      const bob = {
+        id: "bob-1",
+        name: "Bob",
+        email: "bob@providenceauto.uk.com",
+        role: "Sales",
+      };
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([amy, bob])) // pool
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // last lead
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest({
+        ...lead,
+        pageUrl: "https://www.providenceauto.co.uk/b2c/gallery/lexus-lx-600",
+      });
+
+      expect(result.agent?.id).toBe("bob-1");
+    });
+
+    it("leaves the lead unassigned rather than rotate it to Amy alone", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([amy])) // pool
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      const result = await submitCarRequest(lead);
+
+      expect(result.agent?.id).toBeNull();
+      expect(result.agent?.name).toBe("Providence Support");
+    });
+  });
+
   describe("submitCarRequest", () => {
     it("should assign a specified agent directly if valid", async () => {
       const mockAgent = {

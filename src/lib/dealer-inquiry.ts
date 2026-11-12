@@ -93,6 +93,11 @@ export type DealerInquiryInput = {
   /** A rep link's code (?rep=shaq) — see src/lib/rep-link.ts. */
   repCode?: string;
   /**
+   * The pathname the form was sent from. Unlike `source`, never replaced by a
+   * `?ref=`, so a page owner (PAGE_LEAD_OWNERS in lead-routing.ts) holds.
+   */
+  pagePath?: string;
+  /**
    * Honeypot. Rendered off-screen and never shown to a person; a submission
    * that fills it in is a bot and is quietly dropped.
    */

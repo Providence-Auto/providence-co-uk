@@ -506,6 +506,9 @@ export default function DealerInquiryForm({
       // Read at submit, not with the rest of the attribution on mount: the
       // rep link may have been seen on another page earlier in the visit.
       repCode: currentRepCode(),
+      // The page itself, which a ?ref= never replaces — a page owner
+      // (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts) is keyed on it.
+      pagePath: window.location.pathname,
     };
 
     setBusy(true);

@@ -67,6 +67,8 @@ import {
   DEALER_ROTATION_EXCLUDED,
   dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
+  isHeldOutOfRotations,
+  pageLeadOwner,
   pickNextInRotation,
   SALES_ROLES,
   takesDealerLeads,
@@ -291,8 +293,38 @@ export async function submitDealerInquiry(
       if (lockedAt) now = new Date(lockedAt);
 
       let chosen: typeof users.$inferSelect | null = null;
-      let method: "hard-rule" | "rep-link" | "country" | "round-robin" =
-        "round-robin";
+      let method:
+        | "page-owner"
+        | "hard-rule"
+        | "rep-link"
+        | "country"
+        | "round-robin" = "round-robin";
+
+      // -1. A page with its own owner (business instruction 2026-11-12):
+      //     every inquiry from /import-japanese-cars/dealership goes to
+      //     Ishak, ahead of the hard rule. Only an existing, unbanned
+      //     account; otherwise the routing below carries on as usual.
+      const pageOwnerEmail = pageLeadOwner(input.pagePath);
+      if (pageOwnerEmail) {
+        const [owner] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              sql`lower(trim(${users.email})) = ${pageOwnerEmail}`,
+              ne(users.isBanned, true),
+            ),
+          )
+          .limit(1);
+        if (owner) {
+          chosen = owner;
+          method = "page-owner";
+        } else {
+          console.warn(
+            `[dealer-inquiry] page owner (${pageOwnerEmail}) for ${input.pagePath} matched no active account — inquiry routed normally.`,
+          );
+        }
+      }
 
       // 0. The hard rule (business instruction 2026-11-11): while
       //    ALL_LEADS_OWNER_EMAIL is set, every dealer inquiry goes to that
@@ -300,7 +332,7 @@ export async function submitDealerInquiry(
       //    Only an existing, unbanned account; otherwise the routing below
       //    carries on as usual.
       const hardRuleEmail = allLeadsOwnerEmail();
-      if (hardRuleEmail) {
+      if (!chosen && hardRuleEmail) {
         const [owner] = await tx
           .select()
           .from(users)
@@ -371,7 +403,11 @@ export async function submitDealerInquiry(
           .where(inSalesPosition())
           .orderBy(asc(users.name));
         const sales = salesTeam.filter((u) => takesDealerLeads(u.role));
-        const eligible = sales.filter((u) => !isExcludedFromDealerRotation(u));
+        // Also minus anyone held out of every rotation (ROTATION_EXCLUDED —
+        // Amy, 2026-11-12), strictly, like the dealer exclusion.
+        const eligible = sales.filter(
+          (u) => !isExcludedFromDealerRotation(u) && !isHeldOutOfRotations(u.email),
+        );
         // An exclusion that matches nobody fails silently — the person it was
         // meant for would simply get their turn. Say so, once per process, so
         // a renamed account shows up in the logs rather than in their inbox.

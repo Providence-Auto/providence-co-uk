@@ -219,6 +219,17 @@ document pack", "marine cover on the voyage… to the port of arrival", "At
 destination port → Handover" (not "Delivered"). Never "door-to-door", "delivered
 to your door" or "end-to-end delivery".
 
+**The one exception: UK dealerships** (business answer 2026-11-12, Q13). For a
+UK dealership importing with us, Providence **arranges** the UK side once the
+car has landed: the road-legality conversion (speedometer and rear fog light),
+the MOT and the DVLA registration — in the dealership's name. Write it as
+*arranged*, naming the three, never as "included", "end-to-end" or "we handle
+it". Unchanged by it: we ship CNF to a UK port; the import entry, duty and VAT
+are still the dealership's, through its own customs agent (§4.1, §4.2); and
+the costs of the conversion, MOT and registration sit on the dealership's side
+of the landed figure. It applies to UK dealerships only — a private buyer in
+the UK, and every other market, stays on the paperwork-prepared rule above.
+
 ### 4.4 Presence vs. visitable office
 
 Don't say "you're welcome to visit any of our offices." Say Providence has its
@@ -509,6 +520,7 @@ don't just fix the copy silently.
 | 2026-11-03 | **`seo-page-rules.md` section sets are the agreed structural defaults** for their page families — which elements a page carries and what its H1 and H2s say — not wording. Recorded in `page-types.md` §3, `seo-aeo-optimization-guide.md` and `CLAUDE.md`. | Business answer to Q12: "these rules are more structural on what elements and H1, H2's should have, not the specific rule." A plan that follows them doesn't ask for each section again; the plan is still agreed before copy, and an undocumented claim is still asked first. |
 | 2026-11-03 | **`motion-interaction-rulebook.md` listed in §13**, ranked beside CLAUDE.md and above `landing-page-playbook.md` for anything that moves; kept out of the source-of-truth set. | Business answer to the question raised on 2026-10-27. The rule book supersedes the playbook's §10.3 motion tokens for anything a person causes, and nothing said so. |
 | 2026-11-03 | **SEO audit decisions** (`seo-audit-plan-2026-11-03.md` §6, all accepted as recommended): `/import-cars-from/japan` owns "import cars from Japan" and `/import-japanese-cars` is re-aimed at "Japanese import cars" as the Japan routes hub; `/b2b` takes technical fixes, the dealer FAQ and a button to `/b2b-inquiry`; the home H1 becomes "Import Any Car. From Any Country. To Any Port."; class pages take the P-11 sections and stay `noindex` below eight models; trucks are a vehicle type, with buses and vans as sections of one trucks page; duplicate car dossiers are merged into one page per model; the two remaining `/campaigns/*` URLs 308 to their pages and every other campaign URL 404s; `/request` is `noindex`; new destination pages live at `/import-cars-to/<country>` and routes at `/import-cars-from/<source>/<destination>`, Ireland keeping `/import-cars-to-ireland`; the Ireland explainer moves to the blog; sample auction sheets, inspection reports and document packs may be published with personal data removed; the calculator's FAQ is shown only once its figures are re-verified against Revenue. | Business answers to the 2026-11-03 SEO audit. Recorded so the reasoning survives the edits: each one closes a rule failure in `seo-page-rules.md` (L-2, T-11, T-13, T-43, L-4) rather than being a copy preference. Broker transaction structure and motorcycle source countries remain unanswered, so no page states either. |
+| 2026-11-12 | **For UK dealerships, Providence arranges the UK conversion (speedometer, rear fog light), the MOT and the DVLA registration** once the car lands, in the dealership's name. Recorded as the one exception in §4.3; `/import-japanese-cars/dealership` says so. Every inquiry from that page goes to Ishak (`PAGE_LEAD_OWNERS`, ahead of the all-leads rule). | Business answer to Q13, raised from Ishak's dealer video, which says we manage "conversion … MOT and registration" while §4.3 said registration is always the buyer's. The UK desk already arranges these for its own stock (the analyzer's cost base carries each line), so the claim is real; it is bounded to UK dealerships, and to *arranged*, because the import entry, duty and VAT stay in the dealership's name and the CNF rule is otherwise unchanged. Flexible payment terms (Q14) remain unanswered, so the page quotes no figure for them. |
 
 ## 12. Known documentation to reconcile
 

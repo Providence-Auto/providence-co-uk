@@ -259,32 +259,59 @@ export const JAPAN_UK_PAGES: Record<JapanUkVariant, JapanUkPage> = {
 };
 
 // ── Dealership page ──────────────────────────────────────────────────────────
+//
+// Rebuilt 2026-11-12 around Ishak's dealer video: every inquiry from this page
+// is his (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts), and the six tiles
+// answer what the video names — the auctions, the condition, the logistics,
+// the UK side, the payment terms and the London office. For UK dealerships we
+// *arrange* the conversion (speedo, rear fog light), the MOT and the DVLA
+// registration once the car lands (business-context.md §4.3, answered
+// 2026-11-12) — still CNF, with the import entry, duty and VAT in the
+// dealership's name. "Flexible payment terms" stays in the video's own words,
+// with no instalment or credit figure, until Q14 (brand-position.md §11.3) is
+// answered.
 
 export const JAPAN_UK_DEALER = {
   path: JAPAN_UK_PATHS.dealer,
   title: "Japanese Car Imports for UK Dealerships | Providence Auto",
   description:
-    "Import Japanese cars for your UK dealership: grade 4.0+ stock from dealers and auctions across Japan, inspected before you pay. First quote in 24 hours.",
+    "Import Japanese cars for your UK dealership: grade 4.0+ stock from Japan's auctions and dealers, inspected before you pay, on flexible payment terms.",
   keywords: [
     "japanese car imports for dealers uk",
     "import japanese cars for your dealership",
     "japanese used car supplier uk dealers",
     "japanese stock for uk dealerships",
     "trade japanese car imports uk",
+    "japanese car auction access for uk dealers",
   ],
   h1: "Import Japanese cars for your UK dealership",
   answer:
-    "You can stock your UK forecourt from Japan without floor-planning cars on spec. Name up to five cars or just the market; our team in Japan sends your first quote within 24 hours, inspects every car before you pay, and ships it to a UK port with the export paperwork prepared.",
+    "You can stock your UK forecourt from auctions and dealers across Japan, on flexible payment terms, so your funds aren't tied up for months. Name up to five cars or just the market; Ishak, your sales consultant, sends your first quote within 24 hours, and our team in Japan inspects every car before you pay.",
   ogImage: "/source-cars/blog/og/japanese-auction-grades-explained.jpg",
   ogAlt: "A Toyota Harrier",
+  /** The one person every inquiry from this page goes to. */
+  consultant: {
+    name: "Ishak",
+    role: "Sales Consultant",
+    photo: "/team/ishak-profile.webp",
+    photoAlt: "Ishak, Sales Consultant at Providence Auto",
+  },
+  /** The visitable head office (business-context.md §4.4). */
+  office: {
+    lines: ["468 Church Lane", "Kingsbury", "London NW9 8UA"],
+  },
   facts: [
-    { label: "Where we export from", value: "Dealers and auctions across Japan" },
+    { label: "Where we export from", value: "Auctions and dealers across Japan" },
     { label: "Minimum grade", value: "4.0 and above" },
     { label: "First quote", value: "Within 24 hours of your inquiry" },
     {
       label: "Before you pay",
       value:
         "Every car inspected and photographed by our own team; the auction sheet translated",
+    },
+    {
+      label: "Payment terms",
+      value: "Flexible, so your funds aren't tied up for months",
     },
     { label: "Export ports", value: JAPAN_PORTS.join(", ") },
     { label: "Sea transit", value: "6–8 weeks to the UK" },
@@ -293,45 +320,57 @@ export const JAPAN_UK_DEALER = {
       label: "Per inquiry",
       value: "Up to five cars, or a source market to start from",
     },
+    {
+      label: "Your consultant",
+      value: "Ishak, from your first inquiry to each car's arrival",
+    },
   ],
   steps: [
     {
       title: "Send your inquiry",
-      desc: "Confirm your market, tell us about the dealership, and name up to five cars — or just ask us to find stock in Japan.",
+      desc: "Confirm your market, tell us about the dealership, and name up to five cars — or just ask for stock from Japan. It goes straight to Ishak.",
     },
     {
       title: "Get your first quote within 24 hours",
-      desc: "Landed per car to a UK port, itemised into what you pay us and what your dealership pays on arrival.",
+      desc: "Ishak sends it landed per car to a UK port, itemised into what you pay us and what your dealership pays on arrival.",
     },
     {
       title: "Approve each car before you pay",
-      desc: "Our team in Japan inspects every car in person and sends the photographs and, for auction cars, the translated sheet. A car that does not match its description does not ship.",
+      desc: "Our team in Japan bids to the maximum you approve, inspects every car in person and sends the photographs and, for auction cars, the translated sheet. A car that does not match its description does not ship.",
     },
     {
       title: "Export and shipping",
       desc: "Deregistration, export certificates and loading are done by our Japan team; the car sails under marine insurance with milestone updates.",
     },
     {
-      title: "Receive the stock at a UK port",
-      desc: "Your agent makes the import entry in your dealership's name, with our export file and the NOVA and DVLA paperwork prepared.",
+      title: "Receive the stock, road-ready and registered",
+      desc: "Your agent makes the import entry in your dealership's name at a UK port; we arrange the conversion, the MOT and the DVLA registration from there.",
     },
   ],
   pillars: [
     {
-      title: "Import direct from source, not from a middleman's stock.",
-      body: "Dealers and auctions across Japan, exported by our own team there — never subcontracted to an exporter you never speak to.",
+      title: "Bid at Japan's auctions, and import from its dealers.",
+      body: "Our team in Japan bids at the graded auctions up to the maximum you approve and searches dealers across the country — exported by our own office there, never subcontracted.",
     },
     {
-      title: "See every car before your money moves.",
-      body: "The inspection photographs, the Japanese auction sheet translated, and the landed figure per car — before you commit.",
+      title: "See the condition before your money moves.",
+      body: "Grade 4.0 and above only. Every car inspected and photographed by our own team, the auction sheet translated. A car that doesn't match its grade doesn't ship, and you aren't charged for it.",
     },
     {
-      title: "The export paperwork, prepared.",
-      body: "Deregistration and export certificates done in Japan, and the NOVA and DVLA paperwork prepared for the UK side.",
+      title: "Shipped to a UK port, with every milestone tracked.",
+      body: "Export clearance in Japan, then RoRo or container under marine insurance, CNF to a UK port in six to eight weeks.",
     },
     {
-      title: "One consultant owns your request.",
-      body: "One named consultant runs your inquiry from the first message to arrival at the port.",
+      title: "Conversion, MOT and registration, arranged in the UK.",
+      body: "Deregistration and the export certificate done in Japan. Once the car lands, we arrange the speedo and rear fog light conversion, the MOT and the DVLA registration in your dealership's name.",
+    },
+    {
+      title: "Flexible payment terms, so your funds aren't tied up for months.",
+      body: "Talk the terms through with Ishak. Your money is held securely and released only once each car is inspected and cleared for shipment.",
+    },
+    {
+      title: "One consultant, and a London office you can visit.",
+      body: "Ishak runs your account from the first inquiry to each car's arrival at the port, and you're welcome to meet him at our head office in Kingsbury, London.",
     },
   ],
   landed: [
@@ -344,34 +383,42 @@ export const JAPAN_UK_DEALER = {
       payee: "Paid by your dealership",
     },
     {
-      item: "IVA where a car needs one, MOT and DVLA registration",
+      item: "The UK conversion, MOT and DVLA registration we arrange, and IVA where a car needs one",
       payee: "Paid by your dealership",
     },
   ],
   faqs: [
     {
       q: "How quickly will I get a quote for Japanese stock?",
-      a: "Your first quote comes back within 24 hours of your inquiry, landed per car to a UK port and itemised into what you pay us and what your dealership pays on arrival. Name the exact cars, or just the market, and we start from there.",
+      a: "Your first quote comes back from Ishak within 24 hours of your inquiry, landed per car to a UK port and itemised into what you pay us and what your dealership pays on arrival. Name the exact cars, or just the market, and he starts from there.",
     },
     {
       q: "How many cars can I ask for in one inquiry?",
-      a: "Up to five cars in one inquiry, each with its own make, model, year range and budget. If you would rather we found the stock, tell us you want stock from Japan and leave the cars blank; your consultant comes back with what is available.",
+      a: "Up to five cars in one inquiry, each with its own make, model, year range and budget. If you would rather we found the stock, tell us you want stock from Japan and leave the cars blank; Ishak comes back with what is available.",
     },
     {
       q: "Is every car inspected before my dealership pays?",
       a: "Yes. Our own team in Japan inspects every car in person — engine, transmission, underbody, electronics, bodywork and interior — photographs it and sends the report before payment is released. A car that does not match the description you approved does not ship, and you are not charged for it.",
     },
     {
+      q: "What payment terms can my dealership have?",
+      a: "Flexible terms, so your funds aren't tied up for the months a car spends being exported and shipped. Ishak talks them through with you when he sends your quote. Whatever the terms, your money is released only once the car has been inspected and cleared for shipment.",
+    },
+    {
       q: "Who clears the cars through UK customs and registers them?",
-      a: "Your dealership, as the importer, through its customs agent. We ship on CNF terms to a UK port and prepare the export file, the NOVA notification and the DVLA registration pack, so the UK side starts from completed paperwork rather than a blank form.",
+      a: "Your dealership makes the import entry, as the importer, through its customs agent; we ship on CNF terms to a UK port with the export file and the NOVA notification prepared. From there we arrange the speedo and rear fog light conversion, the MOT and the DVLA registration in your dealership's name.",
     },
     {
       q: "Can my dealership reclaim the import VAT?",
       a: "A VAT-registered dealership recovers import VAT under the normal input-tax rules and can postpone it to its VAT return. Our guide for dealers sets out the rules from HMRC's guidance, including why stock you import yourself is sold outside the margin scheme.",
     },
     {
+      q: "Can I visit your office before my first order?",
+      a: "Yes. Our head office is at 468 Church Lane, Kingsbury, London NW9 8UA, and you're welcome to arrange a visit to talk your stock plan through with Ishak. Our team in Japan can join by video call.",
+    },
+    {
       q: "Who will my dealership deal with?",
-      a: "One named consultant runs your request from the first message to the car's arrival at the port, backed by our own team in Japan. We have traded for more than 15 years and supply more than 200 dealership clients.",
+      a: "Ishak, your sales consultant, runs your account from the first message to each car's arrival at the port, backed by our own team in Japan. We have traded for more than 15 years and supply more than 200 dealership clients.",
     },
   ],
 } as const;
