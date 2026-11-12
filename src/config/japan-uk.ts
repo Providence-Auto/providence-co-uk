@@ -263,12 +263,13 @@ export const JAPAN_UK_PAGES: Record<JapanUkVariant, JapanUkPage> = {
 // Rebuilt 2026-11-12 around Ishak's dealer video: every inquiry from this page
 // is his (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts), and the six tiles
 // answer what the video names — the auctions, the condition, the logistics,
-// the paperwork, the payment terms and the London office. Two of its claims
-// are held to the documented boundary until the business answers them
-// (brand-position.md §11.3, 2026-11-12): the UK side is paperwork *prepared*,
-// not conversion, MOT or registration done for the dealer
-// (business-context.md §4.3); and "flexible payment terms" is stated in the
-// video's own words, with no instalment or credit figure.
+// the UK side, the payment terms and the London office. For UK dealerships we
+// *arrange* the conversion (speedo, rear fog light), the MOT and the DVLA
+// registration once the car lands (business-context.md §4.3, answered
+// 2026-11-12) — still CNF, with the import entry, duty and VAT in the
+// dealership's name. "Flexible payment terms" stays in the video's own words,
+// with no instalment or credit figure, until Q14 (brand-position.md §11.3) is
+// answered.
 
 export const JAPAN_UK_DEALER = {
   path: JAPAN_UK_PATHS.dealer,
@@ -292,7 +293,7 @@ export const JAPAN_UK_DEALER = {
   consultant: {
     name: "Ishak",
     role: "Sales Consultant",
-    photo: "/team/ishak.webp",
+    photo: "/team/ishak-profile.webp",
     photoAlt: "Ishak, Sales Consultant at Providence Auto",
   },
   /** The visitable head office (business-context.md §4.4). */
@@ -342,8 +343,8 @@ export const JAPAN_UK_DEALER = {
       desc: "Deregistration, export certificates and loading are done by our Japan team; the car sails under marine insurance with milestone updates.",
     },
     {
-      title: "Receive the stock at a UK port",
-      desc: "Your agent makes the import entry in your dealership's name, with our export file and the NOVA and DVLA paperwork prepared.",
+      title: "Receive the stock, road-ready and registered",
+      desc: "Your agent makes the import entry in your dealership's name at a UK port; we arrange the conversion, the MOT and the DVLA registration from there.",
     },
   ],
   pillars: [
@@ -360,8 +361,8 @@ export const JAPAN_UK_DEALER = {
       body: "Export clearance in Japan, then RoRo or container under marine insurance, CNF to a UK port in six to eight weeks.",
     },
     {
-      title: "The paperwork, prepared on both sides.",
-      body: "Deregistration and the export certificate done in Japan; the NOVA notification and the DVLA registration pack prepared for the UK side.",
+      title: "Conversion, MOT and registration, arranged in the UK.",
+      body: "Deregistration and the export certificate done in Japan. Once the car lands, we arrange the speedo and rear fog light conversion, the MOT and the DVLA registration in your dealership's name.",
     },
     {
       title: "Flexible payment terms, so your funds aren't tied up for months.",
@@ -382,7 +383,7 @@ export const JAPAN_UK_DEALER = {
       payee: "Paid by your dealership",
     },
     {
-      item: "IVA where a car needs one, MOT and DVLA registration",
+      item: "The UK conversion, MOT and DVLA registration we arrange, and IVA where a car needs one",
       payee: "Paid by your dealership",
     },
   ],
@@ -405,7 +406,7 @@ export const JAPAN_UK_DEALER = {
     },
     {
       q: "Who clears the cars through UK customs and registers them?",
-      a: "Your dealership, as the importer, through its customs agent. We ship on CNF terms to a UK port and prepare the export file, the NOVA notification and the DVLA registration pack, so the UK side starts from completed paperwork rather than a blank form.",
+      a: "Your dealership makes the import entry, as the importer, through its customs agent; we ship on CNF terms to a UK port with the export file and the NOVA notification prepared. From there we arrange the speedo and rear fog light conversion, the MOT and the DVLA registration in your dealership's name.",
     },
     {
       q: "Can my dealership reclaim the import VAT?",

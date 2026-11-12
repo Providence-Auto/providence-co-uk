@@ -13,11 +13,13 @@ import {
 import type { Metadata } from "next";
 import Link from "next/link";
 import DealerInquiryForm from "@/components/dealer/DealerInquiryForm";
+import GlobalPartnersStrip from "@/components/GlobalPartnersStrip";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
 import SectionRule from "@/components/SectionRule";
+import ToolDemos from "@/components/tool-demos/ToolDemos";
 import { BLOG_BASE_PATH, getPost } from "@/config/blog";
 import { HEAD_OFFICE_PHONE } from "@/config/contact";
 import { OFFICE_COUNTRY_NAMES } from "@/config/countries";
@@ -38,13 +40,17 @@ import { japanUkMetadata, SITE } from "../uk/metadata";
 //   3. the shared value proposition with the B2B second line — stock you do
 //      not floor-plan (brand-position.md §5), without the dealer platform —
 //      and six tiles for what the video names: the auctions, the condition,
-//      the logistics, the paperwork, the payment terms and the people;
+//      the logistics, the UK side, the payment terms and the people;
+//   3a. the tool demos shared with /import-japanese-cars and /b2b-inquiry
+//      (inspection, documents, landed figure, tracking — landing-page-
+//      playbook.md P3), for the same animated proof (business ask 2026-11-12);
 //   4. Japan facts for stock;
 //   5. the landed figure per car — components, never a duty rate;
 //   6. how a dealer order runs;
 //   7. Ishak and the London office (business-context.md §4.4);
 //   8. the pre-purchase FAQ as plain headings and paragraphs;
-//   9. the dealer guides.
+//   9. the dealer guides;
+//   10. the partners strip, as on /import-japanese-cars and the home page.
 // Copy: src/config/japan-uk.ts.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -244,6 +250,13 @@ export default function JapaneseCarsForDealershipsPage() {
           </div>
         </section>
 
+        {/* ── 3a. The tools, demonstrated ───────────────────────────────── */}
+        <ToolDemos
+          source="japan"
+          cards={["inspection", "documents", "landed", "tracking"]}
+          background="bg-white"
+        />
+
         {/* ── 4. Japan facts for stock ─────────────────────────────────── */}
         <section className="bg-white px-6 py-20 md:py-28">
           <div className="mx-auto max-w-4xl">
@@ -372,10 +385,10 @@ export default function JapaneseCarsForDealershipsPage() {
                 <img
                   src={D.consultant.photo}
                   alt={D.consultant.photoAlt}
-                  width={340}
-                  height={340}
+                  width={640}
+                  height={800}
                   loading="lazy"
-                  className="aspect-square w-full rounded-[1.5rem] object-cover shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
+                  className="aspect-[4/5] w-full rounded-[1.5rem] object-cover object-top shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
                 />
                 <figcaption className="mt-4 text-center">
                   <span className="block text-lg font-bold tracking-tight text-black">
@@ -502,6 +515,11 @@ export default function JapaneseCarsForDealershipsPage() {
             </div>
           </section>
         )}
+
+        {/* ── 10. Partners ─────────────────────────────────────────────── */}
+        <section className="bg-white px-6 pb-4 pt-20">
+          <GlobalPartnersStrip className="mt-0" />
+        </section>
 
         {/* ── The one secondary CTA ────────────────────────────────────── */}
         <section className="px-6 pb-20 pt-10 max-w-4xl mx-auto">
