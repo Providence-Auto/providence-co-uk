@@ -49,6 +49,8 @@ vi.mock("@/db", () => {
       id: "req_id_col",
       isDraft: "req_draft_col",
       createdAt: "req_created_col",
+      followUpAt: "req_followup_col",
+      statusUpdatedAt: "req_status_updated_col",
     },
     users: {
       id: "user_id_col",
@@ -213,7 +215,9 @@ describe("admin-actions", () => {
           salesComment: "",
         });
 
-        expect(vi.mocked(db.set).mock.calls[0][0].statusHistory).toBeUndefined();
+        expect(
+          vi.mocked(db.set).mock.calls[0][0].statusHistory,
+        ).toBeUndefined();
       });
 
       it("names an unassigned lead's first owner", async () => {
@@ -225,9 +229,9 @@ describe("admin-actions", () => {
           salesComment: "",
         });
 
-        expect(
-          vi.mocked(db.set).mock.calls[0][0].statusHistory[1].action,
-        ).toBe("Reassigned: Unassigned → Abdallah");
+        expect(vi.mocked(db.set).mock.calls[0][0].statusHistory[1].action).toBe(
+          "Reassigned: Unassigned → Abdallah",
+        );
       });
     });
 
@@ -441,6 +445,86 @@ describe("admin-actions", () => {
 
       const result = await setFollowUpTimer("req-1", "2026-07-10T12:00:00Z");
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe("expireFollowUpTimer", () => {
+    const past = new Date(Date.now() - 60_000);
+    const setAt = new Date(Date.now() - 2 * 86_400_000);
+    const baseLead = {
+      id: "req-1",
+      leadStatus: "Opened",
+      followUpAt: past,
+      followUpSetAt: setAt,
+      statusUpdatedAt: null as Date | null,
+      statusHistory: [],
+    };
+
+    it("resets an untouched lead to Action required", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((ok) => ok([baseLead]))
+        .mockImplementationOnce((ok) => ok([{ id: "req-1" }]));
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "reset" });
+      const written = vi.mocked(db.set).mock.calls[0][0];
+      expect(written.leadStatus).toBe("Action required");
+      expect(written.followUpAt).toBeNull();
+    });
+
+    it("keeps a status the salesperson set after the reminder (the reported bug)", async () => {
+      const lead = {
+        ...baseLead,
+        leadStatus: "Replied (WhatsApp)",
+        statusUpdatedAt: new Date(setAt.getTime() + 3_600_000),
+      };
+      vi.mocked(db.then)
+        .mockImplementationOnce((ok) => ok([lead]))
+        .mockImplementationOnce((ok) => ok([{ id: "req-1" }]));
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "keep-status" });
+      const written = vi.mocked(db.set).mock.calls[0][0];
+      expect(written).not.toHaveProperty("leadStatus");
+      expect(written).not.toHaveProperty("statusUpdatedAt");
+      expect(written.followUpAt).toBeNull();
+      expect(written.statusHistory.at(-1).action).toBe(
+        "Follow-up reminder passed",
+      );
+    });
+
+    it("writes nothing when the timer was already cleared (stale tab)", async () => {
+      vi.mocked(db.then).mockImplementationOnce((ok) =>
+        ok([{ ...baseLead, followUpAt: null, followUpSetAt: null }]),
+      );
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "none" });
+      expect(db.update).not.toHaveBeenCalled();
+    });
+
+    it("writes nothing when the timer is not yet due on the server", async () => {
+      vi.mocked(db.then).mockImplementationOnce((ok) =>
+        ok([{ ...baseLead, followUpAt: new Date(Date.now() + 3_600_000) }]),
+      );
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "not-due" });
+      expect(db.update).not.toHaveBeenCalled();
+    });
+
+    it("reports none when another tab or a save changed the row first", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((ok) => ok([baseLead]))
+        .mockImplementationOnce((ok) => ok([])); // conditional update matched nothing
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "none" });
     });
   });
 
