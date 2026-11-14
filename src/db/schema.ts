@@ -121,6 +121,11 @@ export const requests = pgTable("request", {
   // coming-soon model, so the pipeline can tell a pre-order from a car we can
   // quote and ship today.
   isUpcomingVehicle: boolean("isUpcomingVehicle").default(false).notNull(),
+  // "car" or "motorcycle" (drizzle/0014) — the same vocabulary as
+  // specdossier.vehicleType, read through parseVehicleType in
+  // src/lib/vehicle-type.ts. Fixed by the page the form sits on, chosen by the
+  // customer on /request.
+  vehicleType: text("vehicleType").default("car").notNull(),
   // Colour choices carried over from the inquiry form. Stored as the rendered
   // label ("Sonic Grey / Black roof") rather than a dossier reference, so the
   // lead stays readable even if the dossier's palette is later edited.

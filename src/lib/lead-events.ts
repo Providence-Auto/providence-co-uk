@@ -44,6 +44,12 @@ export interface LeadEvent {
   destinationCountry?: string;
   /** How many cars the lead asked about (0 when none were listed). */
   carCount?: number;
+  /**
+   * What the lead is for: "car" or "motorcycle", or "mixed" for a dealer
+   * inquiry naming both. Left out when a dealer named no vehicle. Additive:
+   * `lead_type` stays the form split, so no existing GTM trigger changes.
+   */
+  vehicleType?: "car" | "motorcycle" | "mixed";
 }
 
 type DataLayerWindow = Window & { dataLayer?: Record<string, unknown>[] };
@@ -77,6 +83,7 @@ export function pushLeadEvent(event: LeadEvent): boolean {
     ...(typeof event.carCount === "number"
       ? { car_count: event.carCount }
       : {}),
+    ...(event.vehicleType ? { vehicle_type: event.vehicleType } : {}),
   });
   pushed.add(reference);
   return true;

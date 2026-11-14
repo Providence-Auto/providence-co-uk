@@ -25,6 +25,11 @@ import {
   contactDueMatches,
 } from "@/lib/contactScheduling";
 import { isLhdLead, pathnameToSource } from "@/lib/leadSource";
+import {
+  parseVehicleType,
+  VEHICLE_TYPES,
+  vehicleTypeLabel,
+} from "@/lib/vehicle-type";
 import RequestTableClient from "./RequestTableClient";
 import "react-day-picker/dist/style.css"; // Basic styles
 
@@ -52,6 +57,8 @@ export default function DashboardClient({
   const [statusFilter, setStatusFilter] = useState("All");
   const [staffFilter, setStaffFilter] = useState("All");
   const [carFilter, setCarFilter] = useState("All");
+  // "All", or a VEHICLE_TYPES value: cars or motorcycles only.
+  const [vehicleFilter, setVehicleFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
   const [countryFilter, setCountryFilter] = useState("All");
   const [sourceFilter, setSourceFilter] = useState("All");
@@ -158,6 +165,10 @@ export default function DashboardClient({
         const carName = `${req.make} ${req.vehicle_model}`.trim();
         const matchesCar = carFilter === "All" || carName === carFilter;
 
+        const matchesVehicle =
+          vehicleFilter === "All" ||
+          parseVehicleType(req.vehicleType) === vehicleFilter;
+
         const matchesSource =
           sourceFilter === "All" ||
           normalizeSource(req.source || "") === sourceFilter;
@@ -182,6 +193,7 @@ export default function DashboardClient({
           matchesStatus &&
           matchesStaff &&
           matchesCar &&
+          matchesVehicle &&
           matchesCountry &&
           matchesDate &&
           matchesSource &&
@@ -203,6 +215,7 @@ export default function DashboardClient({
     statusFilter,
     staffFilter,
     carFilter,
+    vehicleFilter,
     sourceFilter,
     contactDueFilter,
     myLeadsOnly,
@@ -374,6 +387,20 @@ export default function DashboardClient({
             </select>
 
             <select
+              value={vehicleFilter}
+              onChange={(e) => setVehicleFilter(e.target.value)}
+              aria-label="Vehicle type"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+            >
+              <option value="All">All Vehicles</option>
+              {VEHICLE_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {vehicleTypeLabel(type)}s
+                </option>
+              ))}
+            </select>
+
+            <select
               value={carFilter}
               onChange={(e) => setCarFilter(e.target.value)}
               className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
@@ -498,6 +525,7 @@ export default function DashboardClient({
             {(searchQuery ||
               staffFilter !== "All" ||
               carFilter !== "All" ||
+              vehicleFilter !== "All" ||
               countryFilter !== "All" ||
               stageFilter !== "All" ||
               statusFilter !== "All" ||
@@ -510,6 +538,7 @@ export default function DashboardClient({
                   setSearchQuery("");
                   setStaffFilter("All");
                   setCarFilter("All");
+                  setVehicleFilter("All");
                   setStageFilter("All");
                   setStatusFilter("All");
                   setCountryFilter("All");

@@ -20,7 +20,7 @@ export default function EmbedRequestPage() {
             </div>
           }
         >
-          <RequestForm />
+          <RequestForm vehicleType="choose" />
         </Suspense>
       </div>
     </main>

@@ -24,11 +24,17 @@ import {
   VEHICLE_CONDITIONS,
   YEAR_PRESETS,
 } from "@/lib/vehicle-inquiry";
+import { parseVehicleType, type VehicleType } from "@/lib/vehicle-type";
 
 // ── Shapes ───────────────────────────────────────────────────────────────────
 
 /** One car as the form holds it. Numbers stay numbers; nothing is pre-labelled. */
 export type DealerCarInput = {
+  /**
+   * "car" or "motorcycle". Optional so a page cached from before the field
+   * existed still submits; absent reads as a car.
+   */
+  vehicleType?: VehicleType;
   make: string;
   model: string;
   condition: string;
@@ -47,6 +53,8 @@ export type DealerCarInput = {
 
 /** One car as it is stored on the inquiry (jsonb). */
 export type DealerCar = {
+  /** Absent on every car stored before motorcycles could be named: a car. */
+  vehicleType?: VehicleType;
   make: string;
   model: string;
   condition: "New" | "Used";
@@ -432,6 +440,7 @@ export function checkWhatsApp(
 
 export function emptyCar(budgetCurrency = ""): DealerCarInput {
   return {
+    vehicleType: "car",
     make: "",
     model: "",
     condition: "",
@@ -445,6 +454,33 @@ export function emptyCar(budgetCurrency = ""): DealerCarInput {
     budgetCurrency,
     importTimeline: "",
   };
+}
+
+/**
+ * What a dealer inquiry's vehicles are, for the tracking event and the alert:
+ * "car" or "motorcycle" when every one is the same, "mixed" when both appear,
+ * undefined when the dealer named none.
+ */
+export function dealerVehicleMix(
+  cars: readonly { vehicleType?: unknown }[],
+): VehicleType | "mixed" | undefined {
+  if (cars.length === 0) return undefined;
+  const types = new Set(cars.map((c) => parseVehicleType(c.vehicleType)));
+  return types.size > 1 ? "mixed" : [...types][0];
+}
+
+/** "2 cars", "1 motorcycle", "1 car and 2 motorcycles". */
+export function dealerVehicleCount(
+  cars: readonly { vehicleType?: unknown }[],
+): string {
+  const bikes = cars.filter(
+    (c) => parseVehicleType(c.vehicleType) === "motorcycle",
+  ).length;
+  const carCount = cars.length - bikes;
+  const part = (n: number, noun: string) => `${n} ${noun}${n === 1 ? "" : "s"}`;
+  if (bikes === 0) return part(carCount, "car");
+  if (carCount === 0) return part(bikes, "motorcycle");
+  return `${part(carCount, "car")} and ${part(bikes, "motorcycle")}`;
 }
 
 /** Errors for one car, keyed by field name. Empty means the car is complete. */
@@ -517,7 +553,9 @@ export function toStoredCar(car: DealerCarInput): DealerCar {
     ? YEAR_PRESETS.find((p) => p.label === car.yearRange)
     : undefined;
   const clean = (value: string) => value.trim() || null;
+  const vehicleType = parseVehicleType(car.vehicleType);
   return {
+    vehicleType,
     make: car.make.trim(),
     model: car.model.trim(),
     condition: car.condition as "New" | "Used",
@@ -528,7 +566,9 @@ export function toStoredCar(car: DealerCarInput): DealerCar {
       ? mileageRangeLabel(Number(car.mileageMin), Number(car.mileageMax))
       : null,
     exteriorColor: clean(car.exteriorColor),
-    interiorColor: clean(car.interiorColor),
+    // A motorcycle has no interior.
+    interiorColor:
+      vehicleType === "motorcycle" ? null : clean(car.interiorColor),
     specs: clean(car.specs),
     budgetAmount: Number(car.budgetAmount),
     budgetCurrency: car.budgetCurrency,

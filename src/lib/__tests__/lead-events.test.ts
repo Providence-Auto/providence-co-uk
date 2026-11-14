@@ -8,6 +8,41 @@ import {
 type DataLayerWindow = Window & { dataLayer?: Record<string, unknown>[] };
 const w = window as DataLayerWindow;
 
+describe("pushLeadEvent — vehicle type", () => {
+  beforeEach(() => {
+    resetLeadEventsForTest();
+    delete w.dataLayer;
+  });
+  afterEach(() => {
+    delete w.dataLayer;
+  });
+
+  it("adds vehicle_type alongside lead_type, which stays the form split", () => {
+    w.dataLayer = [];
+    pushLeadEvent({
+      leadType: "car_buyer",
+      reference: "req-bike-1",
+      formName: "car_request",
+      vehicleType: "motorcycle",
+    });
+    expect(w.dataLayer?.[0]).toMatchObject({
+      lead_type: "car_buyer",
+      vehicle_type: "motorcycle",
+    });
+  });
+
+  it("leaves vehicle_type out when there is none", () => {
+    w.dataLayer = [];
+    pushLeadEvent({
+      leadType: "dealer",
+      reference: "DI-NOCARS",
+      formName: "b2b_inquiry",
+      carCount: 0,
+    });
+    expect(w.dataLayer?.[0]).not.toHaveProperty("vehicle_type");
+  });
+});
+
 describe("pushLeadEvent", () => {
   beforeEach(() => {
     resetLeadEventsForTest();

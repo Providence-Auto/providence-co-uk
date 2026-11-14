@@ -48,7 +48,7 @@ export default function RequestCar() {
               </div>
             }
           >
-            <RequestForm />
+            <RequestForm vehicleType="choose" />
           </Suspense>
         </div>
       </main>

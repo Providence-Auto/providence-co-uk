@@ -32,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getPresignedUrls } from "@/lib/file-actions";
 
 import { PIPELINE_STAGES } from "@/lib/leadConversion";
+import { vehicleTypeLabel } from "@/lib/vehicle-type";
 
 type HistoryStyle = {
   dot: string;
@@ -460,6 +461,14 @@ export default function RequestActionModal({
                   </span>
                   <span className="font-medium text-black">
                     {modal.request.make} {modal.request.vehicle_model}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Vehicle Type
+                  </span>
+                  <span className="font-medium text-black">
+                    {vehicleTypeLabel(modal.request.vehicleType)}
                   </span>
                 </div>
                 {/* Grade, steering and colour. All shown whether or not the

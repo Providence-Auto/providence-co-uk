@@ -647,7 +647,7 @@ export default async function ImportBikesPage() {
                 </div>
               }
             >
-              <RequestForm makeOptions={MOTORCYCLE_MAKES} />
+              <RequestForm vehicleType="motorcycle" />
             </Suspense>
           </div>
         </section>

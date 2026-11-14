@@ -34,12 +34,6 @@ import {
   sendMetaConversion,
 } from "@/lib/conversions";
 import {
-  DEALER_LEAD_TYPE,
-  DEALER_ONBOARDED_EVENT,
-  DEALER_QUALIFIED_EVENT,
-  dealerUploadsDue,
-} from "@/lib/dealerConversion";
-import {
   checkWhatsApp,
   type DealerCar,
   type DealerCarInput,
@@ -60,6 +54,12 @@ import {
   validateDealership,
 } from "@/lib/dealer-inquiry";
 import { marketStatusFor } from "@/lib/dealer-markets";
+import {
+  DEALER_LEAD_TYPE,
+  DEALER_ONBOARDED_EVENT,
+  DEALER_QUALIFIED_EVENT,
+  dealerUploadsDue,
+} from "@/lib/dealerConversion";
 import { emailService } from "@/lib/email";
 import {
   allLeadsOwnerEmail,
@@ -75,6 +75,7 @@ import {
 } from "@/lib/lead-routing";
 import { clientAddress, createRateLimiter } from "@/lib/rate-limit";
 import { normaliseRepCode, repLinkEmail } from "@/lib/rep-link";
+import { parseVehicleType } from "@/lib/vehicle-type";
 import { auth } from "@/utils/auth";
 
 const ADMIN_PATH = "/admin/dealer-inquiries";
@@ -125,6 +126,7 @@ function coerceCar(value: unknown): DealerCarInput {
     return Number.isFinite(n) ? n : fallback;
   };
   return {
+    vehicleType: parseVehicleType(car.vehicleType),
     make: text(car.make, 200),
     model: text(car.model, 200),
     condition: text(car.condition, 20),
@@ -406,7 +408,8 @@ export async function submitDealerInquiry(
         // Also minus anyone held out of every rotation (ROTATION_EXCLUDED —
         // Amy, 2026-11-12), strictly, like the dealer exclusion.
         const eligible = sales.filter(
-          (u) => !isExcludedFromDealerRotation(u) && !isHeldOutOfRotations(u.email),
+          (u) =>
+            !isExcludedFromDealerRotation(u) && !isHeldOutOfRotations(u.email),
         );
         // An exclusion that matches nobody fails silently — the person it was
         // meant for would simply get their turn. Say so, once per process, so

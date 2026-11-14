@@ -9,6 +9,12 @@
  * it came through.
  */
 
+import {
+  MOTORCYCLE_MAKES,
+  parseVehicleType,
+  type VehicleType,
+} from "@/lib/vehicle-type";
+
 // --- Used-car spec ranges ---
 export const MILEAGE_MIN = 0;
 export const MILEAGE_MAX = 150_000;
@@ -124,6 +130,13 @@ export const CAR_MAKES = [
   "Zeekr",
 ].sort();
 
+/** The make list for a kind of vehicle — cars, or MOTORCYCLE_MAKES for a bike. */
+export function makesFor(vehicleType: unknown): readonly string[] {
+  return parseVehicleType(vehicleType) === "motorcycle"
+    ? MOTORCYCLE_MAKES
+    : CAR_MAKES;
+}
+
 /**
  * Model names for a make, from NHTSA's vPIC database — the source the B2C form
  * has always used. vPIC is a US register, so plenty of Japanese-, Indian- and
@@ -135,10 +148,22 @@ export const CAR_MAKES = [
  * to go through corsproxy.io, which began refusing keyless requests with a 403
  * ("keyless_legacy_url") — so every lookup failed and the B2C form silently
  * fell back to typing the model by hand.
+ *
+ * For a motorcycle it asks vPIC for that make's motorcycle models only — Honda,
+ * BMW, Suzuki and Kawasaki make both, and the unfiltered list would offer a
+ * bike buyer the Civic. Cars keep the unfiltered list they always had: vPIC
+ * files SUVs and vans under separate types, so filtering a car to "car" would
+ * drop the Land Cruiser.
  */
-export async function fetchModelsForMake(make: string): Promise<string[]> {
+export async function fetchModelsForMake(
+  make: string,
+  vehicleType: VehicleType = "car",
+): Promise<string[]> {
+  const encoded = encodeURIComponent(make);
   const res = await fetch(
-    `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${encodeURIComponent(make)}?format=json`,
+    vehicleType === "motorcycle"
+      ? `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/${encoded}/vehicletype/motorcycle?format=json`
+      : `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${encoded}?format=json`,
   );
   if (res.status === 503) {
     throw new Error(

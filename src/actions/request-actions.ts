@@ -38,6 +38,7 @@ import {
 import { LEAD_EVENT } from "@/lib/leadConversion";
 import connectToDatabase from "@/lib/mongoose";
 import { normaliseRepCode, repLinkEmail } from "@/lib/rep-link";
+import { leadVehicleType } from "@/lib/vehicle-type";
 
 // The sales positions, the country owners and the rule that holds owners out
 // of the rotation live in src/lib/lead-routing.ts, shared with the dealer
@@ -83,6 +84,9 @@ export async function submitCarRequest(data: {
   // True when the inquiry came off a dossier flagged as coming soon, so the
   // pipeline can separate pre-orders from cars we can quote today.
   isUpcomingVehicle?: boolean;
+  // "car" or "motorcycle" — fixed by the page the form sits on, or chosen on
+  // /request. Resolved through leadVehicleType, never stored raw.
+  vehicleType?: string;
   name: string;
   email: string;
   countryCode: string;
@@ -132,6 +136,7 @@ export async function submitCarRequest(data: {
           grade: data.grade || null,
           steering: data.steering || null,
           isUpcomingVehicle: data.isUpcomingVehicle === true,
+          vehicleType: leadVehicleType(data),
           name: data.name,
           email: data.email,
           countryCode: data.countryCode,
@@ -427,6 +432,7 @@ export async function submitCarRequest(data: {
         grade: requestData.grade || null,
         steering: requestData.steering || null,
         isUpcomingVehicle: requestData.isUpcomingVehicle === true,
+        vehicleType: leadVehicleType(data),
         name: requestData.name,
         email: requestData.email,
         countryCode: requestData.countryCode,
@@ -646,10 +652,12 @@ export async function submitContactPreferences(input: {
         contactTimezoneLabel:
           input.contactTimezoneLabel || input.contactTimezone,
         destinationCountry: request.countryOfImport || undefined,
+        vehicleType: request.vehicleType,
       }),
       emailService.sendStaffAlert(
         agent.email,
         {
+          vehicleType: request.vehicleType,
           make: request.make,
           vehicle_model: request.vehicleModel,
           // The grade and hand change which car the agent is quoting, so
