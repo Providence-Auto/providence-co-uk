@@ -43,6 +43,7 @@ import {
   DESIGNATION_SUGGESTIONS,
   type DealerCarInput,
   type DealerInquiryInput,
+  dealerVehicleMix,
   emptyCar,
   type FieldErrors,
   hasErrors,
@@ -523,6 +524,7 @@ export default function DealerInquiryForm({
           formName: "b2b_inquiry",
           destinationCountry: country,
           carCount: payload.cars.length,
+          vehicleType: dealerVehicleMix(payload.cars),
         });
         interacted.current = true;
         setSuccess({

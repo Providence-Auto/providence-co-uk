@@ -14,7 +14,6 @@ import {
 } from "@/lib/currencies";
 import type { DealerCarInput, FieldErrors } from "@/lib/dealer-inquiry";
 import {
-  CAR_MAKES,
   conditionLabel,
   fetchModelsForMake,
   formatMileage,
@@ -22,10 +21,21 @@ import {
   MILEAGE_MAX,
   MILEAGE_MIN,
   MILEAGE_STEP,
+  makesFor,
   YEAR_PRESETS,
 } from "@/lib/vehicle-inquiry";
+import {
+  parseVehicleType,
+  VEHICLE_TYPES,
+  type VehicleType,
+  vehicleNoun,
+  vehicleTypeLabel,
+} from "@/lib/vehicle-type";
 
-const MAKE_OPTIONS = CAR_MAKES.map((make) => ({ value: make, label: make }));
+const TYPE_OPTIONS = VEHICLE_TYPES.map((type) => ({
+  value: type,
+  label: vehicleTypeLabel(type),
+}));
 
 /** One line that says which car this is, for the collapsed card. */
 function carSummary(car: DealerCarInput): string {
@@ -69,6 +79,14 @@ export default function DealerCarCard({
   onRemove: () => void;
 }) {
   const prefix = `car-${index}`;
+  const type = parseVehicleType(car.vehicleType);
+  const isBike = type === "motorcycle";
+  const noun = vehicleNoun(type);
+  const heading = `${vehicleTypeLabel(type)} ${index + 1}`;
+  const makeOptions = useMemo(
+    () => makesFor(type).map((make) => ({ value: make, label: make })),
+    [type],
+  );
 
   // Model names for the chosen make. Best effort: when the lookup fails the
   // model box still takes whatever the dealer types.
@@ -90,7 +108,7 @@ export default function DealerCarCard({
     let cancelled = false;
     const timer = setTimeout(async () => {
       try {
-        const found = await fetchModelsForMake(make);
+        const found = await fetchModelsForMake(make, type);
         if (!cancelled) setLookup({ make, models: found });
       } catch {
         if (!cancelled) setLookup({ make, models: [] });
@@ -100,7 +118,7 @@ export default function DealerCarCard({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [car.make]);
+  }, [car.make, type]);
 
   const modelOptions = useMemo(
     () => models.map((model) => ({ value: model, label: model })),
@@ -138,7 +156,7 @@ export default function DealerCarCard({
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-semibold text-black">
-              Car {index + 1}
+              {heading}
             </span>
             <span className="block truncate text-sm text-zinc-500">
               {summary || "Make, model and budget"}
@@ -148,7 +166,7 @@ export default function DealerCarCard({
             <AlertCircle
               size={18}
               className="shrink-0 text-red-500"
-              aria-label="This car needs attention"
+              aria-label={`This ${noun} needs attention`}
             />
           )}
           <ChevronDown
@@ -161,7 +179,7 @@ export default function DealerCarCard({
           <button
             type="button"
             onClick={onRemove}
-            aria-label={`Remove car ${index + 1}`}
+            aria-label={`Remove ${heading.toLowerCase()}`}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500/20"
           >
             <Trash2 size={17} />
@@ -174,12 +192,29 @@ export default function DealerCarCard({
           id={`${prefix}-body`}
           className="space-y-6 border-t border-black/5 p-4 sm:p-6"
         >
+          <fieldset>
+            <legend className="mb-2 text-sm font-medium text-zinc-800">
+              Vehicle
+            </legend>
+            <Segmented<VehicleType>
+              name={`${prefix}-vehicle-type`}
+              options={TYPE_OPTIONS}
+              value={type}
+              onChange={(vehicleType) => {
+                // A car make is not a bike make: the make and model start again.
+                if (vehicleType !== type) {
+                  onChange({ vehicleType, make: "", model: "" });
+                }
+              }}
+            />
+          </fieldset>
+
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field id={`${prefix}-make`} label="Make" error={errors.make}>
               <Combobox
                 id={`${prefix}-make`}
                 labelledBy={`${prefix}-make-label`}
-                options={MAKE_OPTIONS}
+                options={makeOptions}
                 value={car.make}
                 onChange={(make) =>
                   onChange(make === car.make ? { make } : { make, model: "" })
@@ -279,8 +314,8 @@ export default function DealerCarCard({
                   onChange={(mileageMin, mileageMax) =>
                     onChange({ mileageMin, mileageMax })
                   }
-                  minLabel={`Car ${index + 1} minimum mileage`}
-                  maxLabel={`Car ${index + 1} maximum mileage`}
+                  minLabel={`${heading} minimum mileage`}
+                  maxLabel={`${heading} maximum mileage`}
                 />
               </div>
             </div>
@@ -289,7 +324,7 @@ export default function DealerCarCard({
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field
               id={`${prefix}-exterior`}
-              label="Exterior colour"
+              label={isBike ? "Colour" : "Exterior colour"}
               optional
               error={errors.exteriorColor}
             >
@@ -297,26 +332,29 @@ export default function DealerCarCard({
                 id={`${prefix}-exterior`}
                 value={car.exteriorColor}
                 onChange={(e) => onChange({ exteriorColor: e.target.value })}
-                placeholder="e.g. Pearl white"
+                placeholder={isBike ? "e.g. Matte black" : "e.g. Pearl white"}
                 maxLength={80}
                 className={inputClass(Boolean(errors.exteriorColor), "h-13")}
               />
             </Field>
-            <Field
-              id={`${prefix}-interior`}
-              label="Interior colour"
-              optional
-              error={errors.interiorColor}
-            >
-              <input
+            {/* A motorcycle has one colour and no interior. */}
+            {!isBike && (
+              <Field
                 id={`${prefix}-interior`}
-                value={car.interiorColor}
-                onChange={(e) => onChange({ interiorColor: e.target.value })}
-                placeholder="e.g. Black leather"
-                maxLength={80}
-                className={inputClass(Boolean(errors.interiorColor), "h-13")}
-              />
-            </Field>
+                label="Interior colour"
+                optional
+                error={errors.interiorColor}
+              >
+                <input
+                  id={`${prefix}-interior`}
+                  value={car.interiorColor}
+                  onChange={(e) => onChange({ interiorColor: e.target.value })}
+                  placeholder="e.g. Black leather"
+                  maxLength={80}
+                  className={inputClass(Boolean(errors.interiorColor), "h-13")}
+                />
+              </Field>
+            )}
           </div>
 
           <div>
@@ -324,7 +362,7 @@ export default function DealerCarCard({
               id={`${prefix}-budget-label`}
               className="mb-2 text-sm font-medium text-zinc-800"
             >
-              Your budget for this car
+              Your budget for this {noun}
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
               <Combobox
@@ -402,7 +440,11 @@ export default function DealerCarCard({
               id={`${prefix}-specs`}
               value={car.specs}
               onChange={(e) => onChange({ specs: e.target.value })}
-              placeholder="e.g. Hybrid, 7 seats, sunroof, grade 4.5 or better"
+              placeholder={
+                isBike
+                  ? "e.g. ABS, quickshifter, panniers"
+                  : "e.g. Hybrid, 7 seats, sunroof, grade 4.5 or better"
+              }
               rows={3}
               maxLength={1000}
               className={inputClass(Boolean(errors.specs), "resize-none py-3")}

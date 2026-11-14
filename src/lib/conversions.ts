@@ -164,6 +164,8 @@ export interface ConversionLead {
    * inquiry, which has no condition, so custom conversions can split the two.
    */
   leadType?: string | null;
+  /** "car" or "motorcycle" on a B2C lead; absent on a dealer inquiry. */
+  vehicleType?: string | null;
   make?: string | null;
   vehicleModel?: string | null;
   countryOfImport?: string | null;
@@ -239,6 +241,7 @@ export async function sendMetaConversion(
     lead_event_source: "Providence Auto CRM",
     event_source: "crm",
     lead_type: lead.leadType || lead.condition || undefined,
+    vehicle_type: lead.vehicleType || undefined,
     make: lead.make || undefined,
     model: lead.vehicleModel || undefined,
     destination: lead.countryOfImport || undefined,

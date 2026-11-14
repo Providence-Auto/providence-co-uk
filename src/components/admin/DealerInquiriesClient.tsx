@@ -53,6 +53,7 @@ import {
 } from "@/lib/dealer-inquiry";
 import { paginate } from "@/lib/pagination";
 import { conditionLabel } from "@/lib/vehicle-inquiry";
+import { isMotorcycle } from "@/lib/vehicle-type";
 
 const PAGE_SIZES = [25, 50, 100] as const;
 
@@ -705,6 +706,11 @@ function InquiryDetail({
             >
               <p className="font-semibold text-zinc-900">
                 {index + 1}. {car.make} {car.model}
+                {isMotorcycle(car) && (
+                  <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 bg-amber-500 text-white rounded text-[10px] font-bold tracking-wide align-middle">
+                    Motorcycle
+                  </span>
+                )}
                 <span className="font-normal text-zinc-500">
                   {" "}
                   · {conditionLabel(car.condition)}

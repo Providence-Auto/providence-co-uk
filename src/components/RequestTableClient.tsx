@@ -42,6 +42,7 @@ import {
 import { formatBudget } from "@/lib/currencies";
 import { isLhdLead, pathnameToSource } from "@/lib/leadSource";
 import { type PageSize, paginate } from "@/lib/pagination";
+import { isMotorcycle } from "@/lib/vehicle-type";
 
 /**
  * Page-size choices for the lead table. Every row mounts a full dropdown menu,
@@ -392,6 +393,14 @@ export default function RequestTableClient({
                         {req.steering === "RHD" && (
                           <span className="px-1.5 py-0.5 bg-zinc-800 text-white rounded text-[10px] font-bold tracking-wide">
                             RHD
+                          </span>
+                        )}
+                        {/* A bike lead: a different make list, different
+                            shipping, and no grade or inspection standard to
+                            quote against. */}
+                        {isMotorcycle(req) && (
+                          <span className="px-1.5 py-0.5 bg-amber-500 text-white rounded text-[10px] font-bold tracking-wide">
+                            Motorcycle
                           </span>
                         )}
                         {/* Pre-order rather than a car we can quote today —

@@ -1,6 +1,8 @@
 import { Link, Section, Text } from "@react-email/components";
 import { GENERAL_WHATSAPP_NUMBER, whatsappLink } from "@/config/contact";
+import { dealerVehicleCount } from "@/lib/dealer-inquiry";
 import { conditionLabel } from "@/lib/vehicle-inquiry";
+import { isMotorcycle, vehicleNoun } from "@/lib/vehicle-type";
 import EmailLayout from "./layout";
 
 // The dealer's copy of what they sent, from the consultant it was assigned to.
@@ -15,7 +17,12 @@ export interface DealerInquiryConfirmationProps {
   country: string;
   /** Display name of the preferred source market, or "". */
   sourceMarket: string;
-  cars: { make: string; model: string; condition: string }[];
+  cars: {
+    vehicleType?: string;
+    make: string;
+    model: string;
+    condition: string;
+  }[];
   /** Null when no one could be assigned — the email then signs off as the company. */
   agent: {
     name: string;
@@ -92,7 +99,9 @@ export const DealerInquiryConfirmationEmail = ({
           <>
             <div style={dividerStyle} />
             <Text style={labelStyle}>
-              {cars.length === 1 ? "The car" : `The ${cars.length} cars`}
+              {cars.length === 1
+                ? `The ${vehicleNoun(cars[0].vehicleType)}`
+                : `The ${dealerVehicleCount(cars)}`}
             </Text>
             {cars.map((car, index) => (
               <Text
@@ -100,6 +109,7 @@ export const DealerInquiryConfirmationEmail = ({
                 style={valueStyle}
               >
                 {conditionLabel(car.condition)} {car.make} {car.model}
+                {isMotorcycle(car) ? " (motorcycle)" : ""}
               </Text>
             ))}
           </>

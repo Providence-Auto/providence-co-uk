@@ -511,7 +511,10 @@ export default function TeamProfileClient({
                 </div>
               }
             >
-              <RequestForm assignedAgentId={profile.userId} />
+              <RequestForm
+                assignedAgentId={profile.userId}
+                vehicleType="choose"
+              />
             </Suspense>
           </div>
         </section>
