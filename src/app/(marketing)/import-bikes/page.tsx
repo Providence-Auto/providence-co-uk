@@ -34,6 +34,7 @@ import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
+import SecondaryCTA from "@/components/SecondaryCTA";
 import SectionRule from "@/components/SectionRule";
 import VehicleListingGrid, {
   type ListingVehicle,
@@ -635,8 +636,8 @@ export default async function ImportBikesPage() {
               </span>
             </h2>
             <p className="text-lg text-zinc-500 font-light">
-              Importing for a dealership, a fleet or your clients? Add the
-              models and quantities under Specification requests.
+              Importing for a fleet or your clients? Add the models and
+              quantities under Specification requests.
             </p>
           </Reveal>
           <div className="w-full max-w-4xl mx-auto">
@@ -650,6 +651,22 @@ export default async function ImportBikesPage() {
               <RequestForm vehicleType="motorcycle" />
             </Suspense>
           </div>
+          {/* The page's one secondary CTA: dealers go to the dealer form,
+              which routes to B2B Sales (seo-page-rules.md T-96). */}
+          <SecondaryCTA
+            className="w-full max-w-4xl mx-auto mt-12"
+            title="Importing bikes for a dealership?"
+            body="Send the models and quantities through the dealer form, and a B2B consultant will come back with a landed figure for each one."
+            action={
+              <Link
+                href="/b2b-inquiry"
+                className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-zinc-800"
+              >
+                Open the dealer form
+                <ArrowRight size={16} />
+              </Link>
+            }
+          />
         </section>
 
         {/* ── FAQ: pre-purchase, plain h3 + p ──────────── */}
