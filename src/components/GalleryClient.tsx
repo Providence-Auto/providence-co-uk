@@ -436,7 +436,7 @@ export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
               <img
                 src="/gallery_image.webp"
                 alt="Vehicles being loaded into a shipping container"
-                className="w-full h-full object-cover rotate-180"
+                className="w-full h-full object-cover"
               />
             </Reveal>
           </div>
