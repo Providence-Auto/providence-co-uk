@@ -383,7 +383,7 @@ export default function CarSourcingForDealersPage() {
                 </p>
                 <a
                   href="#inquiry-form"
-                  className="mt-8 inline-flex items-center justify-center gap-2 self-start rounded-full bg-white px-5 py-3 text-sm font-bold text-black transition-transform hover:scale-[1.03]"
+                  className="mt-8 inline-flex items-center justify-center gap-2 self-start rounded-full bg-white px-5 py-3 text-sm font-bold text-black transition-feedback hover:scale-[1.03]"
                 >
                   Check your market
                   <ArrowRight size={16} aria-hidden />

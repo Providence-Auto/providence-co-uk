@@ -25,6 +25,7 @@ import PreferredSourceCallout from "@/components/PreferredSourceCallout";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
 import { japanImportCampaignConfig } from "@/config/landing-pages";
+import { scrollBehavior, springTransition } from "@/lib/fluid";
 
 // Vehicles are surfaced by their search tag, which mirrors this page's URL
 // slug so the gallery stays scoped to this campaign's stock.
@@ -416,14 +417,16 @@ export default function JapanImportLanding({
     setDestination(dest);
     document
       .getElementById("destination")
-      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      ?.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
   };
 
   const handleModelSelect = (model: FastMover) => {
     setSelectedModel(model);
     setShowNotice(true);
     setTimeout(() => setShowNotice(false), 7000);
-    document.getElementById("inquiry")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("inquiry")
+      ?.scrollIntoView({ behavior: scrollBehavior() });
   };
 
   // "Something else" card — the grid is a shortlist, not the catalogue, so this
@@ -434,412 +437,421 @@ export default function JapanImportLanding({
   const handleOpenBlankInquiry = () => {
     setSelectedModel(null);
     setShowNotice(false);
-    document.getElementById("inquiry")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("inquiry")
+      ?.scrollIntoView({ behavior: scrollBehavior() });
   };
 
   return (
-    <main className="min-h-screen bg-white text-black selection:bg-black/10 selection:text-black font-sans overflow-x-hidden">
-      <MinimalHeader />
+    <main className="min-h-screen bg-white text-black selection:bg-black/10 selection:text-black font-sans">
+      {/* The horizontal clip lives on this wrapper, not on <main>: on <main> it
+          degrades iOS touch-scroll for any horizontal strip on the page
+          (motion-interaction-rulebook.md §5.5). */}
+      <div className="relative w-full overflow-hidden">
+        <MinimalHeader />
 
-      {/* ── HERO ─────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-center items-start px-6 pt-24 pb-16 bg-white overflow-hidden">
-        <GradientMesh image={config.hero.backgroundImage} overlay="spotlight" />
+        {/* ── HERO ─────────────────────────────────────── */}
+        <section className="relative min-h-screen flex flex-col justify-center items-start px-6 pt-24 pb-16 bg-white overflow-hidden">
+          <GradientMesh
+            image={config.hero.backgroundImage}
+            overlay="spotlight"
+          />
 
-        <div className="relative z-10 text-center max-w-6xl mx-auto flex flex-col items-center mt-0">
-          <Reveal
-            immediate
-            as="p"
-            y={20}
-            delay={0.2}
-            duration={0.8}
-            className="pa-text-scrim text-sm font-bold tracking-[0.4em] text-zinc-600 uppercase mb-8"
-          >
-            {config.hero.tagline}
-          </Reveal>
-          <Reveal
-            immediate
-            as="h1"
-            y={30}
-            scale={0.95}
-            delay={0.3}
-            duration={1}
-            className="pa-headline-gradient text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-6 leading-[1.12] [filter:drop-shadow(0_0_10px_rgba(255,255,255,0.95))_drop-shadow(0_0_28px_rgba(255,255,255,0.85))] whitespace-pre-line"
-          >
-            {config.hero.title}
-          </Reveal>
-          <Reveal
-            immediate
-            as="p"
-            y={20}
-            delay={0.5}
-            duration={0.8}
-            className="pa-text-scrim text-xl md:text-2xl text-zinc-700 font-medium tracking-tight mb-10 max-w-2xl"
-          >
-            {config.hero.subtitle}
-          </Reveal>
-
-          {/* Country selector — drives the destination panel + form prefill */}
-          <Reveal immediate y={20} delay={0.55} duration={0.8}>
-            <DestinationChips
-              destinations={DESTINATIONS}
-              selected={destination}
-              onSelect={handleDestinationSelect}
-            />
-          </Reveal>
-
-          <Reveal
-            immediate
-            y={20}
-            delay={0.65}
-            duration={0.8}
-            className="mt-10"
-          >
-            <a
-              href="#models"
-              className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white bg-black rounded-full overflow-hidden transition-transform hover:scale-105 shadow-[0_10px_40px_rgba(0,0,0,0.1)]"
+          <div className="relative z-10 text-center max-w-6xl mx-auto flex flex-col items-center mt-0">
+            <Reveal
+              immediate
+              as="p"
+              y={20}
+              delay={0.12}
+              duration={0.8}
+              className="pa-text-scrim text-sm font-bold tracking-[0.4em] text-zinc-600 uppercase mb-8"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                See the cars we import
-                <ArrowRight
-                  size={18}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </span>
-            </a>
-          </Reveal>
-        </div>
-      </section>
+              {config.hero.tagline}
+            </Reveal>
+            <Reveal
+              immediate
+              as="h1"
+              y={30}
+              scale={0.95}
+              delay={0.18}
+              duration={1}
+              className="pa-headline-gradient text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-6 leading-[1.12] [filter:drop-shadow(0_0_10px_rgba(255,255,255,0.95))_drop-shadow(0_0_28px_rgba(255,255,255,0.85))] whitespace-pre-line"
+            >
+              {config.hero.title}
+            </Reveal>
+            <Reveal
+              immediate
+              as="p"
+              y={20}
+              delay={0.31}
+              duration={0.8}
+              className="pa-text-scrim text-xl md:text-2xl text-zinc-700 font-medium tracking-tight mb-10 max-w-2xl"
+            >
+              {config.hero.subtitle}
+            </Reveal>
 
-      {/* ── DESTINATION PANEL ────────────────────────── */}
-      <DestinationPanel
-        destination={destination}
-        emptyHeadline="Import direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
-        emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and give you the whole landed figure itemised — the CNF price you pay us for the car, shipping and marine cover to your port, and the duty and taxes you pay on arrival. Choose your destination above to see the rules and timeline for your country."
-      />
+            {/* Country selector — drives the destination panel + form prefill */}
+            <Reveal immediate y={20} delay={0.34} duration={0.8}>
+              <DestinationChips
+                destinations={DESTINATIONS}
+                selected={destination}
+                onSelect={handleDestinationSelect}
+              />
+            </Reveal>
 
-      {/* ── MODEL CARDS, BY CATEGORY ─────────────────── */}
-      <section
-        id="models"
-        className="py-24 md:py-32 px-6 bg-white relative z-10 border-t border-black/5 scroll-mt-24"
-      >
-        <div className="max-w-[1400px] mx-auto">
-          <Reveal
-            y={30}
-            duration={0.7}
-            className="text-center mb-10 md:mb-14 max-w-3xl mx-auto"
-          >
-            <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
-              Select a model to begin
-            </p>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
-              Choose the car you want to import.
-            </h2>
-            <p className="text-lg text-zinc-500 font-light">
-              Every model below is one we export regularly from Japan. Select one and
-              we will open the inquiry form with it filled in, or use the card
-              at the end to tell us about something else.
-            </p>
-          </Reveal>
-
-          {/* Jump nav — the grid is long enough that a van buyer shouldn't have
-              to scroll past every hatchback to reach the Noah. */}
-          <Reveal
-            y={16}
-            duration={0.5}
-            className="flex flex-wrap justify-center gap-2 md:gap-3 mb-14 md:mb-20"
-          >
-            {MODEL_GROUPS.map((group) => (
+            <Reveal
+              immediate
+              y={20}
+              delay={0.4}
+              duration={0.8}
+              className="mt-10"
+            >
               <a
-                key={group.id}
-                href={`#${group.id}`}
-                className="px-5 py-2.5 rounded-full text-sm font-bold border border-black/15 text-black bg-white hover:border-black/40 hover:-translate-y-0.5 transition-all duration-300"
+                href="#models"
+                className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white bg-black rounded-full overflow-hidden transition-feedback hover:scale-[1.03] shadow-[0_10px_40px_rgba(0,0,0,0.1)]"
               >
-                {group.label}
+                <span className="relative z-10 flex items-center gap-2">
+                  See the cars we import
+                  <ArrowRight
+                    size={18}
+                    className="group-hover:translate-x-1 transition-feedback"
+                  />
+                </span>
               </a>
-            ))}
-          </Reveal>
+            </Reveal>
+          </div>
+        </section>
 
-          {MODEL_GROUPS.map((group, groupIndex) => (
-            <div
-              key={group.id}
-              id={group.id}
-              className="scroll-mt-28 mb-16 md:mb-24 last:mb-0"
+        {/* ── DESTINATION PANEL ────────────────────────── */}
+        <DestinationPanel
+          destination={destination}
+          emptyHeadline="Import direct from Japan — a grade 4+ car, inspected before you pay, with one landed price and the paperwork support to import it."
+          emptyBody="Tell us the model and spec you want. We search dealers and auctions across Japan, send you the grade and our inspection findings before any money moves, and give you the whole landed figure itemised — the CNF price you pay us for the car, shipping and marine cover to your port, and the duty and taxes you pay on arrival. Choose your destination above to see the rules and timeline for your country."
+        />
+
+        {/* ── MODEL CARDS, BY CATEGORY ─────────────────── */}
+        <section
+          id="models"
+          className="py-24 md:py-32 px-6 bg-white relative z-10 border-t border-black/5 scroll-mt-24"
+        >
+          <div className="max-w-[1400px] mx-auto">
+            <Reveal
+              y={30}
+              duration={0.7}
+              className="text-center mb-10 md:mb-14 max-w-3xl mx-auto"
             >
-              <Reveal y={24} duration={0.6} className="mb-8 md:mb-10">
-                <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-3">
-                  {group.label}
-                </p>
-                <h3 className="text-2xl md:text-4xl font-bold tracking-tighter text-black mb-3">
-                  {group.title}
-                </h3>
-                <p className="text-base md:text-lg text-zinc-500 font-light max-w-3xl">
-                  {group.blurb}
-                </p>
-              </Reveal>
+              <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-4">
+                Select a model to begin
+              </p>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter text-black mb-5">
+                Choose the car you want to import.
+              </h2>
+              <p className="text-lg text-zinc-500 font-light">
+                Every model below is one we export regularly from Japan. Select
+                one and we will open the inquiry form with it filled in, or use
+                the card at the end to tell us about something else.
+              </p>
+            </Reveal>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                {group.cars.map((model, index) => (
-                  <Reveal
-                    key={model.name}
-                    y={24}
-                    delay={(index % 4) * 0.06}
-                    duration={0.5}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => handleModelSelect(model)}
-                      aria-label={`Enquire about importing a ${model.name} from Japan`}
-                      className="group relative w-full aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-black/10 bg-zinc-900 hover:border-black/40 hover:shadow-[0_24px_50px_rgba(0,0,0,0.18)] hover:-translate-y-1 transition-all duration-300 text-left"
+            {/* Jump nav — the grid is long enough that a van buyer shouldn't have
+              to scroll past every hatchback to reach the Noah. */}
+            <Reveal
+              y={16}
+              duration={0.5}
+              className="flex flex-wrap justify-center gap-2 md:gap-3 mb-14 md:mb-20"
+            >
+              {MODEL_GROUPS.map((group) => (
+                <a
+                  key={group.id}
+                  href={`#${group.id}`}
+                  className="px-5 py-2.5 rounded-full text-sm font-bold border border-black/15 text-black bg-white hover:border-black/40 hover:-translate-y-0.5 transition-feedback"
+                >
+                  {group.label}
+                </a>
+              ))}
+            </Reveal>
+
+            {MODEL_GROUPS.map((group, groupIndex) => (
+              <div
+                key={group.id}
+                id={group.id}
+                className="scroll-mt-28 mb-16 md:mb-24 last:mb-0"
+              >
+                <Reveal y={24} duration={0.6} className="mb-8 md:mb-10">
+                  <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 uppercase mb-3">
+                    {group.label}
+                  </p>
+                  <h3 className="text-2xl md:text-4xl font-bold tracking-tighter text-black mb-3">
+                    {group.title}
+                  </h3>
+                  <p className="text-base md:text-lg text-zinc-500 font-light max-w-3xl">
+                    {group.blurb}
+                  </p>
+                </Reveal>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                  {group.cars.map((model, index) => (
+                    <Reveal
+                      key={model.name}
+                      y={24}
+                      delay={(index % 4) * 0.06}
+                      duration={0.5}
                     >
-                      {/* The card matches the aspect ratio of the source image,
+                      <button
+                        type="button"
+                        onClick={() => handleModelSelect(model)}
+                        aria-label={`Enquire about importing a ${model.name} from Japan`}
+                        className="group relative w-full aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-black/10 bg-zinc-900 hover:border-black/40 hover:shadow-[0_24px_50px_rgba(0,0,0,0.18)] hover:-translate-y-1 transition-feedback text-left"
+                      >
+                        {/* The card matches the aspect ratio of the source image,
                           so object-cover never actually has anything to crop —
                           the previous fixed-height card cut the wheels off. */}
-                      <img
-                        src={model.image}
-                        alt={`${model.name} exported from Japan by Providence Auto`}
-                        loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 ease-out"
-                      />
-                      {/* Legibility gradient behind the label */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-2">
-                        <span className="flex flex-col leading-tight">
-                          <span className="text-white text-base md:text-lg font-bold tracking-tight drop-shadow-sm">
-                            {model.name}
+                        <img
+                          src={model.image}
+                          alt={`${model.name} exported from Japan by Providence Auto`}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-[1.03] transition-feedback"
+                        />
+                        {/* Legibility gradient behind the label */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                        <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-2">
+                          <span className="flex flex-col leading-tight">
+                            <span className="text-white text-base md:text-lg font-bold tracking-tight drop-shadow-sm">
+                              {model.name}
+                            </span>
+                            <span className="text-white/70 text-xs font-medium drop-shadow-sm">
+                              {model.blurb}
+                            </span>
                           </span>
-                          <span className="text-white/70 text-xs font-medium drop-shadow-sm">
-                            {model.blurb}
+                          <span className="shrink-0 w-8 h-8 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-feedback">
+                            <ArrowRight size={15} className="text-white" />
                           </span>
-                        </span>
-                        <span className="shrink-0 w-8 h-8 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                          <ArrowRight size={15} className="text-white" />
-                        </span>
-                      </div>
-                    </button>
-                  </Reveal>
-                ))}
+                        </div>
+                      </button>
+                    </Reveal>
+                  ))}
 
-                {/* Escape hatch for anything not on the shortlist, parked at the
+                  {/* Escape hatch for anything not on the shortlist, parked at the
                     end of the final group. Deliberately styled as an outline
                     rather than a photo card so it reads as an action, not one
                     more vehicle. */}
-                {groupIndex === MODEL_GROUPS.length - 1 && (
-                  <Reveal
-                    y={24}
-                    delay={(group.cars.length % 4) * 0.06}
-                    duration={0.5}
-                  >
-                    <button
-                      type="button"
-                      onClick={handleOpenBlankInquiry}
-                      aria-label="Enquire about a model that is not listed"
-                      className="group w-full aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-dashed border-black/20 bg-zinc-50/60 hover:border-black/40 hover:bg-white hover:shadow-[0_24px_50px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center text-center px-4"
+                  {groupIndex === MODEL_GROUPS.length - 1 && (
+                    <Reveal
+                      y={24}
+                      delay={(group.cars.length % 4) * 0.06}
+                      duration={0.5}
                     >
-                      <span className="w-11 h-11 rounded-full bg-black text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                        <Plus size={20} />
-                      </span>
-                      <span className="text-black text-base md:text-lg font-bold tracking-tight">
-                        More
-                      </span>
-                      <span className="text-zinc-500 text-xs font-medium mt-0.5">
-                        Tell us any make or model
-                      </span>
-                    </button>
-                  </Reveal>
-                )}
+                      <button
+                        type="button"
+                        onClick={handleOpenBlankInquiry}
+                        aria-label="Enquire about a model that is not listed"
+                        className="group w-full aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-dashed border-black/20 bg-zinc-50/60 hover:border-black/40 hover:bg-white hover:shadow-[0_24px_50px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-feedback flex flex-col items-center justify-center text-center px-4"
+                      >
+                        <span className="w-11 h-11 rounded-full bg-black text-white flex items-center justify-center mb-3 group-hover:scale-[1.03] transition-feedback">
+                          <Plus size={20} />
+                        </span>
+                        <span className="text-black text-base md:text-lg font-bold tracking-tight">
+                          More
+                        </span>
+                        <span className="text-zinc-500 text-xs font-medium mt-0.5">
+                          Tell us any make or model
+                        </span>
+                      </button>
+                    </Reveal>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          <Reveal y={20} duration={0.6} className="text-center mt-12">
-            <p className="text-zinc-500 font-light max-w-3xl mx-auto">
-              This is a shortlist, not our catalogue. If you are after a kei
-              truck, a Toyota Hiace, a GR-badged model or anything else sold in
-              Japan,{" "}
-              <a
-                href="#inquiry"
-                className="text-black font-medium underline decoration-1 underline-offset-4 hover:decoration-2"
-              >
-                describe it in the inquiry form
-              </a>{" "}
-              and we will find it in Japan for you.
+            <Reveal y={20} duration={0.6} className="text-center mt-12">
+              <p className="text-zinc-500 font-light max-w-3xl mx-auto">
+                This is a shortlist, not our catalogue. If you are after a kei
+                truck, a Toyota Hiace, a GR-badged model or anything else sold
+                in Japan,{" "}
+                <a
+                  href="#inquiry"
+                  className="text-black font-medium underline decoration-1 underline-offset-4 hover:decoration-2"
+                >
+                  describe it in the inquiry form
+                </a>{" "}
+                and we will find it in Japan for you.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Live inventory scoped to this campaign's tag (mirrors the URL slug). */}
+        <div className="px-6 md:px-8 bg-white relative z-10 border-t border-black/5">
+          <div className="max-w-[1400px] mx-auto">
+            <GalleryPreview
+              tags={[CAMPAIGN_TAG]}
+              eyebrow="In Stock"
+              title="Available Now From Japan"
+              subtitle="Cars we have already found and graded in Japan, ready to ship to your country."
+            />
+          </div>
+        </div>
+
+        {/* ── MANIFESTO / INTRO ────────────────────────── */}
+        <section className="py-32 md:py-48 px-6 bg-white border-y border-black/5 relative z-10 overflow-hidden">
+          <div className="max-w-5xl mx-auto text-center">
+            <Reveal
+              as="p"
+              className="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-tight text-zinc-400"
+            >
+              {config.intro.text.replace(config.intro.highlight, "")}{" "}
+              <span className="text-black drop-shadow-sm">
+                {config.intro.highlight}
+              </span>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── VALUE PROPS ──────────────────────────────── */}
+        <section className="py-32 px-6 max-w-[1400px] mx-auto bg-white relative z-10">
+          <Reveal y={40} duration={0.8} className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-6 uppercase">
+              {config.valueProps.title}
+            </h2>
+          </Reveal>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-24">
+            <div className="space-y-6">
+              {config.valueProps.features.map((feature, index) => (
+                <Reveal
+                  key={index}
+                  y={40}
+                  x={-20}
+                  delay={index * 0.1}
+                  duration={0.8}
+                  className="relative overflow-hidden group flex flex-col items-start p-8 rounded-[2rem] bg-transparent hover:bg-zinc-50 transition-feedback border border-transparent hover:border-black/5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)]"
+                >
+                  <div
+                    className={`absolute -bottom-24 -right-24 w-64 h-64 rounded-full blur-[80px] bg-transparent transition-colors duration-700 ${feature.glowColor}`}
+                  />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="p-3 bg-black/5 border border-black/10 rounded-2xl group-hover:bg-black group-hover:border-black transition-colors duration-500">
+                        <feature.icon className="text-black h-6 w-6 group-hover:text-white transition-colors duration-500" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-black group-hover:translate-x-1.5 transition-feedback">
+                        {feature.title}
+                      </h3>
+                    </div>
+                    <p className="text-zinc-500 text-lg leading-relaxed font-light pl-16">
+                      {feature.desc}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            <Reveal
+              y={0}
+              scale={0.95}
+              duration={1}
+              className="relative h-[600px] lg:h-[800px] rounded-[2.5rem] overflow-hidden bg-zinc-200"
+            >
+              <img
+                src={config.valueProps.containerImage}
+                alt="A Mercedes-Benz G-Class loaded onto a transporter — Providence Auto global logistics for Japanese car imports"
+                className="w-full h-full object-cover"
+              />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── THE TOOLS, DEMONSTRATED (server-rendered, passed in) ── */}
+        {tools}
+
+        {/* ── INQUIRY FORM + FAQ ───────────────────────── */}
+        <section
+          id="inquiry"
+          className="py-32 px-6 relative flex flex-col justify-center items-center bg-zinc-50 border-t border-black/5 z-10 overflow-hidden scroll-mt-20"
+        >
+          <Reveal
+            y={40}
+            duration={1}
+            className="relative z-10 text-center max-w-4xl mx-auto mb-10"
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-black mb-6">
+              Tell us exactly what you want.
+            </h2>
+            <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
+              Tell us the car you are after and we will find it in Japan,{" "}
+              <span className="text-black font-medium">graded 4 or above</span>,
+              and come back to you with a full landed-cost quote for{" "}
+              {destination?.formCountry ?? "your country"} before you commit to
+              anything.
             </p>
           </Reveal>
-        </div>
-      </section>
 
-      {/* Live inventory scoped to this campaign's tag (mirrors the URL slug). */}
-      <div className="px-6 md:px-8 bg-white relative z-10 border-t border-black/5">
-        <div className="max-w-[1400px] mx-auto">
-          <GalleryPreview
-            tags={[CAMPAIGN_TAG]}
-            eyebrow="In Stock"
-            title="Available Now From Japan"
-            subtitle="Cars we have already found and graded in Japan, ready to ship to your country."
-          />
-        </div>
-      </div>
-
-      {/* ── MANIFESTO / INTRO ────────────────────────── */}
-      <section className="py-32 md:py-48 px-6 bg-white border-y border-black/5 relative z-10 overflow-hidden">
-        <div className="max-w-5xl mx-auto text-center">
-          <Reveal
-            as="p"
-            className="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-tight text-zinc-400"
-          >
-            {config.intro.text.replace(config.intro.highlight, "")}{" "}
-            <span className="text-black drop-shadow-sm">
-              {config.intro.highlight}
-            </span>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── VALUE PROPS ──────────────────────────────── */}
-      <section className="py-32 px-6 max-w-[1400px] mx-auto bg-white relative z-10">
-        <Reveal y={40} duration={0.8} className="text-center mb-24">
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-black mb-6 uppercase">
-            {config.valueProps.title}
-          </h2>
-        </Reveal>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-24">
-          <div className="space-y-6">
-            {config.valueProps.features.map((feature, index) => (
-              <Reveal
-                key={index}
-                y={40}
-                x={-20}
-                delay={index * 0.1}
-                duration={0.8}
-                className="relative overflow-hidden group flex flex-col items-start p-8 rounded-[2rem] bg-transparent hover:bg-zinc-50 transition-all duration-500 border border-transparent hover:border-black/5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)]"
+          {/* Prefill notice */}
+          <AnimatePresence>
+            {showNotice && selectedModel && (
+              <motion.div
+                key="prefill-notice"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={springTransition()}
+                className="w-full max-w-3xl mx-auto mb-4 px-6 py-3 bg-sky-500/10 border border-sky-500/20 rounded-2xl text-sky-700 text-sm font-medium text-center relative z-20"
               >
-                <div
-                  className={`absolute -bottom-24 -right-24 w-64 h-64 rounded-full blur-[80px] bg-transparent transition-colors duration-700 ${feature.glowColor}`}
-                />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="p-3 bg-black/5 border border-black/10 rounded-2xl group-hover:bg-black group-hover:border-black transition-colors duration-500">
-                      <feature.icon className="text-black h-6 w-6 group-hover:text-white transition-colors duration-500" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-black group-hover:translate-x-2 transition-transform duration-500">
-                      {feature.title}
-                    </h3>
-                  </div>
-                  <p className="text-zinc-500 text-lg leading-relaxed font-light pl-16">
-                    {feature.desc}
-                  </p>
+                Inquiry pre-filled with{" "}
+                <strong>
+                  {selectedModel.make} {selectedModel.model}
+                </strong>
+                {destination?.formCountry && (
+                  <>
+                    {" "}
+                    for <strong>{destination.formCountry}</strong>
+                  </>
+                )}
+                . Now add your spec below.
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="w-full relative z-20">
+            <Suspense
+              fallback={
+                <div className="w-full max-w-3xl mx-auto h-[550px] flex items-center justify-center bg-white/80 backdrop-blur-xl rounded-[2.5rem] border border-black/5 text-zinc-500">
+                  Loading form...
                 </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal
-            y={0}
-            scale={0.95}
-            duration={1}
-            className="relative h-[600px] lg:h-[800px] rounded-[2.5rem] overflow-hidden bg-zinc-200"
-          >
-            <img
-              src={config.valueProps.containerImage}
-              alt="A Mercedes-Benz G-Class loaded onto a transporter — Providence Auto global logistics for Japanese car imports"
-              className="w-full h-full object-cover"
-            />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── THE TOOLS, DEMONSTRATED (server-rendered, passed in) ── */}
-      {tools}
-
-      {/* ── INQUIRY FORM + FAQ ───────────────────────── */}
-      <section
-        id="inquiry"
-        className="py-32 px-6 relative flex flex-col justify-center items-center bg-zinc-50 border-t border-black/5 z-10 overflow-hidden scroll-mt-20"
-      >
-        <Reveal
-          y={40}
-          duration={1}
-          className="relative z-10 text-center max-w-4xl mx-auto mb-10"
-        >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-black mb-6">
-            Tell us exactly what you want.
-          </h2>
-          <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
-            Tell us the car you are after and we will find it in Japan,{" "}
-            <span className="text-black font-medium">graded 4 or above</span>,
-            and come back to you with a full landed-cost quote for{" "}
-            {destination?.formCountry ?? "your country"} before you commit to
-            anything.
-          </p>
-        </Reveal>
-
-        {/* Prefill notice */}
-        <AnimatePresence>
-          {showNotice && selectedModel && (
-            <motion.div
-              key="prefill-notice"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.35 }}
-              className="w-full max-w-3xl mx-auto mb-4 px-6 py-3 bg-sky-500/10 border border-sky-500/20 rounded-2xl text-sky-700 text-sm font-medium text-center relative z-20"
+              }
             >
-              Inquiry pre-filled with{" "}
-              <strong>
-                {selectedModel.make} {selectedModel.model}
-              </strong>
-              {destination?.formCountry && (
-                <>
-                  {" "}
-                  for <strong>{destination.formCountry}</strong>
-                </>
-              )}
-              . Now add your spec below.
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div className="w-full relative z-20">
-          <Suspense
-            fallback={
-              <div className="w-full max-w-3xl mx-auto h-[550px] flex items-center justify-center bg-white/80 backdrop-blur-xl rounded-[2.5rem] border border-black/5 text-zinc-500">
-                Loading form...
-              </div>
-            }
-          >
-            {/* Keyed on the selection so switching models — or clearing it via
+              {/* Keyed on the selection so switching models — or clearing it via
                 the "More" card — remounts the form at step 1 with the new
                 prefill instead of merging into whatever was already typed.
                 RequestForm's prefill effect early-returns on an undefined
                 prefill, so without this remount "More" could not blank a form
                 that a model card had already filled. Matches the sibling
                 campaign pages, which all key this form. */}
-            <RequestForm
-              key={selectedModel?.name ?? "blank"}
-              prefill={prefill}
-            />
-          </Suspense>
-        </div>
+              <RequestForm
+                key={selectedModel?.name ?? "blank"}
+                prefill={prefill}
+              />
+            </Suspense>
+          </div>
 
-        <div className="mt-24 w-full relative z-20">
-          <FAQSection data={config.faqs} />
-        </div>
+          <div className="mt-24 w-full relative z-20">
+            <FAQSection data={config.faqs} />
+          </div>
 
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-black/5 blur-[120px] rounded-full pointer-events-none" />
-      </section>
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-black/5 blur-[120px] rounded-full pointer-events-none" />
+        </section>
 
-      {/* ── PARTNERS / AFFILIATES ────────────────────── */}
-      <section className="py-24 md:py-32 px-6 bg-white">
-        <GlobalPartnersStrip className="mt-0" />
-      </section>
+        {/* ── PARTNERS / AFFILIATES ────────────────────── */}
+        <section className="py-24 md:py-32 px-6 bg-white">
+          <GlobalPartnersStrip className="mt-0" />
+        </section>
 
-      {/* ── PREFERRED SOURCE ─────────────────────────── */}
-      <section className="px-6 pb-20 max-w-4xl mx-auto">
-        <PreferredSourceCallout />
-      </section>
+        {/* ── PREFERRED SOURCE ─────────────────────────── */}
+        <section className="px-6 pb-20 max-w-4xl mx-auto">
+          <PreferredSourceCallout />
+        </section>
 
-      <style jsx global>{`
+        <style jsx global>{`
                 .hide-scrollbar::-webkit-scrollbar {
                     display: none;
                 }
@@ -848,6 +860,7 @@ export default function JapanImportLanding({
                     scrollbar-width: none;
                 }
             `}</style>
+      </div>
     </main>
   );
 }

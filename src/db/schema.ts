@@ -253,6 +253,13 @@ export const specDossiers = pgTable("specdossier", {
   expectedAvailability: text("expectedAvailability").default("").notNull(),
   /** Slug of the /latest-news announcement this model was launched in. */
   newsSlug: text("newsSlug").default("").notNull(),
+  // --- Motorcycles and landing-page tags (drizzle/0011) ------------------
+  /** "car" or "motorcycle" — see src/lib/vehicle-type.ts. */
+  vehicleType: text("vehicleType").default("car").notNull(),
+  // Landing-page tags as slugs ("luxury-cars"); each has a page at
+  // /import/<tag>. Separate from `searchTags`, which are free-form gallery
+  // filter keywords. Registry and parsing: src/config/vehicle-tags.ts.
+  tags: text("tags").array().notNull().default([]),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -332,7 +339,8 @@ export const dealerInquiries = pgTable(
     cars: jsonb("cars").notNull().default([]),
     notes: text("notes"),
     // The inquiry's own vocabulary — DEALER_INQUIRY_STATUSES — never the B2C
-    // lead statuses, which drive the ad-platform conversion ledger.
+    // lead statuses. It drives its own conversion ledger below, through
+    // src/lib/dealerConversion.ts.
     status: text("status").default("New").notNull(),
     statusHistory: jsonb("statusHistory").notNull().default([]),
     assignedToId: text("assignedToId").references(() => users.id, {
@@ -351,12 +359,99 @@ export const dealerInquiries = pgTable(
     fbclid: text("fbclid"),
     fbc: text("fbc"),
     fbp: text("fbp"),
+    // Offline-conversion ledger (drizzle/0009_dealer_conversion_ledger.sql).
+    // NULL = not uploaded yet; a timestamp = accepted, never send again.
+    metaQualifiedSentAt: timestamp("metaQualifiedSentAt"),
+    metaOnboardedSentAt: timestamp("metaOnboardedSentAt"),
+    googleQualifiedSentAt: timestamp("googleQualifiedSentAt"),
+    googleOnboardedSentAt: timestamp("googleOnboardedSentAt"),
+    // Soft delete (drizzle/0010_dealer_inquiry_soft_delete.sql). A deleted
+    // inquiry is hidden from everyone but admins, who see it under Deleted and
+    // can restore it. The row itself is never removed.
+    deletedAt: timestamp("deletedAt"),
+    deletedByName: text("deletedByName"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
   (table) => [
     index("dealerinquiry_created_idx").on(table.createdAt),
     index("dealerinquiry_assigned_idx").on(table.assignedToId),
+  ],
+);
+
+// Client KYC records from /kyc (drizzle/0012_kyc_submission_table.sql). The
+// rules and the wording of the declarations live in src/lib/kyc.ts.
+export const kycSubmissions = pgTable(
+  "kycsubmission",
+  {
+    id: text("id").primaryKey(),
+    fullName: text("fullName").notNull(),
+    // YYYY-MM-DD, kept as text so no timezone can move the day.
+    dateOfBirth: text("dateOfBirth").notNull(),
+    // Country names, spelled as COUNTRIES spells them.
+    nationality: text("nationality").notNull(),
+    addressLine1: text("addressLine1").notNull(),
+    addressLine2: text("addressLine2"),
+    city: text("city").notNull(),
+    region: text("region"),
+    postcode: text("postcode"),
+    country: text("country").notNull(),
+    // E.164, checked against its dial code before it is stored.
+    phone: text("phone").notNull(),
+    email: text("email").notNull(),
+    // "passport", "national-id" or "driving-licence" (ID_DOCUMENT_TYPES).
+    idDocumentType: text("idDocumentType").notNull(),
+    // Object keys in the KYC bucket, never public URLs: the files are only
+    // ever read through the staff-only route at /admin/kyc/<id>/document/<side>.
+    idFrontKey: text("idFrontKey").notNull(),
+    idFrontType: text("idFrontType").notNull(),
+    // Null for a passport, which has no back worth photographing.
+    idBackKey: text("idBackKey"),
+    idBackType: text("idBackType"),
+    paymentCountry: text("paymentCountry").notNull(),
+    bankName: text("bankName").notNull(),
+    sourceOfFunds: text("sourceOfFunds").notNull(),
+    sourceOfFundsDetail: text("sourceOfFundsDetail"),
+    // The two declarations are required to submit, so both are always true;
+    // they are stored anyway, with when and from where they were made.
+    sanctionsDeclared: boolean("sanctionsDeclared").notNull(),
+    pepDeclared: boolean("pepDeclared").notNull(),
+    declaredAt: timestamp("declaredAt").notNull(),
+    submittedIp: text("submittedIp"),
+    userAgent: text("userAgent"),
+    // KYC_STATUSES. The office checks are the staff's own screening, apart
+    // from the customer's declarations; Approved needs both.
+    status: text("status").default("Submitted").notNull(),
+    idVerified: boolean("idVerified").default(false).notNull(),
+    sanctionsScreened: boolean("sanctionsScreened").default(false).notNull(),
+    reviewNotes: text("reviewNotes"),
+    reviewedById: text("reviewedById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    reviewedByName: text("reviewedByName"),
+    reviewedAt: timestamp("reviewedAt"),
+    // Records sent before 2026-11-03 carry the ?rep= code they arrived on.
+    // Nothing is assigned from it any more: a KYC is assigned by hand, or
+    // from the lead it is linked to.
+    repCode: text("repCode"),
+    assignedToId: text("assignedToId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    assignedToName: text("assignedToName"),
+    // "manual" or "lead" (taken from the linked lead's consultant); null when
+    // unassigned (drizzle/0013_kyc_lead_link.sql).
+    assignmentMethod: text("assignmentMethod"),
+    // The system lead this customer's KYC belongs to — linked from the admin
+    // panel, or created there from the KYC itself.
+    requestId: text("requestId").references(() => requests.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("kycsubmission_created_idx").on(table.createdAt),
+    index("kycsubmission_request_idx").on(table.requestId),
   ],
 );
 

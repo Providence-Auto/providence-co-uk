@@ -204,7 +204,7 @@ export default function TeamProfileClient({
                   Start an inquiry
                   <ArrowRight
                     size={16}
-                    className="group-hover:translate-x-1 transition-transform"
+                    className="group-hover:translate-x-1 transition-feedback"
                   />
                 </a>
               </Reveal>
@@ -411,7 +411,7 @@ export default function TeamProfileClient({
                           src={img}
                           alt={title}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.2s] ease-out"
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-feedback"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-zinc-300">

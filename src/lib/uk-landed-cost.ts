@@ -75,6 +75,12 @@ export const VAT_LABELS: Record<VatBasis, string> = {
 //
 // Two groups. The base costs land on every car; the IVA costs land only on a car
 // that has to sit the Individual Vehicle Approval test.
+//
+// Business instruction 2026-10-29 departs from the workbook in two places: the
+// £275 admin fee is charged on IVA cars only (the desk does the registration
+// admin itself for the rest), and the fog-light and speedo conversion is a £200
+// base line on every car, with the IVA supplier's higher price for the same work
+// carried as a £170 surcharge in the IVA block.
 
 // Customs clearance and port unloading are quoted per CONTAINER, not per car,
 // and the workbook divides them across a three-car container. That divisor is a
@@ -111,8 +117,10 @@ export const POST_BORDER_BASE_ITEMS = {
   roadTax6Months: 206.25,
   mot: 75, // agent-arranged; DVSA's cap on the test itself is £54.85
   dvlaFirstRegApplication: 0, // the workbook reads "TBC" — unpriced, not free
-  adminFee: 275,
   numberPlates: 50,
+  // Rear fog light and mph speedo — road-legality work every import needs,
+  // whether or not it sits an IVA test.
+  fogLightSpeedoConversion: 200,
   // General block. Retail preparation, inside the landed cost from the
   // 15 September 2026 workbook onward — see sourcing-analyzer-methodology.md §8,
   // where this reverses a standing assumption and is logged as pending.
@@ -122,8 +130,8 @@ export const POST_BORDER_BASE_ITEMS = {
 } as const;
 
 export const POST_BORDER_IVA_ITEMS = {
-  speedoConversion: 175,
-  rearFogLight: 195,
+  adminFee: 275, // registration admin; the desk does it in-house for non-IVA cars
+  fogLightSpeedoSurcharge: 170, // the IVA supplier's price over the £200 base line
   ivaTestFee: 199, // DVSA statutory fee, normal IVA in working hours
   ivaTestPresentation: 150, // delivering the car to the test centre and presenting it
 } as const;
@@ -134,7 +142,7 @@ export type PostBorderIvaKey = keyof typeof POST_BORDER_IVA_ITEMS;
 const sumItems = (o: Record<string, number>) =>
   Object.values(o).reduce((a, b) => a + b, 0);
 
-// £1,732.92 base; +£719 when the IVA test applies → £2,451.92 all-in.
+// £1,657.92 base; +£794 when the IVA test applies → £2,451.92 all-in.
 export const POST_BORDER_BASE = sumItems(POST_BORDER_BASE_ITEMS);
 export const POST_BORDER_IVA = sumItems(POST_BORDER_IVA_ITEMS);
 
@@ -150,13 +158,13 @@ export const POST_BORDER_LABELS: Record<
   roadTax6Months: "Road tax (6 months)",
   mot: "MOT (agent-arranged)",
   dvlaFirstRegApplication: "DVLA first-reg application (TBC)",
-  adminFee: "Admin fee",
   numberPlates: "Number plates",
+  fogLightSpeedoConversion: "Fog light & speedo conversion",
   refurb: "Refurb",
   cleaning: "Cleaning",
   warranty: "Warranty provision",
-  speedoConversion: "Speedo conversion",
-  rearFogLight: "Rear fog light installation",
+  adminFee: "Admin fee",
+  fogLightSpeedoSurcharge: "Fog light & speedo surcharge (IVA)",
   ivaTestFee: "IVA test fee",
   ivaTestPresentation: "IVA test presentation",
 };
@@ -172,12 +180,13 @@ export const POST_BORDER_HINTS: Partial<
   mot: "Supplier price. DVSA caps the test itself at £54.85",
   dvlaFirstRegApplication:
     "Not yet priced — the alternate supplier quotes £790",
+  fogLightSpeedoSurcharge: "On top of the £200 base line",
   ivaTestFee: "DVSA statutory fee, normal IVA in working hours",
 };
 
 // A vehicle 10 years or older is outside the IVA scheme, so the approval block
-// falls away. Nothing is substituted for it: the MOT is a base line charged on
-// every car either way.
+// falls away. Nothing is substituted for it: the MOT and the fog-light and
+// speedo conversion are base lines charged on every car either way.
 export const IVA_EXEMPT_AGE = 10;
 
 // A car bought at 9-and-a-bit years usually clears customs and is registered

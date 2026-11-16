@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { scrollBehavior } from "@/lib/fluid";
 
 export default function MinimalHeader() {
   const pathname = usePathname();
@@ -12,14 +13,14 @@ export default function MinimalHeader() {
     if (pathname === "/") {
       document
         .getElementById("pathway-section")
-        ?.scrollIntoView({ behavior: "smooth" });
+        ?.scrollIntoView({ behavior: scrollBehavior() });
       return;
     }
 
     // Any page with an embedded inquiry form: scroll directly to it
     const formEl = document.getElementById("inquiry-form");
     if (formEl) {
-      formEl.scrollIntoView({ behavior: "smooth" });
+      formEl.scrollIntoView({ behavior: scrollBehavior() });
       return;
     }
 
@@ -52,12 +53,7 @@ export default function MinimalHeader() {
 
           <button
             onClick={handleBeginInquiry}
-            className="px-6 py-2 text-sm font-medium text-white
-                        bg-sky-400/60 backdrop-blur-xl
-                        border border-sky-400/30
-                        shadow-[0_8px_32px_rgba(14,165,233,0.25)]
-                        hover:bg-sky-500/60 hover:shadow-[0_8px_12px_rgba(14,165,233,0.4)]
-                        rounded-full transition-all duration-300 active:scale-95"
+            className="px-6 py-2 text-sm font-medium text-white bg-sky-400/60 backdrop-blur-xl border border-sky-400/30 shadow-[0_8px_32px_rgba(14,165,233,0.25)] hover:bg-sky-500/60 hover:shadow-[0_8px_12px_rgba(14,165,233,0.4)] rounded-full transition-feedback active:scale-95"
           >
             Begin Inquiry
           </button>

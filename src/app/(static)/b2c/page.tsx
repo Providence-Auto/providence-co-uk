@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { DEFAULT_FAQ_CATEGORIES } from "@/components/faqSection";
 import ToolDemos from "@/components/tool-demos/ToolDemos";
+import {
+  breadcrumbJsonLd,
+  DEFAULT_OG_IMAGE,
+  faqJsonLd,
+  serviceJsonLd,
+} from "@/lib/seo";
 import B2CClient from "./B2CClient";
 
 // The page body is a client component (framer-motion hero), and a client
@@ -25,11 +33,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: { index: true, follow: true },
 };
@@ -38,8 +48,24 @@ export default function Page() {
   // The tracking demo is left out: the process rail above it already draws
   // the voyage on this page.
   return (
-    <B2CClient
-      tools={<ToolDemos cards={["inspection", "landed", "documents"]} />}
-    />
+    <>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([{ name: "Import a Car", path: PATH }]),
+          serviceJsonLd({
+            name: TITLE,
+            serviceType: "Vehicle import for private buyers",
+            path: PATH,
+            description: DESCRIPTION,
+            audience: "people",
+          }),
+          // The FAQ this page renders is the default list (B2CClient).
+          faqJsonLd(DEFAULT_FAQ_CATEGORIES.flatMap((c) => c.items)),
+        ]}
+      />
+      <B2CClient
+        tools={<ToolDemos cards={["inspection", "landed", "documents"]} />}
+      />
+    </>
   );
 }

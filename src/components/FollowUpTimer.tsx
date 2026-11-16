@@ -142,7 +142,14 @@ export default function FollowUpTimer({
     if (expiredRef.current) return;
     expiredRef.current = true;
     setExpired(true);
-    await expireFollowUpTimer(requestId);
+    const result = await expireFollowUpTimer(requestId);
+    // The server's clock is the judge. If it says the timer is not due yet,
+    // let the next minute's tick ask again rather than going quiet for good.
+    if (result.outcome === "not-due") {
+      expiredRef.current = false;
+      setExpired(false);
+      return;
+    }
     onExpiredRef.current?.();
   }, [requestId]);
 
@@ -274,8 +281,9 @@ export default function FollowUpTimer({
               Set Follow-up Reminder
             </DialogTitle>
             <p className="text-xs text-zinc-500 mt-0.5">
-              When the timer expires, the sales status will reset to{" "}
-              <strong>Action Required</strong> automatically.
+              When the timer expires, a lead nobody has updated since goes back
+              to <strong>Action Required</strong>. A status you set after the
+              reminder is kept.
             </p>
           </DialogHeader>
 

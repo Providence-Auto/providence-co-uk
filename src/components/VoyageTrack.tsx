@@ -136,7 +136,7 @@ export default function VoyageTrack({
                 fill={passed ? "#8b5cf6" : "#ffffff"}
                 stroke={passed ? "#8b5cf6" : "#d4d4d8"}
                 strokeWidth={2}
-                className="transition-all duration-300"
+                className="transition-colors duration-300"
               />
               {showLabels && (
                 <text

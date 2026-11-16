@@ -151,95 +151,100 @@ export default async function NewsCategoryPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
 
-      <main className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
-        <MinimalHeader />
+      <main className="min-h-screen bg-white text-black font-sans">
+        {/* The horizontal clip lives on this wrapper, not on <main>: on <main> it
+            degrades iOS touch-scroll for any horizontal strip on the page
+            (motion-interaction-rulebook.md §5.5). */}
+        <div className="relative w-full overflow-hidden">
+          <MinimalHeader />
 
-        <header className="px-6 pt-32 md:pt-36 pb-10 max-w-5xl mx-auto">
-          <Reveal y={16} duration={0.5} className="mb-6">
-            <Breadcrumbs
-              items={[
-                { label: "Home", href: "/" },
-                { label: "Automotive News", href: NEWS_BASE_PATH },
-                { label: meta.chip },
-              ]}
-            />
-          </Reveal>
-
-          <Reveal
-            as="p"
-            immediate
-            y={16}
-            duration={0.6}
-            className="text-sm font-bold tracking-[0.3em] text-sky-600 uppercase mb-4"
-          >
-            {meta.label}
-          </Reveal>
-          <Reveal
-            as="h1"
-            immediate
-            y={20}
-            duration={0.8}
-            className="text-4xl md:text-5xl font-bold tracking-tighter leading-[1.1] mb-5"
-          >
-            {meta.h1}
-          </Reveal>
-          <Reveal
-            immediate
-            y={16}
-            delay={0.1}
-            duration={0.6}
-            className="text-lg md:text-xl text-zinc-500 font-light max-w-2xl"
-          >
-            {meta.blurb}
-          </Reveal>
-        </header>
-
-        <section className="px-6 max-w-6xl mx-auto pb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {articles.map((article, i) => (
-              <NewsCard key={article.slug} article={article} index={i} />
-            ))}
-          </div>
-        </section>
-
-        {/* ── OTHER CATEGORIES ─────────────────────── */}
-        {others.length > 0 && (
-          <section className="px-6 max-w-5xl mx-auto pb-12">
-            <Reveal
-              y={20}
-              duration={0.5}
-              className="flex items-center gap-4 mb-6"
-            >
-              <p className="text-xs font-bold tracking-[0.3em] text-zinc-400 uppercase shrink-0">
-                Other topics
-              </p>
-              <div className="flex-1 h-px bg-black/5" />
+          <header className="px-6 pt-32 md:pt-36 pb-10 max-w-5xl mx-auto">
+            <Reveal y={16} duration={0.5} className="mb-6">
+              <Breadcrumbs
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: "Automotive News", href: NEWS_BASE_PATH },
+                  { label: meta.chip },
+                ]}
+              />
             </Reveal>
-            <div className="flex flex-wrap gap-2.5">
-              {others.map((c) => (
-                <Link
-                  key={c.slug}
-                  href={`${NEWS_CATEGORY_BASE_PATH}/${c.slug}`}
-                  className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:border-sky-500/40 hover:text-sky-600"
-                >
-                  {c.chip}
-                </Link>
+
+            <Reveal
+              as="p"
+              immediate
+              y={16}
+              duration={0.6}
+              className="text-sm font-bold tracking-[0.3em] text-sky-600 uppercase mb-4"
+            >
+              {meta.label}
+            </Reveal>
+            <Reveal
+              as="h1"
+              immediate
+              y={20}
+              duration={0.8}
+              className="text-4xl md:text-5xl font-bold tracking-tighter leading-[1.1] mb-5"
+            >
+              {meta.h1}
+            </Reveal>
+            <Reveal
+              immediate
+              y={16}
+              delay={0.1}
+              duration={0.6}
+              className="text-lg md:text-xl text-zinc-500 font-light max-w-2xl"
+            >
+              {meta.blurb}
+            </Reveal>
+          </header>
+
+          <section className="px-6 max-w-6xl mx-auto pb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {articles.map((article, i) => (
+                <NewsCard key={article.slug} article={article} index={i} />
               ))}
-              <Link
-                href={NEWS_BASE_PATH}
-                className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-zinc-50 px-4 py-2 text-sm font-bold text-sky-600 transition-colors hover:border-sky-500/40"
-              >
-                All news
-                <ArrowRight size={14} />
-              </Link>
             </div>
           </section>
-        )}
 
-        <div className="px-6 pb-20 max-w-3xl mx-auto">
-          <BlogCTA />
-          {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
-          <PreferredSourceCallout />
+          {/* ── OTHER CATEGORIES ─────────────────────── */}
+          {others.length > 0 && (
+            <section className="px-6 max-w-5xl mx-auto pb-12">
+              <Reveal
+                y={20}
+                duration={0.5}
+                className="flex items-center gap-4 mb-6"
+              >
+                <p className="text-xs font-bold tracking-[0.3em] text-zinc-400 uppercase shrink-0">
+                  Other topics
+                </p>
+                <div className="flex-1 h-px bg-black/5" />
+              </Reveal>
+              <div className="flex flex-wrap gap-2.5">
+                {others.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`${NEWS_CATEGORY_BASE_PATH}/${c.slug}`}
+                    className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:border-sky-500/40 hover:text-sky-600"
+                  >
+                    {c.chip}
+                  </Link>
+                ))}
+                <Link
+                  href={NEWS_BASE_PATH}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-zinc-50 px-4 py-2 text-sm font-bold text-sky-600 transition-colors hover:border-sky-500/40"
+                >
+                  All news
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            </section>
+          )}
+
+          <div className="px-6 pb-20 max-w-3xl mx-auto">
+            <BlogCTA />
+            {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
+            <PreferredSourceCallout />
+          </div>
         </div>
       </main>
     </>

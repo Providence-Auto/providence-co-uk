@@ -161,15 +161,16 @@ describe("post-border cost items", () => {
     expect(
       customsClearance + unloadingHandlingDocs + calibreAdminFee + transportFee,
     ).toBeCloseTo(721.67, 2);
-    // Registration (SMC): 55 + 206.25 + 75 + 0 (TBC) + 275 + 50.
+    // Registration (SMC): 55 + 206.25 + 75 + 0 (TBC) + 50, plus the £200
+    // fog-light and speedo conversion every car carries (2026-10-29).
     expect(
       POST_BORDER_BASE_ITEMS.dvlaRegistration +
         POST_BORDER_BASE_ITEMS.roadTax6Months +
         POST_BORDER_BASE_ITEMS.mot +
         POST_BORDER_BASE_ITEMS.dvlaFirstRegApplication +
-        POST_BORDER_BASE_ITEMS.adminFee +
-        POST_BORDER_BASE_ITEMS.numberPlates,
-    ).toBe(661.25);
+        POST_BORDER_BASE_ITEMS.numberPlates +
+        POST_BORDER_BASE_ITEMS.fogLightSpeedoConversion,
+    ).toBe(586.25);
     // General: refurb + cleaning + warranty.
     expect(
       POST_BORDER_BASE_ITEMS.refurb +
@@ -179,11 +180,11 @@ describe("post-border cost items", () => {
   });
 
   it("totals the desk's own line items, not a rounded allowance", () => {
-    // The workbook's own cells are 1732.9166… and 2451.9166…; the per-car
+    // The workbook's all-in cell is 2451.9166…; the per-car
     // container shares are rounded to the penny here, which is the whole of the
     // difference and vanishes at the resolution money is quoted in.
-    expect(POST_BORDER_BASE).toBeCloseTo(1_732.92, 2);
-    expect(POST_BORDER_IVA).toBe(719); // 175 + 195 + 199 + 150
+    expect(POST_BORDER_BASE).toBeCloseTo(1_657.92, 2);
+    expect(POST_BORDER_IVA).toBe(794); // 275 admin + 170 surcharge + 199 + 150
     expect(POST_BORDER_BASE + POST_BORDER_IVA).toBeCloseTo(2_451.92, 2);
   });
 
@@ -256,12 +257,12 @@ describe("clampTargetMargin", () => {
 // DEFAULT_OCEAN_FREIGHT_JPY, 10% duty, non-IVA UK costs, sold against a 10,550
 // UK median.
 //
-// Under the 15 September 2026 costs (freight ¥350,000, base UK costs £1,732.92)
-// this car returns 29.9% — a tenth of a point UNDER the 30% desk minimum, where
-// it used to return 32.2%. The freight cut saves ~£231 of CIF and the new UK
-// cost base adds ~£373, so the reference car is now a no-buy on the desk's own
-// policy. That is the arithmetic; whether it is the intended business answer is
-// logged as a pending question in brand-position.md §11.3.
+// Under the 15 September 2026 workbook (freight ¥350,000, base UK costs
+// £1,732.92) this car returned 29.9%, a tenth of a point under the 30% desk
+// minimum. The 2026-10-29 cost split takes the £275 admin fee off non-IVA cars
+// and adds the £200 fog-light and speedo line to every car, so the base is
+// £1,657.92 and the same car returns 31.4% — back over the minimum. The CIF and
+// duty still match the workbook; the UK cost line no longer does.
 describe("workbook parity", () => {
   const FX_PER_GBP = 216.72;
   const fxRate = 1 / FX_PER_GBP;
@@ -287,20 +288,20 @@ describe("workbook parity", () => {
     expect(Math.round(landed.cifGbp)).toBe(4_577);
     expect(Math.round(landed.duty)).toBe(458);
     expect(landed.vat).toBe(0); // reclaimed by the importer
-    expect(Math.round(landed.totalLanded)).toBe(6_768);
+    expect(Math.round(landed.totalLanded)).toBe(6_693);
   });
 
   it("reproduces the workbook's PNL and ROI, net of VAT", () => {
     const netResale = resaleExVat(10_550);
     expect(Math.round(netResale)).toBe(8_792);
     const pnl = netResale - landed.totalLanded;
-    expect(Math.round(pnl)).toBe(2_024);
-    expect(pnl / landed.totalLanded).toBeCloseTo(0.299, 3);
+    expect(Math.round(pnl)).toBe(2_099);
+    expect(pnl / landed.totalLanded).toBeCloseTo(0.314, 3);
   });
 
-  it("puts the reference car just under the desk's minimum ROI", () => {
+  it("puts the reference car just over the desk's minimum ROI", () => {
     const pnl = resaleExVat(10_550) - landed.totalLanded;
-    expect(pnl / landed.totalLanded).toBeLessThan(TARGET_MARGIN_PCT);
+    expect(pnl / landed.totalLanded).toBeGreaterThan(TARGET_MARGIN_PCT);
   });
 
   it("back-solves a ceiling bid that lands exactly on the target ROI", () => {
@@ -315,10 +316,10 @@ describe("workbook parity", () => {
       auctionFeeRate: AUCTION_FEE_RATE,
     });
     expect(r.achievable).toBe(true);
-    expect(Math.round(r.maxHammer)).toBe(599_048);
-    // The ceiling now sits below the 600,000 the same car is bought at, which is
-    // the same finding as the 29.9% above, stated as a bid.
-    expect(r.maxHammer).toBeLessThan(hammer);
+    expect(Math.round(r.maxHammer)).toBe(612_858);
+    // The ceiling sits above the 600,000 the same car is bought at, which is
+    // the same finding as the 31.4% above, stated as a bid.
+    expect(r.maxHammer).toBeGreaterThan(hammer);
 
     // A spreadsheet that holds duty fixed at the actual car's duty while solving
     // for a lower bid overshoots by ~0.3% and lands just under target. The

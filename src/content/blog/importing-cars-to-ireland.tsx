@@ -203,7 +203,7 @@ export default function Body() {
         </CheckLI>
         <CheckLI>
           <Strong>Nissan Note e-Power / Leaf</Strong> — lowest CO₂ bands; the
-          Leaf EV also captures the VRT relief before end-2026.
+          Leaf EV also captures the VRT relief before end-2028.
         </CheckLI>
         <CheckLI>
           <Strong>Suzuki Swift / kei cars</Strong> — low value + low CO₂ = very

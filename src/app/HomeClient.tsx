@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight, Building, Globe, Ship, User } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -8,7 +7,7 @@ import GalleryPreview from "@/components/GalleryPreview";
 import GlobalPartnersStrip from "@/components/GlobalPartnersStrip";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
-import { appleEase, Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/Reveal";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
 
 // The hero tagline. `lead` is the word set in the accent colour.
@@ -99,8 +98,10 @@ export default function HomeClient() {
             animation-direction: reverse;
           }
 
-          .marquee-container:hover .marquee-content {
-            animation-play-state: paused;
+          @media (hover: hover) and (pointer: fine) {
+            .marquee-container:hover .marquee-content {
+              animation-play-state: paused;
+            }
           }
 
           .marquee-item {
@@ -150,10 +151,13 @@ export default function HomeClient() {
         ========================================= */}
         <section className="relative w-full pt-24 md:pt-32 pb-16">
           {/* BACKGROUND LAYER */}
-          <motion.div
-            initial={{ scale: 1.05, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.5, ease: appleEase }}
+          {/* First screen, so an immediate reveal: the photo settles from 1.05
+             but is never held at opacity 0, which would postpone LCP (rule book §5.1). */}
+          <Reveal
+            immediate
+            y={0}
+            scale={1.05}
+            duration={1.5}
             className="absolute inset-0 z-0 pointer-events-none"
           >
             {/* Self-hosted, and a real <img> rather than a CSS background.
@@ -178,7 +182,7 @@ export default function HomeClient() {
             />
             {/* Gradient to seamlessly fade */}
             <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
-          </motion.div>
+          </Reveal>
 
           {/* Gradient-mesh style layered over the hero image (image kept) */}
           <GradientMesh fade={false} className="z-0 opacity-80" />
@@ -189,10 +193,10 @@ export default function HomeClient() {
             <div className="text-center max-w-5xl mx-auto mt-8 md:mt-12">
               <Reveal
                 immediate
-                as="h1"
+                as="p"
                 y={20}
                 scale={0.95}
-                delay={0.2}
+                delay={0.18}
                 duration={1}
                 className="pa-headline-gradient text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-4 md:mb-6 leading-[1.1] md:leading-[0.9]"
               >
@@ -201,13 +205,15 @@ export default function HomeClient() {
 
               <Reveal
                 immediate
-                as="p"
+                as="h1"
                 y={15}
-                delay={0.4}
+                delay={0.36}
                 duration={0.8}
                 className="text-xl sm:text-2xl md:text-3xl text-zinc-700 font-medium tracking-tight mt-6 md:mt-8 mb-4 md:mb-6"
               >
-                {/* Business instruction 2026-10-09: "Import", "From" and
+                {/* The H1 since 2026-11-03: the offer stated as scope (seo-page-rules.md
+                    P-01), with the showroom line above it as a plain line.
+                    Business instruction 2026-10-09: "Import", "From" and
                     "To" read in the accent colour, so the line says what the
                     customer does — they import (writing-angle.md §10). Each
                     phrase is kept on one line so a phone never strands "To"
@@ -230,11 +236,14 @@ export default function HomeClient() {
             <Reveal
               immediate
               y={10}
-              delay={0.45}
+              delay={0.4}
               duration={0.8}
               className="w-full mt-4 md:mt-8"
             >
-              <div className="marquee-container border-y border-black/10">
+              <div
+                className="marquee-container border-y border-black/10"
+                data-pa-loop
+              >
                 <div className="marquee-content">
                   {brandLogos.map((logo, index) => (
                     <div key={`brand-1-${index}`} className="marquee-item">
@@ -295,7 +304,7 @@ export default function HomeClient() {
                   Meet the seven countries behind every car
                   <ArrowRight
                     size={18}
-                    className="group-hover:translate-x-1 transition-transform"
+                    className="group-hover:translate-x-1 transition-feedback"
                   />
                 </Link>
               </Reveal>
@@ -305,11 +314,14 @@ export default function HomeClient() {
             <Reveal
               immediate
               y={10}
-              delay={0.45}
+              delay={0.4}
               duration={0.8}
               className="w-full mb-12"
             >
-              <div className="marquee-container border-y border-black/10">
+              <div
+                className="marquee-container border-y border-black/10"
+                data-pa-loop
+              >
                 <div className="marquee-content reverse">
                   {flagLogos.map((logo, index) => (
                     <div key={`flag-1-${index}`} className="marquee-item">
@@ -389,7 +401,7 @@ export default function HomeClient() {
                     icon: (
                       <Globe className="text-sky-500 h-7 w-7 md:h-8 md:w-8 group-hover:text-white transition-colors duration-500" />
                     ),
-                    desc: "We search 40+ global markets to find your exact spec at the most tax-efficient price, exporting through our own teams in seven of them. Currency, supply, and timing all factored in. You see the comparison and approve the quote — nothing moves until you do.",
+                    desc: "We search the seven countries where we have our own teams to find your exact spec at the most tax-efficient price, and export it from there. Currency, supply, and timing all factored in. You see the comparison and approve the quote — nothing moves until you do.",
                   },
                   {
                     step: "",
@@ -446,7 +458,7 @@ export default function HomeClient() {
               id="pathway-section"
               className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto w-full mt-8 md:mt-12"
             >
-              <Reveal y={30} delay={0.1} duration={0.8} className="h-full">
+              <Reveal y={30} delay={0.09} duration={0.8} className="h-full">
                 <Link
                   href="/b2c"
                   className="pa-lift group relative bg-zinc-50 border border-black/[0.07] rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between h-full hover:bg-white hover:border-black/10 overflow-hidden min-h-[350px] md:min-h-[400px]"
@@ -454,7 +466,7 @@ export default function HomeClient() {
                   {/* Colorful gradient wash — on by default on mobile, on hover on desktop */}
                   <div className="pointer-events-none absolute inset-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(90%_90%_at_88%_95%,rgba(56,189,248,0.20),rgba(139,92,246,0.15)_38%,rgba(236,72,153,0.10)_62%,transparent_78%)]" />
                   <div className="relative z-10">
-                    <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 border border-black/10 shadow-sm group-hover:bg-black group-hover:text-white transition-all duration-500">
+                    <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 border border-black/10 shadow-sm group-hover:bg-black group-hover:text-white transition-feedback">
                       <User className="h-5 w-5 md:h-6 md:w-6" />
                     </div>
                     <h3 className="text-2xl md:text-3xl font-bold text-black mb-3 md:mb-4 tracking-tight">
@@ -472,14 +484,14 @@ export default function HomeClient() {
                     <span className="text-black group-hover:text-sky-500 font-bold text-base md:text-lg transition-colors duration-300">
                       Find My Dream Car
                     </span>
-                    <div className="h-12 w-12 md:h-14 md:w-14 bg-white border border-black/10 text-black rounded-full flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:border-sky-500">
+                    <div className="h-12 w-12 md:h-14 md:w-14 bg-white border border-black/10 text-black rounded-full flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white group-hover:scale-[1.03] transition-feedback shadow-sm group-hover:shadow-lg group-hover:border-sky-500">
                       <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                   </div>
                 </Link>
               </Reveal>
 
-              <Reveal y={30} delay={0.2} duration={0.8} className="h-full">
+              <Reveal y={30} delay={0.18} duration={0.8} className="h-full">
                 <Link
                   href="/b2b-inquiry"
                   className="pa-lift group relative bg-zinc-50 border border-black/[0.07] rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between h-full hover:bg-white hover:border-black/10 overflow-hidden min-h-[350px] md:min-h-[400px]"
@@ -487,16 +499,16 @@ export default function HomeClient() {
                   {/* Colorful gradient wash — on by default on mobile, on hover on desktop */}
                   <div className="pointer-events-none absolute inset-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(90%_90%_at_88%_95%,rgba(16,185,129,0.18),rgba(56,189,248,0.15)_38%,rgba(99,102,241,0.11)_62%,transparent_78%)]" />
                   <div className="relative z-10">
-                    <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 border border-black/10 shadow-sm group-hover:bg-black group-hover:text-white transition-all duration-500">
+                    <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center mb-6 md:mb-8 border border-black/10 shadow-sm group-hover:bg-black group-hover:text-white transition-feedback">
                       <Building className="h-5 w-5 md:h-6 md:w-6" />
                     </div>
                     <h3 className="text-2xl md:text-3xl font-bold text-black mb-3 md:mb-4 tracking-tight">
                       For Dealerships
                     </h3>
                     <p className="text-zinc-500 text-base md:text-lg leading-relaxed mb-10 font-light">
-                      Import stock direct from 100+ global markets, in the exact
-                      trims and specifications your customers ask for — and sell
-                      it without floor-planning it first.
+                      Import stock direct from our seven source countries, in
+                      the exact trims and specifications your customers ask for
+                      — and sell it without floor-planning it first.
                     </p>
                   </div>
 
@@ -504,7 +516,7 @@ export default function HomeClient() {
                     <span className="text-black group-hover:text-sky-500 font-bold text-base md:text-lg transition-colors duration-300">
                       Scale Your Dealership
                     </span>
-                    <div className="h-12 w-12 md:h-14 md:w-14 bg-white border border-black/10 text-black rounded-full flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white group-hover:scale-110 transition-all duration-500 shadow-sm group-hover:shadow-lg group-hover:border-sky-500">
+                    <div className="h-12 w-12 md:h-14 md:w-14 bg-white border border-black/10 text-black rounded-full flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white group-hover:scale-[1.03] transition-feedback shadow-sm group-hover:shadow-lg group-hover:border-sky-500">
                       <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
                   </div>

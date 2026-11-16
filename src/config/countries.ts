@@ -151,7 +151,8 @@ const japan: CountryPageConfig = {
   },
   hero: {
     answer:
-      "You can import a car from Japan straight from its graded auctions. Our own team in Japan reads the auction sheet, bids to your instruction, inspects the car before your money moves and prepares the export paperwork. You get one all-in landed price to your port before you commit.",
+      // Dealers and auctions, never the auction alone (business-context.md §2).
+      "You can import a car from Japan from dealers and auctions across the country. Our own team in Japan finds it, bids at auction to your approved maximum, inspects the car before your money moves and prepares the export paperwork. You get one all-in landed price to your port before you commit.",
     backgroundImage: "/import-cars/hero-land-cruiser.webp",
     imageAlt: "A classic Toyota Land Cruiser in a desert landscape",
     ogImage: OG("japan"),

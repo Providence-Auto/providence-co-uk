@@ -102,24 +102,26 @@ The figures are the desk's own, transcribed from the **"Import IVA and Clearance
 
 That workbook prices the IVA and registration blocks **twice, once per supplier** — an SMC column and a Calibre column. The defaults follow **SMC**, because SMC is the column the workbook's own summary totals pull from. The two columns differ by £728 per car in total (IVA £719 vs £922, registration £661.25 vs £1,186.25), and neither is complete on its own: SMC leaves the DVLA first-registration application fee unpriced ("TBC") where Calibre quotes £790, and Calibre books the admin fee at an explicit £0 where SMC charges £275.
 
+**Two departures from the workbook (business instruction, 2026-10-29).** The £275 admin fee is charged on **IVA cars only** — for a non-IVA car the desk does the registration admin itself — so it sits in the IVA block. And the rear fog light and mph speedo conversion is a **£200 base line on every car**, because every import needs that work whether or not it sits an IVA test; the IVA supplier charges more for the same work, so the IVA block carries the difference as a **£170 surcharge** in place of the workbook's £175 speedo and £195 fog-light lines. The all-in IVA figure is unchanged at £2,451.92; the non-IVA figure falls by £75.
+
 ```
 POST_BORDER_BASE_ITEMS                          POST_BORDER_IVA_ITEMS
-  Clearance                                       Speedo conversion     £175
-    Customs clearance (share)      £66.67         Rear fog light        £195
+  Clearance                                       Admin fee             £275
+    Customs clearance (share)      £66.67         Fog/speedo surcharge  £170
     Unloading, handling & docs     £410.00        IVA test fee          £199
     Calibre admin fee               £45.00        IVA test presentation £150
     Transport (port → premises)    £200.00                            ───────
-                                 ─────────        POST_BORDER_IVA       £719
+                                 ─────────        POST_BORDER_IVA       £794
                                   £721.67
   Registration (SMC)
     DVLA registration fee           £55.00
     Road tax (6 months)            £206.25
     MOT (agent-arranged)            £75.00
     DVLA first-reg app. (TBC)        £0.00
-    Admin fee                      £275.00
     Number plates                   £50.00
+    Fog light & speedo conversion  £200.00
                                  ─────────
-                                  £661.25
+                                  £586.25
   General
     Refurb                         £200.00
     Cleaning                        £50.00
@@ -127,19 +129,19 @@ POST_BORDER_BASE_ITEMS                          POST_BORDER_IVA_ITEMS
                                  ─────────
                                   £350.00
                                  ═════════
-  POST_BORDER_BASE               £1,732.92
+  POST_BORDER_BASE               £1,657.92
 ```
 
 | IVA required | Post-border total |
 |---|---|
-| Yes | **£2,451.92** (£1,732.92 + £719) |
-| No | **£1,732.92** — outside the IVA scheme, so only the approval block falls away. Nothing is substituted for it: the MOT is a base line charged either way. |
+| Yes | **£2,451.92** (£1,657.92 + £794) |
+| No | **£1,657.92** — outside the IVA scheme, so only the approval block falls away. Nothing is substituted for it: the MOT and the fog-light and speedo conversion are base lines charged either way. |
 
-Note the direction of travel: the base rose by £373 while the all-in IVA figure *fell* by £108, so this revision is not a uniform uplift and no summary of it as "costs went up" is true for the whole fleet.
+Note the direction of travel at the 15 September revision: the base rose by £373 while the all-in IVA figure *fell* by £108, so this revision is not a uniform uplift and no summary of it as "costs went up" is true for the whole fleet.
 
 **Customs clearance and unloading are quoted per container, not per car.** The workbook divides £200 and £1,230 across a three-car container (`CARS_PER_CONTAINER`, `CONTAINER_SHARED_ITEMS`). That divisor is a standing assumption about how the desk ships (§8.12), not a fact about a given shipment — a car shipped alone bears the whole £1,430. Both fields carry the derivation as an on-screen hint so the number is not read as a per-car price.
 
-The shares are rounded to the penny, so `POST_BORDER_BASE` is £1,732.92 against the workbook cell's £1,732.9166…. The third of a penny is the whole of the difference, and it disappears the moment either figure is shown in pounds.
+The shares are rounded to the penny, so the all-in figure is £2,451.92 against the workbook cell's £2,451.9166…. The third of a penny is the whole of the difference, and it disappears the moment either figure is shown in pounds.
 
 **Three lines carry a note under the field**, because the figure alone would be read as something it is not: the two container shares, the MOT (£75 is the supplier's price; DVSA caps the test itself at £54.85), and the DVLA first-registration application (£0 means *unpriced*, not free — see §8.13).
 

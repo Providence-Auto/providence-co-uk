@@ -36,126 +36,131 @@ export default function ArticleShell({
   const cta = resolveBlogCta(post);
 
   return (
-    <main className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
-      <MinimalHeader />
+    <main className="min-h-screen bg-white text-black font-sans">
+      {/* The horizontal clip lives on this wrapper, not on <main>: on <main> it
+          degrades iOS touch-scroll for any horizontal strip on the page
+          (motion-interaction-rulebook.md §5.5). */}
+      <div className="relative w-full overflow-hidden">
+        <MinimalHeader />
 
-      {/* ── HEADER ─────────────────────────────────────── */}
-      <header className="px-6 pt-32 md:pt-36 pb-10 max-w-3xl mx-auto">
-        <Reveal y={16} duration={0.5} className="mb-6">
-          <Breadcrumbs
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Guides", href: BLOG_BASE_PATH },
-              { label: post.title },
-            ]}
+        {/* ── HEADER ─────────────────────────────────────── */}
+        <header className="px-6 pt-32 md:pt-36 pb-10 max-w-3xl mx-auto">
+          <Reveal y={16} duration={0.5} className="mb-6">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Guides", href: BLOG_BASE_PATH },
+                { label: post.title },
+              ]}
+            />
+          </Reveal>
+
+          <Reveal
+            as="p"
+            immediate
+            y={16}
+            duration={0.6}
+            className="text-xs font-bold tracking-[0.2em] uppercase text-sky-600 mb-4"
+          >
+            {post.cluster}
+          </Reveal>
+
+          <Reveal
+            as="h1"
+            immediate
+            y={20}
+            duration={0.8}
+            className="text-4xl md:text-5xl font-bold tracking-tighter leading-[1.1] text-black mb-6"
+          >
+            {post.h1}
+          </Reveal>
+
+          <Reveal
+            immediate
+            y={16}
+            delay={0.1}
+            duration={0.6}
+            className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 font-light"
+          >
+            <span className="font-medium text-zinc-700">{post.author}</span>
+            <span className="text-zinc-300">·</span>
+            <time dateTime={post.updatedDate}>
+              Updated {formatDate(post.updatedDate)}
+            </time>
+            <span className="text-zinc-300">·</span>
+            <span className="inline-flex items-center gap-1">
+              <Clock size={13} className="text-zinc-400" />
+              {post.readingTimeMins} min read
+            </span>
+          </Reveal>
+
+          <PublisherNote href={cta.href} label={cta.label} />
+        </header>
+
+        {/* ── HERO IMAGE ─────────────────────────────────── */}
+        <Reveal
+          as="figure"
+          y={24}
+          duration={0.7}
+          className="px-6 max-w-5xl mx-auto mb-12"
+        >
+          {/* biome-ignore lint/performance/noImgElement: self-hosted hero image, intentional <img> per site convention */}
+          <img
+            src={post.heroImage}
+            alt={post.heroAlt}
+            className="w-full aspect-[16/9] object-cover rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.12)]"
           />
+          {/* Commons photographs are CC-licensed; most require attribution. */}
+          {heroCredit && (
+            <figcaption className="mt-3 px-2 text-xs text-zinc-400">
+              Photo:{" "}
+              <a
+                href={heroCredit.source}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
+              >
+                {heroCredit.author}
+              </a>
+              , {heroCredit.licence}, via Wikimedia Commons
+            </figcaption>
+          )}
         </Reveal>
 
-        <Reveal
-          as="p"
-          immediate
-          y={16}
-          duration={0.6}
-          className="text-xs font-bold tracking-[0.2em] uppercase text-sky-600 mb-4"
-        >
-          {post.cluster}
-        </Reveal>
+        {/* ── BODY ───────────────────────────────────────── */}
+        <div className="px-6 pb-8 max-w-6xl mx-auto">
+          <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+            <TableOfContents items={post.toc} />
+            <article className="max-w-3xl">
+              {children}
 
-        <Reveal
-          as="h1"
-          immediate
-          y={20}
-          duration={0.8}
-          className="text-4xl md:text-5xl font-bold tracking-tighter leading-[1.1] text-black mb-6"
-        >
-          {post.h1}
-        </Reveal>
-
-        <Reveal
-          immediate
-          y={16}
-          delay={0.1}
-          duration={0.6}
-          className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 font-light"
-        >
-          <span className="font-medium text-zinc-700">{post.author}</span>
-          <span className="text-zinc-300">·</span>
-          <time dateTime={post.updatedDate}>
-            Updated {formatDate(post.updatedDate)}
-          </time>
-          <span className="text-zinc-300">·</span>
-          <span className="inline-flex items-center gap-1">
-            <Clock size={13} className="text-zinc-400" />
-            {post.readingTimeMins} min read
-          </span>
-        </Reveal>
-
-        <PublisherNote href={cta.href} label={cta.label} />
-      </header>
-
-      {/* ── HERO IMAGE ─────────────────────────────────── */}
-      <Reveal
-        as="figure"
-        y={24}
-        duration={0.7}
-        className="px-6 max-w-5xl mx-auto mb-12"
-      >
-        {/* biome-ignore lint/performance/noImgElement: self-hosted hero image, intentional <img> per site convention */}
-        <img
-          src={post.heroImage}
-          alt={post.heroAlt}
-          className="w-full aspect-[16/9] object-cover rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.12)]"
-        />
-        {/* Commons photographs are CC-licensed; most require attribution. */}
-        {heroCredit && (
-          <figcaption className="mt-3 px-2 text-xs text-zinc-400">
-            Photo:{" "}
-            <a
-              href={heroCredit.source}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline decoration-zinc-300 underline-offset-2 hover:text-zinc-600"
-            >
-              {heroCredit.author}
-            </a>
-            , {heroCredit.licence}, via Wikimedia Commons
-          </figcaption>
-        )}
-      </Reveal>
-
-      {/* ── BODY ───────────────────────────────────────── */}
-      <div className="px-6 pb-8 max-w-6xl mx-auto">
-        <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
-          <TableOfContents items={post.toc} />
-          <article className="max-w-3xl">
-            {children}
-
-            <div id="faqs" />
-          </article>
+              <div id="faqs" />
+            </article>
+          </div>
         </div>
-      </div>
 
-      {/* ── FAQ (full-width band) ──────────────────────── */}
-      <FAQSection
-        data={{
-          title: "Frequently Asked Questions",
-          subtitle: `Common questions about ${post.primaryKeyword}.`,
-          categories: [{ category: "FAQ", items: post.faqs }],
-        }}
-      />
-
-      {/* ── RELATED + CTA ──────────────────────────────── */}
-      <div className="px-6 pb-20 max-w-3xl mx-auto">
-        <RelatedPosts slug={post.slug} />
-        <BlogCTA
-          href={cta.href}
-          heading={cta.heading}
-          body={cta.body}
-          label={cta.label}
-          showCalculator={cta.calculator ?? false}
+        {/* ── FAQ (full-width band) ──────────────────────── */}
+        <FAQSection
+          data={{
+            title: "Frequently Asked Questions",
+            subtitle: `Common questions about ${post.primaryKeyword}.`,
+            categories: [{ category: "FAQ", items: post.faqs }],
+          }}
         />
-        {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
-        <PreferredSourceCallout />
+
+        {/* ── RELATED + CTA ──────────────────────────────── */}
+        <div className="px-6 pb-20 max-w-3xl mx-auto">
+          <RelatedPosts slug={post.slug} />
+          <BlogCTA
+            href={cta.href}
+            heading={cta.heading}
+            body={cta.body}
+            label={cta.label}
+            showCalculator={cta.calculator ?? false}
+          />
+          {/* Below the primary CTA on purpose — see CLAUDE.md, secondary CTAs. */}
+          <PreferredSourceCallout />
+        </div>
       </div>
     </main>
   );

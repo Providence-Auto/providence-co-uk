@@ -30,11 +30,11 @@ import {
 import {
   DEALER_SOURCE_MARKETS,
   joinSourceMarkets,
-  parseSourceMarkets,
-  sourceMarketCurrency,
   LHD_ALTERNATIVE,
   MAX_DEALER_CARS,
   type MarketOption,
+  parseSourceMarkets,
+  sourceMarketCurrency,
 } from "@/config/dealer-sourcing";
 import { currencyForCountry } from "@/lib/currencies";
 import {
@@ -57,6 +57,8 @@ import {
   validateContact,
   validateDealership,
 } from "@/lib/dealer-inquiry";
+import { scrollBehavior } from "@/lib/fluid";
+import { pushLeadEvent } from "@/lib/lead-events";
 import { currentRepCode } from "@/lib/rep-link";
 
 // The contact comes first (business instruction 2026-10-26); the dealership
@@ -250,7 +252,10 @@ export default function DealerInquiryForm({
     if (!interacted.current) return;
     const top = rootRef.current?.getBoundingClientRect().top ?? 0;
     if (top < 0) {
-      rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      rootRef.current?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
     }
     headingRef.current?.focus({ preventScroll: true });
   }, [step, success]);
@@ -267,7 +272,7 @@ export default function DealerInquiryForm({
       '[aria-invalid="true"], [role="alert"]',
     );
     if (!first) return;
-    first.scrollIntoView({ behavior: "smooth", block: "center" });
+    first.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
     const control = first.matches('[aria-invalid="true"]')
       ? first
       : first
@@ -501,12 +506,24 @@ export default function DealerInquiryForm({
       // Read at submit, not with the rest of the attribution on mount: the
       // rep link may have been seen on another page earlier in the visit.
       repCode: currentRepCode(),
+      // The page itself, which a ?ref= never replaces — a page owner
+      // (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts) is keyed on it.
+      pagePath: window.location.pathname,
     };
 
     setBusy(true);
     try {
       const result = await submitDealerInquiry(payload);
       if (result.success) {
+        // Only now, once the inquiry is stored: GTM turns this into Meta's
+        // Lead and a GA4 generate_lead (src/lib/lead-events.ts).
+        pushLeadEvent({
+          leadType: "dealer",
+          reference: result.reference,
+          formName: "b2b_inquiry",
+          destinationCountry: country,
+          carCount: payload.cars.length,
+        });
         interacted.current = true;
         setSuccess({
           reference: result.reference,

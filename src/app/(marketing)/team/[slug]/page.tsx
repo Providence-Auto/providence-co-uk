@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { getPublishedProfileBySlug } from "@/actions/sales-profile-actions";
 import TeamProfileClient from "@/components/TeamProfileClient";
@@ -94,6 +96,15 @@ export default async function TeamProfilePage({
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Our Sales Team", path: "/team" },
+          {
+            name: profile.displayName || "Sales Consultant",
+            path: `/team/${profile.slug}`,
+          },
+        ])}
       />
       <TeamProfileClient profile={profile} vehicles={featuredVehicles} />
     </>

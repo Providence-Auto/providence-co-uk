@@ -36,7 +36,7 @@ export default function Body() {
           </>,
           <>
             Battery EVs like the <Strong>Nissan Leaf</Strong> are temporarily
-            even cheaper thanks to VRT relief — until 31 December 2026.
+            even cheaper thanks to VRT relief — until 31 December 2028.
           </>,
           <>
             Avoid large diesels and EU-built cars from Britain: they&rsquo;re
@@ -136,7 +136,7 @@ export default function Body() {
             "Nissan Leaf",
             "EV",
             "7%",
-            "Lowest band, zero NOx, up to €5,000 VRT relief (until end-2026)",
+            "Lowest band, zero NOx, up to €5,000 VRT relief (until end-2028)",
           ],
         ]}
         caption="VRT bands are indicative; confirm the exact figure for your car with Revenue."
@@ -144,7 +144,7 @@ export default function Body() {
       <Callout title="The EV window is closing" tone="amber">
         <p>
           A used battery EV imported and registered{" "}
-          <Strong>before 31 December 2026</Strong> gets up to €5,000 VRT relief,
+          <Strong>by 31 December 2028</Strong> gets up to €5,000 VRT relief,
           the lowest 7% band and zero NOx levy. With 6–10 weeks shipping from
           Japan, you need to start now to register in time.{" "}
           <InlineLink href="/import-japanese-cars-to-ireland#inquiry">

@@ -12,7 +12,7 @@ This is the reference document. The repeatable weekly run that turns it into 20 
 
 ### 1.1 The market
 
-**Destination markets — where the cars land.** Every right-hand-drive country on earth, plus left-hand-drive markets *for luxury vehicles only*.
+**Destination markets — where the cars land.** Every right-hand-drive country on earth, plus left-hand-drive markets *for luxury, sports and hyper cars exported from Japan* — the US and Canada included (widened from luxury only on 2026-11-03, `business-context.md` §3).
 
 The 34 destinations we already hold country assets for, and therefore our priority list. This table mirrors `DESTINATION_REGIONS` in `src/app/(marketing)/about-us/page.tsx`, which is canonical — if the two ever disagree, the code is right and this needs updating.
 
@@ -23,15 +23,15 @@ The 34 destinations we already hold country assets for, and therefore our priori
 | Caribbean | Jamaica, Trinidad and Tobago, Grenada, Barbados, Guyana, Bahamas |
 | Asia-Pacific | Australia, New Zealand, Hong Kong, Malaysia, Indonesia, Thailand, Pakistan, Bangladesh, Nepal, India, Singapore, Fiji, Sri Lanka |
 
-Germany is a destination for **luxury LHD only**, per the exception below. India is both a source and a destination: we ship cars *into* India as well as buying there, so an India story can be written from either side of the trade — say which.
+Germany is a destination for **Japan's luxury, sports and hyper cars only**, per the LHD exception below. India is both a source and a destination: we ship cars *into* India as well as buying there, so an India story can be written from either side of the trade — say which.
 
 **Sri Lanka is in scope and should be covered actively** — it has a full blog cluster, a country page and one of the most volatile import regimes we track, which makes it high-value editorial. Write it for both readers per §1.2, and lean on the multi-unit angle at least as hard as the single-car one.
 
 Some markets carry commercial policy that shapes what we promote there without changing what we cover. That policy is in `business-context.md` §14 — check it before planning campaign-adjacent coverage, and never restate any of it in an article.
 
-**LHD exception.** We serve left-hand-drive markets only where the vehicle is luxury — this is the `/japanese-luxury-cars-lhd` proposition. A story about a mainstream LHD hatchback in Germany is out of scope. A story about LHD-market allocation of a Lexus LX or a G-Class is in scope.
+**LHD exception.** We serve left-hand-drive markets only for luxury, sports and hyper cars exported from Japan — this is the `/japanese-luxury-cars-lhd` proposition, and it includes the US and Canada. A story about a mainstream LHD hatchback in Germany is out of scope. A story about LHD-market allocation of a Lexus LX or a G-Class, or a Japanese sports car reaching US import age, is in scope.
 
-**Source markets — where we buy.** We buy in **seven** countries — Japan, the United Kingdom, the UAE, India, Thailand, Australia and New Zealand — with reach into 40+ (retail) / 100+ (dealer) markets. Our structural advantage is that when one source market closes, we can price the same car out of another. That advantage should be visible in the copy.
+**Source markets — where we buy.** We buy in **seven** countries — Japan, the United Kingdom, the UAE, India, Thailand, Australia and New Zealand (plus South Africa for dealers). There is no "40+" or "100+" markets figure — the business withdrew it on 2026-11-03; never write one. Our structural advantage is that when one source market closes, we can price the same car out of another. That advantage should be visible in the copy.
 
 **Presence is the same seven.** We have our own people in the seven countries we buy in — "our own teams in seven countries". Sri Lanka is a destination market only: since 2026-09-23 we claim no office, team or operations base there, so never write "our Colombo team" or "we operate in Sri Lanka". Note also that presence is *not* a claim to a visitable office: only London is that. See `business-context.md` §3.
 

@@ -62,13 +62,14 @@ export type DestinationRegion =
 /**
  * How much reviewed, destination-specific substance we hold for this market.
  *
- * `full`   — its own rules, facts and guides. The per-country URL is indexable
- *            and goes in the sitemap, because it answers a different question
- *            from the base car page.
+ * `full`   — its own rules, facts and guides, shown on the per-country page.
  * `listed` — a real market we ship to, with nothing market-specific published
  *            yet. The URL still exists and still prefills the form, so the link
- *            is shareable, but it is `noindex` and stays out of the sitemap
- *            rather than adding a thin near-duplicate to the index.
+ *            is shareable, but the page makes no market-specific claim.
+ *
+ * Depth no longer decides indexing. Every per-country page, either depth,
+ * canonicalises to its car page and stays out of the sitemap (2026-10-27) —
+ * see `buildCarMetadata` in src/lib/car-page.ts for why.
  */
 export type DestinationDepth = "full" | "listed";
 
@@ -540,8 +541,8 @@ const sriLanka: DestinationConfig = {
 // false, which is exactly the kind of inference rule 1 at the top of this file
 // exists to stop.
 //
-// These pages are `noindex`. They exist so the link is shareable and the form
-// arrives pre-set, not to compete in search with the full entries above.
+// These pages exist so the link is shareable and the form arrives pre-set.
+// Like every per-country page, they canonicalise to the car page.
 
 export type DriveSide = "left" | "right";
 

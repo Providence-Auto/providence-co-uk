@@ -235,6 +235,14 @@ What the rule does not touch:
   dealer pays at source.
 - **URLs and slugs, the titles of other publications, and code identifiers.** A
   slug is never renamed for vocabulary: renaming one breaks links and rankings.
+- **A question quoted in the reader's own voice** (decided 2026-11-03). Buyers
+  search *buy* as well as *import* ("can I buy a car directly from Japan?"), and
+  an AEO question heading works best when it matches the question as asked. So a
+  question written as the reader would ask it — an FAQ heading, and the same
+  question in the `FAQPage` JSON-LD — may use *buy*. The answer under it is ours,
+  so it uses *import* and *export*: "Yes — you can import a car directly from
+  Japan…". This exception covers the question only. A title, an H1, an H2 that
+  is not a reader's question, body copy and a CTA follow the rule above.
 
 Where neither *import* nor *export* reads naturally, rephrase rather than fall
 back on the old verb: "before anything is bought" becomes "before you commit".

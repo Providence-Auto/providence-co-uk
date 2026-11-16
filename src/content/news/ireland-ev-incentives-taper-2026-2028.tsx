@@ -27,6 +27,26 @@ export default function IrelandEvIncentivesTaper20262028() {
         calendar has become part of the specification.
       </Lead>
 
+      <Callout
+        title="Updated 28 October 2026: the VRT relief now runs to 2028"
+        tone="amber"
+      >
+        <p>
+          Budget 2027 extended the EV VRT relief by two years, to 31 December
+          2028. Electric cars with an OMSP up to &euro;40,000 keep relief of up
+          to &euro;5,000, and those between &euro;40,000 and &euro;50,000
+          receive reduced relief (Department of Finance, Finance (No. 2) Bill
+          2026, 19 October 2026). The 31 December 2026 end date below was
+          correct when this report was published and is kept as written. The
+          same Budget raises VRT on cars above 80 g/km from 1 January 2027
+          &mdash; see our report on{" "}
+          <InlineLink href="/latest-news/ireland-budget-2027-vrt-increase-bands-3-20">
+            the Budget 2027 VRT increase
+          </InlineLink>
+          .
+        </p>
+      </Callout>
+
       <KeyTakeaways
         items={[
           <>
@@ -90,6 +110,12 @@ export default function IrelandEvIncentivesTaper20262028() {
         is entirely possible. But nothing beyond 31 December 2026 is currently
         legislated, and planning a purchase on the assumption that a relief will
         be renewed is a decision, not a forecast.
+      </P>
+
+      <P>
+        <Strong>Update, 28 October 2026:</Strong> Budget 2027 did extend it, to
+        31 December 2028, with the same &euro;5,000 maximum and reduced relief
+        for cars with an OMSP between &euro;40,000 and &euro;50,000.
       </P>
 
       <Callout title="The OMSP trap" tone="amber">

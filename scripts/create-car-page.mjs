@@ -69,6 +69,8 @@ const specDossiers = pgTable("specdossier", {
   isUpcoming: boolean("isUpcoming").default(false).notNull(),
   expectedAvailability: text("expectedAvailability").default("").notNull(),
   newsSlug: text("newsSlug").default("").notNull(),
+  vehicleType: text("vehicleType").default("car").notNull(),
+  tags: text("tags").array().notNull().default([]),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -611,13 +613,38 @@ async function run() {
     isUpcoming: brief.isUpcoming === true,
     expectedAvailability: String(brief.expectedAvailability ?? ""),
     newsSlug: slugify(brief.newsSlug || ""),
+    // "motorcycle" puts the page at /import-bikes/<slug>; anything else is a car.
+    vehicleType:
+      String(brief.vehicleType ?? "").toLowerCase() === "motorcycle"
+        ? "motorcycle"
+        : "car",
+    // Landing-page tags, each a page at /import/<tag> (src/config/vehicle-tags.ts).
+    tags: Array.isArray(brief.tags)
+      ? [
+          ...new Set(
+            brief.tags
+              .map((t) =>
+                String(t)
+                  .toLowerCase()
+                  .trim()
+                  .replace(/&/g, " and ")
+                  .replace(/[\s_]+/g, "-")
+                  .replace(/[^a-z0-9-]/g, "")
+                  .replace(/-+/g, "-")
+                  .replace(/^-|-$/g, ""),
+              )
+              .filter(Boolean),
+          ),
+        ]
+      : [],
     updatedAt: new Date(),
   };
+  const publicPath = `${record.vehicleType === "motorcycle" ? "/import-bikes" : "/b2c/gallery"}/${slug}`;
 
   if (dryRun) {
     console.log("\n--dry-run — nothing written. Resolved record:\n");
     console.log(JSON.stringify(record, null, 2));
-    console.log(`\nPublic URL would be: /b2c/gallery/${slug}`);
+    console.log(`\nPublic URL would be: ${publicPath}`);
     for (const destination of record.destinations) {
       console.log(
         `                     /b2c/gallery/${slug}/import-to-${destination}`,
@@ -664,7 +691,7 @@ async function run() {
     }
 
     console.log(`  Status: ${record.status}`);
-    console.log(`  URL:    /b2c/gallery/${slug}`);
+    console.log(`  URL:    ${publicPath}`);
     if (record.status !== "Active") {
       console.log(
         "\n  Still a Draft — review it in /admin/specs, then set it Active",

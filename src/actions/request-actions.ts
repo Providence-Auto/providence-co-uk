@@ -26,9 +26,13 @@ import { formatBudget } from "@/lib/currencies";
 import { emailService } from "@/lib/email";
 import { cleanAttributionUrl } from "@/lib/lead-attribution";
 import {
+  allLeadsOwnerEmail,
   B2C_LEAD_ROLES,
   b2cCountryLeadOwner,
   COUNTRY_OWNER_EMAILS,
+  isHeldOutOfRotations,
+  pageLeadOwner,
+  pagePathFromUrl,
   SALES_ROLES,
 } from "@/lib/lead-routing";
 import { LEAD_EVENT } from "@/lib/leadConversion";
@@ -159,6 +163,12 @@ export async function submitCarRequest(data: {
     }
 
     // 1. Assign an agent, in precedence order:
+    //      page-owner  — the page the form was sent from has a named owner
+    //                    (PAGE_LEAD_OWNERS: /japanese-luxury-cars-lhd → Amy,
+    //                    business instruction 2026-11-12).
+    //      hard-rule   — while ALL_LEADS_OWNER_EMAIL is set, every lead goes
+    //                    to that account (business instruction 2026-11-11),
+    //                    ahead of everything below.
     //      direct      — a profile-page inquiry carrying assignedAgentId is
     //                    pinned to that member; the customer picked them, so
     //                    any sales position will do, B2B Sales included
@@ -170,13 +180,71 @@ export async function submitCarRequest(data: {
     //      round-robin — everything else rotates through B2C Sales and
     //                    Sales alphabetically.
     let assignedAgent = null;
-    let assignmentMethod: "direct" | "rep-link" | "country" | "round-robin" =
-      "round-robin";
+    let assignmentMethod:
+      | "page-owner"
+      | "hard-rule"
+      | "direct"
+      | "rep-link"
+      | "country"
+      | "round-robin" = "round-robin";
+
+    // 0. A page with its own owner — read from the pathname of the URL the
+    //    form was sent from, never from `source`, which a `?ref=` can
+    //    replace. Only an existing, unbanned account; otherwise the routing
+    //    below carries on as usual.
+    const pagePath = pagePathFromUrl(data.pageUrl);
+    const pageOwnerEmail = pageLeadOwner(pagePath);
+    if (pageOwnerEmail) {
+      const [owner] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            sql`lower(trim(${users.email})) = ${pageOwnerEmail}`,
+            ne(users.isBanned, true),
+          ),
+        )
+        .limit(1);
+
+      if (owner) {
+        assignedAgent = { ...owner, _id: owner.id };
+        assignmentMethod = "page-owner";
+      } else {
+        console.warn(
+          `[lead-routing] page owner (${pageOwnerEmail}) for ${pagePath} matched no active account — lead routed normally.`,
+        );
+      }
+    }
+
+    // 1. The hard rule — one account takes every lead. Only an existing,
+    //    unbanned account; otherwise the routing below carries on as usual.
+    const hardRuleEmail = allLeadsOwnerEmail();
+    if (!assignedAgent && hardRuleEmail) {
+      const [owner] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            sql`lower(trim(${users.email})) = ${hardRuleEmail}`,
+            ne(users.isBanned, true),
+          ),
+        )
+        .limit(1);
+
+      if (owner) {
+        assignedAgent = { ...owner, _id: owner.id };
+        assignmentMethod = "hard-rule";
+      } else {
+        console.warn(
+          `[lead-routing] ALL_LEADS_OWNER_EMAIL (${hardRuleEmail}) matched no active account — lead routed normally.`,
+        );
+      }
+    }
 
     // 1a. Direct assignment — only honoured if the id resolves to a real
     //     user whose role can actually own leads. Never trust the client
     //     value blindly; an invalid id silently falls back to round-robin.
-    if (data.assignedAgentId) {
+    if (!assignedAgent && data.assignedAgentId) {
       const [directAgent] = await db
         .select()
         .from(users)
@@ -252,16 +320,22 @@ export async function submitCarRequest(data: {
         .where(takesB2cLeads())
         .orderBy(asc(users.name));
 
+      // Anyone held out of every rotation (ROTATION_EXCLUDED — Amy) never
+      // takes a turn, even if that empties the pool.
+      const eligible = staffMembers.filter(
+        (staff) => !isHeldOutOfRotations(staff.email),
+      );
+
       // Drop country owners out of the rotation — they are reached by their
       // market, not by their turn. Guarded against emptying the pool: if every
       // Sales member happens to own a country, a rotation with everyone in it
       // beats no rotation at all.
-      const rotationPool = staffMembers.filter(
+      const rotationPool = eligible.filter(
         (staff) => !COUNTRY_OWNER_EMAILS.has(staff.email.toLowerCase()),
       );
 
       const mappedStaffMembers = (
-        rotationPool.length > 0 ? rotationPool : staffMembers
+        rotationPool.length > 0 ? rotationPool : eligible
       ).map((staff) => ({
         ...staff,
         _id: staff.id,
@@ -276,6 +350,8 @@ export async function submitCarRequest(data: {
           .from(requests)
           .where(
             notInArray(requests.assignmentMethod, [
+              "page-owner",
+              "hard-rule",
               "direct",
               "rep-link",
               "country",

@@ -5,6 +5,7 @@ import { emailService } from "@/lib/email";
 import { auth } from "@/utils/auth";
 import {
   setDealerInquiryArchived,
+  setDealerInquiryDeleted,
   submitDealerInquiry,
   updateDealerInquiry,
 } from "../dealer-inquiry-actions";
@@ -91,6 +92,15 @@ vi.mock("@/utils/auth", () => ({
 vi.mock("next/headers", () => ({ headers: vi.fn(async () => new Headers()) }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
+// The all-leads hard rule (ALL_LEADS_OWNER_EMAIL) is off by default here so
+// the tests below exercise the routing it sits in front of; its own tests
+// switch it on.
+const routing = vi.hoisted(() => ({ owner: null as string | null }));
+vi.mock("@/lib/lead-routing", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/lead-routing")>()),
+  allLeadsOwnerEmail: () => routing.owner,
+}));
+
 // ── Fixtures ─────────────────────────────────────────────────────────────────
 
 const user = (id: string, name: string, email: string, role = "Sales") => ({
@@ -169,6 +179,7 @@ beforeEach(() => {
   state.updated = [];
   state.transactions = 0;
   state.executes = 0;
+  routing.owner = null;
 });
 
 // ── submitDealerInquiry ──────────────────────────────────────────────────────
@@ -304,6 +315,41 @@ describe("submitDealerInquiry", () => {
     });
   });
 
+  it("gives Amy every inquiry under the hard rule, over a rep link and the country owner", async () => {
+    routing.owner = "amy@providenceauto.uk.com";
+    const AMY = user("u-amy", "Amy", "amy@providenceauto.uk.com", "B2C Sales");
+    state.results.push([AMY], []);
+
+    const result = await submitDealerInquiry(
+      validInput({
+        country: "Malta",
+        whatsapp: "7912 3456",
+        repCode: "Dilshard",
+      }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-amy",
+      assignmentMethod: "hard-rule",
+    });
+  });
+
+  it("routes normally when the hard rule's account cannot be found", async () => {
+    routing.owner = "amy@providenceauto.uk.com";
+    state.results.push([], [DILSHARD], []);
+
+    const result = await submitDealerInquiry(
+      validInput({ repCode: "Dilshard" }) as Submit,
+    );
+
+    expect(result.success).toBe(true);
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-dil",
+      assignmentMethod: "rep-link",
+    });
+  });
+
   it("gives a rep-link inquiry to the salesperson who shared it, over the country owner", async () => {
     // ?rep=dilshard on a Malta inquiry: Dilshard, not Shaq (business
     // instruction 2026-10-16). One lookup, then the insert.
@@ -381,6 +427,28 @@ describe("submitDealerInquiry", () => {
 
     // Alphabetically Aaron would come first; his position keeps him out.
     expect(state.inserted[0]).toMatchObject({ assignedToId: "u-dil" });
+  });
+
+  it("never gives Amy a dealer rotation turn (2026-11-12)", async () => {
+    const AMY = user("u-amy", "Amy", "amy@providenceauto.uk.com", "Sales");
+    state.results.push([AMY, DILSHARD], [], []);
+
+    await submitDealerInquiry(validInput() as Submit);
+
+    // Alphabetically Amy would come first; she takes only her page and link.
+    expect(state.inserted[0]).toMatchObject({ assignedToId: "u-dil" });
+  });
+
+  it("still gives Amy a dealer inquiry sent through her own rep link", async () => {
+    const AMY = user("u-amy", "Amy", "amy@providenceauto.uk.com", "Sales");
+    state.results.push([AMY], []);
+
+    await submitDealerInquiry(validInput({ repCode: "amy" }) as Submit);
+
+    expect(state.inserted[0]).toMatchObject({
+      assignedToId: "u-amy",
+      assignmentMethod: "rep-link",
+    });
   });
 
   it("sends the consultant's alert and the dealer's receipt", async () => {
@@ -825,5 +893,70 @@ describe("setDealerInquiryArchived", () => {
 
     const result = await setDealerInquiryArchived(EXISTING.id, true);
     expect(result.success).toBe(false);
+  });
+});
+
+describe("setDealerInquiryDeleted", () => {
+  const SALES = {
+    id: "u-abd",
+    name: "Abdallah",
+    role: "B2C Sales",
+    isBanned: false,
+  };
+  const ADMIN = {
+    id: "u-admin",
+    name: "Rakeez",
+    role: "Admin",
+    isBanned: false,
+  };
+  const DELETED = {
+    ...EXISTING,
+    deletedAt: new Date("2026-10-30T10:00:00Z"),
+    deletedByName: "Abdallah",
+  };
+
+  it("lets anyone on the panel delete, keeping the row and logging who", async () => {
+    signIn("u-abd");
+    state.results.push([SALES], [EXISTING], [DELETED]);
+
+    const result = await setDealerInquiryDeleted(EXISTING.id, true);
+
+    expect(result.success).toBe(true);
+    expect(state.updated[0]).toMatchObject({ deletedByName: "Abdallah" });
+    expect(state.updated[0].deletedAt).toBeInstanceOf(Date);
+    expect(historyOf(state.updated[0].statusHistory)).toEqual([
+      expect.objectContaining({ action: "Deleted", performedBy: "Abdallah" }),
+    ]);
+  });
+
+  it("lets only an admin restore", async () => {
+    signIn("u-abd");
+    state.results.push([SALES]);
+    const refused = await setDealerInquiryDeleted(EXISTING.id, false);
+    expect(refused.success).toBe(false);
+    expect(state.updated).toHaveLength(0);
+
+    signIn();
+    state.results.push([ADMIN], [DELETED], [EXISTING]);
+    const restored = await setDealerInquiryDeleted(EXISTING.id, false);
+    expect(restored.success).toBe(true);
+    expect(state.updated[0]).toMatchObject({
+      deletedAt: null,
+      deletedByName: null,
+    });
+  });
+
+  it("hides a deleted inquiry from anyone but an admin", async () => {
+    signIn("u-abd");
+    state.results.push([SALES], [DELETED]);
+    const update = await updateDealerInquiry(EXISTING.id, {
+      status: "Contacted",
+    });
+    expect(update).toEqual({ success: false, message: "Inquiry not found." });
+
+    state.results.push([SALES], [DELETED]);
+    const archive = await setDealerInquiryArchived(EXISTING.id, true);
+    expect(archive.success).toBe(false);
+    expect(state.updated).toHaveLength(0);
   });
 });

@@ -117,12 +117,12 @@ export default function PreferredSourceButton({
           // Sits on .pa-cta-secondary's tinted wash, so it needs a solid white
           // ground and a sky edge to read as an action rather than a chip —
           // but stays light, because the black pill is the primary CTA.
-          "group inline-flex items-center justify-center gap-2 rounded-full border border-sky-500/25 bg-white px-6 py-3.5 text-sm font-bold text-black shadow-[0_6px_18px_-8px_rgba(14,165,233,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-500/50 hover:shadow-[0_12px_28px_-10px_rgba(14,165,233,0.55)]"
+          "group inline-flex items-center justify-center gap-2 rounded-full border border-sky-500/25 bg-white px-6 py-3.5 text-sm font-bold text-black shadow-[0_6px_18px_-8px_rgba(14,165,233,0.5)] transition-feedback hover:-translate-y-0.5 hover:border-sky-500/50 hover:shadow-[0_12px_28px_-10px_rgba(14,165,233,0.55)]"
         }
       >
         <Star
           size={15}
-          className="text-sky-600 transition-transform group-hover:scale-110"
+          className="text-sky-600 transition-feedback group-hover:scale-[1.03]"
         />
         {label}
       </a>

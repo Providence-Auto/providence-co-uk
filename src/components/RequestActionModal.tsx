@@ -142,9 +142,9 @@ export default function RequestActionModal({
   const [dossiers, setDossiers] = useState<any[]>([]);
 
   const inputClasses =
-    "bg-zinc-50 border-black/10 text-black placeholder:text-zinc-400 focus-visible:ring-black/5 focus-visible:border-black/30 transition-all rounded-xl";
+    "bg-zinc-50 border-black/10 text-black placeholder:text-zinc-400 focus-visible:ring-black/5 focus-visible:border-black/30 transition-feedback rounded-xl";
   const selectClasses =
-    "w-full bg-zinc-50 border border-black/10 text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-all rounded-xl px-4 py-3 appearance-none cursor-pointer";
+    "w-full bg-zinc-50 border border-black/10 text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-feedback rounded-xl px-4 py-3 appearance-none cursor-pointer";
 
   useEffect(() => {
     if (modal.isOpen && modal.request) {
@@ -734,7 +734,7 @@ export default function RequestActionModal({
                       href={doc.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 bg-white border border-black/5 rounded-xl hover:bg-zinc-50 transition-all group"
+                      className="flex items-center gap-3 p-3 bg-white border border-black/5 rounded-xl hover:bg-zinc-50 transition-feedback group"
                     >
                       <div className="p-2 bg-zinc-100 rounded-lg text-zinc-500 group-hover:text-black group-hover:bg-black/5 transition-colors">
                         {doc.fileType === "pdf" ? (
@@ -822,7 +822,7 @@ export default function RequestActionModal({
                     return (
                       <label
                         key={d._id}
-                        className={`flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
+                        className={`flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-feedback ${
                           isChecked
                             ? "bg-zinc-900 border-zinc-900 text-white shadow-sm"
                             : "bg-zinc-50 border-black/5 text-black hover:bg-zinc-100"

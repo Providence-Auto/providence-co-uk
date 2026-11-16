@@ -1,15 +1,17 @@
-"use client";
+// Every answer is rendered as plain text, never behind a closed accordion.
+//
+// This section used to be a Radix accordion, which renders nothing for a
+// closed item: the answers reached crawlers only inside scripts, while every
+// page that uses it also emits FAQPage JSON-LD for them — structured data for
+// content that isn't on the page (seo-page-rules.md T-10, T-11, T-43; CLAUDE.md
+// landing pages item 9). It is used by the blog and news templates, the
+// campaign landings, /b2c, the gallery and every car page, so keep it static.
 
 import { Reveal } from "@/components/Reveal";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import type { LandingPageConfig } from "@/config/landing-pages";
 
-const FAQ_DATA = [
+/** The general questions, shown where a page has no FAQ of its own. */
+export const DEFAULT_FAQ_CATEGORIES = [
   {
     category: "Safety & Security",
     items: [
@@ -99,7 +101,7 @@ const DEFAULT_FAQ_CONFIG: LandingPageConfig["faqs"] = {
   title: "Frequently Asked Questions",
   subtitle:
     "Everything you need to know about our global direct import network.",
-  categories: FAQ_DATA,
+  categories: DEFAULT_FAQ_CATEGORIES,
 };
 
 type FAQSectionProps = {
@@ -125,33 +127,32 @@ export default function FAQSection({
         {/* Categories */}
         <div className="space-y-16">
           {data.categories.map((section, idx) => (
-            <Reveal key={idx} y={20} duration={0.5} delay={idx * 0.1}>
-              <h3 className="text-xs font-bold tracking-[0.3em] uppercase text-zinc-400 mb-8 ml-2">
+            <Reveal
+              key={section.category}
+              y={20}
+              duration={0.5}
+              delay={idx * 0.1}
+            >
+              {/* A label, not a heading: the questions are the H3s under the
+                  section's H2, so the outline never skips a level. */}
+              <p className="text-xs font-bold tracking-[0.3em] uppercase text-zinc-400 mb-8 ml-2">
                 {section.category}
-              </h3>
+              </p>
 
               <div className="bg-white rounded-[2rem] border border-black/5 p-2 md:p-6 shadow-[0_20px_40px_rgba(0,0,0,0.02)]">
-                <Accordion type="single" collapsible className="w-full">
-                  {section.items.map((faq, i) => (
-                    <AccordionItem
-                      key={i}
-                      value={`${idx}-${i}`}
-                      className="border-none px-4"
-                    >
-                      <AccordionTrigger className="text-left hover:no-underline py-6 text-lg font-medium text-zinc-900 group">
-                        <span className="group-data-[state=open]:text-blue-600 transition-colors">
-                          {faq.q}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="text-zinc-500 font-light leading-relaxed text-base pb-6">
-                        {faq.a}
-                      </AccordionContent>
-                      {i !== section.items.length - 1 && (
-                        <div className="h-px bg-black/5 mx-auto" />
-                      )}
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                {section.items.map((faq, i) => (
+                  <div key={faq.q} className="px-4">
+                    <h3 className="pt-6 pb-3 text-lg font-medium text-zinc-900">
+                      {faq.q}
+                    </h3>
+                    <p className="text-zinc-500 font-light leading-relaxed text-base pb-6">
+                      {faq.a}
+                    </p>
+                    {i !== section.items.length - 1 && (
+                      <div className="h-px bg-black/5 mx-auto" />
+                    )}
+                  </div>
+                ))}
               </div>
             </Reveal>
           ))}

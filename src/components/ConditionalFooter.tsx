@@ -6,7 +6,15 @@ import Footer from "@/components/Footer";
 // The marketing footer belongs to the public site only. Rendering it under the
 // app routes is not just visually wrong — it is a full-width element that
 // scrolls up over the admin panel's `fixed` sidebar and swallows its clicks.
-const HIDE_FOOTER_ON = ["/embed", "/admin", "/auth", "/dealer-dashboard"];
+// /kyc is a confidential form sent by link, not a page of the site to browse
+// on from (business instruction 2026-11-03).
+const HIDE_FOOTER_ON = [
+  "/embed",
+  "/admin",
+  "/auth",
+  "/dealer-dashboard",
+  "/kyc",
+];
 
 export default function ConditionalFooter() {
   const pathname = usePathname();

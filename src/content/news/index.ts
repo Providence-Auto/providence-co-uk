@@ -1,4 +1,8 @@
 import type { ComponentType } from "react";
+import AudiQ9RightHandDriveImportMarkets from "./audi-q9-right-hand-drive-import-markets";
+import AudiQ9UkSpecificationDeliveries from "./audi-q9-uk-specification-deliveries";
+import AustraliaEuFreeTradeAgreementCarTariff from "./australia-eu-free-trade-agreement-car-tariff";
+import AustraliaUsedCarPricesOctober2026NoTrend from "./australia-used-car-prices-october-2026-no-trend";
 import BentleyTorcalRevealedSpecificationsPrice from "./bentley-torcal-revealed-specifications-price";
 import BentleyTorcalRightHandDriveImportMarkets from "./bentley-torcal-right-hand-drive-import-markets";
 import BentleyTorcalVsRangeRoverElectricBritishLuxuryEv from "./bentley-torcal-vs-range-rover-electric-british-luxury-ev";
@@ -12,6 +16,7 @@ import FerrariLuceChassis040MillionAuction from "./ferrari-luce-chassis-0-40-mil
 import HmrcYenCustomsRateJapaneseCarImportUk from "./hmrc-yen-customs-rate-japanese-car-import-uk";
 import HongKongEvFirstRegistrationTaxConcessionEnds from "./hong-kong-ev-first-registration-tax-concession-ends";
 import ImoSolas2026RoRoEvFireRulesFreightCost from "./imo-solas-2026-ro-ro-ev-fire-rules-freight-cost";
+import IrelandBudget2027VrtIncreaseBands320 from "./ireland-budget-2027-vrt-increase-bands-3-20";
 import IrelandEvIncentivesTaper20262028 from "./ireland-ev-incentives-taper-2026-2028";
 import JapanUsedCarExportsRecordWeakYen2026 from "./japan-used-car-exports-record-weak-yen-2026";
 import Jlr4000JobCuts2026UkSourcingRead from "./jlr-4000-job-cuts-2026-uk-sourcing-read";
@@ -25,6 +30,7 @@ import MitsubishiPajeroThailandAustraliaSourcingCorridors from "./mitsubishi-paj
 import Monterey2026AuctionWeekMarketReport from "./monterey-2026-auction-week-market-report";
 import MontereyCarWeek2026NewCarDebuts from "./monterey-car-week-2026-new-car-debuts";
 import NewZealandCleanCarStandard2026UsedImportCharges from "./new-zealand-clean-car-standard-2026-used-import-charges";
+import NewZealandUsedImportsSeptember2026Yen from "./new-zealand-used-imports-september-2026-yen";
 import NissanPatrolY63AustraliaPricingConfirmed from "./nissan-patrol-y63-australia-pricing-confirmed";
 import NissanPatrolY63RightHandDriveMarkets from "./nissan-patrol-y63-right-hand-drive-markets";
 import NissanPatrolY63VsLandcruiser300DealerRead from "./nissan-patrol-y63-vs-landcruiser-300-dealer-read";
@@ -45,6 +51,16 @@ import YenIntervention2026JapanCarImportCost from "./yen-intervention-2026-japan
 // Maps a news slug to its body component. Keep keys in sync with NEWS_ARTICLES
 // in src/config/news.ts.
 export const NEWS_BODIES: Record<string, ComponentType> = {
+  "australia-eu-free-trade-agreement-car-tariff":
+    AustraliaEuFreeTradeAgreementCarTariff,
+  "new-zealand-used-imports-september-2026-yen":
+    NewZealandUsedImportsSeptember2026Yen,
+  "australia-used-car-prices-october-2026-no-trend":
+    AustraliaUsedCarPricesOctober2026NoTrend,
+  "audi-q9-uk-specification-deliveries": AudiQ9UkSpecificationDeliveries,
+  "audi-q9-right-hand-drive-import-markets": AudiQ9RightHandDriveImportMarkets,
+  "ireland-budget-2027-vrt-increase-bands-3-20":
+    IrelandBudget2027VrtIncreaseBands320,
   "hmrc-yen-customs-rate-japanese-car-import-uk":
     HmrcYenCustomsRateJapaneseCarImportUk,
   "bentley-torcal-revealed-specifications-price":

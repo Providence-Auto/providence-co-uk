@@ -1,5 +1,6 @@
 // Mounts the admin panel with a few inquiries and checks the working view:
-// archived rows hidden, the filters, and the side panel opening on a row.
+// archived and deleted rows hidden, the filters, the admin-only Deleted tab,
+// and the side panel opening on a row.
 
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -10,6 +11,7 @@ import type { DealerInquiryView } from "@/lib/dealer-inquiry";
 vi.mock("@/actions/dealer-inquiry-actions", () => ({
   updateDealerInquiry: vi.fn(),
   setDealerInquiryArchived: vi.fn(),
+  setDealerInquiryDeleted: vi.fn(),
 }));
 
 (
@@ -47,6 +49,8 @@ const inquiry = (patch: Partial<DealerInquiryView>): DealerInquiryView => ({
   assignedAt: "2026-09-29T10:00:00.000Z",
   firstContactedAt: null,
   isArchived: false,
+  deletedAt: null,
+  deletedByName: null,
   source: "/b2b-inquiry",
   createdAt: "2026-09-29T10:00:00.000Z",
   updatedAt: "2026-09-29T10:00:00.000Z",
@@ -82,6 +86,12 @@ const INQUIRIES = [
     ],
   }),
   inquiry({ id: "id-3", dealershipName: "Archived Motors", isArchived: true }),
+  inquiry({
+    id: "id-4",
+    dealershipName: "Deleted Motors",
+    deletedAt: "2026-10-30T10:00:00.000Z",
+    deletedByName: "Abdallah",
+  }),
 ];
 
 let container: HTMLDivElement;
@@ -100,6 +110,7 @@ beforeEach(async () => {
           { id: "u-dil", name: "Dilshard Dawood", email: "d@x.com" },
         ]}
         currentUserId="u-dil"
+        isAdmin={false}
       />,
     );
   });
@@ -116,7 +127,7 @@ const rowNames = () =>
   );
 
 describe("DealerInquiriesClient", () => {
-  it("lists open inquiries and hides archived ones", () => {
+  it("lists open inquiries and hides archived and deleted ones", () => {
     expect(rowNames()).toEqual([
       "Nairobi Motor Traders",
       "Windhoek Auto House",
@@ -143,6 +154,40 @@ describe("DealerInquiriesClient", () => {
     );
     await act(async () => toggle?.click());
     expect(rowNames()).toEqual(["Archived Motors"]);
+  });
+
+  it("draws no Deleted tab for anyone but an admin", () => {
+    const tab = [...container.querySelectorAll("button")].find((b) =>
+      b.textContent?.startsWith("Deleted"),
+    );
+    expect(tab).toBeUndefined();
+  });
+
+  it("gives an admin a Deleted tab holding the deleted inquiries", async () => {
+    await act(async () => {
+      root.render(
+        <DealerInquiriesClient
+          initialInquiries={INQUIRIES}
+          staff={[]}
+          currentUserId="u-dil"
+          isAdmin
+        />,
+      );
+    });
+    const tab = [...container.querySelectorAll("button")].find((b) =>
+      b.textContent?.startsWith("Deleted"),
+    );
+    expect(tab?.textContent).toBe("Deleted (1)");
+    await act(async () => tab?.click());
+    expect(rowNames()).toEqual(["Deleted Motors"]);
+
+    const row = container.querySelector<HTMLButtonElement>(
+      "tbody tr td:first-child button",
+    );
+    await act(async () => row?.click());
+    const panel = document.querySelector('[data-slot="sheet-content"]');
+    expect(panel?.textContent).toContain("Restore from deleted");
+    expect(panel?.textContent).toContain("Deleted by Abdallah");
   });
 
   it("opens the side panel with the inquiry's history", async () => {

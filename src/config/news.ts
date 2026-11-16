@@ -216,13 +216,651 @@ const AUTHOR = "Providence Auto";
 
 export const NEWS_ARTICLES: NewsArticle[] = [
   {
+    slug: "australia-eu-free-trade-agreement-car-tariff",
+    cta: ARTICLE_CTAS.neutral,
+    title: "Australia's 5% duty on European cars is going — but not yet",
+    h1: "Australia–EU Free Trade Agreement: The 5% Duty on European Cars Is Going, but Not Yet",
+    seoTitle: "Australia–EU FTA: When the 5% Car Tariff Goes",
+    description:
+      "The Australia–EU deal removes the 5% duty on EU-built cars, but it is not yet in force. What A$5,000 of duty really costs, LCT, and why not to wait for it.",
+    excerpt:
+      "Dealers are urging Parliament to pass the EU agreement. Signature is expected late 2026 or early 2027, with up to a year of ratification after it. Price a European import with the duty in.",
+    category: "Policy & Tax",
+    dateline: "Canberra",
+    keywords: [
+      "australia eu free trade agreement cars",
+      "5% tariff european cars australia",
+      "australia eu fta luxury car tax",
+      "when will european cars get cheaper in australia",
+      "is the australia eu free trade agreement in force",
+      "luxury car tax threshold 2026-27",
+      "import duty on cars into australia",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 7,
+    heroImage: "/cars/audi-q9/front-three-quarter.webp",
+    heroAlt:
+      "An Audi Q9 in Waitomo blue metallic parked front three-quarter beside palm trees, with no number plate visible",
+    heroCaption:
+      "Audi AG press image of the Slovakia-built Audi Q9, a US-market car. Illustrative of an EU-built car; the Q9 has not been launched in Australia.",
+    toc: [
+      {
+        id: "status",
+        label: "When does the Australia–EU free trade agreement take effect?",
+      },
+      {
+        id: "cost",
+        label: "How much does the 5 per cent duty add to a European car?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Should you wait for the tariff to go?" },
+      {
+        id: "who-benefits",
+        label: "Is this just news, or is someone selling you something?",
+      },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Is the Australia–EU free trade agreement in force?",
+        a: "No. Trade Minister Don Farrell announced its conclusion on 24 March 2026 and said it will enter into force when both Australia and the European Union complete their domestic processes. As of 28 October 2026, GoAuto reports that DFAT expects signature in late 2026 or early 2027, with up to another year of parliamentary and legal process after that.",
+      },
+      {
+        q: "Will European cars be cheaper in Australia after the EU trade deal?",
+        a: "The 5 per cent customs duty on EU-built cars will be removed once the agreement is in force. Because GST and luxury car tax are charged on a value that includes the duty, the saving is larger than the duty alone: on a car with a A$100,000 customs value, about A$7,150 at the border on our worked example. Whether retail prices fall by the same amount is up to sellers.",
+      },
+      {
+        q: "Does the EU trade deal abolish Australia's luxury car tax?",
+        a: "No. DFAT says the agreement adds a new luxury car tax category with a A$120,000 threshold for zero-emission vehicles. Every other car keeps the ATO's 2026–27 thresholds: A$91,661 for fuel-efficient vehicles and A$80,809 for all others, with the tax charged at 33 per cent of the amount above the threshold.",
+      },
+      {
+        q: "Which cars does the Australia–EU agreement apply to?",
+        a: "Cars built in the European Union. GoAuto notes that eligibility depends on where a vehicle is built, not on the maker's nationality, so a European brand built outside the EU gains nothing. Cars built in Japan, Korea or Thailand that qualify under Australia's existing agreements already enter without the 5 per cent duty.",
+      },
+      {
+        q: "Should I wait for the tariff cut before importing a European car to Australia?",
+        a: "Usually not. The agreement has not been signed, no entry-into-force date has been set, and the Nationals oppose it. Waiting means holding a decision open into 2027 or 2028 for a saving that a currency or price move could cancel. Wait only if the car is EU-built and your purchase is genuinely flexible.",
+      },
+    ],
+    sources: [
+      {
+        label: "Australia–European Union Free Trade Agreement",
+        href: "https://www.trademinister.gov.au/minister/don-farrell/media-release/australia-european-union-free-trade-agreement",
+        publisher: "Minister for Trade and Tourism",
+      },
+      {
+        label: "A-EU FTA key outcomes and benefits",
+        href: "https://www.dfat.gov.au/trade/agreements/not-yet-in-force/aeufta/key-outcomes-and-benefits",
+        publisher: "Department of Foreign Affairs and Trade",
+      },
+      {
+        label: "Customs Tariff, Schedule 3, Chapter 87",
+        href: "https://www.abf.gov.au/importing-exporting-and-manufacturing/tariff-classification/current-tariff/schedule-3/section-xvii/chapter-87",
+        publisher: "Australian Border Force",
+      },
+      {
+        label: "Luxury car tax rate and thresholds",
+        href: "https://www.ato.gov.au/tax-rates-and-codes/luxury-car-tax-rate-and-thresholds",
+        publisher: "Australian Taxation Office",
+      },
+      {
+        label: "Working out the LCT on an import",
+        href: "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/luxury-car-tax/working-out-the-lct-amount/working-out-the-lct-on-an-import",
+        publisher: "Australian Taxation Office",
+      },
+      {
+        label: "GST and imported goods",
+        href: "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst/in-detail/rules-for-specific-transactions/international-transactions/gst-and-imported-goods",
+        publisher: "Australian Taxation Office",
+      },
+      {
+        label: "AADA urges Parliament to back EU trade deal",
+        href: "https://premium.goauto.com.au/aada-urges-parliament-to-back-eu-trade-deal",
+        publisher: "GoAuto",
+      },
+      {
+        label:
+          "Australia-EU trade deal signed, set to cut car prices… but Luxury Car Tax lives on",
+        href: "https://www.whichcar.com.au/news/cheaper-european-cars-coming-in-new-free-trade-agreement-with-eu",
+        publisher: "WhichCar",
+      },
+    ],
+    relatedGuides: [
+      "how-to-import-a-car-from-the-uk",
+      "cost-to-import-a-car-from-the-uk",
+      "currency-risk-for-car-importers",
+    ],
+    linkedVehicleSlugs: ["audi-q9-2027"],
+  },
+  {
+    slug: "new-zealand-used-imports-september-2026-yen",
+    cta: ARTICLE_CTAS.dealer,
+    title: "NZ used imports hit their strongest September since 2023",
+    h1: "New Zealand Used Imports Hit Their Strongest September Since 2023 — as the Dollar Slides Against the Yen",
+    seoTitle: "NZ Used Car Imports September 2026: Up 13.6%",
+    description:
+      "New Zealand registered 8,468 used imports in September 2026, up 13.6%. The dealer read, and what the NZ dollar's 7% fall against the yen since July costs.",
+    excerpt:
+      "Japanese hybrids drove the strongest September since 2023. The NZ dollar still buys more yen than a year ago — but less than in July, and that is the part that reaches your next car.",
+    category: "Market",
+    dateline: "Auckland",
+    keywords: [
+      "new zealand used car imports 2026",
+      "nz used import registrations september 2026",
+      "most imported used cars nz",
+      "nzd jpy exchange rate car import",
+      "is it a good time to import a car from japan to nz",
+      "toyota aqua used import nz",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 7,
+    heroImage: "/source-cars/blog/vrt-explained-ireland.webp",
+    heroAlt:
+      "A silver Toyota Prius hybrid photographed front three-quarter, number plate removed",
+    heroCaption:
+      "Illustrative: a Toyota Prius hybrid, the second most-registered used import in New Zealand in September 2026. Photo by TTTNIS, CC0, via Wikimedia Commons. Not a specific vehicle referred to in this article.",
+    toc: [
+      {
+        id: "numbers",
+        label: "How many used cars did New Zealand import in September 2026?",
+      },
+      {
+        id: "currency",
+        label: "What has the New Zealand dollar done against the yen?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "dealer", label: "What should a dealer do with these numbers?" },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "How many used cars did New Zealand import in September 2026?",
+        a: "8,468 used imports were registered in September 2026, up 13.6 per cent on September 2025, according to Autotalk's analysis of NZ Transport Agency data. Passenger imports were 8,005, the highest September since 2023. The Motor Trade Association's dashboard shows 8,407 used light vehicles, up 14.5 per cent, on a slightly different definition.",
+      },
+      {
+        q: "What are the most imported used cars in New Zealand?",
+        a: "In September 2026 the Toyota Aqua led with 915 registrations, followed by the Toyota Prius with 502, the Nissan Note with 446 and the Toyota Corolla with 421, according to Autotalk from NZTA data. Toyota took 39.5 per cent of used passenger imports, and the Nissan Leaf was the most-registered used electric import, up 70.9 per cent.",
+      },
+      {
+        q: "Is the New Zealand dollar strong or weak against the yen?",
+        a: "Both, depending on the comparison. Derived from ECB reference rates, NZD/JPY averaged 90.21 in September 2026 against 87.04 a year earlier, so the New Zealand dollar buys more yen than in 2025. But it fell from 95.18 on 30 July 2026 to a 2026 low of 88.46 on 8 October, about 7 per cent. We report levels and do not forecast them.",
+      },
+      {
+        q: "How does the exchange rate change the cost of a Japanese import to New Zealand?",
+        a: "You bid in yen, so a weaker New Zealand dollar makes the same car dearer in your own money. A ¥1,500,000 car cost about NZ$15,760 at July's 95.18 and about NZ$16,957 at October's 88.46, a NZ$1,197 difference before freight and GST. Part of any currency gain is also absorbed by higher auction prices when the yen is weak.",
+      },
+    ],
+    sources: [
+      {
+        label: "Used imports climb 13.6% for strongest September since 2023",
+        href: "https://autotalk.co.nz/used-imports-climb-13-6-for-strongest-september-since-2023/",
+        publisher: "Autotalk",
+      },
+      {
+        label: "NZ vehicle registration statistics (vstat)",
+        href: "https://vstat.mta.org.nz/",
+        publisher: "Motor Trade Association",
+      },
+      {
+        label: "Euro foreign exchange reference rates (JPY, NZD)",
+        href: "https://data.ecb.europa.eu/data/datasets/EXR",
+        publisher: "European Central Bank",
+      },
+      {
+        label: "Government to retain Clean Vehicle Standard",
+        href: "https://www.beehive.govt.nz/release/government-retain-clean-vehicle-standard",
+        publisher: "New Zealand Government (Beehive)",
+      },
+      {
+        label:
+          "Used vehicles from anywhere else — complying with vehicle standards",
+        href: "https://www.nzta.govt.nz/vehicles/importing-a-vehicle/2-complying-with-vehicle-standards-and-providing-evidence/used-vehicles-from-anywhere-else",
+        publisher: "NZ Transport Agency Waka Kotahi",
+      },
+    ],
+    relatedGuides: [
+      "new-zealand-vs-japan-for-used-imports",
+      "currency-risk-for-car-importers",
+      "importing-a-used-ev-from-new-zealand",
+    ],
+  },
+  {
+    slug: "australia-used-car-prices-october-2026-no-trend",
+    cta: importFromCta("australia", "Australia"),
+    title: "Australian used prices moved for six weeks and went nowhere",
+    h1: "Australian Used Car Prices, October 2026: Six Weeks of Moves, No Trend — the Currency Moved Instead",
+    seoTitle: "Australian Used Car Prices October 2026: No Trend",
+    description:
+      "Datium's index had HiLux and Everest down 3% in early October 2026, but six weeks net to zero. Why the AUD, up 10% on the NZ dollar, matters more.",
+    excerpt:
+      "One red week for the HiLux is not a buying window. Six weeks of Datium's index compound to almost nothing — and for a New Zealand buyer, the Australian dollar did the real moving.",
+    category: "Market",
+    dateline: "Sydney",
+    keywords: [
+      "australian used car prices october 2026",
+      "used hilux prices australia",
+      "datium used car index",
+      "is it a good time to import a ute from australia",
+      "aud nzd exchange rate car import",
+      "importing a used car from australia to new zealand",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 6,
+    heroImage: "/source-cars/blog/importing-a-ute-or-4x4-from-australia.webp",
+    heroAlt:
+      "An orange Ford Ranger Raptor ute on display under a marquee, number plate removed",
+    heroCaption:
+      "Illustrative: a Ford Ranger Raptor. Photo by Calreyn88, CC BY-SA 4.0, via Wikimedia Commons; number plate removed. Not a specific vehicle referred to in this article.",
+    toc: [
+      {
+        id: "index",
+        label: "What did Australian used-car prices do in October 2026?",
+      },
+      {
+        id: "currency",
+        label: "Is an Australian ute cheaper for a New Zealand buyer now?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      {
+        id: "timing",
+        label: "Should you import now or wait for prices to fall?",
+      },
+      {
+        id: "who-benefits",
+        label: "Is this just news, or is someone selling you something?",
+      },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Are used car prices falling in Australia?",
+        a: "Not on the weekly evidence. Datium Insights' overall price change for the six weeks to 26 October 2026 alternated between rises and falls: +2.0, −1.7, +3.9, −3.1, −2.1 and +1.2 per cent. Compounded, those six figures net to about +0.01 per cent on our arithmetic. Individual models swing more, in both directions.",
+      },
+      {
+        q: "Did used Toyota HiLux prices drop in October 2026?",
+        a: "For one week. Datium's update for the week to 5 October 2026 showed the Toyota HiLux down 3.21 per cent and the Ford Everest down 3.15 per cent, the largest falls among the top 15 traded vehicles, in a week when the overall index rose 3.9 per cent. One week's move is not a trend.",
+      },
+      {
+        q: "Is it cheaper for New Zealanders to import a car from Australia now?",
+        a: "No. Derived from ECB reference rates, one Australian dollar bought an average of 1.2347 New Zealand dollars in September 2026, against 1.1206 in September 2025, about 10 per cent more. A A$40,000 ute cost about NZ$49,388 at September 2026's rate against NZ$44,824 a year earlier, before freight and border costs.",
+      },
+      {
+        q: "Should I wait for Australian used ute prices to fall before importing?",
+        a: "The data does not support waiting. Six weeks of Datium's index show no direction, so a fall is not something it currently shows. Decide on the specific car — condition, kilometres, service history and its price in your own currency on the day you commit — rather than on a weekly index.",
+      },
+    ],
+    sources: [
+      {
+        label: "Weekly Market Update 5th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-5th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 12th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-12th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 19th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-19th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 26th October 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-26th-october-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Weekly Market Update 21st September 2026",
+        href: "https://datiuminsights.com.au/weekly-market-update-21st-september-2026/",
+        publisher: "Datium Insights",
+      },
+      {
+        label: "Euro foreign exchange reference rates (AUD, NZD)",
+        href: "https://data.ecb.europa.eu/data/datasets/EXR",
+        publisher: "European Central Bank",
+      },
+    ],
+    relatedGuides: [
+      "importing-a-ute-or-4x4-from-australia",
+      "importing-cars-from-australia-for-dealers",
+      "cost-to-import-a-car-from-australia",
+    ],
+  },
+  {
+    slug: "audi-q9-uk-specification-deliveries",
+    cta: importFromCta("united-kingdom", "the UK"),
+    title:
+      "Audi Q9 in the UK: two grades, one diesel, deliveries from November",
+    h1: "Audi Q9 UK Specification: Two Grades, One V6 Diesel and First Deliveries in November",
+    seoTitle: "Audi Q9 UK: Specification, Grades and Delivery Date",
+    description:
+      "The Audi Q9 reaches the UK as Edition 1 and Vorsprung, both with a 299 PS V6 diesel, and deliveries start in November 2026. The specification, landed.",
+    excerpt:
+      "The largest Audi built comes to Britain with one engine, two grades and no SQ9. For anyone importing into a right-hand-drive market, the UK specification is the one Audi has published in full.",
+    category: "Releases",
+    dateline: "Bratislava, Slovakia",
+    keywords: [
+      "audi q9",
+      "audi q9 uk",
+      "audi q9 specification",
+      "audi q9 edition 1 vs vorsprung",
+      "when is the audi q9 available in the uk",
+      "is the audi sq9 coming to the uk",
+      "how big is the audi q9",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 8,
+    heroImage: "/cars/audi-q9/front-driving.webp",
+    heroAlt:
+      "An Audi Q9 in Waitomo blue metallic driving on a desert road past red rock formations",
+    heroCaption:
+      "Audi AG press image of a US-market Audi Q9 in Waitomo blue metallic, photographed in Utah. Illustrative of the model — not the UK-specification car and not a specific vehicle offered for sale.",
+    toc: [
+      { id: "confirmed", label: "What Audi has confirmed for the UK" },
+      { id: "price", label: "The price, and why it is not an export price" },
+      { id: "landed", label: "What it means landed" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Move now or wait?" },
+      { id: "unknowns", label: "What is still unknown" },
+    ],
+    faqs: [
+      {
+        q: "When can you get an Audi Q9 in the UK?",
+        a: "Audi opened orders at the end of July 2026 and states that deliveries start in November 2026. Audi UK lists two grades, Edition 1 and Vorsprung, on its configurator. Both use the same 3.0-litre V6 TDI mild-hybrid engine of 299 PS, so the choice between them is equipment rather than performance.",
+      },
+      {
+        q: "What is the difference between the Audi Q9 Edition 1 and Vorsprung?",
+        a: "Edition 1 has 22-inch wheels, adaptive air suspension, all-wheel steering, an openable switchable panoramic roof and seven heated seats. Vorsprung adds 23-inch wheels, digital matrix LED headlights, curved digital OLED rear lights, automatic doors, the Bang & Olufsen 4D Premium sound system and exterior ambient lighting, and it is the grade offered with the six-seat Lounge Pack.",
+      },
+      {
+        q: "Is the Audi SQ9 coming to the UK?",
+        a: "No. Audi UK lists only the 299 PS V6 diesel Q9. Audi offers the 591 hp twin-turbo V8 SQ9 in selected markets, including the United States and Canada. For a right-hand-drive buyer, the V6 diesel is the only Q9 Audi has published, so anyone set on the V8 is looking at a left-hand-drive car.",
+      },
+      {
+        q: "How big is the Audi Q9?",
+        a: "Audi gives the Q9 as 5.31 metres long, 2.21 metres wide across the mirrors and 1.81 metres tall, on a 3.14-metre wheelbase, and calls it the largest Audi of all time. Audi UK quotes up to 850 litres of boot space with the third row folded and 2,308 litres with the second and third rows folded.",
+      },
+      {
+        q: "Is the Audi UK price what an exported Q9 costs?",
+        a: "No. Audi UK's on-the-road price, from £103,900, includes 20 per cent UK VAT, the first year's Vehicle Excise Duty, number plates and the registration fee. HMRC zero-rates exported goods for VAT when the conditions in VAT Notice 703 are met, so the OTR figure is a ceiling on the source price rather than the base of a landed cost.",
+      },
+    ],
+    sources: [
+      {
+        label: "Audi Q9: Audi's first large full-size SUV tops the lineup",
+        href: "https://www.audi.com/en/press-releases/audi-q9-audis-first-large-full-size-suv-tops-the-lineup-18158",
+        publisher: "AUDI AG",
+      },
+      {
+        label: "Elegance and space: a first look inside the new Audi Q9",
+        href: "https://www.audi.com/en/press-releases/elegance-and-space-a-first-look-inside-the-new-audi-q9-17903",
+        publisher: "AUDI AG",
+      },
+      {
+        label: "New Audi Q9 SUV design and specification",
+        href: "https://www.audi.co.uk/en/models/q9/q9/design-and-specification/",
+        publisher: "Audi UK",
+      },
+      {
+        label: "Build your Audi Q9 SUV — configurator",
+        href: "https://www.audi.co.uk/en/models/q9/q9/configurator/",
+        publisher: "Audi UK",
+      },
+      {
+        label: "New Audi Q9 on sale with UK prices and specs revealed",
+        href: "https://www.autoexpress.co.uk/audi/366306/new-audi-q9-sale-uk-prices-and-specs-revealed",
+        publisher: "Auto Express",
+      },
+      {
+        label: "VAT on goods exported from the UK (VAT Notice 703)",
+        href: "https://www.gov.uk/guidance/vat-on-goods-exported-from-the-uk-notice-703",
+        publisher: "GOV.UK (HMRC)",
+      },
+      {
+        label: "New Audi Q9 arrives in Ireland",
+        href: "https://www.rev.ie/new-audi-q9-arrives-in-ireland/",
+        publisher: "Rev.ie",
+      },
+    ],
+    relatedGuides: [
+      "how-to-import-a-car-from-the-uk",
+      "cost-to-import-a-car-from-the-uk",
+      "uk-car-export-documents-explained",
+    ],
+    linkedVehicleSlugs: ["audi-q9-2027"],
+  },
+  {
+    slug: "audi-q9-right-hand-drive-import-markets",
+    cta: ARTICLE_CTAS.dealer,
+    title:
+      "Audi Q9 in right-hand drive: Britain has it, most RHD markets do not",
+    h1: "Audi Q9 Right-Hand Drive: Britain Has the Specification, Most RHD Markets Do Not Yet",
+    seoTitle: "Audi Q9 Right-Hand Drive: Which Markets Get It",
+    description:
+      "As of 28 October 2026 only the UK has a published right-hand-drive Audi Q9. What that means for dealers importing into Kenya and other RHD markets.",
+    excerpt:
+      "Ireland is reported, Australia is expected, and everywhere else that drives on the left is silent. For a dealer, a right-hand-drive Q9 can come from Britain, Australia or New Zealand — and the 3.0-litre diesel is the only right-hand-drive engine Audi has published.",
+    category: "Industry",
+    dateline: "Bratislava, Slovakia",
+    keywords: [
+      "audi q9 right hand drive",
+      "audi q9 rhd markets",
+      "import audi q9",
+      "can you import an audi q9 to kenya",
+      "is the audi q9 coming to australia",
+      "audi q9 ireland",
+      "importing a new luxury suv from the uk",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 7,
+    heroImage: "/cars/audi-q9/side-profile.webp",
+    heroAlt:
+      "An Audi Q9 in Waitomo blue metallic parked in side profile beside palm trees and a modern building, with no number plate visible",
+    heroCaption:
+      "Audi AG press image of a US-market Audi Q9 in Waitomo blue metallic. Illustrative of the model — not the right-hand-drive UK-specification car.",
+    toc: [
+      {
+        id: "markets",
+        label: "Which right-hand-drive markets get the Audi Q9?",
+      },
+      {
+        id: "permission",
+        label: "Can a UK-specification Q9 be registered in your market?",
+      },
+      {
+        id: "cost",
+        label: "Is it going to cost more than the badge suggests?",
+      },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Should a dealer move now or wait?" },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Is the Audi Q9 available in right-hand drive?",
+        a: "Yes. Audi UK sells the Q9 in right-hand drive as Edition 1 and Vorsprung, with a 3.0-litre V6 TDI of 299 PS, and Audi states deliveries start in November 2026. As of 28 October 2026 the United Kingdom is the only right-hand-drive market where Audi has published the Q9's specification in full.",
+      },
+      {
+        q: "Is the Audi Q9 coming to Ireland?",
+        a: "Rev.ie reported on 30 July 2026 that the Q9 will reach Irish Audi dealers towards the end of 2026. Audi Ireland's own Q9 page was not live when we checked on 28 October 2026. An Irish buyer should wait for local supply rather than import from Britain, because Revenue charges import VAT, and possibly customs duty, on a vehicle brought in from Great Britain, before VRT.",
+      },
+      {
+        q: "Is the Audi Q9 coming to Australia?",
+        a: "Australian motoring press, including Chasing Cars and CarExpert, expects a local launch in 2027, but Audi Australia had not formally announced one as of 28 October 2026. Australia approves vehicles under its own road vehicle standards regime, so a model not yet approved there is not one to import ahead of the local launch.",
+      },
+      {
+        q: "Can you import a new Audi Q9 into Kenya?",
+        a: "On age and hand of drive, yes. Kenya admits vehicles under eight years old with a pre-export roadworthiness inspection and requires right-hand drive, and a UK-specification Q9 delivered from November 2026 meets both. The open question is the tax: a 3.0-litre diesel sits at the expensive end, and the Kenya Revenue Authority's current schedule should be confirmed at the time of order.",
+      },
+      {
+        q: "Does the Audi Q9 come with a petrol engine in right-hand drive?",
+        a: "Not on the UK price list. Audi UK offers one engine, the 3.0-litre V6 TDI mild hybrid. Audi sells a petrol V6 Q9 and the V8 SQ9 in the United States, and the SQ9 is offered in selected markets including Canada, but none of those is listed in right-hand drive as of 28 October 2026.",
+      },
+    ],
+    sources: [
+      {
+        label: "Audi Q9: Audi's first large full-size SUV tops the lineup",
+        href: "https://www.audi.com/en/press-releases/audi-q9-audis-first-large-full-size-suv-tops-the-lineup-18158",
+        publisher: "AUDI AG",
+      },
+      {
+        label: "Build your Audi Q9 SUV — configurator",
+        href: "https://www.audi.co.uk/en/models/q9/q9/configurator/",
+        publisher: "Audi UK",
+      },
+      {
+        label: "New Audi Q9 arrives in Ireland",
+        href: "https://www.rev.ie/new-audi-q9-arrives-in-ireland/",
+        publisher: "Rev.ie",
+      },
+      {
+        label:
+          "Audi reveals Q9 V6 and SQ9 V8 flagship SUVs to fill gap left by A8 limousine",
+        href: "https://www.chasingcars.com.au/news/car-industry/audi-reveals-q9-v6-and-sq9-v8-flagship-suvs-to-fill-gap-left-by-a8-limousine/",
+        publisher: "Chasing Cars",
+      },
+      {
+        label:
+          "2027 Audi Q9: All-new flagship SUV revealed as Audi's largest model yet",
+        href: "https://www.carexpert.com.au/car-news/2027-audi-q9-all-new-flagship-suv-revealed-as-audis-largest-model-yet",
+        publisher: "CarExpert",
+      },
+      {
+        label: "Importing vehicles from Great Britain and Northern Ireland",
+        href: "https://www.revenue.ie/en/vrt/registration-of-imported-used-vehicles/index.aspx",
+        publisher: "Revenue (Ireland)",
+      },
+      {
+        label: "Vehicles",
+        href: "https://www.infrastructure.gov.au/infrastructure-transport-vehicles/vehicles",
+        publisher:
+          "Australian Government Department of Infrastructure, Transport, Regional Development, Communications, Sport and the Arts",
+      },
+    ],
+    relatedGuides: [
+      "importing-cars-from-the-uk-for-dealers",
+      "best-cars-to-import-from-the-uk",
+      "uk-car-export-documents-explained",
+    ],
+    linkedVehicleSlugs: ["audi-q9-2027"],
+  },
+  {
+    slug: "ireland-budget-2027-vrt-increase-bands-3-20",
+    cta: ARTICLE_CTAS.ireland,
+    title: "Budget 2027 raises VRT on every car over 80 g/km from 1 January",
+    h1: "Budget 2027 VRT Increase: What the Rise on Bands 3 to 20 Means for Your Import",
+    seoTitle: "Budget 2027 VRT Increase: Bands 3 to 20 From 1 January",
+    description:
+      "Budget 2027 raises Irish VRT on bands 3 to 20 from 1 January 2027, about €100 per €10,000 of OMSP. Who pays, the date rule and EV relief to 2028.",
+    excerpt:
+      "One point on most of the VRT table, from 1 January. The date that decides your rate is the day the car is registered, and on most cars the increase is not worth rushing an import for.",
+    category: "Policy & Tax",
+    dateline: "Dublin",
+    keywords: [
+      "budget 2027 vrt",
+      "vrt increase 2027",
+      "vrt rates 2027 ireland",
+      "budget 2027 motoring changes",
+      "how much will vrt go up in 2027",
+      "does the vrt increase apply to imported cars",
+      "ev vrt relief extended 2028",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-28",
+    updatedDate: "2026-10-28",
+    readingTimeMins: 8,
+    heroImage: "/source-cars/blog/vrt-explained-ireland.webp",
+    heroAlt:
+      "A silver Toyota Prius hybrid photographed front three-quarter, number plate removed",
+    heroCaption:
+      "Illustrative: a Toyota Prius hybrid. Photo by TTTNIS, CC0, via Wikimedia Commons. Not a specific vehicle referred to in this article.",
+    toc: [
+      { id: "what-changed", label: "What did Budget 2027 change on VRT?" },
+      { id: "one-percent", label: "Does “1%” mean one percentage point?" },
+      { id: "cost", label: "How much more VRT will you pay?" },
+      { id: "applies", label: "Does this apply to you?" },
+      { id: "timing", label: "Should you rush an import to beat 1 January?" },
+      {
+        id: "who-benefits",
+        label: "Is this just news, or is someone selling you something?",
+      },
+      { id: "unknowns", label: "What we could not confirm" },
+    ],
+    faqs: [
+      {
+        q: "Is VRT going up in 2027?",
+        a: "Yes, for most cars. From 1 January 2027 the Category A VRT rates for bands 3 to 20, covering every car above 80 g/km of CO₂, rise by 1 per cent, according to the Department of Finance's note on the Finance (No. 2) Bill 2026. Bands 1 and 2, up to 80 g/km, are unchanged.",
+      },
+      {
+        q: "How much will VRT go up by in 2027?",
+        a: "On the reading used by published band tables, one percentage point, which is €100 more for every €10,000 of open market selling price, taking the top band from 41 to 42 per cent. The Department of Finance's wording is 'increased by 1%', and Revenue had not published its 2027 table when we checked on 28 October 2026.",
+      },
+      {
+        q: "Does the 2027 VRT increase apply to an imported car?",
+        a: "Yes, if the car is registered in Ireland on or after 1 January 2027 and emits more than 80 g/km. Revenue charges VRT when a vehicle is registered, and a vehicle must be registered within 30 days of entering the State, so the registration date decides the rate, not the date you bought or shipped the car.",
+      },
+      {
+        q: "Is the VRT relief on electric cars extended?",
+        a: "Yes. Budget 2027 extends the VRT relief for electric vehicles, which was due to end on 31 December 2026, to the end of 2028. Electric cars with an open market selling price up to €40,000 keep relief of up to €5,000, and those between €40,000 and €50,000 receive a reduced level of relief.",
+      },
+      {
+        q: "Should I register my imported car before 1 January 2027?",
+        a: "If it lands in time, yes, because a car registered on or before 31 December 2026 pays the current rate. But the saving is modest: up to €300 on a €30,000 car in band 8, and up to €700 on a €70,000 car in band 20. It is rarely worth paying for faster freight or choosing a worse car to beat the date.",
+      },
+    ],
+    sources: [
+      {
+        label: "Department of Finance publishes Finance (No.2) Bill 2026",
+        href: "https://www.gov.ie/en/department-of-finance/press-releases/department-of-finance-publishes-finance-bill-no2-2026/",
+        publisher: "Department of Finance (gov.ie)",
+      },
+      {
+        label: "Applying the tax — Category A VRT rates",
+        href: "https://www.revenue.ie/en/vrt/calculating-vrt/applying-tax.aspx",
+        publisher: "Revenue (Ireland)",
+      },
+      {
+        label: "Vehicle Registration Tax (VRT)",
+        href: "https://www.revenue.ie/en/vrt/vehicle-registration-tax/index.aspx",
+        publisher: "Revenue (Ireland)",
+      },
+      {
+        label:
+          "VRT change to push up prices for nine of the top 10 bestselling new cars",
+        href: "https://www.irishtimes.com/your-money/2026/10/06/vrt-change-to-push-up-prices-for-nine-of-the-top-10-bestselling-new-cars/",
+        publisher: "The Irish Times",
+      },
+      {
+        label: "Budget 2027 VRT changes",
+        href: "https://www.vrt.ie/faq/budget-2027-vrt-changes/",
+        publisher: "vrt.ie",
+      },
+    ],
+    relatedGuides: [
+      "vrt-explained-ireland",
+      "cost-of-importing-a-car-to-ireland",
+      "import-car-from-japan-or-uk-to-ireland",
+    ],
+  },
+  {
     slug: "uk-india-trade-deal-zero-duty-india-built-cars",
     cta: ARTICLE_CTAS.india,
     title: "India-built cars now enter the UK at 0% duty — if origin is proved",
     h1: "The UK–India Trade Deal Took Duty on India-Built Cars to Zero. Proving Origin Is the Catch.",
     seoTitle: "UK–India Trade Deal: 0% Duty on India-Built Cars",
     description:
-      "Since 15 July 2026 an India-built car can enter the UK at 0% duty, not 10%, under the UK–India trade deal. What it saves on a Jimny five-door, and the catch.",
+      "Since 15 July 2026 an India-built car can enter the UK at 0% duty, not 10%, under the UK–India deal. What it saves on a Jimny five-door, and the catch.",
     excerpt:
       "The tariff line moved on 15 July. The saving on a car is real, it compounds through VAT, and it depends entirely on a document most buyers never think to ask for.",
     category: "Policy & Tax",
@@ -505,10 +1143,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     title:
       "Revealed: the man in the red fedora who paid $40m for Ferrari's most hated car",
     h1: "The Man in the Red Fedora: How Dr Herbert Wertheim Paid $40 Million for the Ferrari Everyone Said Nobody Wanted",
-    seoTitle:
-      "Who Bought the $40 Million Ferrari Luce? Dr Herbert Wertheim, Revealed — Full Story & Price Breakdown",
+    seoTitle: "Who Bought the $40 Million Ferrari Luce?",
     description:
-      "The buyer of Ferrari Luce chassis 0 has been named: Dr Herbert 'Herbie' Wertheim, the optometrist-inventor turned billionaire investor who also paid $26m for the one-off Daytona SP3 in 2025. The full story of the $40,000,000 hammer, why it went so high, and what $66m of Ferrari charity lots in two years actually buys.",
+      "The buyer of Ferrari Luce chassis 0 is Dr Herbert Wertheim, who paid $40m at Monterey. Why it went so high, and what $66m of charity lots buys.",
     excerpt:
       "For 24 hours the buyer was 'an anonymous bidder'. He isn't anonymous any more — and he's the same man who paid $26m for the one-off Daytona SP3 last year. The full story of a $66 million two-year run.",
     category: "Auctions",
@@ -643,10 +1280,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     title:
       "Monterey 2026: a $42.9m Cobra, a $40m EV, and a market changing hands",
     h1: "Monterey Car Week 2026: The Half-Billion-Dollar Forecast, the $42.9m Cobra, and the Generation Quietly Taking Over",
-    seoTitle:
-      "Monterey Car Week 2026 Auction Results: Record Cobra Daytona, $40m Ferrari Luce & Market Analysis",
+    seoTitle: "Monterey Car Week 2026 Auction Results and Analysis",
     description:
-      "Monterey Car Week 2026 results and market analysis: the $42,905,000 Shelby Cobra Daytona Coupe that became the most expensive American car ever auctioned, the $40m Ferrari Luce, Hagerty's half-billion-dollar forecast, and the generational shift moving money out of pre-war metal and into 1990s supercars.",
+      "Monterey Car Week 2026 results: a $42.9m Shelby Cobra Daytona, the $40m Ferrari Luce, Hagerty's forecast and the shift into 1990s supercars.",
     excerpt:
       "Two nine-figure-adjacent headline sales, a forecast of $470–500m, and a buyer base that is visibly getting younger. What Monterey 2026 says about where collector money is actually going.",
     category: "Market",
@@ -743,10 +1379,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     slug: "monterey-car-week-2026-new-car-debuts",
     title: "Every significant new car revealed at Monterey Car Week 2026",
     h1: "Every Significant New Car Revealed at Monterey Car Week 2026 — And Which Ones You Can Actually Import",
-    seoTitle:
-      "Monterey Car Week 2026 New Car Debuts: Every Reveal, Spec & Price | Providence Auto",
+    seoTitle: "Monterey Car Week 2026: Every New Car Debut",
     description:
-      "The full list of new cars revealed at Monterey Car Week 2026: Lamborghini Revuelto SV and Miura 60° Homage, Bugatti Destrier, Hennessey Blackbird, Eccentrica V12 Roadster, Ferrari CZ26, Acura's concept, Bentley, Cadillac and more — with production numbers, prices and availability.",
+      "Every new car revealed at Monterey Car Week 2026, from the Revuelto SV and Bugatti Destrier to the Ferrari CZ26, with numbers, prices and dates.",
     excerpt:
       "The Quail has quietly become the most important launch venue in the industry. Fifteen-plus reveals in one week, from a 1,578 hp one-off Bugatti to an 800 hp manual Hennessey — and a note on which are already sold out.",
     category: "Releases",
@@ -859,10 +1494,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     cta: ARTICLE_CTAS.japanUk,
     title: "The UK has reopened the 2030 petrol and diesel ban — again",
     h1: "The UK Has Reopened the 2030 Petrol and Diesel Ban: What the New ZEV Mandate Review Actually Changes",
-    seoTitle:
-      "UK ZEV Mandate Review 2026: 2030 Ban Consultation, Deadlines & What It Means for Buyers",
+    seoTitle: "UK ZEV Mandate Review 2026: What It Means for Buyers",
     description:
-      "The Department for Transport launched a fresh ZEV mandate review on 14 August 2026, with responses due by 23 October. What is on the table, the 2026 target of 33%, the hybrid reprieve to 2035, the £7.5bn support package — and what it means if you are buying or importing a car now.",
+      "The UK reopened its ZEV mandate review on 14 August 2026. The 33% 2026 target, the hybrid reprieve to 2035, and what it means if you import now.",
     excerpt:
       "A new consultation, a 23 October deadline and a 2030 deadline that has now moved twice. What is genuinely settled, what is back in play, and what it changes for anyone buying a car this year.",
     category: "Policy & Tax",
@@ -948,10 +1582,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     title:
       "Chinese EV brands just took a record share of Europe — despite 45% tariffs",
     h1: "Chinese EV Brands Have Taken a Record Share of Europe's Electric Market — and Tariffs Have Not Stopped Them",
-    seoTitle:
-      "Chinese EVs Hit Record 14.2% of Europe's EV Market in 2026 — Tariffs, Brands & UK Impact",
+    seoTitle: "Chinese EVs Hit a Record 14.2% of Europe's EV Market",
     description:
-      "Chinese brands are on track for a record 14.2% of Europe's battery-electric market in 2026, having overtaken Japanese manufacturers for the number two position overall — despite EU duties reaching up to 45.3%. Why the UK is the single biggest destination, and what it means for residuals.",
+      "Chinese brands are on track for a record 14.2% of Europe's EV market in 2026 despite EU duties up to 45.3%. Why the UK leads, and what it does to values.",
     excerpt:
       "BYD, Chery, SAIC and Xpeng sold 171,800 cars in Western Europe in five months. The EU stacked duties up to 45.3% on them. It barely dented the trajectory — and the UK is taking a quarter of the total.",
     category: "Industry",
@@ -1036,10 +1669,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     cta: ARTICLE_CTAS.ireland,
     title: "Ireland's EV incentives start winding down — here's the timetable",
     h1: "Ireland's EV Incentives Are Being Wound Down: The VRT and BIK Timetable to 2028",
-    seoTitle:
-      "Ireland EV Tax Changes 2026–2028: VRT Relief End Date & BIK Taper Explained",
+    seoTitle: "Ireland EV Tax Changes 2026–2028: VRT Relief and BIK",
     description:
-      "Ireland's €5,000 VRT relief for electric vehicles now runs to 31 December 2026, and the BIK original market value reduction tapers from €10,000 in 2026 to €5,000 in 2027 and €2,500 in 2028. The full timetable, what it costs, and why it changes when you should import.",
+      "Ireland's €5,000 EV VRT relief now runs to 31 December 2028, and the BIK reduction tapers to €2,500 by 2028. The timetable, and when to import.",
     excerpt:
       "The €5,000 VRT relief has a hard end date. The BIK relief halves, then halves again. If you are planning an EV import or a company car change, the calendar now matters more than the spec.",
     category: "Policy & Tax",
@@ -1054,7 +1686,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     ],
     author: AUTHOR,
     publishDate: "2026-08-10",
-    updatedDate: "2026-08-17",
+    updatedDate: "2026-10-28",
     readingTimeMins: 7,
     heroImage:
       "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
@@ -1123,10 +1755,9 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     cta: ARTICLE_CTAS.japan,
     title: "Japan exported a record 1.7m used cars — and the weak yen is why",
     h1: "Japan Exported a Record 1.7 Million Used Cars: What the Weak Yen Is Doing to Auction Prices",
-    seoTitle:
-      "Japan Used Car Exports Hit Record 1.7 Million — Weak Yen, Auction Prices & 2026 Outlook",
+    seoTitle: "Japan Used Car Exports Hit a Record 1.7 Million",
     description:
-      "Japan's used vehicle exports hit a record of roughly 1.7 million units, up 9.1% and a third consecutive annual high, with the yen near ¥161–162 to the dollar. Why auction prices are rising in yen while still falling in euro and sterling terms, and how long the window stays open.",
+      "Japan's used car exports hit a record of about 1.7 million, up 9.1%, with the yen near ¥161. Why auction prices rise in yen but fall in euro terms.",
     excerpt:
       "A third straight record year of exports, a currency near its weakest since 1986, and auction prices up about 15% in yen. Three numbers that pull in different directions — and only one of them is in your favour.",
     category: "Market",
@@ -1211,7 +1842,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Mercedes-Maybach S 580 e First Class: The UK Specification, the £206,090 Price, and the 69 g/km That Sets Your Tax",
     seoTitle: "Mercedes-Maybach S 580 e First Class: UK Spec and Price",
     description:
-      "Mercedes-Maybach S 580 e First Class: £206,090 UK on-the-road, 585 hp, 58 miles of electric range, and the 69 g/km CO₂ figure that decides your registration tax.",
+      "Mercedes-Maybach S 580 e First Class: £206,090 UK on the road, 585 hp, 58 miles of electric range and the 69 g/km CO₂ figure that sets your tax.",
     excerpt:
       "A 585 hp plug-in hybrid limousine with a £16,000 paint option and a CO₂ figure higher than plug-in buyers expect. The full UK specification, and why the on-the-road price is not your CIF base.",
     category: "Releases",
@@ -1424,7 +2055,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Nissan Patrol Y63 Australian Pricing Confirmed: Six Grades from A$98,990, First Deliveries Early 2027",
     seoTitle: "Nissan Patrol Y63 Australia Price: A$98,990 to A$145,990",
     description:
-      "Nissan Australia confirmed Y63 Patrol pricing on 27 August 2026: six grades from A$98,990 to A$145,990, 317 kW twin-turbo V6, 3,700 kg towing, deliveries early 2027.",
+      "Nissan Australia confirmed Y63 Patrol pricing on 27 August 2026: six grades from A$98,990 to A$145,990, a 317 kW V6 and deliveries in early 2027.",
     excerpt:
       "Six grades, one engine, and a 3,700 kg tow rating. The number that matters to an importer is not A$98,990 — it is what is left once the Australian taxes inside it come out.",
     category: "Releases",
@@ -1529,7 +2160,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Nissan Patrol Y63 vs Toyota LandCruiser 300: What It Changes for a Dealer",
     seoTitle: "Patrol Y63 vs LandCruiser 300: The Dealer Read",
     description:
-      "The Y63 Patrol opens A$280 under the LandCruiser 300 GX and tows 200 kg more. What that does to a large-SUV floor plan, and which of the six grades to stock.",
+      "The Y63 Patrol opens A$280 under the LandCruiser 300 GX and tows 200 kg more. What that does to a large-SUV floor plan, and which grades to stock.",
     excerpt:
       "Six grades where there were three is a margin ladder, not a specification change. The warranty, not the tow rating, is the largest undisclosed variable in this launch.",
     category: "Market",
@@ -1626,7 +2257,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Which Markets Get the Nissan Patrol Y63, and When",
     seoTitle: "Nissan Patrol Y63: Which Markets Get It, and When",
     description:
-      "Australia has Y63 Patrol order books open for early 2027 delivery, New Zealand follows in Q1 2027 and Japan in fiscal 2027. The Gulf cars are left-hand drive.",
+      "Australia takes Y63 Patrol orders for early 2027, New Zealand follows in Q1 2027 and Japan in fiscal 2027. The Gulf cars are left-hand drive.",
     excerpt:
       "Plentiful UAE supply is the most common wasted enquiry we take on this car. Until Japan opens, Australia is the only right-hand-drive corridor there is.",
     category: "Industry",
@@ -1723,7 +2354,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "The All-New Mitsubishi Pajero Is Revealed: Thai-Built, Seven Seats, and Unpriced in Every Market",
     seoTitle: "New Mitsubishi Pajero Revealed: Specs, Markets and Timing",
     description:
-      "Mitsubishi revealed the all-new Pajero on 2 September 2026: Thai-built, 2.4 diesel, 480 Nm, eight-speed automatic, seven seats — and no price in any market.",
+      "Mitsubishi revealed the new Pajero on 2 September 2026: Thai-built, 2.4 diesel, 480 Nm, eight-speed auto, seven seats, and no price anywhere yet.",
     excerpt:
       "Mitsubishi published the dimensions to the millimetre and the approach angle to one decimal place. It published no price and no power output — and the launch order confines the car to three countries until April 2027.",
     category: "Releases",
@@ -1833,7 +2464,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Importing the New Mitsubishi Pajero: What the Thailand and Australia Corridors Actually Contain",
     seoTitle: "Pajero Sourcing: Thailand or Australia, the Dealer Read",
     description:
-      "Mitsubishi builds the new Pajero in Thailand and sells it in Australia. Two corridors, 4 Australian grades, 10% GST inside the list price, and no price yet.",
+      "Mitsubishi builds the new Pajero in Thailand and sells it in Australia. Two corridors, four Australian grades, GST in the list price, no price yet.",
     excerpt:
       "Thailand builds it and sells it first; Australia is the only market with a published range. Neither has a price — and Thai export capacity was cut by 50,000 units on 1 August.",
     category: "Market",
@@ -2150,7 +2781,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Pakistan Removed the Age Cap on Commercial Used-Car Imports, and Cut the Duty",
     seoTitle: "Pakistan Used Car Import Rules 2026: Age Cap and Duty",
     description:
-      "Pakistan removed the five-year age cap on commercial used-car imports on 1 July 2026 and cut regulatory duty from 40% to 30%. What it does to a landed bill.",
+      "Pakistan removed the five-year age cap on commercial used-car imports on 1 July 2026 and cut regulatory duty from 40% to 30%. What it does to a bill.",
     excerpt:
       "Two liberalisations landed on the same day and most of the coverage read the second one backwards. The 30% in SRO 1065(I)/2026 is ten points lower than the day before, not thirty points higher.",
     category: "Policy & Tax",
@@ -2248,7 +2879,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Hong Kong Ended Its Electric Car Tax Concession — One Door Is Open Until 24 February 2027",
     seoTitle: "Hong Kong EV First Registration Tax: Concession Ends",
     description:
-      "Hong Kong's EV first registration tax concession expired 31 March 2026. Cars ordered by 25 February 2026 have until 24 February 2027 to apply. What it costs.",
+      "Hong Kong's EV first registration tax concession expired on 31 March 2026. Cars ordered by 25 February have until 24 February 2027. What it costs.",
     excerpt:
       "Hong Kong has extended this concession before, which is exactly why the transitional deadline is the number to write down. Applications close on 24 February 2027 and the benefit does not come back.",
     category: "Policy & Tax",
@@ -2336,7 +2967,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Malaysia Put a Price Floor and a Power Floor on Imported Electric Cars",
     seoTitle: "Malaysia EV Import Rules 2026: RM200,000 CIF, 180 kW",
     description:
-      "From 1 July 2026 an imported CBU electric car in Malaysia must have a CIF value of RM200,000 and make 180 kW. What the specification floor does to sourcing.",
+      "From 1 July 2026 an imported CBU EV in Malaysia needs a CIF value of RM200,000 and 180 kW. What that specification floor does to your sourcing.",
     excerpt:
       "This is not a duty change, it is a specification floor. A car that cannot clear both thresholds is not a margin problem for a Malaysian dealer — it is an admissibility problem.",
     category: "Policy & Tax",
@@ -2511,7 +3142,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "No, the 2026 SOLAS Amendments Did Not Restrict Electric Vehicles at Sea",
     seoTitle: "RoRo Shipping Rules 2026: What the IMO Actually Changed",
     description:
-      "The SOLAS amendments in force from 1 January 2026 cover fire detection and suppression, not electric vehicles. EV-specific IMO rules are not due before 2032.",
+      "The SOLAS amendments in force from 1 January 2026 cover fire detection and suppression, not EVs. EV-specific IMO rules are not due before 2032.",
     excerpt:
       "Lloyd's Register's summary of MSC.550(108) and MSC.555(108) contains no provisions about electric vehicles at all. If your surcharge cites them, ask which resolution.",
     category: "Market",
@@ -2691,7 +3322,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Sri Lanka Reopened Vehicle Imports, Then Capped the Credit That Pays for Them",
     seoTitle: "Sri Lanka Vehicle Finance Cap 2026: 40% Loan to Value",
     description:
-      "Sri Lanka capped vehicle financing at 40% of value from 25 May 2026, with 60% for commercial vehicles. Why the deposit, not the tax, is now the binding wall.",
+      "Sri Lanka capped vehicle finance at 40% of value from 25 May 2026, 60% for commercial vehicles. Why the deposit, not the tax, is now the wall.",
     excerpt:
       "A tax raises the price of the car. A loan-to-value cap raises the price of getting to the car. On a LKR 10,000,000 vehicle the buyer now needs LKR 6,000,000 in cash.",
     category: "Market",
@@ -2780,7 +3411,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Japan Intervened, the Yen Turned, and a ¥3,000,000 Car Now Costs €754 More",
     seoTitle: "Yen Intervention 2026: What It Costs to Import a Car",
     description:
-      "The euro fell from ¥186.99 on 30 July to ¥178.59 on 9 September 2026 after a ¥15.4 trillion intervention. What that does to a ¥3,000,000 car, netted properly.",
+      "The euro fell from ¥186.99 on 30 July to ¥178.59 on 9 September 2026 after a ¥15.4 trillion intervention. What it does to a ¥3,000,000 car.",
     excerpt:
       "The currency move cost a euro buyer about €314 on the average August car. The auction price fall gave back about €519. Anyone quoting you one without the other is quoting half a number.",
     category: "Market",
@@ -2878,7 +3509,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "An Import Is Four Currency Exposures, and Your Own Is the One Nobody Writes About",
     seoTitle: "Customs Exchange Rate vs Spot: Your Import in Your Money",
     description:
-      "An import is four currency exposures, not one. The Kenyan shilling sat at KSh 129.43 to the dollar on 9 September 2026 — and your duty uses a different rate.",
+      "An import is four currency exposures, not one. The shilling sat at KSh 129.43 to the dollar on 9 September 2026, and your duty uses a different rate.",
     excerpt:
       "Almost every currency article for importers watches the yen. For a buyer in Nairobi, Kampala or Kingston the larger exposure is their own currency — and the Kenyan shilling has done something unusual this year.",
     category: "Market",
@@ -2961,7 +3592,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "The Land Cruiser FJ Costs ¥4,500,100 in Japan and Is Assembled at Ban Pho",
     seoTitle: "Toyota Land Cruiser FJ: ¥4,500,100, Built in Thailand",
     description:
-      "Toyota launched the Land Cruiser FJ in Japan on 14 May 2026 at ¥4,500,100, built at Toyota Motor Thailand's Ban Pho plant. Can you import one, and at what cost?",
+      "Toyota launched the Land Cruiser FJ in Japan on 14 May 2026 at ¥4,500,100, built in Thailand at Ban Pho. Can you import one, and at what cost?",
     excerpt:
       "One grade, one price, one named sales market. The production line is in Rayong province and the showroom is in Japan — which is a routing question before it is an import one.",
     category: "Releases",
@@ -3053,7 +3684,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Kia Launched the Sorento in India — an India-Built, Right-Hand-Drive Seven-Seater",
     seoTitle: "Kia Sorento India Price 2026 and the Import Read",
     description:
-      "Kia launched the Sorento in India on 4 September 2026 from ₹27.99 lakh, built at Anantapur. A 1.6 strong hybrid, a 442 Nm diesel, and what it means for sourcing.",
+      "Kia launched the India-built Sorento on 4 September 2026 from ₹27.99 lakh: a 1.6 strong hybrid, a 442 Nm diesel, and what it means for sourcing.",
     excerpt:
       "The hybrid is the headline and the diesel is the export case. 442 Nm in a seven-seat body, built in right-hand drive at Indian cost, is the specification that travels.",
     category: "Releases",
@@ -3140,7 +3771,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "The 2026 Maruti Baleno Starts at ₹6.10 Lakh and Brings ADAS Down the Price Ladder",
     seoTitle: "Maruti Baleno 2026 Price, Specs and the Import Read",
     description:
-      "Maruti launched the facelifted Baleno on 5 September 2026 from ₹6.10 lakh with Level 2 ADAS, 83 hp and 24.77 kmpl claimed. What it means in an import market.",
+      "Maruti launched the Baleno facelift on 5 September 2026 from ₹6.10 lakh with Level 2 ADAS, 83 hp and 24.77 kmpl. What it means in an import market.",
     excerpt:
       "The specification change worth noticing is not the grille. Adaptive cruise, lane keeping and emergency braking on a car starting at ₹6.10 lakh is a long way down the ladder.",
     category: "Releases",
@@ -3396,7 +4027,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "JLR Confirmed 4,000 Job Cuts — the Number That Matters to a Buyer Is 300,000",
     seoTitle: "JLR Job Cuts 2026: The UK Land Rover Sourcing Read",
     description:
-      "JLR confirmed 4,000 job cuts on 7 September 2026, targeting £1.7bn of savings. What an underloaded plant network means if you import Land Rovers from Britain.",
+      "JLR confirmed 4,000 job cuts on 7 September 2026 to save £1.7bn. What an underloaded plant network means if you import Land Rovers from Britain.",
     excerpt:
       "Cutting 4,000 non-production roles is a cost story. Setting breakeven towards 300,000 vehicles is a volume story, and volume is the half an importer actually feels.",
     category: "Industry",
@@ -3486,7 +4117,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "A Chinese Manufacturer Is Building Right-Hand-Drive Cars in a Market We Export From",
     seoTitle: "Chinese Cars Built Right-Hand Drive in Thailand",
     description:
-      "Changan's Rayong plant has been building right-hand-drive cars since May 2025, with capacity rising to 200,000 by 2027. What a new RHD source corridor means.",
+      "Changan's Rayong plant has built right-hand-drive cars since May 2025, rising to 200,000 a year by 2027. What a new RHD source corridor means.",
     excerpt:
       "Thailand has spent forty years as Japan's right-hand-drive factory. A year into Changan's Rayong output, it is becoming China's as well — which widens the supply base for every RHD destination.",
     category: "Industry",
@@ -3576,7 +4207,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "The EU End-of-Life Vehicles Regulation Is Not a Used-Car Export Ban",
     seoTitle: "EU Used Car Export Rules: Roadworthy Only From 2031",
     description:
-      "Regulation (EU) 2026/1738 entered into force on 13 August 2026. From 1 September 2031 only roadworthy vehicles may be exported from the EU. What it changes.",
+      "Regulation (EU) 2026/1738 took effect on 13 August 2026. From 1 September 2031 only roadworthy vehicles may leave the EU. What it changes.",
     excerpt:
       "The rule does not say fewer cars may leave Europe. It says the ones that leave must be able to drive — and roadworthy used vehicles can continue to be exported as normal.",
     category: "Industry",
@@ -3593,11 +4224,12 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     publishDate: "2026-09-09",
     updatedDate: "2026-09-09",
     readingTimeMins: 8,
-    heroImage: "/country/ireland.webp",
+    heroImage:
+      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
     heroAlt:
-      "An Irish coastal road, illustrating EU member state vehicle markets",
+      "A person signing paperwork at a desk, illustrating EU vehicle regulation",
     heroCaption:
-      "Illustrative image of Ireland. Not a photograph of any vehicle or export process referred to in this article.",
+      "Illustrative image. Not a photograph of any vehicle or export process referred to in this article.",
     toc: [
       { id: "what-it-says", label: "What the Regulation restricts" },
       { id: "who-it-hits", label: "Who this actually reaches" },
@@ -3664,7 +4296,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "New Zealand's Clean Car Standard Survived Its Review, at a Quarter of the Old Charge",
     seoTitle: "Clean Car Standard 2026: NZ$7.50 a Gram on Used Imports",
     description:
-      "New Zealand cut Clean Car Standard charges to NZ$7.50 a gram on used imports from 1 January 2026 and confirmed on 21 August it will keep the scheme to 2028.",
+      "New Zealand cut Clean Car Standard charges to NZ$7.50 a gram on used imports from 1 January 2026 and will keep the scheme to 2028.",
     excerpt:
       "The used-import charge fell from NZ$33.75 to NZ$7.50 a gram. On a vehicle 50 grams over target that is NZ$1,312.50 back — and the reduced rates have a stated end date.",
     category: "Policy & Tax",
@@ -3752,7 +4384,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Kenya Taxes Imported Cars on a Schedule, Not Your Invoice — and the Schedule Is in Dispute",
     seoTitle: "Kenya CRSP 2026: The Used-Car Tax Base Is Still Contested",
     description:
-      "Kenya assesses imported used cars on a depreciated CRSP schedule. The 2025 revision was suspended by the High Court. We could not confirm which list is live.",
+      "Kenya values imported used cars on a depreciated CRSP schedule. The 2025 revision was suspended by the High Court; we could not confirm which list is live.",
     excerpt:
       "It would be straightforward to produce a plausible Kenyan duty calculation and present it confidently. A wrong tax figure on a car someone is about to import is worse than no figure.",
     category: "Policy & Tax",
@@ -3839,7 +4471,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "The UK Confirmed a 3p-a-Mile Charge on Electric Cars — and It Does Not Follow the Export",
     seoTitle: "UK eVED 2028: 3p a Mile, and the EV Import Read",
     description:
-      "The UK confirmed eVED on 13 July 2026 at 3p a mile for EVs and 1.5p for PHEVs from 1 April 2028. Why it does not follow an exported car, but reaches its price.",
+      "The UK confirmed eVED on 13 July 2026: 3p a mile for EVs and 1.5p for PHEVs from April 2028. Why it doesn't follow an exported car, but hits its price.",
     excerpt:
       "eVED is a charge on driving in Britain and it stops at the port. What reaches an importer is the second-order effect on what British buyers will pay for a used EV.",
     category: "Policy & Tax",
@@ -3931,7 +4563,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Bentley's First Electric Car Is Here: 888 PS, 375 Miles and Built in Crewe",
     seoTitle: "Bentley Torcal: Specs, Price and Import Read",
     description:
-      "Bentley revealed the Torcal on 23 September 2026 — 888 PS, 113 kWh, 375 miles WLTP, built at Crewe. The specification, the UK prices and what is still unknown.",
+      "Bentley revealed the Torcal on 23 September 2026: 888 PS, 113 kWh, 375 miles WLTP, built at Crewe. The specification, UK prices and what's unknown.",
     excerpt:
       "Bentley published an unusually complete engineering release and no price list at all. The two figures in circulation are Top Gear's — and the kerb weight, which is the number that sets your freight quotation, comes from nobody.",
     category: "Releases",
@@ -4037,7 +4669,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "A Right-Hand-Drive Bentley Torcal Can Go Almost Anywhere — the Charger Decides Whether It Should",
     seoTitle: "Bentley Torcal RHD: Which Import Markets Work",
     description:
-      "The Bentley Torcal is built right-hand drive at Crewe, and no age limit touches a new car. What actually decides the market is 113 kWh and a 400 kW charger.",
+      "The Bentley Torcal is built right-hand drive at Crewe, and no age limit touches a new car. What decides the market is 113 kWh and a 400 kW charger.",
     excerpt:
       "Almost every question an importer asks about a new model — the age bar, the hand of drive, type approval — has a boring answer here. The one that does not is where you plug it in.",
     category: "Releases",
@@ -4139,7 +4771,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     h1: "Bentley Torcal vs Range Rover Electric: Two British Electric Flagships, Three Weeks Apart",
     seoTitle: "Torcal vs Range Rover Electric: Specs Compared",
     description:
-      "JLR revealed the Range Rover Electric on 2 September 2026 and Bentley the Torcal on 23 September. Both British-built, both right-hand drive. How they compare.",
+      "JLR revealed the Range Rover Electric on 2 September 2026 and Bentley the Torcal on 23 September. Both British-built, both RHD. How they compare.",
     excerpt:
       "Britain produced two electric luxury flagships in three weeks. They are not the same car, they are not aimed at the same buyer, and only one of them can be ordered today.",
     category: "Market",

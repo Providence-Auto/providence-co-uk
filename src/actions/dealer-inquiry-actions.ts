@@ -9,6 +9,7 @@ import {
   eq,
   ilike,
   inArray,
+  isNotNull,
   isNull,
   ne,
   sql,
@@ -27,6 +28,17 @@ import {
 } from "@/config/dealer-sourcing";
 import { db, dealerInquiries, users } from "@/db";
 import { getAgentPhotoUrl } from "@/lib/agent-photo";
+import {
+  type ConversionLead,
+  sendGoogleConversion,
+  sendMetaConversion,
+} from "@/lib/conversions";
+import {
+  DEALER_LEAD_TYPE,
+  DEALER_ONBOARDED_EVENT,
+  DEALER_QUALIFIED_EVENT,
+  dealerUploadsDue,
+} from "@/lib/dealerConversion";
 import {
   checkWhatsApp,
   type DealerCar,
@@ -50,10 +62,13 @@ import {
 import { marketStatusFor } from "@/lib/dealer-markets";
 import { emailService } from "@/lib/email";
 import {
+  allLeadsOwnerEmail,
   COUNTRY_OWNER_EMAILS,
   DEALER_ROTATION_EXCLUDED,
   dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
+  isHeldOutOfRotations,
+  pageLeadOwner,
   pickNextInRotation,
   SALES_ROLES,
   takesDealerLeads,
@@ -278,14 +293,72 @@ export async function submitDealerInquiry(
       if (lockedAt) now = new Date(lockedAt);
 
       let chosen: typeof users.$inferSelect | null = null;
-      let method: "rep-link" | "country" | "round-robin" = "round-robin";
+      let method:
+        | "page-owner"
+        | "hard-rule"
+        | "rep-link"
+        | "country"
+        | "round-robin" = "round-robin";
+
+      // -1. A page with its own owner (business instruction 2026-11-12):
+      //     every inquiry from /import-japanese-cars/dealership goes to
+      //     Ishak, ahead of the hard rule. Only an existing, unbanned
+      //     account; otherwise the routing below carries on as usual.
+      const pageOwnerEmail = pageLeadOwner(input.pagePath);
+      if (pageOwnerEmail) {
+        const [owner] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              sql`lower(trim(${users.email})) = ${pageOwnerEmail}`,
+              ne(users.isBanned, true),
+            ),
+          )
+          .limit(1);
+        if (owner) {
+          chosen = owner;
+          method = "page-owner";
+        } else {
+          console.warn(
+            `[dealer-inquiry] page owner (${pageOwnerEmail}) for ${input.pagePath} matched no active account — inquiry routed normally.`,
+          );
+        }
+      }
+
+      // 0. The hard rule (business instruction 2026-11-11): while
+      //    ALL_LEADS_OWNER_EMAIL is set, every dealer inquiry goes to that
+      //    account, ahead of a rep link, a country owner and the rotation.
+      //    Only an existing, unbanned account; otherwise the routing below
+      //    carries on as usual.
+      const hardRuleEmail = allLeadsOwnerEmail();
+      if (!chosen && hardRuleEmail) {
+        const [owner] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              sql`lower(trim(${users.email})) = ${hardRuleEmail}`,
+              ne(users.isBanned, true),
+            ),
+          )
+          .limit(1);
+        if (owner) {
+          chosen = owner;
+          method = "hard-rule";
+        } else {
+          console.warn(
+            `[dealer-inquiry] ALL_LEADS_OWNER_EMAIL (${hardRuleEmail}) matched no active account — inquiry routed normally.`,
+          );
+        }
+      }
 
       // 1. A rep link (?rep=shaq) the dealer arrived through — it beats a
       //    country owner (business instruction 2026-10-16). Any sales
       //    position, as for a profile-page lead — DEALER_ROTATION_EXCLUDED
       //    included: the exclusion keeps someone out of the rotation, but a
       //    dealer who came through their own link is theirs (2026-10-16).
-      if (repCode) {
+      if (!chosen && repCode) {
         const [rep] = await tx
           .select()
           .from(users)
@@ -330,7 +403,11 @@ export async function submitDealerInquiry(
           .where(inSalesPosition())
           .orderBy(asc(users.name));
         const sales = salesTeam.filter((u) => takesDealerLeads(u.role));
-        const eligible = sales.filter((u) => !isExcludedFromDealerRotation(u));
+        // Also minus anyone held out of every rotation (ROTATION_EXCLUDED —
+        // Amy, 2026-11-12), strictly, like the dealer exclusion.
+        const eligible = sales.filter(
+          (u) => !isExcludedFromDealerRotation(u) && !isHeldOutOfRotations(u.email),
+        );
         // An exclusion that matches nobody fails silently — the person it was
         // meant for would simply get their turn. Say so, once per process, so
         // a renamed account shows up in the logs rather than in their inbox.
@@ -525,6 +602,10 @@ async function requireStaff() {
   return user;
 }
 
+/** Admins are the only people who see, or restore, a deleted inquiry. */
+const isAdminRole = (role: string | null | undefined) =>
+  (role || "").trim().toLowerCase() === "admin";
+
 function toView(row: typeof dealerInquiries.$inferSelect): DealerInquiryView {
   const iso = (d: Date | null) => (d ? new Date(d).toISOString() : null);
   return {
@@ -550,19 +631,28 @@ function toView(row: typeof dealerInquiries.$inferSelect): DealerInquiryView {
     assignedAt: iso(row.assignedAt),
     firstContactedAt: iso(row.firstContactedAt),
     isArchived: row.isArchived,
+    deletedAt: iso(row.deletedAt),
+    deletedByName: row.deletedByName,
     source: row.source,
     createdAt: new Date(row.createdAt).toISOString(),
     updatedAt: new Date(row.updatedAt).toISOString(),
   };
 }
 
-/** Every dealer inquiry, newest first. Archived rows included; the panel filters. */
+/**
+ * Every dealer inquiry, newest first. Archived rows included; the panel
+ * filters. Deleted rows are included for admins only.
+ */
 export async function getDealerInquiries(): Promise<DealerInquiryView[]> {
   try {
-    await requireStaff();
+    const actor = await requireStaff();
+    // A deleted inquiry never leaves the server for anyone but an admin.
     const rows = await db
       .select()
       .from(dealerInquiries)
+      .where(
+        isAdminRole(actor.role) ? undefined : isNull(dealerInquiries.deletedAt),
+      )
       .orderBy(desc(dealerInquiries.createdAt));
     return rows.map(toView);
   } catch (error) {
@@ -605,6 +695,88 @@ type UpdateResult =
 const appendHistory = (entries: DealerInquiryHistoryEntry[]) =>
   sql`${dealerInquiries.statusHistory} || ${JSON.stringify(entries)}::jsonb`;
 
+type DealerInquiryRow = typeof dealerInquiries.$inferSelect;
+
+/**
+ * Upload what a status change has newly earned (src/lib/dealerConversion.ts)
+ * and record only what a platform actually accepted, so a failed upload is
+ * retried on the next status change rather than lost — and nothing accepted
+ * is ever sent twice, since Meta does no server-to-server deduplication.
+ *
+ * Google Ads uploads need their own conversion actions. When
+ * GOOGLE_DEALER_QUALIFIED_ACTION_ID / GOOGLE_DEALER_ONBOARDED_ACTION_ID are
+ * unset nothing is sent to Google: falling back to the B2C action would count
+ * dealers as car buyers.
+ */
+async function uploadDealerConversions(
+  before: DealerInquiryRow,
+  after: DealerInquiryRow,
+) {
+  const due = dealerUploadsDue(before.status, after.status, after);
+  if (due.length === 0) return;
+
+  const cars = (after.cars as DealerCar[]) ?? [];
+  const lead: ConversionLead = {
+    id: after.id,
+    email: after.email,
+    // Stored as E.164, so it hashes as an international number as it stands.
+    phone: after.whatsapp,
+    leadType: DEALER_LEAD_TYPE,
+    make: cars[0]?.make || null,
+    vehicleModel: cars[0]?.model || null,
+    countryOfImport: after.country,
+    gclid: after.gclid,
+    fbc: after.fbc,
+    fbp: after.fbp,
+    fbclid: after.fbclid,
+    createdAt: after.createdAt,
+  };
+
+  const ledger: Partial<DealerInquiryRow> = {};
+  const google = (actionId: string | undefined, stage: string) =>
+    actionId
+      ? sendGoogleConversion(lead, {
+          conversionActionId: actionId,
+          orderId: `${after.id}:${stage}`,
+        })
+      : Promise.resolve(null);
+
+  await Promise.allSettled(
+    due.map(async (upload) => {
+      if (upload === "metaQualified") {
+        const r = await sendMetaConversion(lead, DEALER_QUALIFIED_EVENT, {
+          eventId: `${after.id}:qualified`,
+        });
+        if (r.ok) ledger.metaQualifiedSentAt = new Date();
+      } else if (upload === "metaOnboarded") {
+        const r = await sendMetaConversion(lead, DEALER_ONBOARDED_EVENT, {
+          eventId: `${after.id}:onboarded`,
+        });
+        if (r.ok) ledger.metaOnboardedSentAt = new Date();
+      } else if (upload === "googleQualified") {
+        const r = await google(
+          process.env.GOOGLE_DEALER_QUALIFIED_ACTION_ID,
+          "qualified",
+        );
+        if (r?.ok) ledger.googleQualifiedSentAt = new Date();
+      } else {
+        const r = await google(
+          process.env.GOOGLE_DEALER_ONBOARDED_ACTION_ID,
+          "onboarded",
+        );
+        if (r?.ok) ledger.googleOnboardedSentAt = new Date();
+      }
+    }),
+  );
+
+  if (Object.keys(ledger).length > 0) {
+    await db
+      .update(dealerInquiries)
+      .set(ledger)
+      .where(eq(dealerInquiries.id, after.id));
+  }
+}
+
 const STALE_MESSAGE =
   "Someone else changed this inquiry a moment ago — reload to see the latest.";
 
@@ -624,7 +796,10 @@ export async function updateDealerInquiry(
       .from(dealerInquiries)
       .where(eq(dealerInquiries.id, text(id, 100)))
       .limit(1);
-    if (!existing) return { success: false, message: "Inquiry not found." };
+    // A deleted inquiry does not exist for anyone but an admin.
+    if (!existing || (existing.deletedAt && !isAdminRole(actor.role))) {
+      return { success: false, message: "Inquiry not found." };
+    }
 
     const now = new Date();
     const entries: DealerInquiryHistoryEntry[] = [];
@@ -712,6 +887,19 @@ export async function updateDealerInquiry(
       .returning();
     if (!updated) return { success: false, message: STALE_MESSAGE };
 
+    // Report a newly reached Qualified / Onboarded to the ad platforms. Never
+    // lets an upload failure undo the save.
+    if (update.status !== undefined) {
+      try {
+        await uploadDealerConversions(existing, updated);
+      } catch (error) {
+        console.error(
+          `[CONVERSIONS] Dealer upload failed for ${updated.id}:`,
+          error,
+        );
+      }
+    }
+
     // Tell the new owner — a reassignment nobody hears about is a lead that
     // sits. Never lets a mail failure undo the save.
     if (newAssignee) {
@@ -761,7 +949,10 @@ export async function setDealerInquiryArchived(
       .from(dealerInquiries)
       .where(eq(dealerInquiries.id, text(id, 100)))
       .limit(1);
-    if (!existing) return { success: false, message: "Inquiry not found." };
+    // A deleted inquiry does not exist for anyone but an admin.
+    if (!existing || (existing.deletedAt && !isAdminRole(actor.role))) {
+      return { success: false, message: "Inquiry not found." };
+    }
     if (existing.isArchived === archived) {
       return { success: true, inquiry: toView(existing) };
     }
@@ -796,6 +987,79 @@ export async function setDealerInquiryArchived(
     return { success: true, inquiry: toView(updated) };
   } catch (error) {
     console.error("Failed to archive dealer inquiry:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to save.",
+    };
+  }
+}
+
+/**
+ * Delete or restore (business instruction 2026-11-01). Anyone on the panel can
+ * delete; the inquiry then disappears for everyone except admins, who see it
+ * under Deleted and are the only ones who can restore it. Nothing is removed
+ * from the table — the row, its history and its conversion ledger stay — so a
+ * mistaken delete is always one click from undone.
+ */
+export async function setDealerInquiryDeleted(
+  id: string,
+  deleted: boolean,
+): Promise<UpdateResult> {
+  try {
+    const actor = await requireStaff();
+    const admin = isAdminRole(actor.role);
+    if (!deleted && !admin) {
+      return {
+        success: false,
+        message: "Only an admin can restore a deleted inquiry.",
+      };
+    }
+
+    const [existing] = await db
+      .select()
+      .from(dealerInquiries)
+      .where(eq(dealerInquiries.id, text(id, 100)))
+      .limit(1);
+    if (!existing || (existing.deletedAt && !admin)) {
+      return { success: false, message: "Inquiry not found." };
+    }
+    if (Boolean(existing.deletedAt) === deleted) {
+      return { success: true, inquiry: toView(existing) };
+    }
+
+    const now = new Date();
+    const [updated] = await db
+      .update(dealerInquiries)
+      .set({
+        deletedAt: deleted ? now : null,
+        deletedByName: deleted ? actor.name : null,
+        statusHistory: appendHistory([
+          {
+            id: crypto.randomUUID(),
+            action: deleted ? "Deleted" : "Restored from deleted",
+            performedBy: actor.name,
+            date: now.toISOString(),
+          },
+        ]),
+        updatedAt: now,
+      })
+      // Only if it is not already in that state — two people deleting at once
+      // log it once.
+      .where(
+        and(
+          eq(dealerInquiries.id, existing.id),
+          deleted
+            ? isNull(dealerInquiries.deletedAt)
+            : isNotNull(dealerInquiries.deletedAt),
+        ),
+      )
+      .returning();
+    if (!updated) return { success: false, message: STALE_MESSAGE };
+
+    revalidatePath(ADMIN_PATH);
+    return { success: true, inquiry: toView(updated) };
+  } catch (error) {
+    console.error("Failed to delete dealer inquiry:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to save.",

@@ -33,7 +33,7 @@ export default function VehicleShowcaseCarousel({ tags }: { tags: string[] }) {
 
   return (
     <section className="py-24 px-6 bg-[#FAFAFA] border-t border-black/5 overflow-hidden relative z-10">
-      <div className="max-w-[1400px] mx-auto mb-12 flex items-end justify-between">
+      <Reveal className="max-w-[1400px] mx-auto mb-12 flex items-end justify-between">
         <div>
           <p className="text-xs font-bold tracking-[0.2em] text-zinc-400 uppercase mb-3">
             Available Collections
@@ -42,13 +42,15 @@ export default function VehicleShowcaseCarousel({ tags }: { tags: string[] }) {
             Featured Blueprints
           </h2>
         </div>
-      </div>
+      </Reveal>
 
-      {/* Swipeable View Container */}
-      <div className="flex overflow-x-auto gap-8 pb-8 snap-x snap-mandatory hide-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
-        {vehicles.map((car: any, i: number) => {
-          const fallbackImg =
-            "/home/hero-1920.webp";
+      {/* Swipeable View Container. Static on purpose: a revealed (transform-
+          animated) card inside a scroller makes iOS repaint the strip badly,
+          so the heading above reveals and the strip does not
+          (motion-interaction-rulebook.md §5.1, §5.5). */}
+      <div className="flex overflow-x-auto gap-8 pb-8 overscroll-x-contain scroll-px-6 lg:scroll-px-0 snap-x snap-proximity hide-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
+        {vehicles.map((car: any) => {
+          const fallbackImg = "/home/hero-1920.webp";
           const heroImage =
             car.images && car.images.length > 0 ? car.images[0] : fallbackImg;
 
@@ -57,19 +59,16 @@ export default function VehicleShowcaseCarousel({ tags }: { tags: string[] }) {
             car.pricing && car.pricing.length > 0 ? car.pricing[0] : null;
 
           return (
-            <Reveal
+            <div
               key={car._id}
-              y={20}
-              duration={0.6}
-              delay={i * 0.05}
-              className="min-w-[320px] md:min-w-[420px] bg-white border border-black/5 rounded-[2.5rem] overflow-hidden snap-start flex flex-col group shadow-sm hover:shadow-[0_30px_60px_rgba(0,0,0,0.04)] transition-all duration-500"
+              className="min-w-[320px] md:min-w-[420px] bg-white border border-black/5 rounded-[2.5rem] overflow-hidden snap-start flex flex-col group shadow-sm hover:shadow-[0_30px_60px_rgba(0,0,0,0.04)] transition-feedback"
             >
               {/* Graphic Frame */}
               <div className="relative aspect-[4/3] w-full bg-zinc-100 overflow-hidden border-b border-black/5">
                 <img
                   src={heroImage}
                   alt={`${car.make} ${car.model}`}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-feedback group-hover:scale-[1.03]"
                 />
                 <div className="absolute top-4 left-4 flex gap-2">
                   <span className="bg-white/90 backdrop-blur-md border border-black/5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-black">
@@ -88,7 +87,7 @@ export default function VehicleShowcaseCarousel({ tags }: { tags: string[] }) {
                     </h3>
                     <Link
                       href={`/gallery/${car._id}`}
-                      className="p-2 bg-zinc-50 border border-black/5 text-zinc-400 group-hover:text-black group-hover:bg-zinc-100 rounded-full transition-all shrink-0"
+                      className="p-2 bg-zinc-50 border border-black/5 text-zinc-400 group-hover:text-black group-hover:bg-zinc-100 rounded-full transition-feedback shrink-0"
                     >
                       <ArrowUpRight size={18} />
                     </Link>
@@ -133,7 +132,7 @@ export default function VehicleShowcaseCarousel({ tags }: { tags: string[] }) {
                   </div>
                 )}
               </div>
-            </Reveal>
+            </div>
           );
         })}
       </div>

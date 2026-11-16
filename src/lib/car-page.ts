@@ -12,9 +12,10 @@
 import type { Metadata } from "next";
 import type { DestinationConfig } from "@/config/destinations";
 import { destinationCopy, destinationPath } from "@/config/destinations";
-import { formatVehicleTitle } from "@/lib/vehicle";
+import { formatVehicleTitle, parseSteeringOptions } from "@/lib/vehicle";
+import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
-const DEFAULT_OG_IMAGE = "/og/default.jpg";
+const DEFAULT_OG_IMAGE = "/og/default-audi-r8.jpg";
 
 // CLAUDE.md, SEO & AEO: *under* 60 and *under* 155, so both comparisons below
 // are strict — a title of exactly 60 characters is one over the rule, and one
@@ -109,13 +110,18 @@ export function carOgImagePath(car: CarRecord, fallbackId: string): string {
   return `/og/car/${car.slug || fallbackId}.jpg?v=${shortHash(source)}`;
 }
 
-/** `/b2c/gallery/<slug-or-id>`, with the destination segment when there is one. */
+/**
+ * `/b2c/gallery/<slug-or-id>`, with the destination segment when there is one
+ * — or `/import-bikes/<slug-or-id>` for a motorcycle, which has no destination
+ * variants (the destination registry's rules are written for cars).
+ */
 export function carPath(
   car: CarRecord,
   fallbackId: string,
   destination?: DestinationConfig | null,
 ): string {
   const key = car.slug || fallbackId;
+  if (isMotorcycle(car)) return `${BIKES_BASE_PATH}/${key}`;
   return destination
     ? destinationPath(key, destination.slug)
     : `/b2c/gallery/${key}`;
@@ -124,16 +130,19 @@ export function carPath(
 /**
  * Metadata for a car page, optionally scoped to one destination market.
  *
- * The destination variant is a genuinely different page — a different rule set,
- * different facts, a different reading list — so it is self-canonical rather
- * than pointing back at the base car page, on the same reasoning the
- * /import-japanese-cars-to-ireland intersection page is self-canonical.
+ * Every destination variant canonicalises to the base car page and stays out
+ * of the sitemap (business decision 2026-10-27). The variants were
+ * self-canonical, and Search Console left 99 of them, and 8 of the car pages
+ * they copy, "Discovered - currently not indexed": each variant is the car
+ * page plus one market block that is word-for-word the same on every car, so
+ * Google read them as near-duplicates and stopped crawling. Folding them
+ * onto the car page keeps every link working (sharing, ads, rep links) and
+ * puts their signals behind the one page that should rank for the model.
  *
- * A `listed` destination is the exception. We ship there and the link works,
- * but nothing market-specific is published for it yet, so its page is close
- * enough to the base car page to be thin. It is marked `noindex, follow` and
- * kept out of the sitemap: shareable, but not competing in search with the
- * page it is a near-copy of.
+ * `listed` and `full` are treated alike here. A canonical says "index that
+ * page instead", so a `noindex` on the same variant would be a contradiction.
+ * The title and description still name the market, because they are what a
+ * shared link previews as.
  */
 export function buildCarMetadata(
   car: CarRecord,
@@ -148,13 +157,20 @@ export function buildCarMetadata(
   // "Import a <car> to <country>" is the query, so it leads. The shorter forms
   // exist for the long country names — "United Kingdom" costs eleven characters
   // that "UK" does not, and "UK" is what people search anyway.
-  const title = destination
+  // A car or bike page is the page for "import <make> <model>", so the verb
+  // leads (seo-page-rules.md P-13; it was the bare "2027 Nissan Patrol").
+  const bike = isMotorcycle(car);
+  const title = !destination
     ? pickTitle([
+        `Import a ${vehicle}`,
+        `Import ${formatVehicleTitle(car.make, car.model)}`,
+        vehicle,
+      ])
+    : pickTitle([
         `Import a ${vehicle} to ${destination.name}`,
         `Import a ${vehicle} to ${destination.shortName}`,
         `${vehicle} to ${destination.shortName}`,
-      ])
-    : vehicle;
+      ]);
 
   // The headline the PAGE will show, not the registry's base one. Origin
   // decides the rule — a Japan-built car enters Ireland duty-free and an
@@ -175,13 +191,7 @@ export function buildCarMetadata(
         `${headline} The paperwork and one landed cost into ${destination.name}, before you commit.`,
         `Importing a ${vehicle} to ${destination.name}: the rules, the paperwork and one landed cost, confirmed before you commit.`,
       ])
-    : car.notes?.trim()
-      ? // The notes are the page's long-form description — the Torcal's runs
-        // to 1,500 characters, which shipped whole as the meta and OG
-        // description. The full notes when they fit, else their first
-        // sentence, else a word-boundary trim.
-        clampDescription([car.notes.trim(), firstSentence(car.notes.trim())])
-      : `View full specifications, gallery, and details for the ${vehicle}.`;
+    : baseDescription(car, vehicle);
 
   const ogImage = carOgImagePath(car, fallbackId);
   const path = carPath(car, fallbackId, destination);
@@ -189,10 +199,8 @@ export function buildCarMetadata(
   return {
     title,
     description,
-    alternates: { canonical: path },
-    ...(destination && destination.depth === "listed"
-      ? { robots: { index: false, follow: true } }
-      : { robots: { index: true, follow: true } }),
+    alternates: { canonical: carPath(car, fallbackId) },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
@@ -217,6 +225,39 @@ export function buildCarMetadata(
       images: [ogImage],
     },
   };
+}
+
+/** The shortest description a search result is worth (seo-page-rules.md T-02). */
+const DESCRIPTION_FLOOR = 120;
+
+/**
+ * The car page's own description. The notes are its long-form copy — the
+ * Torcal's run to 1,500 characters, which shipped whole as the meta and OG
+ * description — so the full notes when they fit, else their first sentence,
+ * else a word-boundary trim. Notes that come out shorter than a useful snippet
+ * (14 of 21 live car pages were under 120) fall back to a sentence built from
+ * the vehicle itself.
+ */
+function baseDescription(car: CarRecord, vehicle: string): string {
+  const notes = car.notes?.trim();
+  if (notes) {
+    const first = firstSentence(notes);
+    const tail = " Get a landed quote to your port.";
+    const fromNotes = [notes, first, `${first}${tail}`, `${notes}${tail}`].find(
+      (c) => c.length >= DESCRIPTION_FLOOR && c.length < META_DESCRIPTION_LIMIT,
+    );
+    if (fromNotes) return fromNotes;
+  }
+  const built = `Import the ${vehicle}: its full specification, the gallery and a landed quote to your port, worked out before you commit.`;
+  return built.length >= DESCRIPTION_FLOOR
+    ? clampDescription([built])
+    : `${built} Get your quote.`;
+}
+
+/** schema.org steering position for the dossier's primary hand. */
+function steeringPosition(car: CarRecord): string {
+  const [primary] = parseSteeringOptions(car.steeringOptions, car.steering);
+  return primary === "LHD" ? "LeftHandDriving" : "RightHandDriving";
 }
 
 const SITE_URL = "https://www.providenceauto.co.uk";
@@ -246,9 +287,12 @@ export function buildCarJsonLd(
     (src: unknown): src is string => typeof src === "string" && src.length > 0,
   );
 
+  const bike = isMotorcycle(car);
   const crumbs = [
     { name: "Home", item: SITE_URL },
-    { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
+    bike
+      ? { name: "Import Bikes", item: `${SITE_URL}${BIKES_BASE_PATH}` }
+      : { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
     { name: vehicle, item: `${SITE_URL}${carPath(car, fallbackId)}` },
     ...(destination
       ? [{ name: `Import to ${destination.name}`, item: `${SITE_URL}${path}` }]
@@ -259,13 +303,28 @@ export function buildCarJsonLd(
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Product",
+        // Car / Motorcycle are Product subtypes that expose the vehicle's own
+        // properties — steering position above all, for a site whose markets
+        // are split by hand (seo-page-rules.md P-13, T-41).
+        "@type": bike ? "Motorcycle" : "Car",
         "@id": `${SITE_URL}${path}#product`,
         name: destination
           ? `${vehicle} — import to ${destination.name}`
           : vehicle,
         brand: { "@type": "Brand", name: car.make },
-        category: "Vehicle",
+        ...(car.model ? { model: car.model } : {}),
+        ...(car.year ? { vehicleModelDate: String(car.year) } : {}),
+        ...(car.transmission ? { vehicleTransmission: car.transmission } : {}),
+        ...(car.fuelSystem ? { fuelType: car.fuelSystem } : {}),
+        ...(car.engineConfig
+          ? {
+              vehicleEngine: {
+                "@type": "EngineSpecification",
+                name: car.engineConfig,
+              },
+            }
+          : {}),
+        ...(bike ? {} : { steeringPosition: steeringPosition(car) }),
         ...(images.length > 0 ? { image: images.slice(0, 6) } : {}),
         // Same rule as the meta description above: the origin-resolved
         // headline, never the registry's base one.

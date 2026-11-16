@@ -148,7 +148,7 @@ export default function Body() {
       <UL>
         <CheckLI>
           <Strong>Battery EVs</Strong> — lowest 7% band, zero NOx, and up to
-          €5,000 VRT relief until 31 December 2026 (tapering between €40,000 and
+          €5,000 VRT relief until 31 December 2028 (tapering between €40,000 and
           €50,000 OMSP).
         </CheckLI>
         <CheckLI>

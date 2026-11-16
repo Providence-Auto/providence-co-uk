@@ -28,6 +28,7 @@ import {
   offersDestination,
   parseDestinations,
 } from "@/lib/vehicle-destinations";
+import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
 export const revalidate = 60;
 
@@ -67,6 +68,11 @@ export default async function CarDestinationPage({
   const car = await loadCar(id);
   if (!car) {
     notFound();
+  }
+
+  // A bike has no destination variants; its one page is under /import-bikes.
+  if (isMotorcycle(car)) {
+    permanentRedirect(`${BIKES_BASE_PATH}/${car.slug || id}`);
   }
 
   // The parent route 308s the id form onto the slug form. This has to do the

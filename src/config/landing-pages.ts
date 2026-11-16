@@ -49,17 +49,19 @@ export type LandingPageConfig = {
 export const lhdCampaignConfig: LandingPageConfig = {
   slug: "luxury-lhd-japan",
   meta: {
-    title: "Left-Hand Drive Luxury Cars from Japan | Providence Auto",
+    title: "LHD Luxury and Sports Cars from Japan | Providence Auto",
     description:
-      "Import left-hand drive (LHD) luxury cars — Rolls-Royce, Ferrari, Lamborghini, Porsche, Bentley and more — direct from Japan's grade-verified auctions. Shipped to your port across Europe, the Middle East and the Americas.",
+      "Import left-hand-drive luxury, sports and hyper cars from Japan’s dealers and auctions to Europe, the Gulf, the US and Canada. Get a landed quote.",
   },
   hero: {
     tagline: "Providence Auto · Left-Hand Drive Specialists",
-    title: "Japanese Luxury,\nLeft-Hand Drive.",
+    // Widened from luxury only on 2026-11-03: luxury, sports and hyper cars
+    // from Japan into left-hand-drive markets, the US and Canada included
+    // (business-context.md §3). No market's hand or age rule is stated here.
+    title: "Left-Hand Drive Luxury\nand Sports Cars from Japan.",
     subtitle:
       "Import grade-verified LHD supercars and luxury saloons direct from Japan's auctions and certified dealers — genuine factory left-hand drive, landed at your port. No conversions, no compromise.",
-    backgroundImage:
-      "/stock/classic-car.webp",
+    backgroundImage: "/stock/classic-car.webp",
   },
   intro: {
     highlight: "No conversions. No compromise.",
@@ -149,13 +151,15 @@ export const lhdCampaignConfig: LandingPageConfig = {
 export const japanImportCampaignConfig: LandingPageConfig = {
   slug: "import-japanese-cars",
   meta: {
-    title: "Import Japanese Cars — Grade 4 and Above | Providence Auto",
+    // "Import cars from Japan" belongs to /import-cars-from/japan; this page
+    // owns "Japanese import cars" as the Japan routes hub (audit Q1, 2026-11-03).
+    title: "Japanese Import Cars, Direct from Japan | Providence",
     description:
       "Import Japanese cars graded 4 and above — Aqua, Prius, Harrier, Land Cruiser and more — shipped to your port with one landed price. Get your quote.",
   },
   hero: {
     tagline: "Providence Auto · Japan Import Specialists",
-    title: "Now You Can Import Your Dream Car\nDirect from Japan.",
+    title: "Japanese Import Cars,\nDirect from Japan.",
     subtitle:
       "Tell us the car you want. We search dealers and auctions across Japan for a grade 4+ example, inspect it before your money moves, and ship it to your port with one landed price and the paperwork to import it.",
     // Self-hosted (unlike the other campaigns' remote heroes) so the hero has
@@ -302,7 +306,7 @@ export const indianCampaignConfig: LandingPageConfig = {
   },
   hero: {
     tagline: "Providence Auto · India-Built Specialists",
-    title: "Built in India,\nDriven by Value.",
+    title: "Indian-Manufactured Cars,\nDriven by Value.",
     subtitle:
       "Import the badges you already trust — Suzuki, Toyota, Kia, Nissan — direct from India's most efficient factories for around 30% less. Safety-inspected by our own team before your money moves, and quoted as one landed price.",
     backgroundImage:

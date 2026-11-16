@@ -535,7 +535,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "RoRo or Container? Choosing How to Ship Imported Cars",
     seoTitle: "RoRo vs Container Car Shipping: A Dealer's Guide",
     description:
-      "RoRo vs container car shipping: how each works, what can travel inside the car, and which suits single cars or batches.",
+      "RoRo vs container car shipping: how each method works, what can travel inside the car, and which suits a single car or a batch of cars for dealers.",
     excerpt:
       "A roll-on/roll-off ship carries the car like a floating car park. A container carries it like cargo. The choice changes handling, timing and what you can ship with it.",
     primaryKeyword: "roro vs container car shipping",
@@ -724,7 +724,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "The Documents You Need to Import a Car: A Dealer's Checklist",
     seoTitle: "Documents Needed to Import a Car: Dealer Checklist",
     description:
-      "The documents needed to import a car: from the source country, the shipment and your border, through to registration.",
+      "The documents needed to import a car, as a checklist: from the source country, for the shipment, at your border, and through to registration.",
     excerpt:
       "A car import runs on about a dozen documents from three places. One missing original can hold a car at the port longer than the voyage took.",
     primaryKeyword: "documents needed to import a car",
@@ -774,7 +774,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "What a Customs Clearing Agent Does for a Car Import",
     seoTitle: "Customs Clearing Agent for Car Imports: Guide",
     description:
-      "What a customs clearing agent does for a car import, how to choose one, and who answers for the declaration.",
+      "What a customs clearing agent does for a car import, how to choose one, what they charge for, and who answers for the declaration you sign.",
     excerpt:
       "An agent files the declaration, but in most countries the importer still answers for it. Choose one as you would choose an accountant.",
     primaryKeyword: "customs clearing agent car import",
@@ -1063,7 +1063,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "Buying Cars at Overseas Auctions: How It Works for a Dealer",
     seoTitle: "Buying Cars at Overseas Auctions: Dealer Guide",
     description:
-      "How dealers buy at overseas car auctions: who can bid, reading auction sheets and grades, and setting a ceiling bid.",
+      "How dealers import from overseas car auctions: who can bid, how to read auction sheets and grades, and how to set a ceiling bid that holds a margin.",
     excerpt:
       "An auction is a fast market with a slow aftermath. The work that matters happens before the hammer: filtering, reading and setting a ceiling.",
     primaryKeyword: "buying cars at overseas auctions",
@@ -1157,7 +1157,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "Shipping Several Cars in One Container: The Dealer's Guide",
     seoTitle: "Shipping Multiple Cars in One Container",
     description:
-      "Shipping multiple cars in one container: how they are loaded, where the saving comes from, and the paperwork per car.",
+      "Shipping several cars in one container: how they are loaded and secured, where the saving per car comes from, and the paperwork each car needs.",
     excerpt:
       "Consolidating cars in one container spreads the freight, but not every cost. The paperwork still runs car by car.",
     primaryKeyword: "shipping multiple cars in one container",
@@ -1441,7 +1441,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "Importing Cars From the UAE as a Dealership",
     seoTitle: "Importing Cars From the UAE for Dealers: Guide",
     description:
-      "Importing cars from the UAE as a dealer: GCC-spec stock, the left-hand-drive question, re-exports and export paperwork.",
+      "Importing cars from the UAE as a dealer: GCC-spec stock, the left-hand-drive question for your market, re-exports and the export paperwork.",
     excerpt:
       "The UAE drives on the right. For a dealer in a right-hand-drive country, that one fact shapes everything else about buying there.",
     primaryKeyword: "importing cars from the uae for dealers",
@@ -1537,7 +1537,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "Importing Cars From Thailand as a Dealership",
     seoTitle: "Importing Cars From Thailand for Dealers: Guide",
     description:
-      "Importing cars from Thailand as a dealer: one-tonne pickups and SUVs, Thai-market specification and export paperwork.",
+      "Importing cars from Thailand as a dealer: one-tonne pickups and SUVs, Thai-market specification, the export paperwork and Laem Chabang.",
     excerpt:
       "Thailand is a production base for the one-tonne pickup. For a dealer in a pickup market, that is the whole reason to look there.",
     primaryKeyword: "importing cars from thailand for dealers",
@@ -1585,7 +1585,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "Importing Cars From Australia as a Dealership",
     seoTitle: "Importing Cars From Australia for Dealers: Guide",
     description:
-      "Importing cars from Australia as a dealer: 4x4s and utes, PPSR finance checks, and the export and cleaning steps.",
+      "Importing cars from Australia as a dealer: 4x4s and utes, PPSR finance checks, the export and biosecurity cleaning steps, and transit times.",
     excerpt:
       "Australia's used fleet is right-hand drive and built for distance. Its finance register tells a buyer what most markets never publish.",
     primaryKeyword: "importing cars from australia for dealers",
@@ -1633,7 +1633,7 @@ export const DEALER_SOURCING_POSTS: BlogPost[] = [
     h1: "Importing Cars From New Zealand as a Dealership",
     seoTitle: "Importing Cars From New Zealand for Dealers",
     description:
-      "Importing cars from New Zealand as a dealer: a fleet that is part Japanese import, history checks and export paperwork.",
+      "Importing cars from New Zealand as a dealer: a fleet that is part Japanese import, the history checks to run, and the export paperwork.",
     excerpt:
       "Many of New Zealand's used cars were themselves imported from Japan. That is useful history, if the records travel with the car.",
     primaryKeyword: "importing cars from new zealand for dealers",

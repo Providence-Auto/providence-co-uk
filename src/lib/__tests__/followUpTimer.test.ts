@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { getTimerState, toTimestamp } from "@/lib/followUpTimer";
+import {
+  followUpExpiryOutcome,
+  getTimerState,
+  toTimestamp,
+} from "@/lib/followUpTimer";
 
 /**
  * `toTimestamp` guards the invariant that caused the admin panel to stop
@@ -90,5 +94,123 @@ describe("getTimerState", () => {
     expect(s.total).toBe(0);
     expect(s.expired).toBe(true);
     expect(Number.isNaN(s.ratio)).toBe(false);
+  });
+});
+
+/**
+ * The bug Amy reported (2026-11-13): she updated her leads, saved, and later
+ * found them back on "Action required". Every lead gets a follow-up timer at
+ * the customer's preferred contact time, and its expiry reset the status
+ * unconditionally — over whatever she had set since.
+ */
+describe("followUpExpiryOutcome", () => {
+  const set = "2026-11-10T09:00:00.000Z";
+  const due = "2026-11-11T09:00:00.000Z";
+  const now = Date.parse("2026-11-12T09:00:00.000Z");
+
+  it("does nothing when the row has no timer", () => {
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus: "Action required",
+          followUpAt: null,
+          followUpSetAt: null,
+          statusUpdatedAt: null,
+        },
+        now,
+      ),
+    ).toBe("none");
+  });
+
+  it("does nothing when the timer is not due by the server's clock", () => {
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus: "Opened",
+          followUpAt: "2026-11-13T09:00:00.000Z",
+          followUpSetAt: set,
+          statusUpdatedAt: null,
+        },
+        now,
+      ),
+    ).toBe("not-due");
+  });
+
+  it("resets a lead nobody has touched since the reminder was set", () => {
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus: "Opened",
+          followUpAt: due,
+          followUpSetAt: set,
+          statusUpdatedAt: null,
+        },
+        now,
+      ),
+    ).toBe("reset");
+  });
+
+  it("resets when the status was last changed before the reminder was set", () => {
+    // Salesperson sets "No Response", then sets a 1-day reminder: that
+    // reminder is meant to bring the lead back.
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus: "No Response",
+          followUpAt: due,
+          followUpSetAt: set,
+          statusUpdatedAt: "2026-11-10T08:59:00.000Z",
+        },
+        now,
+      ),
+    ).toBe("reset");
+  });
+
+  it("keeps a status a salesperson set after the reminder was set", () => {
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus: "Replied (WhatsApp)",
+          followUpAt: due,
+          followUpSetAt: set,
+          statusUpdatedAt: "2026-11-10T12:00:00.000Z",
+        },
+        now,
+      ),
+    ).toBe("keep-status");
+  });
+
+  it.each([
+    "Lead Lost",
+    "Not Qualified",
+    "SQL: Moved to vehicle offering stage",
+    "Lead Closed",
+    "lead lost",
+  ])("never resets a decided status (%s)", (leadStatus) => {
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus,
+          followUpAt: due,
+          followUpSetAt: set,
+          statusUpdatedAt: "2026-11-10T08:00:00.000Z",
+        },
+        now,
+      ),
+    ).toBe("keep-status");
+  });
+
+  it("keeps a human status when the timer's start was never recorded", () => {
+    expect(
+      followUpExpiryOutcome(
+        {
+          leadStatus: "Active Conversation",
+          followUpAt: due,
+          followUpSetAt: null,
+          statusUpdatedAt: "2026-11-01T08:00:00.000Z",
+        },
+        now,
+      ),
+    ).toBe("keep-status");
   });
 });

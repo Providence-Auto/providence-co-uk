@@ -60,7 +60,7 @@ export default function UpcomingCarCard({
       y={24}
       delay={(index % 3) * 0.06}
       duration={0.6}
-      className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/8 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-sky-500/25 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
+      className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/8 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.03)] transition-feedback hover:border-sky-500/25 hover:shadow-[0_20px_40px_rgba(0,0,0,0.07)]"
     >
       <Link href={carHref} className="block outline-none">
         <div className="relative aspect-[16/10] bg-zinc-100 overflow-hidden">
@@ -70,7 +70,7 @@ export default function UpcomingCarCard({
               src={image}
               alt={title}
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+              className="h-full w-full object-cover transition-feedback group-hover:scale-[1.03]"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center text-zinc-300">
@@ -119,7 +119,7 @@ export default function UpcomingCarCard({
             {isUpcoming ? "Register interest" : "View the car"}
             <ArrowRight
               size={14}
-              className="transition-transform group-hover:translate-x-1"
+              className="transition-feedback group-hover:translate-x-1"
             />
           </Link>
           {car.newsSlug && (

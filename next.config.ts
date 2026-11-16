@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
       {
+        // The client KYC form is sent to customers by link and must never be
+        // indexed, on any host. The page's own robots meta says the same.
+        source: "/kyc",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
         // Static imagery under public/ was being served with max-age=14400 —
         // four hours — so a returning visitor re-downloaded every logo, flag
         // and car photograph several times a day. PageSpeed booked it as
@@ -65,6 +71,18 @@ const nextConfig: NextConfig = {
       {
         source: "/campaigns/luxury-lhd-japan",
         destination: "/japanese-luxury-cars-lhd",
+        permanent: true,
+      },
+      // The other two campaign slugs live on their own landing pages. Every
+      // other /campaigns/* URL 404s (src/app/campaigns/[slug]/page.tsx).
+      {
+        source: "/campaigns/import-japanese-cars",
+        destination: "/import-japanese-cars",
+        permanent: true,
+      },
+      {
+        source: "/campaigns/indian-manufactured-cars",
+        destination: "/indian-manufactured-cars",
         permanent: true,
       },
       {

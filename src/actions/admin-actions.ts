@@ -1,11 +1,16 @@
 "use server";
 
-import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { accounts, db, requests, sessions, specDossiers, users } from "@/db";
 import { sendGoogleConversion, sendMetaConversion } from "@/lib/conversions";
 import { emailService } from "@/lib/email";
+import {
+  FOLLOW_UP_TIMER_ACTOR,
+  type FollowUpExpiry,
+  followUpExpiryOutcome,
+} from "@/lib/followUpTimer";
 import {
   DEAL_CURRENCY,
   hasReachedPurchaseStage,
@@ -424,7 +429,9 @@ export async function clearFollowUpTimer(id: string) {
   }
 }
 
-export async function expireFollowUpTimer(id: string) {
+export async function expireFollowUpTimer(
+  id: string,
+): Promise<{ success: boolean; outcome?: FollowUpExpiry }> {
   try {
     await requireAuth();
 
@@ -434,30 +441,67 @@ export async function expireFollowUpTimer(id: string) {
       .where(eq(requests.id, id));
     if (!existingRequest) return { success: false };
 
-    const existingHistory = (existingRequest.statusHistory as any[]) || [];
-    const newStatusHistory = [
-      ...existingHistory,
-      {
-        action: "Updated Sales Status: Action required",
-        performedBy: "System (Follow-up Timer)",
-        date: new Date(),
-        comment: "Follow up required based on the time set up",
-      },
-    ];
+    // The browser only says "my countdown reached zero". Whether that means
+    // anything is decided here, from the row as stored — a tab left open on
+    // stale data must never reset a lead whose timer was cleared, moved or
+    // already handled, nor one a salesperson has updated since.
+    const outcome = followUpExpiryOutcome(existingRequest);
+    if (outcome === "none" || outcome === "not-due") {
+      return { success: true, outcome };
+    }
 
-    await db
+    const now = new Date();
+    const existingHistory = (existingRequest.statusHistory as any[]) || [];
+    const update =
+      outcome === "reset"
+        ? {
+            leadStatus: "Action required",
+            statusUpdatedAt: now,
+            followUpAt: null,
+            followUpSetAt: null,
+            statusHistory: [
+              ...existingHistory,
+              {
+                action: "Updated Sales Status: Action required",
+                performedBy: FOLLOW_UP_TIMER_ACTOR,
+                date: now,
+                comment: "Follow up required based on the time set up",
+              },
+            ],
+          }
+        : {
+            followUpAt: null,
+            followUpSetAt: null,
+            statusHistory: [
+              ...existingHistory,
+              {
+                action: "Follow-up reminder passed",
+                performedBy: FOLLOW_UP_TIMER_ACTOR,
+                date: now,
+                comment: `Status kept: ${existingRequest.leadStatus || "Action required"} (updated since the reminder was set)`,
+              },
+            ],
+          };
+
+    // Apply only if the row is still the one we decided on. Two tabs expiring
+    // the same timer, or a salesperson saving in the same instant, then finds
+    // nothing to update instead of writing over the newer state.
+    const applied = await db
       .update(requests)
-      .set({
-        leadStatus: "Action required",
-        statusUpdatedAt: new Date(),
-        followUpAt: null,
-        followUpSetAt: null,
-        statusHistory: newStatusHistory,
-      })
-      .where(eq(requests.id, id));
+      .set(update)
+      .where(
+        and(
+          eq(requests.id, id),
+          eq(requests.followUpAt, existingRequest.followUpAt as Date),
+          existingRequest.statusUpdatedAt
+            ? eq(requests.statusUpdatedAt, existingRequest.statusUpdatedAt)
+            : isNull(requests.statusUpdatedAt),
+        ),
+      )
+      .returning({ id: requests.id });
 
     revalidatePath("/admin");
-    return { success: true };
+    return { success: true, outcome: applied.length > 0 ? outcome : "none" };
   } catch (error) {
     console.error("Failed to expire follow-up timer:", error);
     return { success: false };

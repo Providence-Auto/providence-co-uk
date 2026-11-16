@@ -45,8 +45,10 @@ export const metadata: Metadata = {
     description: lhdCampaignConfig.meta.description,
     images: [
       {
-        url: lhdCampaignConfig.hero.backgroundImage,
-        alt: "Left-hand drive luxury cars from Japan",
+        url: "/og/japanese-luxury-cars-lhd.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Left-hand drive luxury and sports cars from Japan",
       },
     ],
   },
@@ -54,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: lhdCampaignConfig.meta.title,
     description: lhdCampaignConfig.meta.description,
-    images: [lhdCampaignConfig.hero.backgroundImage],
+    images: ["/og/japanese-luxury-cars-lhd.jpg"],
   },
   robots: {
     index: true,

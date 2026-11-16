@@ -161,7 +161,7 @@ export function DestinationChips({
               isActive={isActive}
               carSlug={carSlug}
               onSelect={onSelect}
-              className={`inline-flex cursor-pointer items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-all ${
+              className={`inline-flex cursor-pointer items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold border transition-feedback ${
                 isActive
                   ? "bg-black text-white border-black shadow-md"
                   : "bg-white text-zinc-600 border-black/10 hover:border-black/40"

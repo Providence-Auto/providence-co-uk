@@ -37,7 +37,7 @@ Record for each: headline claim, date, every source URL, and the source tier.
 Apply §2 of the playbook.
 
 1. Drop anything failing the Landed-Cost Test.
-2. Drop everything on the automatic-reject list — especially motorsport results, non-luxury LHD-only cars, celebrity content, and anything whose only angle is a CTA.
+2. Drop everything on the automatic-reject list — especially motorsport results, LHD-only cars that are not luxury, sports or hyper cars from Japan, celebrity content, and anything whose only angle is a CTA.
 3. Score survivors on the §2.3 table.
 4. Select 20 against the §7 bucket quotas.
 5. Check the balance rules: source-market rotation ≤40% one market, ≥6 named destination markets, ≥3 dealer-first, ≥2 with a hard deadline, ≤2 about cars over $1m, ≥1 that tells the reader not to buy, and of the two FX stories ≥1 written from the destination side with no more than one anchored to the yen.

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: "%s | Providence Auto",
   },
   description:
-    "Import your dream car anywhere in the world, from 40+ markets. Our teams in seven countries export it to your port, with clearance support. Get a quote.",
+    "Import your dream car anywhere in the world. Our own teams in seven countries export it to your port, with clearance support. Get a quote.",
   keywords: [
     "Global car sourcing",
     "direct car import service",
@@ -67,15 +67,19 @@ export const metadata: Metadata = {
     // broken image. CLAUDE.md makes 1200x630 a standing requirement for every
     // page; the site-wide default was the one place still failing it.
     //
-    // The photograph is ours (vehicles being loaded into a shipping container)
-    // and is the same asset the gallery already used. Swap the file if the
-    // brand wants a different card — the shape is the part that matters.
+    // A single car, cut from the homepage hero (public/home/hero-1920.webp,
+    // plate already blurred). It replaced /og/default.jpg on 2026-11-03: that
+    // photo — a car inside a transporter — had been saved sideways, so every
+    // preview showed it rotated (business instruction: one clear car, upright).
+    // It has a new filename because WhatsApp and Facebook cache a preview by
+    // image URL; overwriting default.jpg would have kept the sideways card.
     images: [
       {
-        url: "/og/default.jpg",
+        url: "/og/default-audi-r8.jpg",
         width: 1200,
         height: 630,
-        alt: "Vehicles being loaded into a shipping container for export",
+        type: "image/jpeg",
+        alt: "A grey Audi R8 on an open road at sunset",
       },
     ],
   },
@@ -83,10 +87,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Providence Auto | Global Car Sourcing & Direct Import",
     description:
-      "Import your dream car anywhere in the world, from 40+ global markets.",
+      "Import your dream car anywhere in the world, exported by our own teams in seven countries.",
     // `summary_large_image` crops to 1200x630; the square logo was being
     // letterboxed. Same card as Open Graph above.
-    images: ["/og/default.jpg"],
+    images: ["/og/default-audi-r8.jpg"],
   },
   robots: {
     index: true,
@@ -126,7 +130,7 @@ export default function RootLayout({
     url: "https://www.providenceauto.co.uk/",
     logo: "https://www.providenceauto.co.uk/logo.png",
     description:
-      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand, exporting premium vehicles from 40+ markets.",
+      "International vehicle sourcing and export group with physical offices in the UK, Japan, the UAE, India, Thailand, Australia and New Zealand.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "468 Church Lane, Kingsbury",
@@ -154,42 +158,45 @@ export default function RootLayout({
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "B2C Direct Car Import",
+            name: "Car import for private buyers",
             description:
-              "Direct vehicle sourcing for individual buyers to save on local dealer markups.",
+              "Import a car direct from source, inspected before your money moves and shipped CNF to your port, at the price a dealer pays at source.",
+            url: "https://www.providenceauto.co.uk/b2c",
           },
         },
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "B2B Dealership Inventory Scaling",
+            name: "Car sourcing for dealers",
             description:
-              "Bulk sourcing and logistical handling for car dealerships worldwide.",
+              "Import stock direct from source for your dealership, inspected before your money moves and shipped CNF to your port.",
+            url: "https://www.providenceauto.co.uk/b2b",
           },
         },
       ],
     },
   };
 
+  // The classes we export, each linked to its own page (seo-page-rules.md
+  // T-43: the list used to name five categories with no URL at all).
   const categorySchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Luxury Sedans" },
-      { "@type": "ListItem", position: 2, name: "7-Seater SUVs" },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Electric Vehicles (BEV/PHEV)",
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: "High-Performance Sports Cars",
-      },
-      { "@type": "ListItem", position: 5, name: "Executive Coupes" },
-    ],
+      ["Import Cars", "/import/cars"],
+      ["Import Luxury Cars", "/import/luxury-cars"],
+      ["Import SUVs", "/import/suvs"],
+      ["Import Electric Cars", "/import/electric-cars"],
+      ["Import Hybrid Cars", "/import/hybrid-cars"],
+      ["Import 7-Seater Cars", "/import/7-seater-cars"],
+      ["Import Bikes", "/import-bikes"],
+    ].map(([name, path], i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name,
+      url: `https://www.providenceauto.co.uk${path}`,
+    })),
   };
 
   return (
@@ -288,9 +295,20 @@ export default function RootLayout({
     io.observe(el);
     pending.push(el);
   }
+  // Ambient CSS loops (rule book §5.6): anything marked data-pa-loop pauses
+  // while it is off screen. Absent an observer it simply keeps running.
+  var lio = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    for(var i=0;i<es.length;i++){
+      if(es[i].isIntersecting) es[i].target.removeAttribute('data-pa-offscreen');
+      else es[i].target.setAttribute('data-pa-offscreen','');
+    }
+  }, {rootMargin:'100px 0px'}) : null;
+  function loop(el){ if(lio && !el.__pal){ el.__pal = 1; lio.observe(el); } }
   function scan(root){
     var els=(root||document).querySelectorAll('.pa-reveal:not(.pa-revealed)');
     for(var i=0;i<els.length;i++) add(els[i]);
+    var ls=(root||document).querySelectorAll('[data-pa-loop]');
+    for(i=0;i<ls.length;i++) loop(ls[i]);
     sweep();
   }
   if(window.MutationObserver){
@@ -301,6 +319,7 @@ export default function RootLayout({
           var n=nodes[j];
           if(n.nodeType===1){
             if(n.classList && n.classList.contains('pa-reveal')) add(n);
+            if(n.hasAttribute && n.hasAttribute('data-pa-loop')) loop(n);
             if(n.querySelectorAll) scan(n);
           }
         }

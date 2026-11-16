@@ -311,7 +311,7 @@ export default function Combobox({
           <ChevronDown
             size={18}
             aria-hidden
-            className={`shrink-0 transition-transform ${
+            className={`shrink-0 transition-transform duration-(--pa-spring-smooth-duration) ease-(--pa-spring-smooth) ${
               open ? "rotate-180 text-sky-500" : "text-zinc-400"
             }`}
           />

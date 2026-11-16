@@ -120,6 +120,7 @@ export default function GradientMesh({
       )}
       {animated ? (
         <div
+          data-pa-loop
           className={`absolute inset-0 ${image ? (spotlight ? "opacity-30" : "opacity-75") : ""}`}
         >
           {MESH_BLOBS.map((blob) => (
@@ -132,7 +133,7 @@ export default function GradientMesh({
                 top: blob.top,
                 width: blob.size,
                 height: blob.size,
-                animation: `${blob.animation} ${blob.duration} ease-in-out infinite`,
+                animation: `${blob.animation} ${blob.duration} linear infinite`,
                 animationDelay: blob.delay,
               }}
             />

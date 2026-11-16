@@ -44,6 +44,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FEATURED_DESTINATION_LIMIT } from "@/config/destinations";
+import {
+  parseTags,
+  slugifyTag,
+  TAG_BASE_PATH,
+  TAG_COLLECTIONS,
+} from "@/config/vehicle-tags";
 import { getPresignedUrls } from "@/lib/file-actions";
 import { CAR_MAKES, getLogoFilename } from "@/lib/logo-utils";
 import {
@@ -69,6 +75,7 @@ import {
   parseGrades,
   type VehicleGrade,
 } from "@/lib/vehicle-grades";
+import { MOTORCYCLE_MAKES } from "@/lib/vehicle-type";
 
 // Full Country List for the Datalist
 const COUNTRIES = [
@@ -322,9 +329,12 @@ interface SpecDataType {
   newsSlug: string;
   customData: CustomDataEntry[];
   valuePoints: ValuePointEntry[];
+  /** "car" or "motorcycle" — decides the public URL and which listings it joins. */
+  vehicleType: string;
 }
 
 const initialSpecData: SpecDataType = {
+  vehicleType: "car",
   make: "",
   model: "",
   year: "",
@@ -419,7 +429,7 @@ function ColorPaletteEditor({
                   value={color.name}
                   onChange={(e) => onChange(index, { name: e.target.value })}
                   placeholder={namePlaceholder}
-                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                 />
                 <input
                   type="color"
@@ -457,7 +467,7 @@ function ColorPaletteEditor({
                   }`}
                 >
                   <span
-                    className={`block h-3 w-3 rounded-full bg-white transition-transform ${
+                    className={`block h-3 w-3 rounded-full bg-white transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${
                       color.isDualTone ? "translate-x-3" : "translate-x-0"
                     }`}
                   />
@@ -473,7 +483,7 @@ function ColorPaletteEditor({
                       onChange(index, { secondaryName: e.target.value })
                     }
                     placeholder={secondaryPlaceholder}
-                    className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                    className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                   />
                   <input
                     type="color"
@@ -499,7 +509,7 @@ function ColorPaletteEditor({
                       type="button"
                       onClick={() => onChange(index, { imageIndex: undefined })}
                       aria-pressed={color.imageIndex === undefined}
-                      className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-all ${
+                      className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-feedback ${
                         color.imageIndex === undefined
                           ? "border-black bg-black text-white"
                           : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400"
@@ -515,7 +525,7 @@ function ColorPaletteEditor({
                         onClick={() => onChange(index, { imageIndex: imgIdx })}
                         aria-pressed={color.imageIndex === imgIdx}
                         title={`Link photo ${imgIdx + 1}`}
-                        className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all ${
+                        className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-feedback ${
                           color.imageIndex === imgIdx
                             ? "border-sky-500 ring-2 ring-sky-200"
                             : "border-zinc-200 hover:border-zinc-400"
@@ -585,6 +595,9 @@ function SpecBuilderContent() {
   const [newFeature, setNewFeature] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
   const [newSearchTag, setNewSearchTag] = useState("");
+  // Landing-page tags: each one is a public page at /import/<tag>.
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
 
   const [newCustomLabel, setNewCustomLabel] = useState("");
   const [newCustomValue, setNewCustomValue] = useState("");
@@ -652,10 +665,12 @@ function SpecBuilderContent() {
               isUpcoming: res.data.isUpcoming === true,
               expectedAvailability: res.data.expectedAvailability || "",
               newsSlug: res.data.newsSlug || "",
+              vehicleType: res.data.vehicleType || "car",
             }));
             setPricing(res.data.pricing || []);
             setFeatures(res.data.features || []);
             setSearchTags(res.data.searchTags || []);
+            setTags(parseTags(res.data.tags));
             setExistingImages(res.data.images || []);
             setExteriorColors(parseColors(res.data.exteriorColors));
             setInteriorColors(parseColors(res.data.interiorColors));
@@ -895,6 +910,15 @@ function SpecBuilderContent() {
     setNewSearchTag("");
   };
 
+  const addTag = (raw: string) => {
+    const slug = slugifyTag(raw);
+    if (slug && !tags.includes(slug)) {
+      setTags([...tags, slug]);
+      setIsDirty(true);
+    }
+    setNewTag("");
+  };
+
   const handleSave = async () => {
     if (!specData.make || !specData.model)
       return alert("Make and Model are required.");
@@ -971,6 +995,7 @@ function SpecBuilderContent() {
         heroImageUrl: resolvedHero,
         features,
         searchTags,
+        tags,
         images: finalImageUrls,
         pricing,
         exteriorColors: namedColors(exteriorColors),
@@ -1046,6 +1071,7 @@ function SpecBuilderContent() {
           _id: editId,
           slug: specData.slug,
           status: specData.status,
+          vehicleType: specData.vehicleType,
         })
       : null;
 
@@ -1106,6 +1132,36 @@ function SpecBuilderContent() {
         <div className="lg:col-span-4 space-y-8">
           <SpecSection title="Target Market & Origin" icon={Globe}>
             <div className="space-y-4">
+              {/* Car or motorcycle: a motorcycle's page is
+                  /import-bikes/<slug>, listed on /import-bikes and kept out of
+                  the car gallery. */}
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase text-zinc-400">
+                  Vehicle type
+                </Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: "car", label: "Car" },
+                    { value: "motorcycle", label: "Motorcycle" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={specData.vehicleType === option.value}
+                      onClick={() =>
+                        handleInputChange("vehicleType", option.value)
+                      }
+                      className={`h-11 rounded-xl text-sm font-bold border transition-colors ${
+                        specData.vehicleType === option.value
+                          ? "bg-black text-white border-black"
+                          : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase text-zinc-400">
                   Spec / Country of Origin
@@ -1179,7 +1235,7 @@ function SpecBuilderContent() {
                 placeholder="Internal notes regarding this specific vehicle blueprint..."
                 value={specData.notes}
                 onChange={(e) => handleInputChange("notes", e.target.value)}
-                className="min-h-[150px] rounded-[2rem] bg-zinc-50 border-transparent p-6 focus:bg-white transition-all"
+                className="min-h-[150px] rounded-[2rem] bg-zinc-50 border-transparent p-6 focus:bg-white transition-feedback"
               />
             </div>
 
@@ -1240,7 +1296,7 @@ function SpecBuilderContent() {
                   }`}
                 >
                   <span
-                    className={`block h-4 w-4 rounded-full bg-white transition-transform ${
+                    className={`block h-4 w-4 rounded-full bg-white transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${
                       specData.isUpcoming ? "translate-x-4" : "translate-x-0"
                     }`}
                   />
@@ -1272,7 +1328,7 @@ function SpecBuilderContent() {
                           e.target.value,
                         )
                       }
-                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all"
+                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                     />
                     <p className="text-[10px] text-zinc-400 pl-1 font-medium">
                       Shown verbatim on the car page. Leave blank if the date
@@ -1297,7 +1353,7 @@ function SpecBuilderContent() {
                             .replace(/[^a-z0-9-_]/g, ""),
                         )
                       }
-                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all font-mono text-xs"
+                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-xs"
                     />
                     {specData.newsSlug ? (
                       <a
@@ -1337,7 +1393,7 @@ function SpecBuilderContent() {
                       .replace(/[^a-z0-9-_]/g, "");
                     handleInputChange("slug", processedSlug);
                   }}
-                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all font-mono text-sm text-zinc-800"
+                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-sm text-zinc-800"
                 />
                 <p className="text-[10px] text-zinc-400 pl-1 font-medium">
                   Used for building clean routing addresses. Spaces
@@ -1366,7 +1422,7 @@ function SpecBuilderContent() {
                       rel="noopener noreferrer"
                       className="text-[11px] text-sky-600 hover:text-sky-700 font-mono break-all leading-snug flex items-start gap-1"
                     >
-                      {`/b2c/gallery/${specData.slug}`}
+                      {publicPath}
                       <ExternalLink size={11} className="shrink-0 mt-0.5" />
                     </a>
                   ) : (
@@ -1455,7 +1511,7 @@ function SpecBuilderContent() {
                 ))}
 
                 {/* Upload Trigger */}
-                <label className="flex flex-col items-center justify-center aspect-video rounded-2xl border-2 border-dashed border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all cursor-pointer">
+                <label className="flex flex-col items-center justify-center aspect-video rounded-2xl border-2 border-dashed border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-feedback cursor-pointer">
                   <div className="flex flex-col items-center gap-2 text-zinc-500">
                     <Save size={24} />
                     <span className="text-xs font-bold uppercase tracking-wider">
@@ -1505,11 +1561,14 @@ function SpecBuilderContent() {
                   list="make-list"
                   value={specData.make}
                   onChange={(e) => handleInputChange("make", e.target.value)}
-                  className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all"
+                  className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                   placeholder="Select or type a brand"
                 />
                 <datalist id="make-list">
-                  {CAR_MAKES.map((make) => (
+                  {(specData.vehicleType === "motorcycle"
+                    ? MOTORCYCLE_MAKES
+                    : CAR_MAKES
+                  ).map((make) => (
                     <option key={make} value={make} />
                   ))}
                 </datalist>
@@ -1572,7 +1631,7 @@ function SpecBuilderContent() {
                             mileage: opt.value === "New" ? "" : prev.mileage,
                           }));
                         }}
-                        className={`flex-1 h-12 rounded-xl font-bold border transition-all ${active ? "bg-black text-white border-black shadow-md" : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"}`}
+                        className={`flex-1 h-12 rounded-xl font-bold border transition-feedback ${active ? "bg-black text-white border-black shadow-md" : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"}`}
                       >
                         {opt.label}
                       </button>
@@ -1643,7 +1702,7 @@ function SpecBuilderContent() {
                     onChange={(e) =>
                       handleInputChange(item.id as any, e.target.value)
                     }
-                    className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all"
+                    className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                     placeholder={item.placeholder}
                   />
                 </div>
@@ -1655,7 +1714,7 @@ function SpecBuilderContent() {
                   value={specData.fuelSystem}
                   onValueChange={(v) => handleInputChange("fuelSystem", v)}
                 >
-                  <SelectTrigger className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all">
+                  <SelectTrigger className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback">
                     <SelectValue placeholder="Select Fuel Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1864,6 +1923,91 @@ function SpecBuilderContent() {
                     className="bg-zinc-950 text-white hover:bg-zinc-900 rounded-xl h-12 px-6"
                   >
                     Add
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Landing-page tags: each becomes a page at /import/<tag> */}
+            <div className="space-y-4">
+              <Label className="font-bold text-lg flex items-center gap-2">
+                <Hash size={20} className="text-zinc-400" /> Landing-page tags
+              </Label>
+              <p className="text-sm text-zinc-500">
+                Each tag is a public landing page at {TAG_BASE_PATH}/&lt;tag&gt;
+                listing every live vehicle that carries it, e.g. Luxury Cars
+                becomes {TAG_BASE_PATH}/luxury-cars. Pick a suggested one, or
+                type a new tag to create a new page.
+              </p>
+              <div className="p-8 bg-zinc-50 rounded-[2.5rem] space-y-6 border border-zinc-200">
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      className="bg-sky-100 text-sky-900 hover:bg-sky-200 border-transparent px-4 py-2 rounded-full gap-2 transition-colors cursor-default"
+                    >
+                      {TAG_BASE_PATH}/{tag}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTags(tags.filter((t) => t !== tag));
+                          setIsDirty(true);
+                        }}
+                        className="focus:outline-none flex items-center justify-center rounded-full hover:bg-red-200 p-0.5 transition-colors"
+                      >
+                        <Trash2
+                          size={12}
+                          className="text-zinc-500 hover:text-red-600"
+                        />
+                      </button>
+                    </Badge>
+                  ))}
+                  {tags.length === 0 && (
+                    <p className="text-zinc-400 text-sm italic">
+                      No landing-page tags yet...
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {TAG_COLLECTIONS.filter(
+                    (c) =>
+                      !c.all &&
+                      !tags.includes(c.slug) &&
+                      (c.vehicleType === null ||
+                        c.vehicleType ===
+                          (specData.vehicleType === "motorcycle"
+                            ? "motorcycle"
+                            : "car")),
+                  ).map((c) => (
+                    <button
+                      key={c.slug}
+                      type="button"
+                      onClick={() => addTag(c.slug)}
+                      className="px-3 py-1.5 rounded-full border border-dashed border-zinc-300 text-xs font-medium text-zinc-600 hover:border-black hover:text-black transition-colors"
+                    >
+                      + {c.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    className="bg-white border-zinc-200 text-black h-12 rounded-xl"
+                    placeholder="New tag (e.g. Diesel Cars)..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addTag(newTag);
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => addTag(newTag)}
+                    className="bg-black text-white hover:bg-zinc-800 rounded-xl h-12 px-6"
+                  >
+                    Add Tag
                   </Button>
                 </div>
               </div>

@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Globe2, MapPin } from "lucide-react";
 import Link from "next/link";
 import type { ComponentType } from "react";
+import { springTransition } from "@/lib/fluid";
 
 export type Destination = {
   key: string;
@@ -67,10 +68,10 @@ export function DestinationChips({
             type="button"
             aria-pressed={selected?.key === dest.key}
             onClick={() => onSelect(dest)}
-            className={`px-5 py-2.5 rounded-full text-sm font-bold border transition-all duration-300 backdrop-blur-sm ${
+            className={`px-5 py-2.5 rounded-full text-sm font-bold border transition-feedback backdrop-blur-sm ${
               selected?.key === dest.key
                 ? "bg-black text-white border-black shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
-                : "bg-white/80 text-black border-black/15 hover:border-black/40 hover:-translate-y-0.5"
+                : "bg-white/80 text-black border-black/15 hover:border-black/40 hover:-translate-y-0.5 transition-feedback"
             }`}
           >
             {dest.label}
@@ -104,15 +105,18 @@ export function DestinationPanel({
       id={id}
       className="px-6 bg-white relative z-10 border-t border-black/5 scroll-mt-24"
     >
-      <div className="max-w-[1100px] mx-auto py-16 md:py-20">
-        <AnimatePresence mode="wait">
+      <div className="relative max-w-[1100px] mx-auto py-16 md:py-20">
+        {/* A content swap, not a step: the new panel rises in while the old one
+           leaves upward, at once (popLayout), so a fast second click redirects
+           instead of queueing behind an exit (rule book §5.4). */}
+        <AnimatePresence mode="popLayout" initial={false}>
           {destination ? (
             <motion.div
               key={destination.key}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={springTransition()}
               className="rounded-[2.5rem] border border-black/8 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.06)] p-8 md:p-12"
             >
               <div className="flex items-center gap-2 mb-4 text-zinc-500">
@@ -147,7 +151,7 @@ export function DestinationPanel({
               <div className="flex flex-wrap items-center gap-4">
                 <a
                   href={ctaHref}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-black text-white font-bold hover:scale-105 transition-transform"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-black text-white font-bold hover:scale-[1.03] transition-feedback"
                 >
                   Start your {destination.label} inquiry
                   <ArrowRight size={17} />
@@ -169,8 +173,8 @@ export function DestinationPanel({
               key="unselected"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={springTransition()}
               className="rounded-[2.5rem] border border-dashed border-black/15 bg-zinc-50/60 p-10 md:p-14 text-center"
             >
               <Globe2 size={28} className="mx-auto mb-4 text-zinc-400" />

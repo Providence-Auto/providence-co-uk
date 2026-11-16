@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { scrollBehavior } from "@/lib/fluid";
 import { computeMarketStats, type NormalizedListing } from "@/lib/market-stats";
 import {
   AUCTION_FEE_RATE,
@@ -224,7 +225,7 @@ function UsageMeter({
         className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200"
       >
         <div
-          className={`h-full rounded-full transition-all ${bar}`}
+          className={`h-full rounded-full ${bar}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -542,7 +543,10 @@ export default function LandedCostClient({
   const marketRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (market) {
-      marketRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      marketRef.current?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
     }
   }, [market]);
 
@@ -1356,7 +1360,7 @@ export default function LandedCostClient({
                       {vehicleAgeYears == null
                         ? "No year entered, so the IVA cost is assumed to apply."
                         : vehicleAgeYears >= 10
-                          ? `${vehicleAgeYears} yrs old — outside the IVA scheme, so the whole approval block falls away, including the speedo and fog-lamp conversions. The MOT is a base line either way. If the car still needs those conversions to be road-legal, tick this back on and zero the two test lines.`
+                          ? `${vehicleAgeYears} yrs old — outside the IVA scheme, so the whole approval block falls away. The MOT and the fog-light and speedo conversion are base lines either way.`
                           : `${vehicleAgeYears} yrs old — inside the IVA scheme.`}
                     </span>
                   </span>
@@ -1368,10 +1372,7 @@ export default function LandedCostClient({
                     clearance usually take long enough that registration falls
                     after the 10-year mark, where the IVA approval requirement
                     falls away — untick above if the timeline supports it. Your
-                    call. Note that unticking drops the speedo and fog-lamp
-                    conversions too, which the car may still need to be
-                    road-legal; if so, leave this ticked and zero the two test
-                    lines instead.
+                    call.
                   </p>
                 ) : null}
 

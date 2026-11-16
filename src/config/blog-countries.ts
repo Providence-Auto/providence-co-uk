@@ -77,7 +77,7 @@ const japanPosts: BlogPost[] = [
     h1: "How to Import a Car From a Japanese Auction Without Being in the Room",
     seoTitle: "How to Import a Car From a Japanese Auction (Step by Step)",
     description:
-      "How the Japanese used-car auction system actually works, who is allowed to bid, what a proxy bid costs you, and the seven steps between choosing a car and having it loaded on a vessel.",
+      "How Japanese used-car auctions work, who may bid, what a proxy bid costs, and the seven steps from choosing a car to loading it on a vessel.",
     excerpt:
       "You cannot bid at a Japanese auction yourself. Here is exactly how the system works, and what a good agent does on the floor that a broker cannot.",
     cluster: "Japan",
@@ -128,10 +128,9 @@ const japanPosts: BlogPost[] = [
     slug: "japanese-auction-grades-explained",
     title: "Japanese Auction Grades Explained",
     h1: "Japanese Auction Grades Explained: How to Read the Sheet Yourself",
-    seoTitle:
-      "Japanese Auction Grades Explained: Reading an Auction Sheet (R, RA, 3.5, 4, 5)",
+    seoTitle: "Japanese Auction Grades Explained: Reading the Sheet",
     description:
-      "What each Japanese auction grade means, how the interior grade and panel map work, what Grade R and RA really tell you, and the notes on an auction sheet that should stop a purchase dead.",
+      "What each Japanese auction grade means, how the interior grade and panel map work, what R and RA tell you, and the notes that should stop a bid.",
     excerpt:
       "The auction sheet is the single most valuable document in a Japanese import. Learn to read one and you stop depending on anybody's description.",
     cluster: "Japan",
@@ -184,7 +183,7 @@ const japanPosts: BlogPost[] = [
     h1: "The Best Cars to Import From Japan in 2026 (By What You Need)",
     seoTitle: "The Best Cars to Import From Japan in 2026, By Category",
     description:
-      "The Japanese models that consistently make sense to import — the cheapest hybrids, the family MPVs Europe never got, the 4x4s worth crossing an ocean for, and the JDM performance cars — plus the ones to leave alone.",
+      "The Japanese cars worth importing: cheap hybrids, the family MPVs Europe never got, 4x4s worth an ocean crossing, JDM performance cars, and what to avoid.",
     excerpt:
       "Japan exports everything. These are the models where the price, condition and parts availability all line up — and the ones that flatter to deceive.",
     cluster: "Japan",
@@ -238,7 +237,7 @@ const japanPosts: BlogPost[] = [
     h1: "What It Really Costs to Import a Car From Japan (Every Line)",
     seoTitle: "The Real Cost of Importing a Car From Japan: Full Breakdown",
     description:
-      "Every cost between a Japanese auction hall and your driveway — hammer price, auction fees, inland transport, freight, marine insurance, duty, VAT and local registration — and where buyers get caught out.",
+      "Every cost from a Japanese auction hall to your driveway: hammer price, fees, inland transport, freight, insurance, duty, VAT and registration.",
     excerpt:
       "The hammer price is roughly half the story. Here is every other line on the bill, in the order it hits you.",
     cluster: "Japan",
@@ -289,10 +288,9 @@ const japanPosts: BlogPost[] = [
     slug: "japan-car-export-documents-explained",
     title: "Every Document You Get With a Japanese Import",
     h1: "Every Document You Get When You Import a Car From Japan",
-    seoTitle:
-      "Japanese Car Export Documents Explained (Export Certificate, BL, Auction Sheet)",
+    seoTitle: "Japanese Car Export Documents Explained",
     description:
-      "The export certificate, deregistration certificate, auction sheet, Bill of Lading and pre-shipment inspection certificates — what each document proves, and which ones you cannot register the car without.",
+      "The export and deregistration certificates, auction sheet, Bill of Lading and inspection certificates: what each proves and which you must have.",
     excerpt:
       "A Japanese import is a paperwork exercise with a car attached. Here is what every document in the file actually proves.",
     cluster: "Japan",
@@ -350,7 +348,7 @@ const ukPosts: BlogPost[] = [
     h1: "How to Import a Japanese Car From the UK: The Complete Process",
     seoTitle: "How to Import a Japanese Car From the UK (2026 Guide)",
     description:
-      "How to import a Japanese car from the UK — where the stock is, how to verify its history, what permanent export involves, and how build origin decides your duty.",
+      "How to import a Japanese car from the UK: where the stock is, how to verify its history, what permanent export involves, and how origin sets duty.",
     excerpt:
       "Britain has the most checkable used cars in the world and one of the easiest export routes. Here is the process in order.",
     cluster: "United Kingdom",
@@ -403,7 +401,7 @@ const ukPosts: BlogPost[] = [
     h1: "The Best Japanese Cars to Import From the UK (And Why Origin Matters)",
     seoTitle: "The Best Japanese Cars to Import From the UK in 2026",
     description:
-      "Which Japanese cars to import from Britain — the UK-built Corolla, Qashqai, Juke and Leaf, the hybrids and enthusiast cars — and why build origin changes duty.",
+      "Which Japanese cars to import from Britain: the UK-built Corolla, Qashqai, Juke and Leaf, hybrids and enthusiast cars, and why origin sets duty.",
     excerpt:
       "Some Japanese cars are worth importing from Britain because they were built there. Others because Britain keeps them so well.",
     cluster: "United Kingdom",
@@ -455,8 +453,7 @@ const ukPosts: BlogPost[] = [
     slug: "uk-car-history-checks-explained",
     title: "UK Car History Checks Explained",
     h1: "UK Car History Checks Explained: What You Can Verify Before You Import",
-    seoTitle:
-      "UK Car History Checks Explained: MOT History, Provenance and Mileage",
+    seoTitle: "UK Car History Checks Explained: MOT and Mileage",
     description:
       "How to verify a used Japanese car in Britain before importing it — the public MOT and mileage record, provenance checks for finance, write-offs and theft.",
     excerpt:
@@ -510,7 +507,7 @@ const ukPosts: BlogPost[] = [
     h1: "What It Costs to Import a Japanese Car From the UK (Every Line)",
     seoTitle: "The Real Cost of Importing a Car From the UK: Full Breakdown",
     description:
-      "The full cost of a UK car export — purchase price, VAT treatment, inland transport, freight by ferry or container, marine insurance, and the destination duty that origin rules can halve or double.",
+      "The full cost of a UK car export: price, VAT treatment, inland transport, ferry or container freight, insurance and the duty that origin decides.",
     excerpt:
       "The UK is the cheapest source in our network for European buyers and a middling one for everybody else. Here is why, line by line.",
     cluster: "United Kingdom",
@@ -560,10 +557,9 @@ const ukPosts: BlogPost[] = [
     slug: "uk-car-export-documents-explained",
     title: "UK Car Export Documents Explained",
     h1: "UK Car Export Documents Explained: What Travels With the Car",
-    seoTitle:
-      "UK Car Export Documents Explained (V5C, Export Notification, Origin)",
+    seoTitle: "UK Car Export Documents Explained (V5C and Origin)",
     description:
-      "The V5C and its export section, permanent export notification, the customs declaration, proof of origin for tariff preference, and the Bill of Lading — what each does and what happens when one is missing.",
+      "The V5C export section, permanent export notification, customs declaration, proof of origin and Bill of Lading: what each does, and if it's missing.",
     excerpt:
       "One missing statement of origin can cost you ten percent of the car's value. Here is the full document set and why each piece exists.",
     cluster: "United Kingdom",
@@ -620,7 +616,7 @@ const uaePosts: BlogPost[] = [
     h1: "How to Import a Japanese Car From the UAE: The Complete Process",
     seoTitle: "How to Import a Japanese Car From Dubai (2026 Guide)",
     description:
-      "How the Dubai re-export machine works — where the stock comes from, how to screen for accident and flood damage, what free-zone export clearance involves, and how GCC specification affects registration at your end.",
+      "How Dubai's re-export trade works: where the stock comes from, screening for accident and flood damage, free-zone export and GCC specification.",
     excerpt:
       "Dubai moves more used cars for export than any city on earth. That is an opportunity and a risk, and both come from the same place.",
     cluster: "UAE",
@@ -673,7 +669,7 @@ const uaePosts: BlogPost[] = [
     h1: "The Best Japanese Cars to Import From Dubai (And What to Leave There)",
     seoTitle: "The Best Japanese Cars to Import From Dubai in 2026",
     description:
-      "The Japanese cars Dubai supplies best — Land Cruiser, Lexus LX and GX, Nissan Patrol, the 70 Series and Hilux workhorses — and when Dubai is the wrong source.",
+      "The Japanese cars Dubai supplies best: Land Cruiser, Lexus LX and GX, Nissan Patrol, the 70 Series and Hilux, and when Dubai is the wrong source.",
     excerpt:
       "Dubai is unbeatable on nearly new Japanese 4x4s and a poor choice for several other things. Knowing which is which is the whole skill.",
     cluster: "UAE",
@@ -725,7 +721,7 @@ const uaePosts: BlogPost[] = [
     h1: "GCC Spec Cars Explained: What Changes, and Where It Matters",
     seoTitle: "GCC Spec vs European and Japanese Spec Cars Explained",
     description:
-      "What GCC specification actually changes on a vehicle — cooling, air conditioning, materials, emissions and driver-assistance equipment — and when that helps you, when it costs you, and when it blocks registration.",
+      "What GCC specification changes on a car: cooling, air conditioning, materials, emissions and driver aids, and when it helps or blocks registration.",
     excerpt:
       "GCC spec is a genuine engineering difference, not a marketing label. In a hot country it is an advantage. In a cold one it can be a problem.",
     cluster: "UAE",
@@ -775,9 +771,9 @@ const uaePosts: BlogPost[] = [
     slug: "cost-to-import-a-car-from-the-uae",
     title: "What It Costs to Import a Car From the UAE",
     h1: "What It Costs to Import a Japanese Car From the UAE (Every Line)",
-    seoTitle: "The Real Cost of Importing a Car From the UAE: Full Breakdown",
+    seoTitle: "The Real Cost of Importing a Car From the UAE",
     description:
-      "Every cost in a UAE vehicle export — purchase price, export certificate and free-zone clearance, inland transport, container or RoRo freight from Jebel Ali, insurance, and destination duty on a high-value car.",
+      "Every cost in a UAE car export: price, export certificate and free-zone clearance, transport, freight from Jebel Ali, insurance and duty at home.",
     excerpt:
       "UAE cars are usually newer and more valuable than the network average, which changes the shape of the bill. Here is how.",
     cluster: "UAE",
@@ -827,10 +823,9 @@ const uaePosts: BlogPost[] = [
     slug: "uae-car-export-documents-explained",
     title: "UAE Car Export Documents Explained",
     h1: "UAE Car Export Documents Explained: What You Need to Register",
-    seoTitle:
-      "UAE Car Export Documents Explained (Export Certificate, Clearance, BL)",
+    seoTitle: "UAE Car Export Documents Explained",
     description:
-      "The UAE export certificate, deregistration and plate cancellation, customs clearance through the free zone, chassis verification, and the Bill of Lading — what each proves and what registration depends on.",
+      "The UAE export certificate, deregistration and plate cancellation, free-zone customs clearance, chassis check and Bill of Lading, explained.",
     excerpt:
       "A UAE export lives or dies on the export certificate. Here is the whole file and what each part is for.",
     cluster: "UAE",
@@ -887,7 +882,7 @@ const indiaPosts: BlogPost[] = [
     h1: "How to Import a Car From India: The Complete Process",
     seoTitle: "How to Import a Car From India (Step-by-Step Process, 2026)",
     description:
-      "How to import a vehicle from India — new versus used, importing through dealer networks, pre-export safety inspection, export documentation, and which ports serve which destinations.",
+      "How to import a vehicle from India: new or used, dealer networks, pre-export safety inspection, export documents and which ports serve which markets.",
     excerpt:
       "India's price advantage is real. Capturing it depends entirely on importing through a network that can verify what it sells you.",
     cluster: "India",
@@ -939,7 +934,7 @@ const indiaPosts: BlogPost[] = [
     h1: "The Best Cars to Import From India (Where the Value Really Is)",
     seoTitle: "The Best Cars to Import From India in 2026",
     description:
-      "The India-built models that make the strongest case for export — sub-four-metre hatchbacks and compact SUVs, the tough off-roaders, the seven-seaters — and where parts availability decides the argument.",
+      "The India-built cars with the strongest export case: sub-four-metre hatchbacks and SUVs, tough off-roaders and seven-seaters, and parts supply.",
     excerpt:
       "India's cheapest cars are not always its best exports. These are the models where price, durability and parts supply all agree.",
     cluster: "India",
@@ -993,7 +988,7 @@ const indiaPosts: BlogPost[] = [
     h1: "What It Costs to Import a Car From India (Every Line)",
     seoTitle: "The Real Cost of Importing a Car From India: Full Breakdown",
     description:
-      "The full landed cost of an Indian vehicle export — purchase price, inspection, inland transport, freight from Nhava Sheva or Chennai, insurance, and the destination duty that can erase the price advantage.",
+      "The landed cost of an Indian car export: price, inspection, transport, freight from Nhava Sheva or Chennai, insurance and the duty at your end.",
     excerpt:
       "India's 30% price advantage is easy to lose at the destination port. Here is where it goes, and how to keep it.",
     cluster: "India",
@@ -1043,10 +1038,9 @@ const indiaPosts: BlogPost[] = [
     slug: "india-car-export-documents-explained",
     title: "India Car Export Documents Explained",
     h1: "India Car Export Documents Explained: The Full File",
-    seoTitle:
-      "India Car Export Documents Explained (Invoice, Shipping Bill, BL)",
+    seoTitle: "India Car Export Documents Explained",
     description:
-      "The commercial invoice, shipping bill and customs clearance, chassis verification, inspection certificate and Bill of Lading — the document set behind an Indian vehicle export and why each piece matters.",
+      "The commercial invoice, shipping bill, customs clearance, chassis check, inspection certificate and Bill of Lading behind an Indian car export.",
     excerpt:
       "Indian export paperwork is procedural rather than complicated. It is also unforgiving of small errors. Here is the whole set.",
     cluster: "India",
@@ -1101,9 +1095,9 @@ const thailandPosts: BlogPost[] = [
     slug: "how-to-import-a-car-from-thailand",
     title: "How to Import a Car From Thailand",
     h1: "How to Import a Car From Thailand: The Complete Process",
-    seoTitle: "How to Import a Car From Thailand (Step-by-Step Process, 2026)",
+    seoTitle: "How to Import a Car From Thailand: Step by Step",
     description:
-      "How Thai vehicle export works — ordering new export-specification pickups through the dealer network, importing used through Thai auctions, accessory fitment before loading, and shipping from Laem Chabang.",
+      "How Thai vehicle export works: new export-spec pickups from the dealer network, used cars from Thai auctions, accessories and Laem Chabang.",
     excerpt:
       "Thailand is where most of the world's pickups are made. Importing direct from source removes every layer of margin between the plant and you.",
     cluster: "Thailand",
@@ -1155,7 +1149,7 @@ const thailandPosts: BlogPost[] = [
     h1: "The Best Pickups to Import From Thailand (And the SUVs Built on Them)",
     seoTitle: "The Best Pickups and 4x4s to Import From Thailand in 2026",
     description:
-      "The Thai-built pickups and body-on-frame SUVs worth importing — Hilux Revo, Ranger, D-Max, Triton, BT-50, Fortuner, Pajero Sport and MU-X — compared on payload, drivetrain and parts availability.",
+      "The Thai-built pickups and SUVs worth importing, from Hilux Revo, Ranger and D-Max to Fortuner and MU-X, compared on payload, drivetrain and parts.",
     excerpt:
       "Six pickups, four SUVs built on them, and one honest comparison of which suits which job.",
     cluster: "Thailand",
@@ -1206,10 +1200,9 @@ const thailandPosts: BlogPost[] = [
     slug: "thailand-vs-japan-for-pickup-imports",
     title: "Thailand vs Japan for Pickup Imports",
     h1: "Thailand vs Japan: Where Should You Import Your Pickup From?",
-    seoTitle:
-      "Thailand vs Japan for Pickup and 4x4 Imports: The Honest Comparison",
+    seoTitle: "Thailand vs Japan for Pickup and 4x4 Imports",
     description:
-      "A direct comparison of Thailand and Japan as pickup source countries — new versus used, price, condition verification, specification, parts supply and freight — and which wins for your use case.",
+      "Thailand vs Japan as a pickup source: new or used, price, condition checks, specification, parts supply and freight, and which wins for your use.",
     excerpt:
       "Thailand builds them new; Japan sells them used with an independent grade attached. The right answer depends on what you actually need.",
     cluster: "Thailand",
@@ -1260,9 +1253,9 @@ const thailandPosts: BlogPost[] = [
     slug: "cost-to-import-a-car-from-thailand",
     title: "What It Costs to Import a Car From Thailand",
     h1: "What It Costs to Import a Car From Thailand (Every Line)",
-    seoTitle: "The Real Cost of Importing a Car From Thailand: Full Breakdown",
+    seoTitle: "The Real Cost of Importing a Car From Thailand",
     description:
-      "Every cost in a Thai vehicle export — purchase or factory price, accessory fitment, inland transport, export clearance, freight from Laem Chabang, insurance and destination duty on a commercial vehicle.",
+      "Every cost in a Thai vehicle export: factory price, accessories, transport, export clearance, freight from Laem Chabang, insurance and duty.",
     excerpt:
       "Pickups are taxed differently from cars in a lot of countries. That single fact changes the whole calculation.",
     cluster: "Thailand",
@@ -1315,10 +1308,9 @@ const thailandPosts: BlogPost[] = [
     slug: "thailand-car-export-documents-explained",
     title: "Thailand Car Export Documents Explained",
     h1: "Thailand Car Export Documents Explained: The Full File",
-    seoTitle:
-      "Thailand Car Export Documents Explained (Invoice, Export Entry, BL)",
+    seoTitle: "Thailand Car Export Documents Explained",
     description:
-      "The commercial invoice, Thai export entry and customs clearance, chassis and engine verification, inspection certificate and Bill of Lading — the paperwork behind a Thai vehicle export.",
+      "The commercial invoice, Thai export entry, customs clearance, chassis and engine check, inspection certificate and Bill of Lading, explained.",
     excerpt:
       "New-vehicle exports and used-vehicle exports carry different files. Here is what each one contains and why.",
     cluster: "Thailand",
@@ -1373,9 +1365,9 @@ const australiaPosts: BlogPost[] = [
     slug: "how-to-import-a-car-from-australia",
     title: "How to Import a Car From Australia",
     h1: "How to Import a Car From Australia: The Complete Process",
-    seoTitle: "How to Import a Car From Australia (Step-by-Step Process, 2026)",
+    seoTitle: "How to Import a Car From Australia: Step by Step",
     description:
-      "How to import a vehicle from Australia — where the stock is, running a PPSR provenance check, state deregistration, the biosecurity clean nobody warns you about, and shipping from five ports.",
+      "How to import a vehicle from Australia: where the stock is, the PPSR check, state deregistration, the biosecurity clean and shipping from five ports.",
     excerpt:
       "Australia stopped making cars in 2017. It is still one of the best places on earth to import a 4x4 from — for entirely different reasons.",
     cluster: "Australia",
@@ -1427,7 +1419,7 @@ const australiaPosts: BlogPost[] = [
     h1: "The Best Cars to Import From Australia (And Why)",
     seoTitle: "The Best Cars to Import From Australia in 2026",
     description:
-      "What Australia is genuinely the best source for — dual-cab utes, touring 4x4s with serious equipment fitted, and the Holden and Ford performance cars that were never sold anywhere else.",
+      "What Australia is the best source for: dual-cab utes, touring 4x4s with serious equipment, and Holden and Ford performance cars sold nowhere else.",
     excerpt:
       "Three categories where Australia beats every other source country, and one where it is the only source country at all.",
     cluster: "Australia",
@@ -1479,7 +1471,7 @@ const australiaPosts: BlogPost[] = [
     h1: "Importing a Ute or 4x4 From Australia: What to Check Before You Import",
     seoTitle: "Importing a Ute or 4x4 From Australia: The Buyer's Checklist",
     description:
-      "A practical checklist for importing an Australian ute or touring 4x4 — reading fitted equipment, judging outback wear, mining-fleet stock, and whether your destination will register the modifications.",
+      "A checklist for importing an Australian ute or 4x4: fitted equipment, outback wear, ex-mining fleet stock, and whether your market registers mods.",
     excerpt:
       "A well-set-up Australian tourer is a bargain. A hard-worked one is a liability. Here is how to tell them apart from 10,000 miles away.",
     cluster: "Australia",
@@ -1529,9 +1521,9 @@ const australiaPosts: BlogPost[] = [
     slug: "cost-to-import-a-car-from-australia",
     title: "What It Costs to Import a Car From Australia",
     h1: "What It Costs to Import a Car From Australia (Every Line)",
-    seoTitle: "The Real Cost of Importing a Car From Australia: Full Breakdown",
+    seoTitle: "The Real Cost of Importing a Car From Australia",
     description:
-      "The full cost of an Australian vehicle export — purchase price, PPSR and inspection, inland transport across a very large country, biosecurity cleaning, freight, insurance and destination duty.",
+      "The cost of an Australian car export: price, PPSR and inspection, long-distance transport, biosecurity cleaning, freight, insurance and duty.",
     excerpt:
       "Australia has one cost line no other source country has: moving the car to a port that may be 2,000 miles away.",
     cluster: "Australia",
@@ -1581,10 +1573,9 @@ const australiaPosts: BlogPost[] = [
     slug: "australia-car-export-documents-explained",
     title: "Australia Car Export Documents Explained",
     h1: "Australia Car Export Documents Explained: The Full File",
-    seoTitle:
-      "Australia Car Export Documents Explained (PPSR, Deregistration, BL)",
+    seoTitle: "Australia Car Export Documents Explained (PPSR)",
     description:
-      "The PPSR certificate, proof of ownership, state deregistration, customs export declaration, biosecurity cleaning certificate and Bill of Lading — the file behind an Australian vehicle export.",
+      "The PPSR certificate, proof of ownership, deregistration, export declaration, biosecurity certificate and Bill of Lading for an Australian car.",
     excerpt:
       "Australian export paperwork has one item most source countries do not: a cleaning certificate that can stop your car at the far end.",
     cluster: "Australia",
@@ -1641,10 +1632,9 @@ const newZealandPosts: BlogPost[] = [
     slug: "how-to-import-a-car-from-new-zealand",
     title: "How to Import a Car From New Zealand",
     h1: "How to Import a Car From New Zealand: The Complete Process",
-    seoTitle:
-      "How to Import a Car From New Zealand (Step-by-Step Process, 2026)",
+    seoTitle: "How to Import a Car From New Zealand: Step by Step",
     description:
-      "How New Zealand vehicle export works — reading the entry-certification history on ex-Japan stock, checking registration and odometer records, deregistration, biosecurity cleaning and shipping from three ports.",
+      "How New Zealand car export works: ex-Japan entry history, registration and odometer records, deregistration, biosecurity and three ports.",
     excerpt:
       "New Zealand's used cars have already been through somebody else's inspection regime. Here is how to use that to your advantage.",
     cluster: "New Zealand",
@@ -1696,7 +1686,7 @@ const newZealandPosts: BlogPost[] = [
     h1: "The Best Cars to Import From New Zealand (And Why They Are There)",
     seoTitle: "The Best Cars to Import From New Zealand in 2026",
     description:
-      "What New Zealand supplies best — pre-complied ex-Japan hybrids, one of the world's deepest used-EV pools, NZ-new utes with local service history, and fleet-maintained vans.",
+      "What New Zealand supplies best: pre-complied ex-Japan hybrids, a deep used-EV pool, NZ-new utes with local history, and fleet-maintained vans.",
     excerpt:
       "New Zealand is a filtered version of the Japanese market, plus more used EVs per head than almost anywhere. Both matter.",
     cluster: "New Zealand",
@@ -1746,10 +1736,9 @@ const newZealandPosts: BlogPost[] = [
     slug: "new-zealand-vs-japan-for-used-imports",
     title: "New Zealand vs Japan for Used Imports",
     h1: "New Zealand vs Japan: Where Should You Import Your Used Car From?",
-    seoTitle:
-      "New Zealand vs Japan for Used Car Imports: The Honest Comparison",
+    seoTitle: "New Zealand vs Japan for Used Car Imports",
     description:
-      "A direct comparison of New Zealand and Japan as sources for used right-hand-drive cars — price, choice, condition verification, documentation, freight and which one suits your requirement.",
+      "New Zealand vs Japan for used right-hand-drive cars: price, choice, condition checks, documents and freight, and which suits your requirement.",
     excerpt:
       "New Zealand's stock came from Japan in the first place. So why would you ever import the second-hand version? There are three good answers.",
     cluster: "New Zealand",
@@ -1800,10 +1789,9 @@ const newZealandPosts: BlogPost[] = [
     slug: "cost-to-import-a-car-from-new-zealand",
     title: "What It Costs to Import a Car From New Zealand",
     h1: "What It Costs to Import a Car From New Zealand (Every Line)",
-    seoTitle:
-      "The Real Cost of Importing a Car From New Zealand: Full Breakdown",
+    seoTitle: "The Real Cost of Importing a Car From New Zealand",
     description:
-      "Every cost in a New Zealand vehicle export — purchase price, checks and inspection, inland transport, biosecurity cleaning, freight from Auckland or Tauranga, insurance and destination duty.",
+      "Every cost in a New Zealand car export: price, checks, transport, biosecurity cleaning, freight from Auckland or Tauranga, insurance and duty.",
     excerpt:
       "New Zealand prices are retail, not wholesale. The question is whether what you get for the difference is worth it.",
     cluster: "New Zealand",
@@ -1853,10 +1841,9 @@ const newZealandPosts: BlogPost[] = [
     slug: "importing-a-used-ev-from-new-zealand",
     title: "Importing a Used EV From New Zealand",
     h1: "Importing a Used EV From New Zealand: Battery Health Is the Whole Deal",
-    seoTitle:
-      "Importing a Used EV From New Zealand: Battery Health, Charging and Range",
+    seoTitle: "Importing a Used EV From New Zealand: Battery & Range",
     description:
-      "What matters when importing a used electric car from New Zealand — measuring battery state of health, understanding real range loss, charging standards, and whether your market can support the car.",
+      "Importing a used EV from New Zealand: measuring battery health, real range loss, charging standards and whether your market can support the car.",
     excerpt:
       "On a used EV, the battery is most of the value. Everything else about the car is secondary — and testable.",
     cluster: "New Zealand",
@@ -1913,7 +1900,7 @@ const sriLankaPosts: BlogPost[] = [
     h1: "Importing a Car to Sri Lanka: How the Process Actually Works",
     seoTitle: "Importing a Car to Sri Lanka: The Complete Guide (2026)",
     description:
-      "How vehicle import to Sri Lanka works — eligibility and policy, choosing a source country, how customs valuation drives your cost, clearance at Colombo, and registration. Rules change often; verify before committing.",
+      "How importing a vehicle to Sri Lanka works: eligibility, choosing a source, how customs valuation sets your cost, Colombo clearance and registration.",
     excerpt:
       "In Sri Lanka the car is the easy part. The valuation, the duty bands and the permit position are what decide your final cost.",
     cluster: "Sri Lanka",
@@ -1963,10 +1950,9 @@ const sriLankaPosts: BlogPost[] = [
     slug: "sri-lanka-vehicle-import-taxes-explained",
     title: "Sri Lanka Vehicle Import Taxes Explained",
     h1: "Sri Lanka Vehicle Import Taxes Explained: What Drives the Final Bill",
-    seoTitle:
-      "Sri Lanka Vehicle Import Taxes Explained (Valuation, Excise, Duty)",
+    seoTitle: "Sri Lanka Vehicle Import Taxes Explained",
     description:
-      "How Sri Lanka assesses vehicle import tax — CIF-based customs valuation, engine-capacity bands, drivetrain treatment, age factors and why the invoice price is not the basis of your bill.",
+      "How Sri Lanka taxes an imported vehicle: CIF customs valuation, engine-capacity bands, drivetrain, age factors, and why the invoice isn't the basis.",
     excerpt:
       "Sri Lanka does not tax what you paid. It taxes what it decides the car is worth — and that distinction is worth understanding.",
     cluster: "Sri Lanka",
@@ -2020,7 +2006,7 @@ const sriLankaPosts: BlogPost[] = [
     h1: "The Best Cars to Import to Sri Lanka (And Why the Same Models Keep Winning)",
     seoTitle: "The Best Cars to Import to Sri Lanka in 2026",
     description:
-      "The models that make the most sense for Sri Lankan roads and Sri Lankan tax bands — small hybrids, compact crossovers, the durable SUVs — plus why local parts availability should shape your shortlist.",
+      "The cars that suit Sri Lankan roads and tax bands: small hybrids, compact crossovers and durable SUVs, and why parts supply should shape the list.",
     excerpt:
       "The same handful of cars dominate Sri Lankan roads for a reason. Understand the reason and the shortlist writes itself.",
     cluster: "Sri Lanka",
@@ -2070,10 +2056,9 @@ const sriLankaPosts: BlogPost[] = [
     slug: "sri-lanka-car-import-documents-explained",
     title: "Sri Lanka Car Import Documents Explained",
     h1: "Sri Lanka Car Import Documents Explained: The Clearance File",
-    seoTitle:
-      "Sri Lanka Car Import Documents Explained (BL, Invoice, Clearance)",
+    seoTitle: "Sri Lanka Car Import Documents Explained",
     description:
-      "The documents Sri Lankan clearance depends on — Bill of Lading, commercial invoice, export certificate from the source country, inspection certificates, customs declaration and registration paperwork.",
+      "The documents Sri Lankan clearance depends on: Bill of Lading, invoice, export certificate, inspection certificates, declaration and registration.",
     excerpt:
       "In Sri Lanka a missing document is not an inconvenience, it is daily storage charges. Here is the complete file.",
     cluster: "Sri Lanka",
@@ -2125,10 +2110,9 @@ const sriLankaPosts: BlogPost[] = [
     slug: "importing-hybrids-and-evs-to-sri-lanka",
     title: "Importing Hybrids and EVs to Sri Lanka",
     h1: "Importing Hybrids and EVs to Sri Lanka: What to Weigh Up",
-    seoTitle:
-      "Importing Hybrids and Electric Cars to Sri Lanka: A Practical Guide",
+    seoTitle: "Importing Hybrids and EVs to Sri Lanka: A Guide",
     description:
-      "Why hybrids dominate Sri Lankan roads, how drivetrain affects the duty position, what to check on a used hybrid battery, and the realistic case for and against a used EV on the island.",
+      "Why hybrids dominate Sri Lankan roads, how drivetrain changes the duty, what to check on a used hybrid battery, and the case for a used EV.",
     excerpt:
       "Sri Lanka is a hybrid country by tax design. Whether it is ready to be an EV country is a more interesting question.",
     cluster: "Sri Lanka",
@@ -2183,7 +2167,7 @@ const sriLankaPosts: BlogPost[] = [
     h1: "Sri Lanka Vehicle Import Rules for Dealers: The Clocks That Cost You Money",
     seoTitle: "Sri Lanka Vehicle Import Rules for Dealers (2026 Guide)",
     description:
-      "The Sri Lankan import rules that decide dealer margin — the 90-day registration clock at 3% of CIF per month, how vehicle age is measured, importer registration limits and the re-export penalty.",
+      "The Sri Lankan import rules that decide dealer margin: the 90-day registration clock, how age is measured, importer limits and re-export penalties.",
     excerpt:
       "The margin is not made at the auction. It is made by not owning an unregistered car in month five.",
     cluster: "Sri Lanka",

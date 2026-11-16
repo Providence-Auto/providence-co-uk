@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import GradientMesh from "@/components/GradientMesh";
 import { Reveal } from "@/components/Reveal";
 import { signIn } from "@/lib/auth-client";
+import { springTransition } from "@/lib/fluid";
 
 export default function SignIn() {
   const router = useRouter();
@@ -105,7 +106,7 @@ export default function SignIn() {
   }
 
   // Dynamic classes: Add a red ring if there's an error
-  const inputClasses = `w-full bg-black/5 border focus:bg-white text-black placeholder:text-zinc-400 rounded-2xl px-5 py-4 text-base transition-all duration-300 outline-none ${
+  const inputClasses = `w-full bg-black/5 border focus:bg-white text-black placeholder:text-zinc-400 rounded-2xl px-5 py-4 text-base transition-feedback outline-none ${
     errorMessage
       ? "border-red-500/50 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
       : "border-transparent focus:border-black/20 focus:ring-4 focus:ring-black/5"
@@ -188,6 +189,7 @@ export default function SignIn() {
                     initial={{ opacity: 0, height: 0, y: -10 }}
                     animate={{ opacity: 1, height: "auto", y: 0 }}
                     exit={{ opacity: 0, height: 0, y: -10 }}
+                    transition={springTransition()}
                     className="text-red-500 text-sm mt-3 ml-2 flex items-center gap-1.5 font-medium"
                   >
                     <AlertCircle size={14} />
@@ -210,7 +212,7 @@ export default function SignIn() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-black text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 hover:scale-[1.02] hover:shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-all duration-300 disabled:opacity-70 disabled:hover:scale-100"
+            className="w-full bg-black text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 hover:scale-[1.02] hover:shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-feedback disabled:opacity-70 disabled:hover:scale-100"
           >
             {isLoading && <Loader2 className="size-5 animate-spin" />}
             {isLoading ? "Signing in..." : "Sign In"}

@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 const PATH = "/request";
 const TITLE = "Request a Car — Tell Us the Spec, We Find It";
 const DESCRIPTION =
-  "Tell us the make, model, grade and budget you want. Our teams search the auctions and trade channels of 40+ markets and come back with what is actually available.";
+  "Tell us the make, model, grade and budget. Our teams in seven countries search dealers, and Japan's auctions, and tell you what is actually available.";
 
 export const metadata: Metadata = {
   title: { absolute: `${TITLE} | Providence Auto` },
@@ -25,7 +25,9 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
   },
-  robots: { index: true, follow: true },
+  // A funnel utility (page-types.md §5), not a page to rank: every landing
+  // page carries its own form, and this one serves no H1 in its HTML.
+  robots: { index: false, follow: true },
 };
 
 export default function RequestLayout({
