@@ -7,6 +7,7 @@ import {
   memberCodeFor,
   STOCK_ANSWER,
   STOCK_DESCRIPTION,
+  STOCK_H1,
   STOCK_TITLE,
   type StockCarFields,
   stockItemListJsonLd,
@@ -25,6 +26,17 @@ describe("the public page's search copy", () => {
   it("never uses buy or sell for the two acts (writing-angle.md §10)", () => {
     for (const copy of [STOCK_TITLE, STOCK_DESCRIPTION, STOCK_ANSWER]) {
       expect(copy).not.toMatch(/\b(buy|sell|sale)\b/i);
+    }
+  });
+
+  it("keeps the wording the business removed out (2026-11-17)", () => {
+    for (const copy of [
+      STOCK_H1,
+      STOCK_TITLE,
+      STOCK_DESCRIPTION,
+      STOCK_ANSWER,
+    ]) {
+      expect(copy).not.toMatch(/wholesale|\bholds?\b/i);
     }
   });
 });

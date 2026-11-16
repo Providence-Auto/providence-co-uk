@@ -12,25 +12,24 @@ export const STOCK_HISTORY_PATH = "/admin/stock/history";
 // ── The public page's search copy (src/app/available-cars) ──────────────────
 
 export const STOCK_SITE = "https://www.providenceauto.co.uk";
-/** Under 60 characters (stock.test.ts). */
 /**
- * Dealer framing (business instruction 2026-11-16). Deliberately not
- * "wholesale import stock" verbatim: seo-page-rules.md F-A2 gives that phrase
- * to /b2b, and the overlap is an open question.
+ * /available-cars is a page type of its own, a stock list (page-types.md §8,
+ * decided 2026-11-17). Copy as reworded by the business that day: no
+ * "wholesale", and no line about who holds a car. Title under 60 characters
+ * (stock.test.ts).
  */
-export const STOCK_H1 = "Wholesale cars in stock, with FOB prices";
-export const STOCK_TITLE =
-  "Wholesale Cars in Stock with FOB Prices | Providence Auto";
+export const STOCK_H1 = "Cars in stock, with FOB prices";
+export const STOCK_TITLE = "Cars in Stock with FOB Prices | Providence Auto";
 /** Under 155 characters, ending on the action (stock.test.ts). */
 export const STOCK_DESCRIPTION =
-  "Every wholesale car in stock: make, model, year, colour, engine, steering, FOB price and shipping port. Dealerships select cars and send one inquiry.";
+  "Every car in stock: make, model, year, colour, engine, steering, FOB price and shipping port. Dealerships select cars and send one inquiry.";
 /**
  * The direct answer under the H1, 40–55 words (stock.test.ts). It describes
  * the list and the form on the page and nothing else — no claim about the
  * service (page-types.md §3).
  */
 export const STOCK_ANSWER =
-  "Every car on this list is in stock and available to dealerships now. Each one shows its make, model, year, colour, engine, steering side, FOB price and the port it ships from, with the code of the team member who holds it. Select the cars you want and send one inquiry for all of them.";
+  "Every car on this list is in stock and available to dealerships now. Each one shows its make, model, year, colour, engine, steering side, FOB price and the port it ships from. Select the cars you want and send one inquiry for all of them.";
 
 /** schema.org steeringPosition for a stored hand. */
 const STEERING_POSITION: Record<string, string> = {
