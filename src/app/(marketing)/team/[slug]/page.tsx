@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { getPublishedProfileBySlug } from "@/actions/sales-profile-actions";
 import TeamProfileClient from "@/components/TeamProfileClient";
@@ -18,22 +20,21 @@ export async function generateMetadata({
   if (!res.success || !res.data) {
     return {
       title: "Consultant Not Found | Providence Auto",
-      description:
-        "The requested sourcing consultant page could not be located.",
+      description: "The requested sales consultant page could not be located.",
     };
   }
 
   const p = res.data.profile;
-  const name = p.displayName || "Sourcing Consultant";
+  const name = p.displayName || "Sales Consultant";
   const countries = (p.sourcingCountries || [])
     .map((c: any) => c.country)
     .filter(Boolean);
-  const title = `${name} — Personal Car Sourcing Consultant | Providence Auto`;
+  const title = `${name} — Sales Consultant | Providence Auto`;
   const description =
     p.tagline ||
-    `Work directly with ${name}, a Providence Auto sourcing consultant${
+    `Work directly with ${name}, a Providence Auto sales consultant${
       countries.length ? ` for ${countries.join(", ")}` : ""
-    }. Grade-verified cars, one honest landed price, one person handling your import end to end.`;
+    }. Inspected cars, one honest landed price, one person from your first message to your port.`;
   const url = `${SITE}/team/${p.slug}`;
 
   return {
@@ -74,8 +75,8 @@ export default async function TeamProfilePage({
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: profile.displayName || "Sourcing Consultant",
-    jobTitle: "Personal Car Sourcing Consultant",
+    name: profile.displayName || "Sales Consultant",
+    jobTitle: "Sales Consultant",
     worksFor: {
       "@type": "Organization",
       name: "Providence Auto",
@@ -84,6 +85,9 @@ export default async function TeamProfilePage({
     url: `${SITE}/team/${profile.slug}`,
     image: profile.photoUrl || undefined,
     knowsLanguage: profile.languages || undefined,
+    sameAs: Object.values(profile.socialLinks).length
+      ? Object.values(profile.socialLinks)
+      : undefined,
   };
 
   return (
@@ -92,6 +96,15 @@ export default async function TeamProfilePage({
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Our Sales Team", path: "/team" },
+          {
+            name: profile.displayName || "Sales Consultant",
+            path: `/team/${profile.slug}`,
+          },
+        ])}
       />
       <TeamProfileClient profile={profile} vehicles={featuredVehicles} />
     </>

@@ -15,11 +15,11 @@ export default function Body() {
   return (
     <>
       <Lead>
-        Almost everything worth buying in New Zealand came from Japan in the
+        Almost everything worth importing from New Zealand came from Japan in the
         first place. So the interesting question is not what is available — it
         is{" "}
         <Strong>
-          which cars are better bought here than at their original source
+          which cars are better imported from here than from their original source
         </Strong>
         . There are four answers, and one of them is a category most of the
         world cannot supply at all.
@@ -86,7 +86,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        Buy these here rather than in Japan when the extra verification is worth
+        Import these from here rather than from Japan when the extra verification is worth
         the retail premium to you.{" "}
         <InlineLink href="/blog/new-zealand-vs-japan-for-used-imports">
           That trade-off is worked through properly here
@@ -154,8 +154,8 @@ export default function Body() {
       <P>
         If you want a <em>new</em> pickup, though, Thailand is the production
         source and will be cheaper —{" "}
-        <InlineLink href="/source-cars-from/thailand">
-          see that office
+        <InlineLink href="/import-cars-from/thailand">
+          see that country
         </InlineLink>
         .
       </P>
@@ -170,7 +170,7 @@ export default function Body() {
         case in the whole market.
       </P>
 
-      <H2 id="avoid">When to buy from Japan instead</H2>
+      <H2 id="avoid">When to import from Japan instead</H2>
       <UL>
         <CheckLI>
           <Strong>When price is the priority.</Strong> New Zealand prices are
@@ -191,7 +191,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        We run both offices and have no reason to steer you.{" "}
+        We have our own team in both, and no reason to steer you.{" "}
         <InlineLink href="/blog/cost-to-import-a-car-from-new-zealand">
           The New Zealand cost breakdown is here
         </InlineLink>

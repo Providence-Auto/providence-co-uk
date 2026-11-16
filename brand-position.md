@@ -1,0 +1,315 @@
+# Providence Auto — Brand Position
+
+What Providence Auto stands for, and the claim every piece of copy is
+ultimately making. Read with `writing-angle.md` (how to write it) and
+`business-context.md` (the underlying facts).
+
+---
+
+## 1. The position, in one sentence
+
+**Providence Auto gives you direct access to the world's car auctions and
+dealer networks — plus the tools, documentation and people on the ground to
+use that access with confidence.**
+
+You import the car. We make it possible.
+
+## 2. What changed, and why it matters
+
+The site previously sold a **concierge** proposition: *we buy your car, we
+handle everything, we deliver it to your door.* That framing has two problems.
+
+**It was drifting past what the business actually does.** Providence quotes
+CNF to the destination port and supports, rather than performs, customs
+clearance — in every market.
+"We handle everything, door to door" was writing cheques the operation
+doesn't cash — which is exactly the class of over-claim corrected across the
+site in August 2026 (see `business-context.md` §4 and §11).
+
+**It sold the wrong thing.** The concierge frame makes Providence the hero
+and the customer a passenger — and a passenger has no reason to prefer
+Providence over any other broker promising the same. The real, defensible
+product is *access plus capability*: the auction floor was a closed trade
+room, and Providence opens it, then hands the buyer the instruments to
+operate in it. That is a genuinely different offer, it is true, and it is
+the one thing a middleman cannot copy without becoming us.
+
+**The empowerment frame and the honesty correction are the same move.**
+Saying "you import, we enable" makes the scope boundary a feature rather than
+an embarrassing footnote. We don't clear your customs in Kenya — we prepare
+the file, name the broker, and tell you exactly what happens at the port.
+That is a better story than pretending otherwise, and it is the story that
+survives contact with a customer.
+
+## 3. The promise
+
+**Before Providence:** the wholesale market is a closed room. Auction floors
+need a licence and a Japanese-reading buyer. Duty, VAT and registration tax
+are opaque until it's too late to change your mind. Your only route in is a
+dealer's forecourt, at the dealer's markup, from the dealer's stock.
+
+**With Providence:** you choose the exact car, see the same inspection data
+the trade sees, know the total landed number before you commit, and import at
+source price. Our people stand next to the car so you don't have to fly.
+
+**What we never say:** that it becomes effortless. Importing a car is a real
+process with real paperwork. Our claim is that you can *do it*, well and
+without being taken advantage of — not that it happens while you sleep.
+
+## 4. The four pillars
+
+Every landing page should carry all four. They are the whole offer.
+
+| Pillar | What it means | Proof |
+|---|---|---|
+| **1. Direct access** | You import direct from source — a Japanese auction floor, an Indian dealer network, a Gulf re-export hub — not from a middleman's stock at a middleman's markup. | Our own teams in the seven countries we export from. (No "40+" or "100+" markets figure — withdrawn 2026-11-03.) |
+| **2. Tools that show you the truth** | The auction sheet with a translation. The independent condition grade. The full landed cost, itemised, before you commit. The Ireland VRT calculator. Milestone tracking. | `/ireland-cost-calculator`; auction sheets sent before bidding; one all-in landed quote. |
+| **3. Documentation support** | The paperwork is the hard part and the part that goes wrong. We prepare, verify and explain it: export certificates, pre-shipment inspections, the rules of your destination confirmed before we buy. | Export clearance in every source country; per-destination rule guides; clearance support at the port. |
+| **4. People on the ground** | Someone physically stands next to your car before your money moves, and one named consultant owns your file. | Own teams in seven countries; inspection before payment; a named consultant, not a shared inbox. |
+
+## 5. One proposition, two audiences
+
+**B2B and B2C open on the same promise.** The headline value proposition does
+not change between a private buyer and a dealership:
+
+> **You can source cars directly from the market they come from, and ship them
+> to your own country. We give you the access, the tools and the documentation
+> support to do it.**
+
+Say that first on both. A dealer and a private buyer are both being sold the
+removal of the same obstacle — the wholesale market was closed to them, and
+now it is not. Splitting the message at the top ("concierge for consumers,
+platform for dealers") is what produced two different brands on one site.
+
+**The difference is what comes second, and only second:**
+
+| | The second line |
+|---|---|
+| **Direct buyer (B2C)** | **Plus the price advantage of cutting the dealership out.** You are importing at the price a dealer pays at source, so the margin that used to sit on a forecourt stays with you. This is B2C's differentiator and it belongs to B2C alone — a dealer *is* the margin, so the argument reverses. |
+| **Dealer or vehicle broker (B2B)** | Plus stock you don't have to floor-plan. You sell from a global inventory without owning it, and the sourcing desk, landed maths and shipping sit behind your own brand. |
+
+**Where destination taxes narrow the price gap — Ireland is the case in point,
+with VAT and VRT charged on Revenue's OMSP — the B2C second line leads on the
+car itself**: a lower-mileage car, graded 4.0 or above, inspected before your
+money moves, through a clear process with one landed number. The value of
+importing direct stays as a supporting point. Never write that importing is *not*
+cheaper: an older, lower-mileage, graded car and a newer forecourt car are not
+a like-for-like price comparison. (Decided 2026-09-25.)
+
+**Never** lead B2C with "we handle it for you" or B2B with "outsource it to
+us". Both are the retired concierge frame wearing different clothes.
+
+## 6. Who this is for
+
+Unchanged from `business-context.md` §7 — but the emphasis shifts.
+
+- **The private importer** was previously sold *relief* ("we'll handle it").
+  They are now sold *capability*: the thing they wanted was the car at the
+  right price, and the thing that stopped them was not knowing whether they
+  could trust the process. We remove the ignorance, not the agency.
+- **The dealer** was previously sold *outsourcing*. They are now sold
+  *leverage*: our network becomes their sourcing desk, with the data and the
+  landed maths to make the import-or-skip call themselves. This is exactly what
+  the Sourcing & Profit Analyzer does internally — the dealer proposition is
+  that capability pointed outward.
+- **The vehicle broker** (added 2026-11-03) imports cars for their own clients
+  and is sold the same *leverage* as the dealer: a sourcing desk and a landed
+  figure for each car, without holding stock. Broker inquiries go to the B2B
+  sales team (`business-context.md` §7).
+
+## 7. What we are not
+
+- **Not a marketplace.** We don't list other people's stock and take a cut.
+- **Not a broker network.** Nothing is subcontracted to an exporter you never
+  speak to.
+- **Not a concierge.** We're not selling the removal of effort; we're selling
+  the removal of *risk and markup*.
+- **Not a shipping company.** Freight is a step in the process, not the product.
+  Shipping — like sourcing, documentation and quality checks — is sold only as
+  part of an import with us (`business-context.md` §6.2).
+- **Not your customs agent** — anywhere. We prepare the file and support the
+  clearance; the import entry is made in your name.
+
+## 8. Competitive frame
+
+| They say | We say |
+|---|---|
+| "Leave it all to us." | "Here's the auction sheet. Here's the landed number. Your call." |
+| "Trusted exporter, best prices." | "Here is the grade an independent inspector gave it, and here is what it costs you at your port." |
+| Price on application. | One all-in landed figure before you commit anything. |
+| A contact form and a WhatsApp number. | A named consultant, our own inspector standing next to the car, and a cost calculator you can run yourself. |
+
+The differentiator is **verifiability**. Anyone can promise. We show.
+
+## 9. Boilerplate
+
+**One line:**
+> Providence Auto gives you direct access to the world's car auctions — with the tools, documentation and people on the ground to import from them with confidence.
+
+**Short (50 words):**
+> Providence Auto opens the wholesale car market to private buyers and dealers. You choose the exact car; our teams in seven countries find it at dealers (and, in Japan, at auction), inspect it before your money moves, export it, and give you the auction sheet, the full landed cost and the paperwork support to import it confidently.
+
+**Proof line:**
+> 15+ years trading. Our own teams in seven countries. 200+ dealership clients. 34 destinations, one landed price quoted before you commit.
+
+## 10. Tagline inventory
+
+Existing lines, kept — they already read as access rather than concierge:
+
+- **"World's Largest Borderless Showroom."** (home) — the access idea, stated as scale.
+- **"Import your dream car anywhere in the world."** — the repeated line (decided 2026-10-09): the footer on every page, the opening of the home page's lead paragraph, and the meta description of the four brand pages. See `writing-angle.md` §10.
+- **"Import Any Car. From Any Country. To Any Port."** (home) — the access idea, stated as scope. *Import*, *From* and *To* are set in the accent colour (business instruction 2026-10-09; it was "Any Car. Any Country. Any Port.").
+- **"Powered by trust. Driven by value."** — the mat line; company character, not proposition.
+- **"Don't settle for what's on the lot."** (`/b2c`) — the enemy, named.
+
+Lines retired in this repositioning:
+
+- ~~"We Buy Your Car at Japanese Auction and Deliver It to Your Door."~~ →
+  "Now You Can Import Your Dream Car Direct from Japan." The subject
+  of the sentence changes from *we* to *you*. That swap is the whole
+  repositioning in one edit. (The verb moved from *buy* to *import* on
+  2026-10-09 — `writing-angle.md` §10.)
+
+---
+
+## 11. Keeping these documents current
+
+These three documents — `business-context.md`, `brand-position.md` and
+`writing-angle.md` — are the source of truth. Two standing rules govern them.
+
+**Market channel policy lives in `business-context.md` §14.** It covers which
+markets we do and do not acquire in, and the focus-list rule that follows.
+Read it before planning a campaign, ad targeting, or any limited list of
+markets. It is a decision input — never quote or paraphrase it into public
+copy.
+
+### 11.1 Read before you write
+
+**Read all three before writing or changing any public copy, any outbound
+message, or building any page, campaign or component that carries copy.** Not
+"when in doubt" — every time. The August 2026 repositioning had to be done
+twice because the first pass swept seven files and left the retired
+vocabulary standing on /b2c, /b2b, /request and the gallery. Checking the
+docs is cheaper than the second pass.
+
+### 11.2 Never change a source-of-truth document without an answer
+
+**This rule is narrow and it is about these documents only.** It is not a
+mandate to chase every recommendation about the site — ordinary suggestions
+are raised once, and dropped if they are not taken up.
+
+What persists is a **pending change to a source of truth**: these three
+documents, plus `news-editorial-playbook.md`,
+`sourcing-analyzer-methodology.md`, `seo-aeo-optimization-guide.md`,
+`sales-profile-spec.md` and `page-types.md`. When work surfaces that one of
+them is wrong, incomplete or contradicts another:
+
+1. **Do not edit it on your own authority.** A source of truth that can be
+   silently rewritten is not one.
+2. **Raise it as a numbered question with a recommendation attached**, and
+   log it in §11.3 the moment it is raised.
+3. **Keep asking until answered.** A pending documented-truth change is
+   carried into the next session and re-raised — it is never closed because
+   time passed or the conversation moved on. Answers may of course be "leave
+   it"; that closes the item.
+4. **Then apply the answer**, and record the decision in
+   `business-context.md` §11 so the reasoning survives the edit.
+
+Unanswered does not mean blocked. Do the surrounding work under a stated
+assumption and flag it — the rule protects the document, not the schedule.
+
+### 11.3 Pending source-of-truth changes
+
+| Raised | Document | Question | Recommendation | Status |
+|---|---|---|---|---|
+| 2026-08-25 | `news-editorial-playbook.md` | §1.1 said "21 destinations" and framed source markets as the eight-country presence set. | Reconcile to the 28-destination / seven-source position. | **Answered 2026-08-25 — update.** Applied. |
+| 2026-08-25 | `business-context.md` | §3 said the destination list "Includes Sri Lanka" while the canonical `DESTINATION_REGIONS` list did not contain it. | Add Sri Lanka to `DESTINATION_REGIONS` (29). | **Answered 2026-08-25 — add it.** Applied; count now 29. Sri Lanka's channel policy is recorded in `business-context.md` §14. |
+| 2026-09-01 | `sourcing-analyzer-methodology.md` | §5 states the median is computed from the trimmed listing set and is "the reference price for every margin figure". The analyzer now lets the operator override that median with their own retail figure, which then drives net resale, profit, ROI, the ceiling bid, the verdict prompt, the PDF and the saved run. The doc does not describe that path. | Add a short subsection under §5 recording the override: it is an operator input rather than a model output (so "numbers are computed, prose is generated" still holds), it is entered VAT-inclusive on the same basis as the listings, the rest of the distribution still describes the real listings, a new crawl clears it, and every surface labels the number as manual. | **Answered 2026-09-01 — update.** Applied in §4 (where the median is produced), with cross-references from §5.1, §6.1 and §8. Reasoning logged in `business-context.md` §11. |
+| 2026-09-08 | `business-context.md` | §6 describes the dealer platform offer as immediate self-serve — "a dealer embeds Providence stock on their own site; Providence sources and ships, the dealer keeps the commission" — with no application, approval or vetting step, while `/saas` carries a "Sign up now — Free Forever" CTA. The dealer portal being designed in `dealer-portal-spec.md` adds an approval gate, and pricing turns out not to be a fixed commission at all. | Once the commercial model is settled, update §6 to state the approval gate and the actual pricing basis. | **Answered 2026-09-09 — update.** Platform is free, application-gated, price agreed offline per vehicle. Applied as a new `business-context.md` §6.1, with the `/saas` copy consequence stated. Reasoning logged in that document's §11. |
+| 2026-09-08 | `business-context.md` | §14.2's focus-list rule says Sri Lanka "does not take one of the slots" on any limited country list, without distinguishing consumer surfaces from trade ones — while §14.1 states that paid **B2B** acquisition into Sri Lanka is yes and only B2C is no. The dealer portal is the B2B channel §14.1 endorses, so its country lists hit a rule written for consumer surfaces. | Scope §14.2 explicitly to consumer-facing surfaces, and state that dealer-facing and trade surfaces follow §14.1 instead. | **Answered 2026-09-09 — update.** Applied to `business-context.md` §14.2. Reasoning logged in that document's §11. |
+| 2026-09-15 | `sourcing-analyzer-methodology.md` | §8.2 stood as "Reconditioning is not in the landed cost. No paint, no tyres, no service, no warranty provision." The 15 September costs workbook puts refurb £200, cleaning £50 and a warranty provision £100 into the post-border base — £350 of the £1,732.92, or 20%. That is not a repriced input: it changes what "30% ROI on landed cost" measures, because prep is now in the denominator, and it makes every historical ROI figure non-comparable with every future one. | Confirm that 30% now means 30% on a prepped-car cost base, and expect the pass rate to fall. If that is not intended, take the General block back out of `POST_BORDER_BASE_ITEMS` and model it as a deduction from resale instead. §8.2 has been rewritten to describe what the tool now does, marked as following the workbook rather than a ratified decision; `business-context.md` §10 still carries the old wording and needs the same answer. | **Pending.** Code, §2.6, §8.2/§8.3 and the Gemini verdict prompt updated so the tool does not double-count prep. |
+| 2026-09-15 | `sourcing-analyzer-methodology.md` | The workbook's SMC column reads "TBC" for the DVLA first-registration application fee, and Excel's `SUM` skips text — so the workbook's own £1,732.92 base is a subtotal with a declared hole. The alternate supplier (Calibre) quotes £790 for the same line, ~11% of a £7,000 landed cost. The tool now carries it at a visible, labelled £0. | Price the line, or default it to the £790 that is actually quoted, per the engine's standing doctrine that profit is never overstated on something that cannot be evidenced. Related: the workbook prices IVA and registration twice (SMC vs Calibre, £728 apart per car) and the shipped default silently takes the cheaper column for both, while the clearance block carries a Calibre fee — so the default basket matches no single supplier's quote. Decide whether the engine models one supplier or a blend, and whether the operator should be able to switch. | **Pending.** Recorded as §8.13 with the £0 shown on screen rather than omitted. |
+| 2026-09-15 | `sourcing-analyzer-methodology.md` | Two figures in the new base contradict figures the site already publishes as sourced fact. `mot: 75` versus the £54.85 statutory maximum cited on `/blog/iva-test-cost` and `/blog/registering-an-imported-car-in-the-uk` (GOV.UK, checked 28 Nov 2024); and `roadTax6Months: 206.25` replaces a first-year CO2-banded VED charge with six months' standard-rate holding tax, which is a different tax event, not a repricing. CLAUDE.md's standing editorial rule is that a wrong number is a failure. | Confirm £75 is the agent-arranged price rather than the test fee (it is labelled and hinted as such for now). On the road tax, the half-year reading does not reconcile: six months at the £195 standard rate is £107.25, while £206.25 sits close to an uplifted *annual* rate — so the line is either mislabelled or a second half-year is missing. Confirm which, and whether the desk pays first-year VED at registration *as well as* road tax while the car sits; if both, that is two lines and the workbook prices only one. | **Pending.** Labelled "MOT (agent-arranged)" with the statutory cap in the field hint; recorded as §8.14. |
+| 2026-09-15 | `sourcing-analyzer-methodology.md` | The workbook files the speedo conversion (£175) and the rear fog light (£195) under **IVA Costs**, so the code does too — which means £370 of work drops out entirely for any car 10 years or older, the desk's commonest stock. Those two are UK road-legality modifications, not approval-test fees: a km/h-speedo JDM import needs them whether or not it sits an IVA test. | Decide whether they belong in the base block rather than the IVA block. Until then the tool follows the workbook, and the on-screen note for an exempt car names the two conversions and tells the operator to leave IVA ticked and zero the two test lines instead if the car still needs them. | **Answered 2026-10-29.** A £200 fog-light and speedo line now sits in the base block for every car, and the IVA block carries a £170 surcharge for the IVA supplier's higher price in place of the £175 + £195 lines. Code, §2.6 and the on-screen notes updated. |
+| 2026-09-15 | `sourcing-analyzer-methodology.md` | The desk's own reference car — the 600,000 JPY 2015 BMW 1 Series that `workbook parity` and the end-to-end UI test are both built on, and that §5.1 quotes as a worked example — falls from 32.2% ROI to **29.9%** under the new costs, i.e. below the 30% desk minimum, and its ceiling bid (¥599,048) now sits under the ¥600,000 it is bought at. The arithmetic is confirmed; whether it is the intended business answer is not. | Confirm the reference car is genuinely a no-buy at that price now. If it is expected to clear, one of the new cost lines is wrong — most likely the £790 hole in §8.13 is *not* the issue and the General block is. | **Pending.** Tests updated to the true figures, with the finding stated in the fixture's comment rather than loosened away. |
+| 2026-09-21 | `business-context.md` | §3 names `DESTINATION_REGIONS` in `/about-us` as the canonical destination list and puts it at 29 markets. **Grenada is not in it** — yet `/indian-manufactured-cars` has carried a full Grenada destination panel (age ceiling, CARICOM CET, environmental levy, clearance support at St George's) since the India page shipped, and `business-context.md` §4.1 itself names Grenada among the nine destinations whose clearance claim was corrected on 2026-08-25. So a market we publicly sell into, and have already audited copy for, is missing from the list that is supposed to be complete. The new per-car destination registry (`src/config/destinations.ts`) had to decide one way or the other and includes it, under the assumption below. | Add Grenada to `DESTINATION_REGIONS` and take §3's count to 30 — the same fix that was applied for Sri Lanka on 2026-08-25, and for the same reason: the page is live, so the canonical list is the thing that is wrong. If Grenada is *not* meant to be a destination market, the India page's panel has to come down instead, which is the larger change and the one that needs the business to say so. | **Answered 2026-09-24 — add it.** Grenada added to `DESTINATION_REGIONS`, together with Zambia, South Africa, India and Fiji (29 → 34); `business-context.md` §3 and §11, `news-editorial-playbook.md` §1.1 and this document's §9 updated. |
+| 2026-09-18 | `business-context.md`, `brand-position.md`, `writing-angle.md` | All three carve Ireland out as the one market where Providence clears customs itself — `business-context.md` §4.1 ("Providence directly clears customs in exactly one country: Ireland") and §6 ("the one market with a full clear-customs claim"), `brand-position.md` §2 and §7 ("Not your customs agent — except in Ireland, where we are"), `writing-angle.md` §2 and §6 ("we clear customs directly in Ireland only"; "Ireland NCTS … genuine done-for-you services"). On 2026-09-18 the business stated the opposite: Ireland is CNF to an Irish port like every other destination. Providence supports the clearance in full — declarations prepared, VRT calculated, the NCTS pack assembled — but takes no responsibility or accountability for the clearance itself or for delivery from the port, and the duty, VAT and VRT are the buyer's to pay. | Retire the Ireland carve-out entirely and fold Ireland into the standard "clearance support" claim: §4.1 loses its exception, §4.3 becomes universal (CNF to port everywhere, no exceptions), `brand-position.md` §7 drops "except in Ireland, where we are", and `writing-angle.md` §2/§6 drop the Ireland qualifiers. Decide separately whether the UK NOVA/DVLA handling in §4.3 survives as a named done-for-you service or goes the same way. | **Answered 2026-09-23 — retire it, and make all the changes.** Applied: `business-context.md` §4.1 and §4.3 (CNF to port with clearance support everywhere, no exceptions; the UK NOVA/DVLA handling restated as prepared paperwork too), §6, `brand-position.md` §2 and §7, `writing-angle.md` §2, §6 and §8. Every remaining Ireland page, the calculator, its email, the FAQ and the content files swept the same day. Reasoning logged in `business-context.md` §11. |
+| 2026-09-23 | `business-context.md`, `brand-position.md`, `news-editorial-playbook.md`, `sales-profile-spec.md` | The business instructed on 2026-09-23 that Sri Lanka be removed from the website as an office, a physical presence and an operations hub. It stays a destination market. The site now claims our own people in **seven** countries, the same seven we buy in. The documents still say eight: `business-context.md` §3 (presence row "8 … Includes Sri Lanka"; "the Colombo team runs South Asia operations"), §5.1 (the FAQ wording, which names Sri Lanka), §14.1 ("Public, and already on the site: … our Colombo team runs South Asia operations"); `brand-position.md` §4 pillar 4 and the §9 proof line ("Our own teams in eight countries"); `news-editorial-playbook.md` §1.1 and §5 ("eight countries", "Our eight offices"); `sales-profile-spec.md` trust line ("our own offices in eight countries"). | Update all four to the seven-country presence and drop the Colombo team, keeping Sri Lanka in the destination list and §14's channel policy unchanged. Note it collapses the presence and source lists into one, so §3's three-list table becomes two lists plus a note. | **Answered 2026-09-23 — update.** Applied to all four documents: `business-context.md` §1, §3, §4.4, §5.1, §14.1; `brand-position.md` §4 and §9; `news-editorial-playbook.md` §1.1 and Lens 6; `sales-profile-spec.md` trust line. Reasoning logged in `business-context.md` §11. |
+| 2026-09-23 | `brand-position.md`, `business-context.md` | The business supplied a new public figure, **200+ dealership clients globally**, and asked for it to replace the "40+ Retail sourcing markets" tile on `/about-us`. No source-of-truth document records it, so it has no documented basis the next writer can check against. | Add it to `business-context.md` §1 and to the `brand-position.md` §9 proof line, with the date it was given. Decide whether "40+ sourcing markets" stays in the proof line now that it is off the About page. | **Answered 2026-09-23 — update.** Added to `business-context.md` §1 and the `brand-position.md` §9 proof line; "40+ sourcing markets" stays in the proof line. Reasoning logged in `business-context.md` §11. |
+| 2026-09-23 | `sales-profile-spec.md` | The business asked for the "sourcing team" to be renamed the **sales team**. `/team` and every link to it now say Sales Team. The spec still fixes each profile's badge and meta title as "Personal Sourcing Consultant" / "Personal Car Sourcing Consultant", so the individual profile pages still use that title. | Decide whether the per-profile title follows the rename ("Sales Consultant") or stays as the spec has it. If it changes, update the spec's §2 and the Abdallah worked example together, and note the SEO cost: "car sourcing consultant" is the keyword those titles rank on. | **Answered 2026-09-23 — rename.** Profiles are now "Sales Consultant"; `sales-profile-spec.md` §2 and the Abdallah example updated, and every profile page follows. Reasoning logged in `business-context.md` §11. |
+| 2026-09-24 | `business-context.md` | The business asked for a car-imagery guide (the model must exist, the photo must match it, a plate must match the page's country or be removed). It now exists as `car-imagery-checklist.md`, and CLAUDE.md carries a "read this before adding any car photo" rule. §13's closing note says any such rule gets a pointer in the §13 document map; §13 does not list it. The same day the `/source-cars-from` pages were renamed `/import-cars-from` and rewritten onto a simple general-guide template, which §11's decision log does not yet record. | Add `car-imagery-checklist.md` to the §13 document map, and add a §11 row for 2026-09-24: pages renamed to the searched phrase and simplified to a general import guide plus office details, and the imagery rule introduced. | **Answered 2026-09-24 — yes.** Checklist added to §13; four rows added to §11 (the rename, the intent split, the imagery rules, and the Japan-only bidding rule). |
+| 2026-09-24 | `seo-aeo-optimization-guide.md` | The business asked for the landing-page writing rules to carry the new principle: the exact searched phrase in the slug, title, H1 and headings, and a simple general template (direct answer, facts table, steps, cost, documents, office, form, FAQ rendered as plain text) with no country-feature content. That now lives in CLAUDE.md ("Landing pages: one keyword, one simple template"). The guide itself is generic and says nothing about it, and its Phase 5 does not warn that an accordion FAQ hides its answers from the served HTML. | Add a short pointer under Phase 3 to the CLAUDE.md template, and one line under Phase 5 that FAQ answers must be in the served HTML, not behind a collapsed accordion. | **Answered 2026-09-24 — yes.** Phase 3 gained a one-intent-per-page line pointing at the CLAUDE.md template, and Phase 5 a line that FAQ answers stay in the served HTML. |
+| 2026-09-24 | `business-context.md` | The business stated that bidding applies to Japanese cars only. §2 step 1 says the local team "searches auction catalogues or dealer networks" in every source country without saying which, so it could not stop the site claiming trade-auction buying in the UK, Australia, New Zealand, the UAE and Thailand — which it did, on the country pages and in two news callouts. | Add to §2 step 1: auction bidding happens in Japan only; in the other six countries we buy from dealers, fleet disposals and (in the UK) private sellers. | **Answered 2026-09-24 — yes.** §2 step 1 now says auction bidding is Japan only; reasoning logged in §11. |
+| 2026-09-24 | `business-context.md`, `brand-position.md` | A review of `/import-japanese-cars-to-ireland` states that B2C cars from Japan are **mostly bought from Japanese dealerships, not at auction**, and that we ship only cars graded **4 or above**. `business-context.md` §2 step 1 describes Japan as the auction-bidding market and says nothing about Japanese dealers; `brand-position.md` §1, §3 and §8 lead on "the auction floor" and "here's the auction sheet". No document records a grade threshold, and the site says 3.5 and above (the Ireland FAQ, `/import-japanese-cars`, three blog posts). | Add to §2 step 1: in Japan we buy mainly from dealers nationwide and also bid at the graded auctions; add to step 2 the minimum grade we ship. Keep `brand-position.md`'s access pillar as "auctions and dealer networks" (already true) but stop leading Japan copy on the auction alone. Confirm the threshold (4 vs 3.5) before any page changes it, then sweep every page that states 3.5. | **Answered 2026-09-25 — yes; the threshold is 4.0.** `business-context.md` §2 steps 1–2 updated (dealers and auctions across Japan, most B2C cars from dealers; 4.0 and above). Every "we source 3.5 and above" on the site changed to 4.0. Reasoning logged in `business-context.md` §11. |
+| 2026-09-24 | `brand-position.md`, `writing-angle.md` | The same review says Irish buyers **do not save money** importing from Japan: after VAT and VRT on Revenue's OMSP the landed total is about the same as, or slightly above, an Irish forecourt car; the gain is condition and mileage. `brand-position.md` §5 and `writing-angle.md` §5 make the B2C second line "the price advantage of cutting the dealership out", and the Ireland page shows a "€4,000 – €8,000+" saving. | Keep the §5 line but narrow it: the price advantage is on the **car itself** (you pay what a dealer pays at source); where destination taxes absorb it, as in Ireland, the B2C second line is condition for the money — lower mileage, a graded car, an inspection you see first. Add that as a note under §5. | **Answered 2026-09-25 — yes, adjusted.** Keep the value of buying direct, never say importing is not cheaper (an older graded car and a newer forecourt car are not like for like), and lead on the quality of the car and a clear process. Applied as a note under §5 and in `writing-angle.md` §5; reasoning logged in `business-context.md` §11. |
+| 2026-09-25 | `business-context.md` | §2 step 5 describes the offer as "one landed price quoted up front, **covering** the car, freight, marine insurance, **duty, and local VAT/GST where applicable**" — while §4.2 in the same document states that Providence does not pay the customer's duty or registration taxes, because they are charged to the registered owner and paid in their name. A price that "covers" a tax reads as a price that pays it. This is not hypothetical drift: the same construction had to be corrected on three separate campaign pages this week — `/import-japanese-cars` ("one all-in quote covering the car … duty and every local tax … the price we quote is the price you pay on arrival"), `/indian-manufactured-cars` ("a single all-in landed cost — car, freight, insurance, duty and VAT") and `/japanese-luxury-cars-lhd` (same sentence) — plus "taxes included" on the Uganda panel and FAQ. Each was written from §2, and each contradicted §4.2. | Reword §2 step 5 so the pillar survives but the payee is explicit: the landed price is **calculated and itemised** up front in two parts — the CNF price paid to Providence (car, freight, marine cover to the destination port) and the duty and local taxes paid by the buyer to their own customs authority on arrival. Keep "one landed figure, itemised", which is `brand-position.md` §4 pillar 2 and §8, and is not the problem; it is the verb "covering" that licenses the over-claim. The campaign pages now use that split and can serve as the model wording. | **Answered 2026-09-25 — update it.** Applied to `business-context.md` §2 step 5, which now states the CNF-plus-taxes split and cross-references §4.2. Reasoning logged in that document's §11. |
+| 2026-09-28 | `CLAUDE.md` | The business defined informational and landing pages as two types with different rules, the informational page being the one that explains the general context. `CLAUDE.md` states the opposite for landing pages: "**A landing page is a general guide plus our details** — not a feature about the place", set as a business instruction on 2026-09-24 and still the live template for the seven `/import-cars-from` country pages. The two cannot both stand. | Retire the sentence, not the template. The ten-section list stays, recorded as *the agreed outcome of the ask-first process for one family of pages* rather than as a default for the next page, and the sentence is replaced with "a landing page is our process for one service", which is what the list actually describes. The country pages themselves need no rewrite: their deep explainers were already moved to `/blog` on 2026-09-24, so what remains is mostly our own process, ports and office. | **Answered 2026-09-28 — retire the sentence, keep the template.** Applied to `CLAUDE.md`; reasoning logged in `business-context.md` §11. |
+| 2026-09-28 | `page-types.md` | `/ireland-cost-calculator` (2,166 lines) is a working landed-cost tool built on a deep bed of general Irish tax mechanics. It converts like a landing page and teaches like a guide, so the two-type taxonomy cannot file it without distorting one of the definitions. The same tension, less acutely, applies to any future tool page. | Decide whether a **tool** is a third type with its own rules, or a landing page that is permitted an explainer because the explainer *is* the product. Recommendation: name it a third type — the calculator's numbers are its whole value, so they should be held to §2's primary-source standard, while its conversion path is held to §3's. `page-types.md` §5 records it as an unresolved hybrid under exactly that dual standard in the meantime, so nothing is blocked. | **Answered 2026-09-29 — make it a third page type.** Applied: `page-types.md` gains §1.3 (the tool type), §1.4 (the test routes three ways), §3A (its rules) and a reclassified §8 register row; the two-type framing swept from `CLAUDE.md`, `business-context.md` §9, `writing-angle.md` §7/§8 and the SEO guide's Phase 1. Reasoning logged in `business-context.md` §11. |
+| 2026-09-29 | `business-context.md` | The business asked for a dealer sign-up page for requesting cars; it now exists at `/car-sourcing-for-dealers`, with its inquiries in their own table and admin panel, assigned round-robin across Sales with **Chathuranga excluded** from that rotation. §6's offers table still gives `/b2b` as the only route for "Dealer sourcing (B2B)", and §11 records none of the three decisions: the new route, the exclusion, and that dealer inquiries keep a rotation of their own (separate from B2C leads) while still honouring the country-owner rule (Cyprus → its owner). | Add `/car-sourcing-for-dealers` beside `/b2b` in §6's "Dealer sourcing (B2B)" row, and a §11 row for 2026-09-29 recording the page, the exclusion and the separate rotation. Confirm whether the country-owner rule should apply to dealer inquiries at all — the build assumes it does, because `COUNTRY_LEAD_OWNERS` says an inquiry to import to an owned market goes to its owner. | **Partly answered 2026-09-30.** Decisions: every Cyprus inquiry goes to Shaq; the exclusion is keyed on `chathuranga@providenceauto.uk.com`; `/b2b` stays exactly as it is, and the *new* page lives at `/b2b-inquiry`, framed on the inquiry rather than on dealer car sourcing. Document answers: §14.2 — **yes**, applied (the `/b2b-inquiry` market check named as a dealer surface); §6 route change as first proposed (moving `/b2b`) — **no**; `page-types.md` §1.2 list — **no**. **Answered in full 2026-09-30:** §11 rows — **yes**, applied (the page, the assignment rules, the §14.2 edit); adding `/b2b-inquiry` to §6's "Dealer sourcing (B2B)" row — **no**, §6 stays as it is. Closed. |
+| 2026-10-03 | `sourcing-analyzer-methodology.md` | The business asked for the analyzer to take a manual estimated sale price **without running the crawl**. It now does: whenever there are no comparables (no crawl yet, or a crawl that matched nothing), the summary panel shows an "Estimated sale price" field that drives net resale, profit, ROI and the ceiling bid. §4's "Manual median override" still describes the override as reached only "under the stat tiles, prefilled with the scraped median", i.e. after a crawl has returned listings. The verdict, PDF and saved run still need crawled comparables, so the "everything that consumes a median" list is true only once a crawl has run. | Extend §4's override paragraph: the same operator figure can be entered before any crawl, from the summary panel, and is labelled "Estimated resale" / "manual estimate"; the honesty rules stand unchanged (operator input, VAT-inclusive ÷ 1.2, a new crawl clears it); with no comparables it drives the P&L and the ceiling bid only — the written verdict, the PDF and the saved run still require a crawl. | **Answered 2026-10-03 — update.** Applied to §4 ("Estimated sale price, before any crawl") and to the §9 "none matched" row. Reasoning logged in `business-context.md` §11. |
+| 2026-10-07 | `brand-position.md`, `page-types.md`, `writing-angle.md`, `news-editorial-playbook.md`, `seo-aeo-optimization-guide.md` | The business asked that every blog and news article bring the reader to a Providence landing page, or carry a brand association strong enough that someone who reads one article knows who published it — as a branding, writing and SEO rule. `page-types.md` §2.6 and the news playbook §4.3 said the body does not sell and the commercial ask lives only at the end, so a mid-article mention needed a decided limit. | Three fixed touchpoints on every article: a one-line publisher note under the byline linking the matching landing page; at most one contextual sentence-link in the body, at the point where the reader would act; and the closing CTA to that landing page. No paragraph of offer copy anywhere in the body. | **Answered 2026-10-07 — three fixed touchpoints.** Applied as §12 of this document, `page-types.md` §2.6, `writing-angle.md` §9, `news-editorial-playbook.md` §4.4 and the SEO guide's Phase 3; enforced in `ArticleShell`, `NewsShell` and a config test. Reasoning logged in `business-context.md` §11. |
+| 2026-10-26 | `business-context.md` | The business asked for **South Africa as a sourcing country on `/b2b-inquiry`**. It is now one of the dealer form's source markets and has a card on the page (drive side only: no `/import-cars-from` page, so no transit or port figure is published), and the page says "eight markets". `business-context.md` §11 (2026-09-24) still says South Africa "stays destination-only", and the source geography names seven countries. | Record in §3 and §11 that South Africa is a **dealer-channel source market only**: offered on `/b2b-inquiry`, with no office or presence claim, no `/import-cars-from` page and no B2C sourcing. Confirm the loading ports and sea transit to publish on its card, or that it stays without them. | **Answered 2026-10-26 — record it.** Applied to `business-context.md` §3 (a South Africa paragraph and both table rows) and §11 (a new row; the 2026-09-24 globe row marked superseded for South Africa). No ports or transit supplied, so the card stays drive-side only. Closed. |
+| 2026-10-08 | `business-context.md` | A new root document, `landing-page-playbook.md`, was written on business request from a teardown of surge.cloud: a pattern library and build recipes for landing-page sections, copy constructions and motion, explicitly subordinate to `page-types.md`, `brand-position.md`, `writing-angle.md` and CLAUDE.md, with its unapproved patterns marked `[Proposed]`. §13's document map does not list it, so the next writer has no pointer to it, and nothing says where it ranks. | List it in §13 as "the pattern library and build recipes for landing pages; never a default section list, and below the source-of-truth documents wherever they differ", and add a one-line pointer under CLAUDE.md's "Landing pages" section. Keep it out of the source-of-truth set, so it can be revised without the §11.2 process. | **Answered 2026-10-09 — yes.** Listed in `business-context.md` §13 and pointed to from CLAUDE.md's "Landing pages" section; the playbook's other six questions were answered the same day and are recorded in its §15. Reasoning logged in `business-context.md` §11. |
+| 2026-10-09 | `brand-position.md`, `writing-angle.md`, `business-context.md`, `sales-profile-spec.md` | The business instructed that the site stop using *buy* and *sell* for the two acts in a Providence transaction: the customer *imports* ("import a car from Japan", not "buy a car from Japan"), Providence *exports* (never "sells"), and *source* as a verb becomes *import*, while the noun stays. The position line ("You buy the car"), the access pillar, the B2C second line, the boilerplate and the tagline inventory all used *buy*, so the documents had to move with the pages. The same instruction set the home tagline to "Import Any Car. From Any Country. To Any Port." and the repeated line to "Import your dream car anywhere in the world." | One rule, written once in `writing-angle.md` §10: *export* where Providence is the subject (never "we import" — the import entry is the customer's, `business-context.md` §4), and nouns, third-party and domestic purchases and URL slugs left alone. | **Answered 2026-10-09 — business instruction.** Applied to these documents and every page the same day; reasoning logged in `business-context.md` §11. |
+| 2026-10-27 | `business-context.md` | The business asked for an internal rule book on animation and interaction, to be used whenever a page or any element is animated. It now exists as `motion-interaction-rulebook.md` (from the Fluid Motion spec of the same date), with the spring tokens and gesture physics in `src/lib/fluid.ts` and a "read this first" rule in CLAUDE.md. §13's document map does not list it, and nothing there says where it ranks against `landing-page-playbook.md`, whose §10.3 motion tokens it supersedes for anything a person causes. | List it in §13 as "how anything on the site moves: the spring tokens, gesture physics, reduced motion and the pre-ship checklist; read before adding or changing any animation", ranked beside CLAUDE.md and above the playbook on motion. Add a §11 row for 2026-10-27. Keep it out of the source-of-truth set, like the playbook. | **Answered 2026-11-03 — yes.** Listed in `business-context.md` §13, ranked beside CLAUDE.md and above the playbook on motion; §11 row added. Kept out of the source-of-truth set. |
+| 2026-10-27 | `page-types.md`, `business-context.md` | A dealer-sourcing blog cluster was published on business request (`src/config/blog-dealer-sourcing.ts`): the pillar `/blog/how-to-source-cars-overseas`, 25 supporting guides and seven "importing cars from <country> for dealers" guides — 32 new posts, plus the India dealer guide, rewritten and moved into the cluster with its slug unchanged. Each carries a destination selector backed by `src/config/import-market-guides.ts`, where every rule cites its official source and the date checked. `page-types.md` §8 still counts `/blog` at 66 posts across three registries, and `business-context.md` §9 lists the live clusters without this one. | Update the §8 register row to the new count and add `src/config/blog-dealer-sourcing.ts` to its registry list; add "Dealer Sourcing" to §9's list of live clusters, noting that it is written for the dealer reader and that its CTA is `/b2b-inquiry`. | **Answered 2026-10-27 — yes.** `page-types.md` §1.1 and §8 recounted to 102 posts across four registries; `business-context.md` §9 lists the Japan to UK and Dealer Sourcing clusters. Reasoning logged in `business-context.md` §11. |
+| 2026-11-01 | `page-types.md` | A privacy policy was published at `/privacy-policy` on business request and linked from the footer. It is a legal page — it neither sells, informs nor computes — and §5's table of "pages that are none of the three" does not list it, so nothing says which rules a legal page answers to. | Add a §5 row: `/privacy-policy` — legal; follows `writing-angle.md` for phrasing, states only what the code and the business actually do (every data flow traceable to the codebase), and changes only on business sign-off. | **Answered 2026-11-03 — yes.** Added to `page-types.md` §5 as a legal page, with `/contact` beside the navigational pages. |
+| 2026-11-02 | `writing-angle.md` | §10 says *import* is "the phrase they search", but the search-query research in `search-query-map.md` finds real demand for *buy* phrasings too ("buy JDM car UK", "buy Land Cruiser from Dubai", "can I buy a car directly from Japan?"), and AEO rewards FAQ headings that mirror the question as the reader asks it. §10 doesn't say whether a question quoted in the reader's own voice may use *buy*. | Keep §10 unchanged for every sentence Providence speaks, and allow *buy* only inside a question quoted in the reader's voice (FAQ headings and the matching `FAQPage` JSON-LD), with the answer written in *import*. Alternative: keep the verb out entirely and capture the demand through meta descriptions and semantic match. | **Answered 2026-11-03 — yes.** Applied to `writing-angle.md` §10 as a fourth "does not touch" case: a question quoted in the reader's voice may use *buy*; its answer uses *import*/*export*. Reasoning logged in `business-context.md` §11. |
+| 2026-11-03 | `business-context.md` | **Q6.** The business stated on 2026-11-03 that we source **cars, motorcycles and trucks**. `business-context.md` speaks only of cars (§1, §2, §6), and its inspection rule — Japanese cars graded 4.0 and above — is a car-auction rule with no stated equivalent for a motorcycle or a truck. `seo-page-rules.md` plans motorcycle and truck pages (P-11) that need both facts. | Record in §1 and §6 that Providence exports cars, motorcycles and trucks (and say whether buses and vans count as trucks); add to §2 step 2 the inspection or grading standard that applies to motorcycles and to trucks. | **Answered 2026-11-03 — record the classes; state no standard.** `business-context.md` §1 records cars, motorcycles and trucks, and that no grade or inspection standard is published for the two new classes. Reasoning in `business-context.md` §11. |
+| 2026-11-03 | `business-context.md`, `brand-position.md` | **Q7.** The business stated that we serve **dealerships, vehicle brokers and direct buyers**. `business-context.md` §7 and `brand-position.md` §5–6 define two audiences, and nothing says how a broker transaction works: who the client of record is, where the broker's commission sits, in whose name the car ships, or whether broker inquiries route to B2B Sales like dealer inquiries. (`brand-position.md` §7 says *we* are not a broker network; serving brokers is a different claim and does not conflict.) | Add brokers to §7 as a B2B segment that opens on the shared proposition with the dealer's second line, and record the transaction and routing answers in §6. | **Answered 2026-11-03 — B2B sales team.** Brokers recorded as a B2B audience in `business-context.md` §6–7 and in §5–6 here; their inquiries route to B2B Sales. The transaction structure was not stated, so pages ask first. |
+| 2026-11-03 | `business-context.md`, `news-editorial-playbook.md` | **Q8.** The business stated that into left-hand-drive countries we export **luxury, sports and hyper cars from Japan**. `business-context.md` §7 and `news-editorial-playbook.md` §1.1 say "left-hand-drive markets *for luxury vehicles only*", with no source named and no sports or hyper cars. Open: are the **US and Canada** included (they admit right-hand-drive cars only above an age threshold, which is where the JDM sports-car demand is)? `/japanese-luxury-cars-lhd` already says "the Americas". | Reword both to "left-hand-drive markets for luxury, sports and hyper cars exported from Japan", and name whether the US and Canada are in. | **Answered 2026-11-03 — yes, the US and Canada included.** Applied to `business-context.md` §3 and §7 and `news-editorial-playbook.md` §1.1. |
+| 2026-11-03 | `business-context.md` | **Q9.** The business stated that we ship to **any country that drives on the left**. §3 records a destination list of 34 (`DESTINATION_REGIONS`), and `LEFT_TRAFFIC_COUNTRIES` holds 73 left-driving countries, so 40 are neither listed nor claimed — among them the **Maldives**, which was taken off the lists on 2026-08-23 (§11). | Record in §3 that the destination scope is every left-driving country, with the 34 as the markets we hold country assets for. Each of the other 40 enters the destination registry at `depth: "listed"` until its rules are reviewed, and is never claimed by count until it is listed. | **Answered 2026-11-03 — leave the 40 out for now.** The list stays at 34; `business-context.md` §3 records that the 40 are neither claimed nor targeted. |
+| 2026-11-03 | `business-context.md`, `brand-position.md` | **Q10.** §3 says we buy in seven countries, while `brand-position.md` §4 and §9 say "40+ sourcing markets" (and 100+ for dealers). Buyers search heavily for sources outside the seven (Germany, Korea, the USA, China, Canada). The two figures don't say whether we can export from those countries. | State what "40+ sourcing markets" means — markets we can source *from* through partners, or the seven plus their reach — and whether a source outside the seven can have a landing page. | **Answered 2026-11-03 — the figure is wrong; remove it.** Removed from §4 and §9 here, `business-context.md` §1, `news-editorial-playbook.md` §1.1, `landing-page-playbook.md` and the site's metadata and copy. No landing page for a source outside the seven (and South Africa for dealers). |
+| 2026-11-03 | `brand-position.md`, `business-context.md` | **Q11.** The business listed our services as **sourcing, documentation, quality checks and shipping**. `brand-position.md` §7 says we are "not a shipping company", and §6 of `business-context.md` sells them only inside an import. Unclear: can a customer buy any of the four on its own — a pre-purchase inspection of a car they found, documents for a car bought elsewhere, shipping a car they already own? | Record in `business-context.md` §6 whether each service is sold on its own or only within an import. If shipping is sold on its own, reword `brand-position.md` §7 to say freight is never the *product* of an import, without denying a shipping service. | **Answered 2026-11-03 — only as part of an import with us.** Recorded as `business-context.md` §6.2; §7 here gains one line pointing to it. |
+| 2026-11-03 | `page-types.md`, `seo-aeo-optimization-guide.md` | **Q12.** The business asked for hard rules on what each page type must contain, to drive a site-wide audit and page builds; they are in `seo-page-rules.md` Part 2. `page-types.md` §3 says nothing on a landing page is a default ("every section is there because someone asked for it"), so a per-type section set conflicts with it as written. Neither document points to the new rules. | Amend `page-types.md` §3 to say the section sets in `seo-page-rules.md` are the business-agreed defaults for their page families: a plan is still proposed and agreed before copy, and any claim outside the documented list is still asked first. Add a pointer in `seo-aeo-optimization-guide.md` Phase 3 and in `CLAUDE.md`. Decide whether `seo-page-rules.md` joins the source-of-truth set. | **Answered 2026-11-03 — yes; the rules are structural** (which elements a page has and what its H1 and H2s carry), not wording. Applied to `page-types.md` §3, `seo-aeo-optimization-guide.md` Phase 3 and `CLAUDE.md`. `seo-page-rules.md` stays below the source-of-truth set. |
+| 2026-11-03 | `business-context.md` | The business asked for motorcycles to be sold on the site, with its own pitch ("From Honda to Harley! And everything in between." — Harley-Davidson, BMW, Ducati, MV Agusta, Honda PCX, LiveWire; "tell us your market, quantities and preferred models"). `/import-bikes`, a page per bike at `/import-bikes/<slug>` and a motorcycle guide now exist. The document describes Providence only as a **car** business: §1 (what it is), §2 (the five-step pipeline, the 4.0 grade rule, auction bidding in Japan only), §3 (which of the source countries we export bikes from) and §6 (the offers) say nothing about motorcycles. | Add a motorcycle row to §6 and a short §2 note stating which source markets bikes are exported from, whether the inspection-before-payment and CNF-to-port rules apply unchanged, and whether bikes are a dealer (B2B) offer, a private-buyer (B2C) offer or both. Until answered the pages carry only the business's own pitch, with no claim about source country, inspection or grading. | **Partly answered 2026-11-03.** Recorded in `business-context.md` §6: motorcycles are an offer at `/import-bikes`, and no page claims a source country, an inspection or a grade for a bike until the business names them. **Still pending: which source countries we export motorcycles from.** |
+| 2026-11-03 | `page-types.md` | Three new landing surfaces and one guide are not in the §8 register: `/import-bikes` (landing), `/import-bikes/[slug]` (landing, dynamic — a database row per bike), `/import/[tag]` (landing, dynamic — one page per landing-page tag, "Import Luxury Cars") and `/blog/how-to-import-a-motorcycle` (informational; blog count 102 → 103, new "Motorcycles" cluster). The tag pages are also a new kind of landing page: their sections (keyword H1, the shared B2B/B2C proposition with the tag's label named in it, the vehicles, the form, links to the other tags) were set by the build rather than agreed through the §3 process, because the business asked for every tag to have its own page automatically. | Add the four rows to §8, and record the tag-page section list in §3 (or CLAUDE.md) as the agreed outcome for that template, the way the `/import-cars-from` list is recorded. | **Answered 2026-11-03 — yes, with the P-11 sections.** The four rows added to `page-types.md` §8. The class pages (`/import-bikes`, `/import/<tag>`) take the `seo-page-rules.md` P-11 section set — direct answer, facts table, models as text links, steps, FAQ — and a class page with fewer than eight live models is `noindex, follow` until it has them. |
+| 2026-11-12 | `business-context.md` | **Q13.** Ishak's dealer video (supplied 2026-11-12 as source material for `/import-japanese-cars/dealership`) says that for UK dealerships we "manage all the documentation and **conversion** that's required once the vehicle arrives in the UK — **MOT and registration**", as "an end-to-end service". §4.3 says the opposite: registration in the buyer's country is the buyer's responsibility, and on the UK side we *prepare* the NOVA and DVLA paperwork. The sourcing analyzer's own cost base does carry a fog-light and speedo line, an agent-arranged MOT and registration — which suggests the UK desk can arrange them. | Confirm whether, for UK dealerships, Providence **arranges** the UK conversion (speedo, rear fog light), the MOT and the DVLA registration — at the dealer's cost and in the dealer's name. If yes, record it in §4.3 as a named UK-dealer service ("arranged for you", never "included" or "end-to-end") and the page gains one tile line and one FAQ answer. If no, the video should be re-cut before it runs as an ad or is embedded on the page, because it makes a claim the page cannot. | **Answered 2026-11-12 — yes, we arrange them.** Applied as the UK-dealership exception in `business-context.md` §4.3 (arranged, in the dealership's name, costs on the dealership's side; CNF, the import entry, duty and VAT unchanged) and a §11 row; the dealership page's tile, step and FAQ updated. Closed. |
+| 2026-11-12 | `business-context.md` | **Q14.** The same video promises **flexible payment terms**, "so your funds are never tied down for months". No document records dealer payment terms: §2 records only payment protection (funds held and released once the car is inspected and cleared for shipment). | Record in §2 (or a dealer row in §6) what the terms are — for example a deposit on commitment and the balance on arrival, or credit for an approved dealer — and who agrees them. Until then the page carries the video's own words, "flexible payment terms, so your funds aren't tied up for months", beside the documented payment protection, and quotes no deposit, percentage or credit period. | **Pending.** |
+
+Resolved and closed:
+
+- *Placeholder testimonials* (raised 2026-08-25) — **leave as-is.** Not a
+  source-of-truth change; a content decision, closed.
+- *`layout.tsx` `AutoDealer` JSON-LD still says "physical offices"*
+  (raised 2026-08-25) — **leave as-is**, deliberate divergence.
+
+---
+
+## 12. Brand presence on informational pages — the three touchpoints
+
+Decided 2026-10-07 (business instruction). **Every blog post and every news
+article carries Providence in three fixed places, and links the reader to the
+one landing page that matches what they were reading.** A reader who lands on a
+single article from search should leave knowing who published it, what that
+publisher does, and where to go to act.
+
+The rule exists because an informational page that never names its publisher
+builds rankings for nobody in particular. It is bounded because an explainer
+that turns into a pitch loses the credibility that made it rank
+(`page-types.md` §2.6). So the brand appears in three places, and nowhere else:
+
+| # | Touchpoint | Where | What it is | What it is not |
+|---|---|---|---|---|
+| 1 | **Publisher note** | Directly under the byline | One factual line about who publishes the page — our own teams, the seven countries — and a link to the matching landing page, labelled with that page's keyword | A tagline, a promise, a discount, a second sentence |
+| 2 | **One contextual link** | In the body, at the point the reader would act — usually the end of the "what to do next" or "how to start" section | A single sentence that names the next step and links the landing page with its keyword as anchor text | A paragraph about our service, a feature list, a "why choose us" box |
+| 3 | **Closing CTA** | After the FAQs (`BlogCTA`, or the news sign-off) | The primary call to action, its button labelled with the landing page's transactional keyword | A CTA pointing at an unrelated market's form |
+
+**Matching, not generic.** The landing page is the one the reader's intent
+belongs to: a guide about importing Japanese cars into Britain goes to
+`/import-japanese-cars/uk` (or its personal-buyer or dealership page when the
+guide is written for one reader); a guide about importing from Australia goes to
+`/import-cars-from/australia`; a Sri Lanka story goes to the dealer route, because
+§14 of `business-context.md` rules out consumer acquisition there — without the
+page ever saying so. A news article whose subject has no matching landing page
+uses the market-neutral default, never another country's form.
+
+**The rest of the body still does not pitch.** Touchpoint 2 is one sentence. The
+Landed Desk voice, the sourcing standard and the Five Doubts are unchanged —
+including the doubt that tells the reader when importing does not make sense.
+
+---
+
+**A closing test.** If a new proposition can't be expressed through one of the
+four pillars in §4, either it isn't ours or the pillars need revisiting — say
+which, and raise it under §11.2, rather than quietly widening the claim.

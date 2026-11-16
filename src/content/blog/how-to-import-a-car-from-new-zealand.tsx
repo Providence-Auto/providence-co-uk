@@ -17,7 +17,7 @@ export default function Body() {
       <Lead>
         New Zealand imports more used Japanese cars per head than anywhere on
         earth and puts every one through entry certification before it can be
-        plated. That means a used car bought in New Zealand has already survived{" "}
+        plated. That means a used car from New Zealand has already survived{" "}
         <Strong>somebody else&rsquo;s inspection regime</Strong>, at somebody
         else&rsquo;s expense, and the record follows the vehicle. Here is how to
         use that.
@@ -93,7 +93,7 @@ export default function Body() {
           Structural damage and odometer tampering are the two failures that
           turn a used car into a bad decision. New Zealand entry certification
           screens for both, before you ever see the vehicle, and you did not pay
-          for it. That is the argument for buying here rather than at Japanese
+          for it. That is the argument for importing from here rather than from Japanese
           auction.
         </p>
       </Callout>
@@ -146,7 +146,7 @@ export default function Body() {
         The real constraints are on the <em>receiving</em> side rather than the
         New Zealand side. Your destination&rsquo;s age limits, emissions
         standards and biosecurity requirements determine whether a given car is
-        worth buying at all — which is why we check them before shortlisting
+        worth importing at all — which is why we check them before shortlisting
         rather than before shipping.
       </P>
 
@@ -165,7 +165,7 @@ export default function Body() {
         eight weeks and considerably more expensive.
       </P>
       <P>
-        Whether the price premium over buying direct from Japan is worth what
+        Whether the price premium over importing direct from Japan is worth what
         you get is a fair question, and we answer it honestly in{" "}
         <InlineLink href="/blog/new-zealand-vs-japan-for-used-imports">
           New Zealand vs Japan

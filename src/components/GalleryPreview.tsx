@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ImageOff, Images } from "lucide-react";
+import { ArrowRight, CalendarClock, ImageOff, Images } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getGalleryPreviewCars } from "@/actions/spec-actions";
@@ -21,6 +21,7 @@ type PreviewCar = {
   heroImageUrl?: string;
   status?: string;
   pricing?: PriceEntry[];
+  isUpcoming?: boolean;
 };
 
 type GalleryPreviewProps = {
@@ -94,7 +95,7 @@ export default function GalleryPreview({
             View Collection
             <ArrowRight
               size={16}
-              className="group-hover:translate-x-1 transition-transform"
+              className="group-hover:translate-x-1 transition-feedback"
             />
           </Link>
         </div>
@@ -133,11 +134,19 @@ export default function GalleryPreview({
                         src={img}
                         alt={title}
                         loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.2s] ease-out"
+                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-feedback"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-zinc-300">
                         <ImageOff size={28} />
+                      </div>
+                    )}
+                    {/* Without this, an upcoming car reads as in-stock in the
+                        strip — a "From £X" badge on a car nobody can order
+                        yet is the misleading combination. */}
+                    {car.isUpcoming && (
+                      <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-sky-600/95 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full backdrop-blur-sm">
+                        <CalendarClock size={11} /> Coming Soon
                       </div>
                     )}
                     {price && (

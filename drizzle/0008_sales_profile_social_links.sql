@@ -1,0 +1,16 @@
+-- Social links on a sales consultant's public profile page.
+--
+-- salesprofile.socialLinks  { instagram?, linkedin?, tiktok?, facebook?, x?,
+--                           youtube?, website? } as full https URLs. Each one
+--                           renders an icon on /team/[slug] only when set.
+--                           Shape and validation: src/lib/social-links.ts.
+--                           WhatsApp stays in salesprofile.whatsappNumber.
+--
+-- ADD COLUMN IF NOT EXISTS, defaulting to an empty object, so this is safe to
+-- apply twice and safe to apply ahead of the deploy: every existing profile
+-- reads as "no social links" and its page renders exactly as it does today.
+--
+-- Apply with scripts/apply-social-links-column.mjs rather than
+-- scripts/migrate.mjs: the drizzle migrator is unusable while migration 0001
+-- is listed in drizzle/meta/_journal.json without its .sql file.
+ALTER TABLE "salesprofile" ADD COLUMN IF NOT EXISTS "socialLinks" jsonb DEFAULT '{}'::jsonb NOT NULL;

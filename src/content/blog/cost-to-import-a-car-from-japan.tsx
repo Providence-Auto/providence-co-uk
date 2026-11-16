@@ -225,9 +225,9 @@ export default function Body() {
       </UL>
       <P>
         All four are priced in or ruled out before you commit on our quotes. If
-        you want to see how the buying end works,{" "}
+        you want to see how the auction end works,{" "}
         <InlineLink href="/blog/how-to-buy-a-car-at-japanese-auction">
-          how to buy a car at a Japanese auction
+          how to import a car from a Japanese auction
         </InlineLink>{" "}
         covers the process step by step.
       </P>

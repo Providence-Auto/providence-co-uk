@@ -2,16 +2,63 @@
 "use server";
 
 import crypto from "node:crypto";
-import { and, asc, desc, eq, inArray, ne } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  ne,
+  notInArray,
+  sql,
+} from "drizzle-orm";
 import { BLOG_BASE_PATH, getSuggestedPosts } from "@/config/blog";
 import { db, requests, users } from "@/db";
+import { getAgentPhotoUrl } from "@/lib/agent-photo";
 import {
   computePreferredContactAt,
   formatInIST,
   TIME_WINDOWS,
 } from "@/lib/contactScheduling";
+import { sendMetaConversion } from "@/lib/conversions";
+import { formatBudget } from "@/lib/currencies";
 import { emailService } from "@/lib/email";
+import { cleanAttributionUrl } from "@/lib/lead-attribution";
+import {
+  allLeadsOwnerEmail,
+  B2C_LEAD_ROLES,
+  b2cCountryLeadOwner,
+  COUNTRY_OWNER_EMAILS,
+  isHeldOutOfRotations,
+  pageLeadOwner,
+  pagePathFromUrl,
+  SALES_ROLES,
+} from "@/lib/lead-routing";
+import { LEAD_EVENT } from "@/lib/leadConversion";
 import connectToDatabase from "@/lib/mongoose";
+import { normaliseRepCode, repLinkEmail } from "@/lib/rep-link";
+
+// The sales positions, the country owners and the rule that holds owners out
+// of the rotation live in src/lib/lead-routing.ts, shared with the dealer
+// inquiry form.
+
+/**
+ * Who may own a lead: an active member in one of `roles`. Every assignment
+ * path is gated on this, so there is no route by which a lead reaches anyone
+ * outside the sales team.
+ *
+ * Role is lower-cased and trimmed because the environments disagree on
+ * capitalisation (production stores "Sales"/"Admin"/"Staff").
+ */
+const holdsRole = (roles: string[]) =>
+  and(
+    inArray(sql`lower(trim(${users.role}))`, roles),
+    ne(users.isBanned, true),
+  );
+
+/** A B2C lead goes to B2C Sales or Sales (business instruction 2026-10-14). */
+const takesB2cLeads = () => holdsRole(B2C_LEAD_ROLES);
 
 export async function submitCarRequest(data: {
   // When present, update the existing lead instead of creating a new one
@@ -24,17 +71,40 @@ export async function submitCarRequest(data: {
   yearTo?: number | string;
   mileage?: string;
   specs?: string;
+  // Colour choices, already rendered to a display label by the form
+  // (e.g. "Sonic Grey Pearl / Black roof").
+  exteriorColor?: string;
+  interiorColor?: string;
+  // The grade/variant the customer asked for ("Ti-L Reserve") and the hand
+  // the car has to be built in ("RHD"). Both come from the car page's own
+  // selectors, or are typed free-hand on the generic request form.
+  grade?: string;
+  steering?: string;
+  // True when the inquiry came off a dossier flagged as coming soon, so the
+  // pipeline can separate pre-orders from cars we can quote today.
+  isUpcomingVehicle?: boolean;
   name: string;
   email: string;
   countryCode: string;
   phone: string;
   countryOfImport: string;
+  // Budget the customer entered, plus the ISO 4217 code they entered it in.
+  budgetAmount?: number;
+  budgetCurrency?: string;
   importTimeline?: string;
   source?: string;
   // When set, the inquiry came through a sales member's personal profile page
   // (/team/[slug]) and must be assigned directly to that member, bypassing the
   // round-robin rotation. Validated server-side against the Sales/admin role.
   assignedAgentId?: string;
+  // A rep link (?rep=shiraz) the customer arrived through: the salesperson
+  // who shared it takes the lead. Resolved and checked here, never trusted.
+  repCode?: string;
+  // Full URLs the lead came through (src/lib/lead-attribution.ts). Stored as
+  // sent once they pass cleanAttributionUrl; they never affect routing.
+  landingUrl?: string;
+  pageUrl?: string;
+  referrer?: string;
   // S2S Tracking Fields
   gclid?: string;
   fbclid?: string;
@@ -57,11 +127,20 @@ export async function submitCarRequest(data: {
           yearTo: data.yearTo ? Number(data.yearTo) : null,
           mileage: data.mileage || null,
           specs: data.specs || null,
+          exteriorColor: data.exteriorColor || null,
+          interiorColor: data.interiorColor || null,
+          grade: data.grade || null,
+          steering: data.steering || null,
+          isUpcomingVehicle: data.isUpcomingVehicle === true,
           name: data.name,
           email: data.email,
           countryCode: data.countryCode,
           phone: data.phone,
           countryOfImport: data.countryOfImport,
+          budgetAmount: Number.isFinite(data.budgetAmount)
+            ? (data.budgetAmount as number)
+            : null,
+          budgetCurrency: data.budgetCurrency || null,
           importTimeline: data.importTimeline || null,
           updatedAt: new Date(),
         })
@@ -83,26 +162,93 @@ export async function submitCarRequest(data: {
       // If the id no longer resolves, fall through and create a fresh lead.
     }
 
-    // 1. Assign an agent. A profile-page inquiry carries assignedAgentId and
-    //    is pinned directly to that member; everything else rotates through
-    //    the Sales team round-robin (alphabetically).
+    // 1. Assign an agent, in precedence order:
+    //      page-owner  — the page the form was sent from has a named owner
+    //                    (PAGE_LEAD_OWNERS: /japanese-luxury-cars-lhd → Amy,
+    //                    business instruction 2026-11-12).
+    //      hard-rule   — while ALL_LEADS_OWNER_EMAIL is set, every lead goes
+    //                    to that account (business instruction 2026-11-11),
+    //                    ahead of everything below.
+    //      direct      — a profile-page inquiry carrying assignedAgentId is
+    //                    pinned to that member; the customer picked them, so
+    //                    any sales position will do, B2B Sales included
+    //                    (business instruction 2026-10-14).
+    //      rep-link    — the customer arrived through a salesperson's rep
+    //                    link; it beats a country owner (business
+    //                    instruction 2026-10-16). Any sales position.
+    //      country     — the destination market has a named B2C owner.
+    //      round-robin — everything else rotates through B2C Sales and
+    //                    Sales alphabetically.
     let assignedAgent = null;
-    let assignmentMethod: "direct" | "round-robin" = "round-robin";
+    let assignmentMethod:
+      | "page-owner"
+      | "hard-rule"
+      | "direct"
+      | "rep-link"
+      | "country"
+      | "round-robin" = "round-robin";
 
-    // 1a. Direct assignment — only honoured if the id resolves to a real
-    //     user whose role can actually own leads. Never trust the client
-    //     value blindly; an invalid id silently falls back to round-robin.
-    if (data.assignedAgentId) {
-      const [directAgent] = await db
+    // 0. A page with its own owner — read from the pathname of the URL the
+    //    form was sent from, never from `source`, which a `?ref=` can
+    //    replace. Only an existing, unbanned account; otherwise the routing
+    //    below carries on as usual.
+    const pagePath = pagePathFromUrl(data.pageUrl);
+    const pageOwnerEmail = pageLeadOwner(pagePath);
+    if (pageOwnerEmail) {
+      const [owner] = await db
         .select()
         .from(users)
         .where(
           and(
-            eq(users.id, data.assignedAgentId),
-            inArray(users.role, ["Sales", "admin"]),
+            sql`lower(trim(${users.email})) = ${pageOwnerEmail}`,
             ne(users.isBanned, true),
           ),
         )
+        .limit(1);
+
+      if (owner) {
+        assignedAgent = { ...owner, _id: owner.id };
+        assignmentMethod = "page-owner";
+      } else {
+        console.warn(
+          `[lead-routing] page owner (${pageOwnerEmail}) for ${pagePath} matched no active account — lead routed normally.`,
+        );
+      }
+    }
+
+    // 1. The hard rule — one account takes every lead. Only an existing,
+    //    unbanned account; otherwise the routing below carries on as usual.
+    const hardRuleEmail = allLeadsOwnerEmail();
+    if (!assignedAgent && hardRuleEmail) {
+      const [owner] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            sql`lower(trim(${users.email})) = ${hardRuleEmail}`,
+            ne(users.isBanned, true),
+          ),
+        )
+        .limit(1);
+
+      if (owner) {
+        assignedAgent = { ...owner, _id: owner.id };
+        assignmentMethod = "hard-rule";
+      } else {
+        console.warn(
+          `[lead-routing] ALL_LEADS_OWNER_EMAIL (${hardRuleEmail}) matched no active account — lead routed normally.`,
+        );
+      }
+    }
+
+    // 1a. Direct assignment — only honoured if the id resolves to a real
+    //     user whose role can actually own leads. Never trust the client
+    //     value blindly; an invalid id silently falls back to round-robin.
+    if (!assignedAgent && data.assignedAgentId) {
+      const [directAgent] = await db
+        .select()
+        .from(users)
+        .where(and(eq(users.id, data.assignedAgentId), holdsRole(SALES_ROLES)))
         .limit(1);
 
       if (directAgent) {
@@ -114,27 +260,103 @@ export async function submitCarRequest(data: {
       }
     }
 
+    // 1b. Rep link — the code names a company email; honoured only while that
+    //     account holds a sales position. Anything else falls through.
+    const repCode = normaliseRepCode(data.repCode);
+    if (!assignedAgent && repCode) {
+      const [repAgent] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            // Exact, not ilike: a code may hold "_", which ilike reads as a
+            // wildcard.
+            sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
+            holdsRole(SALES_ROLES),
+          ),
+        )
+        .limit(1);
+
+      if (repAgent) {
+        assignedAgent = {
+          ...repAgent,
+          _id: repAgent.id,
+        };
+        assignmentMethod = "rep-link";
+      }
+    }
+
+    // 1c. Country routing — a destination market with a named owner skips the
+    //     rotation entirely. Matched case-insensitively on email, and gated on
+    //     the same can-own-leads check as a direct assignment. An owner who is
+    //     missing or banned falls through to the round-robin rather than
+    //     leaving the lead unassigned.
     if (!assignedAgent) {
-      // Fetch all users with the role 'Sales', sorted alphabetically by name
+      const ownerEmail = b2cCountryLeadOwner(data.countryOfImport);
+
+      if (ownerEmail) {
+        const [countryOwner] = await db
+          .select()
+          .from(users)
+          .where(and(ilike(users.email, ownerEmail), takesB2cLeads()))
+          .limit(1);
+
+        if (countryOwner) {
+          assignedAgent = {
+            ...countryOwner,
+            _id: countryOwner.id,
+          };
+          assignmentMethod = "country";
+        }
+      }
+    }
+
+    if (!assignedAgent) {
+      // The rotation pool: active B2C Sales and Sales members,
+      // alphabetically by name.
       const staffMembers = await db
         .select()
         .from(users)
-        .where(eq(users.role, "Sales"))
+        .where(takesB2cLeads())
         .orderBy(asc(users.name));
 
-      const mappedStaffMembers = staffMembers.map((staff) => ({
+      // Anyone held out of every rotation (ROTATION_EXCLUDED — Amy) never
+      // takes a turn, even if that empties the pool.
+      const eligible = staffMembers.filter(
+        (staff) => !isHeldOutOfRotations(staff.email),
+      );
+
+      // Drop country owners out of the rotation — they are reached by their
+      // market, not by their turn. Guarded against emptying the pool: if every
+      // Sales member happens to own a country, a rotation with everyone in it
+      // beats no rotation at all.
+      const rotationPool = eligible.filter(
+        (staff) => !COUNTRY_OWNER_EMAILS.has(staff.email.toLowerCase()),
+      );
+
+      const mappedStaffMembers = (
+        rotationPool.length > 0 ? rotationPool : eligible
+      ).map((staff) => ({
         ...staff,
         _id: staff.id,
       }));
 
       if (mappedStaffMembers.length > 0) {
-        // Fetch the most recently created round-robin lead. Direct
-        // (profile-page) leads are excluded so pinning a lead to one
-        // member doesn't advance the shared rotation past them.
+        // Fetch the most recently created round-robin lead. Directly
+        // pinned and country-routed leads are excluded so assigning a lead
+        // to one member doesn't advance the shared rotation past them.
         const [lastRequest] = await db
           .select()
           .from(requests)
-          .where(ne(requests.assignmentMethod, "direct"))
+          .where(
+            notInArray(requests.assignmentMethod, [
+              "page-owner",
+              "hard-rule",
+              "direct",
+              "rep-link",
+              "country",
+            ]),
+          )
           .orderBy(desc(requests.createdAt))
           .limit(1);
 
@@ -157,27 +379,11 @@ export async function submitCarRequest(data: {
 
           assignedAgent = mappedStaffMembers[nextIndex];
         }
-      } else {
-        // Fallback: If no staff found, try to find an admin, or just grab the first user
-        const [adminAgent] = await db
-          .select()
-          .from(users)
-          .where(eq(users.role, "admin"))
-          .limit(1);
-
-        let fallbackAgentObj = adminAgent;
-        if (!fallbackAgentObj) {
-          const [firstUser] = await db.select().from(users).limit(1);
-          fallbackAgentObj = firstUser;
-        }
-
-        if (fallbackAgentObj) {
-          assignedAgent = {
-            ...fallbackAgentObj,
-            _id: fallbackAgentObj.id,
-          };
-        }
       }
+      // No else: with no Sales member to take it the lead stays unassigned and
+      // falls to the Providence Support inbox below. The previous fallback
+      // reached for any admin and then, failing that, literally the first row
+      // in the user table — which could hand a lead to a signed-up customer.
     }
 
     // Standardize the agent data for the DB and frontend return
@@ -186,9 +392,7 @@ export async function submitCarRequest(data: {
       _id: assignedAgent?.id || null,
       name: assignedAgent?.name || "Providence Support",
       email: assignedAgent?.email || "info@providenceauto.uk.com",
-      image:
-        assignedAgent?.image ||
-        "https://pub-0c6552f09f244121ac51914a1f782578.r2.dev/profiles/1775233164832-498582237.jpg",
+      image: await getAgentPhotoUrl(assignedAgent?.id, assignedAgent?.image),
     };
 
     // 2. Create the database record, appending the assigned agent's details.
@@ -196,7 +400,14 @@ export async function submitCarRequest(data: {
     //    drafts are hidden from the admin pipeline and purged if abandoned.
     // Strip the routing hint before persisting — it's an input, not a
     // Request field (assignmentMethod records the outcome instead).
-    const { assignedAgentId: _assignedAgentId, ...requestData } = data;
+    const {
+      assignedAgentId: _assignedAgentId,
+      repCode: _repCode,
+      landingUrl,
+      pageUrl,
+      referrer,
+      ...requestData
+    } = data;
 
     const newRequestId = crypto.randomUUID();
 
@@ -211,13 +422,29 @@ export async function submitCarRequest(data: {
         yearTo: requestData.yearTo ? Number(requestData.yearTo) : null,
         mileage: requestData.mileage || null,
         specs: requestData.specs || null,
+        exteriorColor: requestData.exteriorColor || null,
+        interiorColor: requestData.interiorColor || null,
+        grade: requestData.grade || null,
+        steering: requestData.steering || null,
+        isUpcomingVehicle: requestData.isUpcomingVehicle === true,
         name: requestData.name,
         email: requestData.email,
         countryCode: requestData.countryCode,
         phone: requestData.phone,
         countryOfImport: requestData.countryOfImport,
+        budgetAmount: Number.isFinite(requestData.budgetAmount)
+          ? (requestData.budgetAmount as number)
+          : null,
+        budgetCurrency: requestData.budgetCurrency || null,
         importTimeline: requestData.importTimeline || null,
         source: requestData.source || null,
+        landingUrl: cleanAttributionUrl(landingUrl),
+        pageUrl: cleanAttributionUrl(pageUrl),
+        referrer: cleanAttributionUrl(referrer),
+        // The rep code the browser sent, matched or not: a lead that arrived
+        // with "shiraz" and still went to the rotation is a different problem
+        // from one that arrived with nothing.
+        repCode,
         gclid: requestData.gclid || null,
         fbclid: requestData.fbclid || null,
         fbc: requestData.fbc || null,
@@ -340,12 +567,50 @@ export async function submitContactPreferences(input: {
       })
       .where(eq(requests.id, input.requestId));
 
+    // 2b. Report the raw lead to Meta.
+    //
+    //     Meta has no negative event and no way to be told a lead was junk.
+    //     The only quality signal it understands is the RATIO between raw
+    //     leads and qualified ones, which is why its CRM guidance is to send
+    //     "a minimum of two stages ... including the raw lead event". Without
+    //     this denominator, the QualifiedLead events uploaded later carry no
+    //     information: every lead looks qualified.
+    //
+    //     Off by default, because the GTM container may already fire a
+    //     browser-side Lead pixel and two Lead events for one lead would
+    //     inflate the denominator instead. Turn it on once you have either
+    //     confirmed no browser Lead exists, or set that pixel's eventID to the
+    //     request id so Meta deduplicates the pair.
+    if (
+      process.env.META_SEND_LEAD_ON_SUBMIT === "true" &&
+      !request.metaLeadSentAt
+    ) {
+      try {
+        const result = await sendMetaConversion(request, LEAD_EVENT, {
+          eventId: request.id,
+        });
+        if (result.ok) {
+          await db
+            .update(requests)
+            .set({ metaLeadSentAt: new Date() })
+            .where(eq(requests.id, request.id));
+        }
+      } catch (error) {
+        // Never let an ad platform block a customer's submission.
+        console.error(
+          `[CONVERSIONS] Raw lead upload failed for ${request.id}:`,
+          error,
+        );
+      }
+    }
+
     // 3. Resolve the assigned agent for the alert + the from-the-rep email.
     const fallbackAgent = {
       name: "Providence Support",
       email: "info@providenceauto.uk.com",
-      image:
-        "https://pub-0c6552f09f244121ac51914a1f782578.r2.dev/profiles/1775233164832-498582237.jpg",
+      // No photo rather than someone else's: EmailAvatar falls back to the
+      // Providence mark, which is honest where a stranger's headshot is not.
+      image: "",
       whatsappNumber: "",
     };
     let agent = {
@@ -361,7 +626,7 @@ export async function submitContactPreferences(input: {
         agent = {
           name: user.name || agent.name,
           email: user.email || fallbackAgent.email,
-          image: user.image || fallbackAgent.image,
+          image: await getAgentPhotoUrl(user.id, user.image),
           whatsappNumber: user.whatsappNumber || fallbackAgent.whatsappNumber,
         };
       }
@@ -387,11 +652,19 @@ export async function submitContactPreferences(input: {
         {
           make: request.make,
           vehicle_model: request.vehicleModel,
+          // The grade and hand change which car the agent is quoting, so
+          // they belong in the alert rather than only in the admin table.
+          grade: request.grade || undefined,
+          steering: request.steering || undefined,
           name: request.name,
           email: request.email,
           countryCode: request.countryCode,
           phone: request.phone,
           countryOfImport: request.countryOfImport,
+          budget: formatBudget(
+            request.budgetAmount,
+            request.budgetCurrency ?? undefined,
+          ),
           importTimeline: request.importTimeline || undefined,
           contactMethods: input.contactMethods,
           contactDays: input.contactDays,

@@ -102,7 +102,7 @@ export default function Body() {
       <P>
         Two cars at a similar purchase price, landed in Ireland. Note how the
         Japan hybrid and the UK-built hatch end up close — while an EU-built
-        premium car bought in Britain is dragged up by 10% duty and a higher VRT
+        premium car imported from Britain is dragged up by 10% duty and a higher VRT
         band.
       </P>
       <CostTable

@@ -4,17 +4,20 @@ import {
   GENERAL_WHATSAPP_LINK,
   GENERAL_WHATSAPP_NUMBER,
 } from "@/config/contact";
-import { COUNTRY_BASE_PATH, COUNTRY_PAGES } from "@/config/countries";
+import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
 import { NEWS_BASE_PATH } from "@/config/news";
+import { FOOTER_TAGS, TAG_COLLECTIONS, tagPath } from "@/config/vehicle-tags";
+import { BIKES_BASE_PATH } from "@/lib/vehicle-type";
 
-// The footer office list is deliberately not the raw registry: Sri Lanka is
-// hidden from the column (its /source-cars-from/sri-lanka page still exists and
-// is still reachable via "The whole network"), and the rest are listed A–Z.
-const FOOTER_OFFICE_HIDDEN_SLUGS = new Set(["sri-lanka"]);
+// The countries we buy in, listed A–Z. Every one has a page.
+const FOOTER_OFFICES = [...SOURCE_COUNTRY_PAGES].sort((a, b) =>
+  a.shortName.localeCompare(b.shortName),
+);
 
-const FOOTER_OFFICES = COUNTRY_PAGES.filter(
-  (country) => !FOOTER_OFFICE_HIDDEN_SLUGS.has(country.slug),
-).sort((a, b) => a.shortName.localeCompare(b.shortName));
+// The motorcycle categories, each an /import/<tag> page.
+const BIKE_TAGS = TAG_COLLECTIONS.filter(
+  (tag) => tag.vehicleType === "motorcycle" && !tag.redirectTo,
+);
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -23,7 +26,7 @@ export default function Footer() {
   // it only lets it paint over `fixed` chrome (e.g. the admin sidebar).
   return (
     <footer className="w-full border-t border-white/5 bg-black pt-16 pb-8 relative">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-x-8 gap-y-12 mb-16">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-x-8 gap-y-12 mb-16">
         {/* Brand */}
         <div className="flex flex-col justify-start col-span-2 sm:col-span-1">
           <Link
@@ -45,18 +48,34 @@ export default function Footer() {
               AUTO
             </div>
           </Link>
-          <p className="mt-4 text-sm font-light text-zinc-500 max-w-[22ch]">
-            A global vehicle sourcing group with our own people in eight
-            countries.
+          {/* The repeated line (writing-angle.md §10, decided 2026-10-09). */}
+          <p className="mt-4 text-sm font-medium text-white max-w-[22ch]">
+            Import your dream car anywhere in the world.
+          </p>
+          <p className="mt-2 text-sm font-light text-zinc-400 max-w-[22ch]">
+            A global vehicle sourcing and export group with our own people in
+            seven countries.
           </p>
         </div>
 
         {/* Company: the marketing paths in and the account entry points */}
         <div className="flex flex-col gap-4">
-          <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500">
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
             Company
-          </h4>
+          </h2>
           <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
+            <Link
+              href="/about-us"
+              className="hover:text-white transition-colors"
+            >
+              About Us
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-white transition-colors"
+            >
+              Contact
+            </Link>
             <Link href="/b2c" className="hover:text-white transition-colors">
               For Direct Buyers
             </Link>
@@ -65,6 +84,9 @@ export default function Footer() {
             </Link>
             <Link href="/saas" className="hover:text-white transition-colors">
               Dealer Platform
+            </Link>
+            <Link href="/team" className="hover:text-white transition-colors">
+              Our Team
             </Link>
             <Link href="/signup" className="hover:text-white transition-colors">
               Partner Sign Up
@@ -78,12 +100,26 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Campaigns: the dedicated landing pages, otherwise unreachable from nav */}
+        {/* Import: for the visitor who knows what kind of vehicle they want
+            but not which page holds it — one link per landing page, named by
+            what is imported. The category links are the /import/<tag> pages
+            (src/config/vehicle-tags.ts). */}
         <div className="flex flex-col gap-4">
-          <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500">
-            Campaigns
-          </h4>
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
+            Import
+          </h2>
           <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
+            {FOOTER_TAGS.filter((tag) => tag.vehicleType === "car").map(
+              (tag) => (
+                <Link
+                  key={tag.slug}
+                  href={tagPath(tag.slug)}
+                  className="hover:text-white transition-colors"
+                >
+                  Import {tag.label}
+                </Link>
+              ),
+            )}
             <Link
               href="/import-japanese-cars"
               className="hover:text-white transition-colors"
@@ -94,7 +130,7 @@ export default function Footer() {
               href="/japanese-luxury-cars-lhd"
               className="hover:text-white transition-colors"
             >
-              LHD Japanese Luxury
+              LHD Japanese Luxury Cars
             </Link>
             <Link
               href="/indian-manufactured-cars"
@@ -106,7 +142,7 @@ export default function Footer() {
               href="/import-japanese-cars-to-ireland"
               className="hover:text-white transition-colors"
             >
-              Japan to Ireland
+              Japanese Cars to Ireland
             </Link>
             <Link
               href="/b2c/gallery"
@@ -117,11 +153,41 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Offices Column: the physical network, one link per source country */}
+        {/* Bikes: the motorcycle landing page, its categories and its guide */}
         <div className="flex flex-col gap-4">
-          <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500">
-            Global Offices
-          </h4>
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
+            Bikes
+          </h2>
+          <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
+            <Link
+              href={BIKES_BASE_PATH}
+              className="hover:text-white transition-colors"
+            >
+              Import Bikes
+            </Link>
+            {BIKE_TAGS.map((tag) => (
+              <Link
+                key={tag.slug}
+                href={tagPath(tag.slug)}
+                className="hover:text-white transition-colors"
+              >
+                {tag.label}
+              </Link>
+            ))}
+            <Link
+              href="/blog/how-to-import-a-motorcycle"
+              className="hover:text-white transition-colors"
+            >
+              How to import a motorcycle
+            </Link>
+          </nav>
+        </div>
+
+        {/* Import-from column: one link per country we buy in */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
+            Import cars from
+          </h2>
           <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
             {FOOTER_OFFICES.map((country) => (
               <Link
@@ -136,16 +202,16 @@ export default function Footer() {
               href={COUNTRY_BASE_PATH}
               className="text-zinc-300 hover:text-white transition-colors"
             >
-              The whole network &rarr;
+              All seven countries &rarr;
             </Link>
           </nav>
         </div>
 
         {/* Guides & News: internal links to the editorial content clusters */}
         <div className="flex flex-col gap-4">
-          <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500">
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
             Guides &amp; News
-          </h4>
+          </h2>
           <nav className="flex flex-col gap-2.5 text-sm font-light text-zinc-400">
             <Link
               href={NEWS_BASE_PATH}
@@ -179,9 +245,9 @@ export default function Footer() {
 
         {/* Contact: head office details + social */}
         <div className="flex flex-col gap-4">
-          <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500">
+          <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400">
             Group Head Office
-          </h4>
+          </h2>
           <address className="flex flex-col gap-2 not-italic text-sm font-light text-zinc-400">
             <p>
               468 Church Lane, Kingsbury
@@ -213,7 +279,7 @@ export default function Footer() {
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-5 h-5 text-zinc-500 group-hover:text-emerald-400 transition-colors"
+                className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 transition-colors"
               >
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
               </svg>
@@ -234,7 +300,7 @@ export default function Footer() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="w-5 h-5 text-zinc-500 group-hover:text-sky-400 transition-colors"
+                className="w-5 h-5 text-zinc-400 group-hover:text-sky-400 transition-colors"
               >
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -248,12 +314,22 @@ export default function Footer() {
 
       {/* Bottom Bar: Legal line, Copyright & Credits */}
       <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6">
-        <p className="text-center md:text-left text-[11px] font-light text-zinc-600 mb-4">
+        <p className="text-center md:text-left text-[11px] font-light text-zinc-400 mb-4">
           Providence Auto is the trading name of Providence Trading Limited.
         </p>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-zinc-500 tracking-wide">
-          {/* Copyright */}
-          <div>&copy; {currentYear} Providence Auto. All rights reserved.</div>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-zinc-400 tracking-wide">
+          {/* Copyright + legal */}
+          <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
+            <span>
+              &copy; {currentYear} Providence Auto. All rights reserved.
+            </span>
+            <Link
+              href="/privacy-policy"
+              className="text-zinc-300 hover:text-white transition-colors underline decoration-white/20 hover:decoration-white/60 underline-offset-4"
+            >
+              Privacy policy
+            </Link>
+          </div>
 
           {/* Built By Credit */}
           <div>

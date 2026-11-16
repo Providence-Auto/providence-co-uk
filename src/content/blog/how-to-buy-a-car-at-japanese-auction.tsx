@@ -66,7 +66,7 @@ export default function Body() {
       </P>
       <Callout title="Why we put staff in Japan" tone="sky">
         <p>
-          Our Japan office holds auction access directly and bids to your
+          Our Japan team holds auction access directly and bids to your
           instructions. Nobody in the chain is marking the car up before you see
           the price, and the person reading the sheet is reading it in Japanese
           rather than through a translation of a translation.
@@ -235,10 +235,10 @@ export default function Body() {
       </UL>
       <P>
         If you would rather start from the cars than the process, our{" "}
-        <InlineLink href="/source-cars-from/japan">
+        <InlineLink href="/import-cars-from/japan">
           Japan sourcing page
         </InlineLink>{" "}
-        lists what our team buys most, and{" "}
+        lists what our team exports most, and{" "}
         <InlineLink href="/blog/best-cars-to-import-from-japan">
           the best cars to import from Japan
         </InlineLink>{" "}

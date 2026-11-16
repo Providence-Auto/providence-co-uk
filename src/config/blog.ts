@@ -18,13 +18,30 @@
 // import regimes change frequently.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { ARTICLE_CTAS, blogCtaFields } from "./article-ctas";
 import { COUNTRY_BLOG_POSTS } from "./blog-countries";
+import { DEALER_SOURCING_POSTS } from "./blog-dealer-sourcing";
+import { JAPAN_UK_POSTS } from "./blog-japan-uk";
+import { MOTORCYCLE_POSTS } from "./blog-motorcycles";
 
 export type BlogCluster =
   | "Cost & Cheapest"
   | "Tax & Rules"
   | "Source Country"
   | "Guides"
+  // Sourcing and importing cars from overseas, for dealers — the pillar, its
+  // supporting guides and one guide per source country
+  // (src/config/blog-dealer-sourcing.ts).
+  | "Dealer Sourcing"
+  // Japanese cars into the UK — the pillar and its supporting guides
+  // (src/config/blog-japan-uk.ts). Research: japanese-car-import-uk-research.md.
+  | "Japan to UK"
+  // Importing a motorcycle (src/config/blog-motorcycles.ts); CTA /import-bikes.
+  | "Motorcycles"
+  // Importing *into* the UK. Deliberately separate from the "United Kingdom"
+  // cluster, which is about buying *from* Britain — the reader is a different
+  // person with a different question.
+  | "UK Registration & IVA"
   // Per-country clusters — one per office in src/config/countries.ts. Posts live
   // in src/config/blog-countries.ts and are appended to BLOG_POSTS below.
   | "Japan"
@@ -64,12 +81,36 @@ export type BlogPost = {
   readingTimeMins: number;
   heroImage: string;
   heroAlt: string;
+  /**
+   * Optional 1200×630 share image. When set, the post's Open Graph and Twitter
+   * cards use it with explicit dimensions, which is what Slack, LinkedIn, X and
+   * iMessage need to render a preview (see CLAUDE.md, "SEO & AEO"). Omit it and
+   * the card falls back to `heroImage` with no declared dimensions.
+   */
+  ogImage?: string;
   /** Slugs of related posts for internal linking. */
   related: string[];
   /** FAQs — rendered on-page AND emitted as FAQPage JSON-LD. */
   faqs: BlogFAQ[];
   /** In-page table of contents (anchor ids must match headings in the body). */
   toc: BlogTocItem[];
+  /**
+   * Where the end-of-post CTA's inquiry button should go. Defaults to the
+   * Japan/Ireland landing page; set it on posts about another source country
+   * so the reader is not sent to an unrelated market's form.
+   */
+  ctaHref?: string;
+  /**
+   * The end-of-post CTA's heading, body and button label. Unset keeps the
+   * Ireland-flavoured defaults in BlogCTA. Source-country posts set all three
+   * (see `post()` in blog-countries.ts) so the guide hands the reader to that
+   * country's /import-cars-from page with the keyword as the link text.
+   */
+  ctaHeading?: string;
+  ctaBody?: string;
+  ctaLabel?: string;
+  /** false hides the Ireland cost calculator button, for non-Ireland posts. */
+  ctaCalculator?: boolean;
   /** Mark the pillar/hub post. */
   isPillar?: boolean;
 };
@@ -85,11 +126,10 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "importing-cars-to-ireland",
     isPillar: true,
     title: "Importing a Car to Ireland in 2026: The Complete Guide",
-    h1: "Importing a Car to Ireland in 2026: Costs, Tax & the Best Cars to Buy",
-    seoTitle:
-      "Importing Cars to Ireland in 2026: The Complete Guide (Costs, Tax & Best Cars)",
+    h1: "Importing a Car to Ireland in 2026: Costs, Tax & the Best Cars to Import",
+    seoTitle: "Importing Cars to Ireland in 2026: The Complete Guide",
     description:
-      "The complete 2026 guide to importing a car to Ireland — customs duty, VAT and VRT explained, what it really costs, the cheapest cars to import, and how to do it without overpaying.",
+      "The 2026 guide to importing a car to Ireland: customs duty, VAT and VRT explained, what it really costs, and the cheapest cars to import.",
     excerpt:
       "Everything that decides the price of an Irish import — the three taxes, the best source countries, and the cars that land cheapest — in one place.",
     cluster: "Guides",
@@ -105,9 +145,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 12,
-    heroImage:
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Car keys handed over — importing a car to Ireland",
+    heroImage: "/source-cars/blog/importing-cars-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/importing-cars-to-ireland.jpg",
+    heroAlt: "A Toyota Corolla hybrid hatchback",
     related: [
       "cheapest-cars-to-import-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -136,7 +176,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "What is the first step to importing a car to Ireland?",
-        a: "Model the full landed cost before you buy anything. Pick a low-emission, right-hand-drive car with proof of origin, run it through a VRT and customs estimate, and only then commit. The headline foreign price is never the real price.",
+        a: "Model the full landed cost before you commit to anything. Pick a low-emission, right-hand-drive car with proof of origin, run it through a VRT and customs estimate, and only then commit. The headline foreign price is never the real price.",
       },
     ],
   },
@@ -146,10 +186,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "cheapest-cars-to-import-to-ireland",
     title: "The Cheapest Cars to Import to Ireland in 2026",
     h1: "The Cheapest Cars to Import to Ireland in 2026 (Real Landed Costs)",
-    seoTitle:
-      "The Cheapest Cars to Import to Ireland in 2026 (Real Landed Costs by Model)",
+    seoTitle: "The Cheapest Cars to Import to Ireland in 2026",
     description:
-      "The cheapest cars to import to Ireland in 2026, ranked. Specific makes and models with low VRT bands, 0% customs duty and real landed-cost examples — so you know exactly what lands cheapest.",
+      "The cheapest cars to import to Ireland in 2026, ranked: makes and models with low VRT bands, 0% customs duty and real landed-cost examples.",
     excerpt:
       "Not all imports are cheap. These specific models combine 0% duty, low VRT and genuine auction value — with landed costs to prove it.",
     cluster: "Cost & Cheapest",
@@ -165,9 +204,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1523394397008-7c076b65a890?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Compact hatchback — a cheap car to import to Ireland",
+    heroImage: "/source-cars/blog/cheapest-cars-to-import-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/cheapest-cars-to-import-to-ireland.jpg",
+    heroAlt: "A Toyota Yaris hybrid",
     related: [
       "cheapest-way-to-import-a-car-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -188,7 +227,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "Are Japanese imports cheaper than UK imports in Ireland now?",
-        a: "Since 1 February 2026 Japanese-built cars enter at 0% customs duty, matching UK-built cars. Japan wins on low-mileage condition and price for hybrids; the UK wins on cheap, fast shipping. Both beat EU-built premium cars bought in Britain, which still pay 10% duty.",
+        a: "Since 1 February 2026 Japanese-built cars enter at 0% customs duty, matching UK-built cars. Japan wins on low-mileage condition and price for hybrids; the UK wins on cheap, fast shipping. Both beat EU-built premium cars imported from Britain, which still pay 10% duty.",
       },
       {
         q: "Do cheap imported cars still have to pay VRT in Ireland?",
@@ -202,10 +241,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "cheapest-way-to-import-a-car-to-ireland",
     title: "The Cheapest Way to Import a Car to Ireland",
     h1: "The Cheapest Way to Import a Car to Ireland (Without Cutting Corners)",
-    seoTitle:
-      "The Cheapest Way to Import a Car to Ireland in 2026 (Without Cutting Corners)",
+    seoTitle: "The Cheapest Way to Import a Car to Ireland in 2026",
     description:
-      "The cheapest way to import a car to Ireland in 2026 — a legal cost-minimisation playbook covering origin proof, source country, the right age and mileage, and the reliefs that cut your VRT and VAT.",
+      "The cheapest legal way to import a car to Ireland in 2026: origin proof, the right source country, age and mileage, and reliefs that cut VRT.",
     excerpt:
       "The cheapest import isn't a trick — it's a sequence of legal decisions. Here's the playbook that keeps duty, VAT and VRT as low as the rules allow.",
     cluster: "Cost & Cheapest",
@@ -221,9 +259,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 11,
-    heroImage:
-      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Calculating the cheapest way to import a car to Ireland",
+    heroImage: "/source-cars/blog/cheapest-way-to-import-a-car-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/cheapest-way-to-import-a-car-to-ireland.jpg",
+    heroAlt: "A Honda Jazz",
     related: [
       "cheapest-cars-to-import-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -243,15 +281,15 @@ const IRELAND_POSTS: BlogPost[] = [
     faqs: [
       {
         q: "What is the cheapest way to import a car to Ireland?",
-        a: "Buy a low-CO₂, right-hand-drive car that qualifies for 0% customs duty (Japanese- or UK-built) with a valid statement of origin, aged 3–8 years with average mileage to keep VRT moderate, and claim any relief you're entitled to (EV VRT relief before end-2026, the 30-year classic rate, or Transfer of Residence relief). Always model the full landed cost before bidding.",
+        a: "Import a low-CO₂, right-hand-drive car that qualifies for 0% customs duty (Japanese- or UK-built) with a valid statement of origin, aged 3–8 years with average mileage to keep VRT moderate, and claim any relief you're entitled to (EV VRT relief before end-2028, the 30-year classic rate, or Transfer of Residence relief). Always model the full landed cost before bidding.",
       },
       {
         q: "How can I legally reduce VRT when importing a car to Ireland?",
-        a: "VRT is set by CO₂ emissions on the car's OMSP, so the legal levers are: choose a low-emission model, import a battery EV before the VRT relief ends on 31 December 2026, use the flat €200 rate for cars over 30 years old, or appeal an OMSP you can show is too high. Petrol/hybrid also avoids the heavy diesel NOx levy.",
+        a: "VRT is set by CO₂ emissions on the car's OMSP, so the legal levers are: choose a low-emission model, import a battery EV before the VRT relief ends on 31 December 2028, use the flat €200 rate for cars over 30 years old, or appeal an OMSP you can show is too high. Petrol/hybrid also avoids the heavy diesel NOx levy.",
       },
       {
         q: "Is it cheaper to import a car yourself or use an import service?",
-        a: "Doing it yourself saves a service fee but exposes you to the expensive mistakes — paying 10% duty for want of an origin document, mis-judging the VRT band, or buying a car that fails the NCT. A good importer prices the full landed cost up front and handles customs, VRT and registration, which usually protects more than it costs.",
+        a: "Doing it yourself saves a service fee but exposes you to the expensive mistakes — paying 10% duty for want of an origin document, mis-judging the VRT band, or importing a car that fails the NCT. A good importer prices the full landed cost up front and prepares the customs, VRT and registration paperwork, which usually protects more than it costs.",
       },
     ],
   },
@@ -261,10 +299,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "cost-of-importing-a-car-to-ireland",
     title: "How Much Does It Cost to Import a Car to Ireland?",
     h1: "How Much Does It Cost to Import a Car to Ireland? Full 2026 Breakdown",
-    seoTitle:
-      "How Much Does It Cost to Import a Car to Ireland? Full 2026 Breakdown",
+    seoTitle: "How Much Does It Cost to Import a Car to Ireland?",
     description:
-      "A line-by-line 2026 breakdown of the cost of importing a car to Ireland — purchase price, shipping, customs duty, VAT, VRT and the NOx levy — with worked examples for Japan and the UK.",
+      "A line-by-line 2026 breakdown of importing a car to Ireland: price, shipping, duty, VAT, VRT and the NOx levy, with Japan and UK examples.",
     excerpt:
       "Purchase price is only the start. Here's every line on the bill — duty, VAT, VRT, NOx — with worked totals so there are no surprises at the port.",
     cluster: "Cost & Cheapest",
@@ -280,9 +317,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 9,
-    heroImage:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Working out the cost of importing a car to Ireland",
+    heroImage: "/source-cars/blog/cost-of-importing-a-car-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/cost-of-importing-a-car-to-ireland.jpg",
+    heroAlt: "A Toyota C-HR hybrid",
     related: [
       "vrt-explained-ireland",
       "cheapest-cars-to-import-to-ireland",
@@ -318,10 +355,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "vrt-explained-ireland",
     title: "VRT Explained: How Vehicle Registration Tax Works in Ireland",
     h1: "VRT Explained: How Vehicle Registration Tax Is Calculated in Ireland (2026)",
-    seoTitle:
-      "VRT Explained: How Vehicle Registration Tax Is Calculated in Ireland (2026)",
+    seoTitle: "VRT Explained: How Irish Registration Tax Works (2026)",
     description:
-      "VRT explained in plain English: how Vehicle Registration Tax is calculated in Ireland in 2026 — OMSP, the CO₂ bands (7%–41%), the NOx levy, and the NEDC-to-WLTP trap that pushes older cars up a band.",
+      "How Vehicle Registration Tax is calculated in Ireland in 2026: OMSP, the CO₂ bands from 7% to 41%, the NOx levy and the NEDC-to-WLTP trap.",
     excerpt:
       "VRT is the biggest and most controllable cost of any Irish import. Here's exactly how Revenue calculates it — and where buyers get caught.",
     cluster: "Tax & Rules",
@@ -337,9 +373,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 9,
-    heroImage:
-      "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Paperwork for Vehicle Registration Tax in Ireland",
+    heroImage: "/source-cars/blog/vrt-explained-ireland.webp",
+    ogImage: "/source-cars/blog/og/vrt-explained-ireland.jpg",
+    heroAlt: "A Toyota Prius hybrid",
     related: [
       "cost-of-importing-a-car-to-ireland",
       "cheapest-way-to-import-a-car-to-ireland",
@@ -367,7 +403,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "What is the lowest rate of VRT in Ireland?",
-        a: "The lowest VRT rate is 7% of OMSP, for cars in the 0–50 g/km CO₂ band — battery EVs and plug-in hybrids. Battery EVs also pay zero NOx levy and qualify for VRT relief of up to €5,000 until 31 December 2026. Cars over 30 years old pay a flat €200.",
+        a: "The lowest VRT rate is 7% of OMSP, for cars in the 0–50 g/km CO₂ band — battery EVs and plug-in hybrids. Battery EVs also pay zero NOx levy and qualify for VRT relief of up to €5,000 until 31 December 2028. Cars over 30 years old pay a flat €200.",
       },
     ],
   },
@@ -377,10 +413,9 @@ const IRELAND_POSTS: BlogPost[] = [
     slug: "import-car-from-japan-or-uk-to-ireland",
     title: "Japan vs the UK: Where Should You Import Your Car From?",
     h1: "Japan vs the UK: Where Should You Import Your Car From in 2026?",
-    seoTitle:
-      "Import a Car from Japan or the UK to Ireland? The 2026 Comparison",
+    seoTitle: "Import a Car from Japan or the UK to Ireland? 2026",
     description:
-      "Japan vs the UK for importing a car to Ireland in 2026: how customs duty, VAT, shipping and stock compare after Brexit and the EU–Japan 0% tariff — and which is cheaper for your car.",
+      "Japan vs the UK for importing a car to Ireland in 2026: duty, VAT, shipping and stock compared after Brexit and the EU–Japan 0% tariff.",
     excerpt:
       "Brexit ended the UK's automatic advantage and Japan just hit 0% duty. Here's how the two best source countries really compare in 2026.",
     cluster: "Source Country",
@@ -396,9 +431,9 @@ const IRELAND_POSTS: BlogPost[] = [
     publishDate: PUBLISHED,
     updatedDate: UPDATED,
     readingTimeMins: 10,
-    heroImage:
-      "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Choosing between importing a car from Japan or the UK to Ireland",
+    heroImage: "/source-cars/blog/import-car-from-japan-or-uk-to-ireland.webp",
+    ogImage: "/source-cars/blog/og/import-car-from-japan-or-uk-to-ireland.jpg",
+    heroAlt: "A Mazda MX-5 roadster",
     related: [
       "cheapest-cars-to-import-to-ireland",
       "cost-of-importing-a-car-to-ireland",
@@ -417,11 +452,11 @@ const IRELAND_POSTS: BlogPost[] = [
     faqs: [
       {
         q: "Is it cheaper to import a car from Japan or the UK to Ireland?",
-        a: "It depends on the car. Since February 2026 both Japanese-built and UK-built cars enter at 0% customs duty, and both pay 23% VAT. Japan is best for low-mileage hybrids at auction prices; the UK is best for UK-built models where cheap, fast ferry shipping wins. EU-built cars bought in Britain are the trap — they still pay 10% duty.",
+        a: "It depends on the car. Since February 2026 both Japanese-built and UK-built cars enter at 0% customs duty, and both pay 23% VAT. Japan is best for low-mileage hybrids at auction prices; the UK is best for UK-built models where cheap, fast ferry shipping wins. EU-built cars imported from Britain are the trap — they still pay 10% duty.",
       },
       {
         q: "Do I pay customs duty importing a car from the UK to Ireland after Brexit?",
-        a: "Only UK-manufactured cars qualify for 0% duty under the EU–UK Trade and Cooperation Agreement, and only with a valid statement of origin. A BMW, Audi, Mercedes or VW bought in Britain was built in the EU and pays the full 10% duty. VAT at 23% applies to every GB import regardless.",
+        a: "Only UK-manufactured cars qualify for 0% duty under the EU–UK Trade and Cooperation Agreement, and only with a valid statement of origin. A BMW, Audi, Mercedes or VW imported from Britain was built in the EU and pays the full 10% duty. VAT at 23% applies to every GB import regardless.",
       },
       {
         q: "Why import a car from Japan to Ireland in 2026?",
@@ -433,13 +468,14 @@ const IRELAND_POSTS: BlogPost[] = [
   // ── 7 · INDIA-BUILT CARS: WHY CHEAPER (Source Country) ────────────────────
   {
     slug: "why-are-indian-manufactured-cars-cheaper",
+    // An India post, so the inquiry button belongs on the India landing page.
+    ...blogCtaFields(ARTICLE_CTAS.india),
     title:
       "Why Are Indian-Manufactured Cars Cheaper? (And Is the Quality Low?)",
     h1: "Why Are Indian-Manufactured Cars So Much Cheaper — and Is the Quality Low?",
-    seoTitle:
-      "Why Are Indian-Manufactured Cars Cheaper? The Honest Answer on Price & Quality",
+    seoTitle: "Why Are Indian-Manufactured Cars Cheaper?",
     description:
-      "Indian-built cars cost roughly 30% less than the global average. Here's exactly why — the sub-4-metre tax rule, 95% local supply chains, frugal engineering and massive scale — plus the honest answer on whether the quality is low.",
+      "Why Indian-built cars cost less: the sub-4-metre tax rule, local supply chains, frugal engineering and scale, and the honest answer on quality.",
     excerpt:
       "Roughly 30% cheaper than the global average — and it's not corner-cutting. The five real reasons India builds cars for less, and the truth about quality.",
     cluster: "Source Country",
@@ -457,8 +493,10 @@ const IRELAND_POSTS: BlogPost[] = [
     updatedDate: "2026-07-03",
     readingTimeMins: 9,
     heroImage:
-      "https://images.unsplash.com/photo-1685019718640-6e562edc365e?q=80&w=2400&auto=format&fit=crop",
-    heroAlt: "Modern Indian-manufactured car",
+      "/source-cars/blog/why-are-indian-manufactured-cars-cheaper.webp",
+    ogImage:
+      "/source-cars/blog/og/why-are-indian-manufactured-cars-cheaper.jpg",
+    heroAlt: "A Suzuki Baleno, built in India",
     related: [],
     toc: [
       { id: "short-answer", label: "The short answer" },
@@ -482,7 +520,7 @@ const IRELAND_POSTS: BlogPost[] = [
       },
       {
         q: "Is it safe to import a car manufactured in India?",
-        a: "Yes, with proper checks. Buy through a sourcing partner that verifies provenance and inspects every car before export. Providence inspects each India-built car against a multi-point standard — structure, brakes, engine, electronics and safety spec — and shares the report before you pay, so the lower price never means a compromised car.",
+        a: "Yes, with proper checks. Import through a sourcing partner that verifies provenance and inspects every car before export. Providence inspects each India-built car against a multi-point standard — structure, brakes, engine, electronics and safety spec — and shares the report before you pay, so the lower price never means a compromised car.",
       },
     ],
   },
@@ -491,7 +529,790 @@ const IRELAND_POSTS: BlogPost[] = [
 // Everything the blog renders: the Ireland hub plus the per-source-country
 // clusters. Order matters only for the ItemList schema; the index page groups
 // by cluster via CLUSTER_ORDER.
-export const BLOG_POSTS: BlogPost[] = [...IRELAND_POSTS, ...COUNTRY_BLOG_POSTS];
+// ── Model guides ─────────────────────────────────────────────────────────────
+// Evergreen, model-level guides. Deliberately separate from the source-country
+// clusters: a Patrol can be bought out of four different corridors, so the
+// guide belongs to the car rather than to any one office. Dated reporting on
+// the same model lives in /latest-news, not here.
+const MODEL_POSTS: BlogPost[] = [
+  {
+    slug: "how-to-import-a-nissan-patrol",
+    // A Patrol can come out of four corridors, so the guide ends on the
+    // market-neutral page rather than one country's form.
+    ...blogCtaFields(ARTICLE_CTAS.neutral),
+    title: "How to Import a Nissan Patrol: Corridors, Costs and Approvals",
+    h1: "How to Import a Nissan Patrol",
+    seoTitle: "How to Import a Nissan Patrol: Costs, Rules & Corridors",
+    description:
+      "How to import a Nissan Patrol: the four source corridors, the seven-part landed-cost stack, age limits, vehicle approval and the documents.",
+    excerpt:
+      "Gulf Patrols are left-hand drive, Australian and Japanese ones are not, and none are sold new in Ireland or the UK. That decides your corridor before the price does.",
+    cluster: "Guides",
+    primaryKeyword: "how to import a nissan patrol",
+    keywords: [
+      "how to import a nissan patrol",
+      "import nissan patrol",
+      "nissan patrol import cost",
+      "nissan patrol right hand drive import",
+      "can you import a nissan patrol to ireland",
+      "where to buy a nissan patrol for export",
+      "nissan patrol import age limit",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-08-28",
+    updatedDate: "2026-08-28",
+    readingTimeMins: 11,
+    heroImage: "/source-cars/blog/how-to-import-a-nissan-patrol.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-nissan-patrol.jpg",
+    heroAlt: "A Nissan Patrol (Y63)",
+    related: [
+      "nissan-patrol-y63-grades-explained",
+      "importing-a-ute-or-4x4-from-australia",
+      "how-to-import-a-car-from-australia",
+    ],
+    faqs: [
+      {
+        q: "Can you import a Nissan Patrol to Ireland or the UK?",
+        a: "You can import one, but registering it is the hard part. The Patrol is not sold new in Ireland or the United Kingdom, so there is no EU or UK type approval attached to the car. Registration runs through individual vehicle approval — in Ireland an NSAI Individual Vehicle Approval assessed against Irish legislation and inspected at an approved test centre. Revenue will not register a new vehicle without a valid Certificate of Conformity, an EU IVA or an Irish national IVA.",
+      },
+      {
+        q: "Which country is best to import a Nissan Patrol from?",
+        a: "It depends on which side of the road your country drives on. Australia and Japan supply right-hand-drive Patrols; the United Arab Emirates supplies left-hand drive. For a right-hand-drive destination the realistic choice is between Australia and Japan, and the deciding factors are usually freight frequency and what specification is available, not the purchase price.",
+      },
+      {
+        q: "Is a Nissan Patrol expensive to import?",
+        a: "The purchase price is only part of it. A Patrol is large and tall, so it is expensive on both container and roll-on roll-off freight, and its petrol V6 or V8 sits at or near the top of every CO₂ band and engine-capacity band that exists. In markets that tax by emissions or engine size, the engine costs more over time than the specification does.",
+      },
+      {
+        q: "Do age limits stop you importing a used Nissan Patrol?",
+        a: "In several markets, yes. Kenya's eight-year rule is the best known, and similar caps apply elsewhere. A new Patrol clears every age limit by definition; a used Y61 or Y62 may not, depending on its year of first registration and your destination. Confirm the current rule with the destination revenue or transport authority before bidding, because it is a hard gate that condition and specification do not override.",
+      },
+      {
+        q: "What documents are needed to import a Nissan Patrol?",
+        a: "Proof of ownership and de-registration in the source market, an export certificate, an invoice matching the money actually paid, a bill of lading, and any pre-shipment inspection certificate the destination requires. Pre-shipment inspection is the one that catches importers out: several markets require an inspection carried out in the source country before loading, and a car that sails without it can be refused or penalised on arrival.",
+      },
+      {
+        q: "Can you import a modified Nissan Patrol?",
+        a: "Sometimes, and it has to be established before purchase. Bull bars, lift kits, long-range tanks, aftermarket seats, snorkels, roof racks and winches are common on Australian Patrols, and each one is a registration question in the destination market. Some are accepted, some need engineering certification, and some must be removed before shipment.",
+      },
+    ],
+    toc: [
+      { id: "which-patrol", label: "Which Patrol are you importing?" },
+      { id: "corridors", label: "The four corridors" },
+      { id: "cost-stack", label: "What makes up the landed cost" },
+      { id: "engine-tax", label: "Why the engine is the expensive decision" },
+      { id: "admissibility", label: "Can it be registered?" },
+      { id: "documents", label: "The documents" },
+      { id: "timeline", label: "How long it takes" },
+    ],
+  },
+  {
+    slug: "nissan-patrol-y63-grades-explained",
+    // A Patrol can come out of four corridors, so the guide ends on the
+    // market-neutral page rather than one country's form.
+    ...blogCtaFields(ARTICLE_CTAS.neutral),
+    title: "Nissan Patrol Y63 Grades Explained: Ti to Ti-L Reserve",
+    h1: "Nissan Patrol Y63 Grades Explained",
+    seoTitle: "Nissan Patrol Y63 Grades Explained: Ti to Ti-L Reserve",
+    description:
+      "All six Nissan Patrol Y63 grades compared — Ti, Ti+, Ti-L, Ti-L+, PRO-4X and Ti-L Reserve — what each adds, and which one is worth importing.",
+    excerpt:
+      "Every grade shares the same engine and the same four-wheel-drive hardware. What separates them is suspension, wheels and screens — and two of those cost you money forever.",
+    cluster: "Guides",
+    primaryKeyword: "nissan patrol y63 grades",
+    keywords: [
+      "nissan patrol y63 grades",
+      "nissan patrol ti vs ti-l",
+      "nissan patrol ti-l reserve",
+      "nissan patrol pro-4x",
+      "which nissan patrol grade should i buy",
+      "nissan patrol y63 specifications",
+      "nissan patrol grade differences",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-08-28",
+    updatedDate: "2026-08-28",
+    readingTimeMins: 9,
+    heroImage: "/source-cars/blog/nissan-patrol-y63-grades-explained.webp",
+    ogImage: "/source-cars/blog/og/nissan-patrol-y63-grades-explained.jpg",
+    heroAlt: "The dashboard of a Nissan Patrol (Y63)",
+    related: [
+      "how-to-import-a-nissan-patrol",
+      "best-cars-to-import-from-australia",
+      "importing-a-ute-or-4x4-from-australia",
+    ],
+    faqs: [
+      {
+        q: "What are the Nissan Patrol Y63 grades?",
+        a: "In Australia the Y63 Patrol is sold in six grades: Ti, Ti+, Ti-L, Ti-L+, PRO-4X and Ti-L Reserve. All six share the same 3.5-litre twin-turbo V6 producing 317 kW and 700 Nm, the same nine-speed automatic and the same dual-range four-wheel-drive hardware. Grade structures differ by market — the Australian ladder is not the Japanese, Gulf or New Zealand one.",
+      },
+      {
+        q: "What is the difference between the Patrol Ti and Ti-L?",
+        a: "The Ti-L adds dual 14.3-inch displays in place of the Ti's 12.3-inch pair, a 12-speaker Klipsch audio system, a head-up display, e-Damper electric shock absorbers and 20-inch wheels in place of 18-inch. It does not add off-road capability: the dual-range transfer case, terrain modes and locking rear differential are already standard on the Ti.",
+      },
+      {
+        q: "Which Nissan Patrol grade is best for towing?",
+        a: "The Ti or the PRO-4X. Every grade carries the same 3,700 kg braked tow rating and the same drivetrain, so the Ti gives you the full capability at the bottom of the range. The PRO-4X adds adaptive air suspension, all-terrain tyres, trailer docking support and an electric brake controller, which are aimed directly at towing and off-road use rather than at cabin comfort.",
+      },
+      {
+        q: "Is the Ti-L Reserve worth the extra money?",
+        a: "Only if the second-row screens and the massage seats will genuinely be used. The Ti-L Reserve is the largest price step in the range for the narrowest benefit, and its 22-inch wheels are an active disadvantage in markets where the car will see gravel or poor roads — thinner sidewalls, more damage and slower tyre availability.",
+      },
+      {
+        q: "Does choosing a higher Patrol grade increase import tax?",
+        a: "Yes, and by more than the price difference. A higher purchase price raises the CIF value your duty is assessed on, and in most regimes consumption tax is then charged on the duty-inclusive value — so the extra car is taxed and the tax on it is taxed. Where a market bands its tax by price, a single grade can push the car into a higher band, which is a step change rather than a slope.",
+      },
+    ],
+    toc: [
+      { id: "ladder", label: "The six grades at a glance" },
+      { id: "what-changes", label: "What changes as you go up" },
+      { id: "grade-and-tax", label: "Why each rung costs more than it lists" },
+      { id: "which-grade", label: "Which grade to import" },
+      { id: "markets", label: "The ladder differs by market" },
+    ],
+  },
+  // ── Suzuki Jimny ───────────────────────────────────────────────────────────
+  // Two factories, three cars: the three-door Jimny and Jimny Sierra are built
+  // in Japan, the five-door in India. The pillar sorts out which is which; the
+  // two corridor guides go deep on buying in each country. The UK guide lives
+  // in the Japan → UK cluster (blog-japan-uk.ts). Hero photographs of the
+  // five-door are our own (stock PT5608), so they carry no Commons credit.
+  {
+    slug: "how-to-import-a-suzuki-jimny",
+    // A Jimny comes out of two corridors, so the pillar ends on the
+    // market-neutral page; the corridor guides end on their own pages.
+    ...blogCtaFields(ARTICLE_CTAS.neutral),
+    title: "How to Import a Suzuki Jimny: Japan, India and Which One",
+    h1: "How to Import a Suzuki Jimny",
+    seoTitle: "How to Import a Suzuki Jimny: Japan or India?",
+    description:
+      "How to import a Suzuki Jimny: the three current Jimnys, which is built in Japan and which in India, what to check before you buy, and the documents.",
+    excerpt:
+      "The three-door is built in Japan and the five-door in India. Which factory your Jimny came from decides the corridor, the paperwork and, in some markets, the duty.",
+    cluster: "Guides",
+    primaryKeyword: "how to import a suzuki jimny",
+    keywords: [
+      "how to import a suzuki jimny",
+      "import suzuki jimny",
+      "suzuki jimny import",
+      "where is the suzuki jimny made",
+      "jimny five door import",
+      "jimny sierra vs jimny",
+      "can i import a jimny nomade",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 10,
+    heroImage: "/cars/suzuki-jimny-nomade-pt5608/01-front-three-quarter.webp",
+    ogImage: "/source-cars/blog/og/how-to-import-a-suzuki-jimny.jpg",
+    heroAlt:
+      "A five-door Suzuki Jimny Nomade in Jungle Green, front three-quarter view",
+    related: [
+      "importing-a-suzuki-jimny-from-japan",
+      "importing-a-suzuki-jimny-from-india",
+      "importing-a-suzuki-jimny-to-the-uk",
+    ],
+    faqs: [
+      {
+        q: "Where is the Suzuki Jimny made?",
+        a: "In two places. Suzuki builds the three-door Jimny and Jimny Sierra at its Kosai plant in Japan, where production of the current generation began in 2018. The five-door Jimny is built in India by Maruti Suzuki at Gurugram and exported from there, including to Japan, where it is sold as the Jimny Nomade.",
+      },
+      {
+        q: "What is the difference between the Jimny and the Jimny Sierra?",
+        a: "In Japan, the Jimny is the narrow kei car with a 658cc turbocharged three-cylinder engine, sold only in Japan. The Jimny Sierra is the wider car with the 1.5-litre K15B four-cylinder, and it is the model sold simply as the Jimny in export markets. Both are three-door, four-seat cars built in Japan.",
+      },
+      {
+        q: "Is it better to import a Jimny from Japan or India?",
+        a: "It depends on which Jimny you want. Japan is the only source of the kei Jimny and the deepest market for used three-door cars, graded and with recorded mileage. India is the factory source of the five-door, available new from Maruti Suzuki's NEXA dealers. A five-door bought used in Japan is still an India-built car.",
+      },
+      {
+        q: "Are Suzuki Jimnys right-hand drive?",
+        a: "The Japanese-market and Indian-market Jimnys are right-hand drive, because both countries drive on the left. That makes either country a natural source for the United Kingdom, Ireland, Australia, New Zealand, Kenya and the other left-traffic markets. A right-hand-drive Jimny is the wrong car for a right-traffic country, and in many of them cannot be registered.",
+      },
+      {
+        q: "Do age limits affect importing a used Jimny?",
+        a: "In some markets. The current generation went on sale in July 2018, so the oldest cars are now past eight years, the import limit Kenya applies, and close to the line in other age-capped markets. A new or nearly new Jimny clears them. Confirm the rule with the destination's standards or revenue authority before you buy, never with a forum thread.",
+      },
+    ],
+    toc: [
+      { id: "which-jimny", label: "Which Jimny are you buying?" },
+      { id: "where-built", label: "Two factories, two corridors" },
+      { id: "japan-or-india", label: "Japan or India?" },
+      { id: "what-to-check", label: "What to check before you pay" },
+      { id: "destination", label: "Can it be registered where you live?" },
+      { id: "documents", label: "The documents" },
+      { id: "timeline", label: "How long it takes" },
+    ],
+  },
+  {
+    slug: "importing-a-suzuki-jimny-from-japan",
+    ...blogCtaFields(ARTICLE_CTAS.japan),
+    title: "Importing a Suzuki Jimny from Japan: Kei, Sierra or Nomade",
+    h1: "Importing a Suzuki Jimny from Japan",
+    seoTitle: "Importing a Suzuki Jimny from Japan: Buyer's Guide",
+    description:
+      "Importing a Suzuki Jimny from Japan: kei Jimny or Sierra, Japanese prices, dealer or auction, what to check on a used car, and the export paperwork.",
+    excerpt:
+      "Japan sells three Jimnys and builds two of them. The kei car, the Sierra and the India-built Nomade each import differently — and modified cars are the trap.",
+    cluster: "Guides",
+    primaryKeyword: "import suzuki jimny from japan",
+    keywords: [
+      "import suzuki jimny from japan",
+      "jimny sierra import",
+      "jdm jimny import",
+      "jimny jb64 vs jb74",
+      "buying a jimny at japanese auction",
+      "how much is a jimny in japan",
+      "what to check on a used jimny",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 10,
+    heroImage: "/source-cars/blog/iva-test-centres-uk.webp",
+    ogImage: "/source-cars/blog/og/iva-test-centres-uk.jpg",
+    heroAlt: "A three-door Suzuki Jimny kei car in silver, parked in Japan",
+    related: [
+      "how-to-import-a-suzuki-jimny",
+      "japanese-auction-grades-explained",
+      "japan-car-export-documents-explained",
+    ],
+    faqs: [
+      {
+        q: "How much does a Suzuki Jimny cost in Japan?",
+        a: "Suzuki's Japanese list prices, checked on 15 October 2026 and including 10% consumption tax, run from ¥1,918,400 for the Jimny XG to ¥2,160,400 for the XC, and ¥2,271,500 to ¥2,385,900 for the Jimny Sierra. The five-door Jimny Nomade launched at ¥2,651,000 manual and ¥2,750,000 automatic. Used prices follow condition, mileage and demand, not list price.",
+      },
+      {
+        q: "Should I import a kei Jimny or a Jimny Sierra?",
+        a: "Buy the Sierra unless you specifically want the kei car. The kei Jimny's 658cc turbocharged engine and narrow body were built for Japan's kei class, and it is sold nowhere else, so parts and familiarity outside Japan are thinner. The Sierra's 1.5-litre engine and wider track are shared with the export Jimny sold in other markets.",
+      },
+      {
+        q: "Can you buy a Jimny Nomade in Japan for export?",
+        a: "You can buy a registered or used Nomade in Japan like any other car, but it is not a Japanese-built car. Suzuki builds the five-door in India and ships it to Japan. That matters wherever duty depends on origin: a Nomade bought in Japan is an India-built car that has been registered and used in Japan.",
+      },
+      {
+        q: "What should I check on a used Jimny from Japan?",
+        a: "The auction sheet or dealer condition report, the underbody for corrosion if the car lived in a snowy prefecture, every modification against your destination's rules, and the recorded mileage history. Jimnys are among the most modified cars in Japan, and a lift kit, oversized tyres or a changed bumper can stop a car being registered abroad.",
+      },
+      {
+        q: "Is the Jimny hard to find in Japan?",
+        a: "New ones have been. Suzuki paused Jimny Nomade orders within days of its January 2025 announcement and reopened them on 30 January 2026, allocating delivery order by lottery. The used three-door market is deep because the current generation has been on sale since July 2018, so a used Sierra or kei Jimny is the quicker purchase.",
+      },
+    ],
+    toc: [
+      { id: "three-cars", label: "Japan sells three Jimnys" },
+      { id: "kei-or-sierra", label: "Kei Jimny or Jimny Sierra?" },
+      { id: "prices", label: "What a Jimny costs in Japan" },
+      { id: "where-to-buy", label: "Dealer or auction?" },
+      { id: "what-to-check", label: "What to check on a used Jimny" },
+      { id: "nomade", label: "The Nomade is not Japanese-built" },
+      { id: "documents", label: "The export paperwork" },
+    ],
+  },
+  {
+    slug: "importing-a-suzuki-jimny-from-india",
+    ...blogCtaFields(ARTICLE_CTAS.india),
+    title: "Importing a Suzuki Jimny from India: The Five-Door at Source",
+    h1: "Importing a Suzuki Jimny from India",
+    seoTitle: "Importing a Suzuki Jimny from India: 5-Door Guide",
+    description:
+      "Importing a Suzuki Jimny five-door from India, where Maruti Suzuki builds it: Zeta or Alpha, new or used, Indian vs Japanese spec, and the paperwork.",
+    excerpt:
+      "Every five-door Jimny in the world is built at Gurugram. Buying in India means buying at the factory — but the Indian specification is not the Japanese one.",
+    cluster: "Guides",
+    primaryKeyword: "import suzuki jimny from india",
+    keywords: [
+      "import suzuki jimny from india",
+      "maruti jimny export",
+      "jimny 5 door import",
+      "maruti suzuki jimny zeta vs alpha",
+      "is the jimny 5 door made in india",
+      "can i buy a jimny in india for export",
+      "jimny india vs japan spec",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-10-15",
+    updatedDate: "2026-10-15",
+    readingTimeMins: 9,
+    heroImage: "/cars/suzuki-jimny-nomade-pt5608/03-side-three-quarter.webp",
+    ogImage: "/source-cars/blog/og/importing-a-suzuki-jimny-from-india.jpg",
+    heroAlt:
+      "A five-door Suzuki Jimny, the India-built model, in Jungle Green side-on",
+    related: [
+      "how-to-import-a-suzuki-jimny",
+      "india-car-export-documents-explained",
+      "how-to-import-a-car-from-india",
+    ],
+    faqs: [
+      {
+        q: "Is the Suzuki Jimny five-door made in India?",
+        a: "Yes. Maruti Suzuki builds the five-door Jimny at its Gurugram plant for India and for export. Maruti reported in October 2025 that cumulative exports had passed 100,000 units to more than 100 countries, with Japan, Mexico, Australia, South Africa and Chile among the largest markets. In Japan the same car is sold as the Jimny Nomade.",
+      },
+      {
+        q: "What is the difference between the Jimny Zeta and Alpha?",
+        a: "Both share the 1.5-litre K15B engine, the choice of five-speed manual or four-speed automatic, and ALLGRIP PRO four-wheel drive with low range. The Alpha is the higher-equipped variant; launch-era comparisons list projector headlamps, headlamp washers and fog lamps among its additions. Confirm the current equipment on Maruti's own specification sheet before choosing, because it has changed since launch.",
+      },
+      {
+        q: "Is an Indian Jimny the same as a Japanese Jimny Nomade?",
+        a: "It is the same India-built five-door body and drivetrain, but not the same specification. Suzuki's Japanese Nomade carries Dual Camera Brake Support as standard. Maruti's Indian Jimny page, checked on 15 October 2026, lists six airbags, hill hold, hill descent control and adaptive cruise control on automatics, but no camera-based emergency braking. Compare the exact variant, not the badge.",
+      },
+      {
+        q: "Can you export a new car from India?",
+        a: "Yes, through an exporter that handles the Indian export side: the purchase invoice, customs export clearance, the shipping bill and the bill of lading. A new car exported before it is registered in India avoids the deregistration step that a used car needs. Your destination may also require a pre-shipment inspection in India before loading.",
+      },
+      {
+        q: "How much does a Jimny cost in India?",
+        a: "Maruti Suzuki publishes ex-showroom prices by city, and they were revised during 2026, so the reliable figure is the current one from a NEXA dealer for the exact variant. Ex-showroom is not the landed price: freight, marine insurance and your destination's own duty and taxes come on top, and the exporter confirms which Indian charges apply to an export sale.",
+      },
+    ],
+    toc: [
+      { id: "what-india-builds", label: "What India builds" },
+      { id: "variants", label: "Zeta or Alpha, manual or automatic" },
+      { id: "india-vs-japan", label: "Indian spec is not Japanese spec" },
+      { id: "new-or-used", label: "New or used?" },
+      { id: "what-to-check", label: "What to check before you pay" },
+      { id: "documents", label: "The export paperwork" },
+      { id: "destinations", label: "Where an Indian Jimny can go" },
+    ],
+  },
+];
+
+// ── UK registration & IVA ────────────────────────────────────────────────────
+// Importing *into* the United Kingdom. The UK sits in two of our lists — it is
+// a source market and a destination market — and these posts serve the second
+// reader: someone landing a car at a UK port who now has to get a number plate
+// on it. NOVA and DVLA registration are named, in-scope Providence services for
+// UK-bound cars (business-context.md §4.3), so the CTA on these is honest.
+//
+// Every figure below was checked against the primary source on 1 September 2026
+// and the source is named in the body. DVSA statutory IVA fees have not moved
+// since the fee page was last updated on 13 December 2022.
+const UK_IVA_POSTS: BlogPost[] = [
+  {
+    slug: "iva-test-explained",
+    title: "IVA Explained: The UK Approval Test for Imported Cars",
+    h1: "What an IVA Test Is, and When an Imported Car Needs One",
+    seoTitle: "IVA Test Explained: UK Vehicle Approval for Imports",
+    description:
+      "What Individual Vehicle Approval is, which imported cars need it, what DVSA inspects, what it costs and how long it takes. Checked against GOV.UK.",
+    excerpt:
+      "An imported car with no UK or EU type approval cannot be registered until DVSA has approved it individually. Here is what that test is and when it applies.",
+    cluster: "UK Registration & IVA",
+    primaryKeyword: "iva test",
+    keywords: [
+      "iva test",
+      "individual vehicle approval",
+      "iva test uk",
+      "iva test imported car",
+      "dvsa iva",
+      "what is an iva test",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-01",
+    updatedDate: "2026-09-01",
+    readingTimeMins: 12,
+    heroImage: "/source-cars/blog/iva-test-explained.webp",
+    ogImage: "/source-cars/blog/og/iva-test-explained.jpg",
+    heroAlt: "A Nissan Skyline GT-R (R34)",
+    // Not flagged `isPillar` on purpose: the blog index filters pillar posts out
+    // of their cluster group and features only the hardcoded Ireland hub, so the
+    // flag would hide this post from the index entirely.
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      "import-japanese-cars-to-uk",
+      "do-i-need-an-iva-test",
+      "iva-test-cost",
+      "iva-test-requirements",
+      "registering-an-imported-car-in-the-uk",
+    ],
+    toc: [
+      { id: "what-it-is", label: "What an IVA actually is" },
+      { id: "who-needs-it", label: "Which cars need one" },
+      { id: "basic-vs-normal", label: "Basic IVA and normal IVA" },
+      { id: "what-happens", label: "What happens on the day" },
+      { id: "timeline", label: "How long the whole thing takes" },
+      { id: "after", label: "What the certificate gets you" },
+      { id: "changed", label: "What changed in 2025 and 2026" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "What is an IVA test?",
+        a: "Individual Vehicle Approval is the Driver and Vehicle Standards Agency's inspection of a single vehicle against British construction and environmental standards. It exists for cars that have no type approval covering them — anything built, rebuilt, radically altered, reconstructed from a classic, or imported. Pass it and DVSA issues an Individual Approval Certificate, which DVLA requires before it will register the car.",
+      },
+      {
+        q: "Is an IVA test the same as an MOT?",
+        a: "No, and passing one tells you nothing about the other. DVSA states the distinction plainly: the IVA inspection looks at how the vehicle is constructed or adapted, while the MOT looks at whether it is roadworthy. A car can sail through an MOT and fail IVA on its headlamp pattern, its speedometer or a sharp exterior edge, because none of those are MOT items.",
+      },
+      {
+        q: "How long does an IVA test take?",
+        a: "DVSA publishes an average inspection length of 60 minutes for normal IVA on a car and 110 minutes for basic IVA. The waiting is the longer part: DVSA aims to respond to an application within 10 working days and to offer an inspection within 20 working days at your chosen test centre.",
+      },
+      {
+        q: "Can an imported car be driven before it passes IVA?",
+        a: "Only to a pre-booked MOT or approval test. GOV.UK warns that you can be prosecuted for using the vehicle on a public road before registration is complete, and that journey to a booked test is the single exception. It is not insured-and-taxed driving; it is one permitted trip.",
+      },
+      {
+        q: "What happens if a car fails its IVA inspection?",
+        a: "You get a refusal notice listing the failures, fix them and book a re-inspection, which is charged at a lower fee than the full test. If you believe the decision is wrong you can appeal within 14 days for a re-examination by an independent inspector, and the appeal fee is refunded in part or in full if you win. You must not modify the vehicle before an appeal inspection.",
+      },
+    ],
+  },
+  {
+    slug: "do-i-need-an-iva-test",
+    title: "Do You Need an IVA Test? The Exemptions, Plainly",
+    h1: "Do You Need an IVA Test? The 10-Year Rule and Four Other Routes",
+    seoTitle: "Do I Need an IVA Test? UK Import Approval Rules 2026",
+    description:
+      "Most imported cars over 10 years old need no vehicle approval. The exemption list, the EU certificate-of-conformity route and the LHD conversion IVA.",
+    excerpt:
+      "The single most valuable question in a UK import is whether the car needs approving at all. For a great many cars, the answer is no.",
+    cluster: "UK Registration & IVA",
+    primaryKeyword: "do i need an iva test",
+    keywords: [
+      "do i need an iva test",
+      "iva exemption",
+      "iva 10 year rule",
+      "imported car over 10 years old uk",
+      "gb conversion iva",
+      "mutual recognition vehicle approval",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-01",
+    updatedDate: "2026-09-01",
+    readingTimeMins: 10,
+    heroImage: "/source-cars/blog/do-i-need-an-iva-test.webp",
+    ogImage: "/source-cars/blog/og/do-i-need-an-iva-test.jpg",
+    heroAlt: "A Toyota Supra (A80)",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      "import-japanese-cars-to-uk",
+      "iva-test-explained",
+      "iva-test-cost",
+      "registering-an-imported-car-in-the-uk",
+      "iva-test-requirements",
+    ],
+    toc: [
+      { id: "the-question", label: "The question that decides the budget" },
+      { id: "exempt", label: "The exemption list in full" },
+      { id: "ten-year", label: "Reading the 10-year rule properly" },
+      { id: "eu-cars", label: "Cars already registered in the EU" },
+      { id: "lhd", label: "Left-hand drive and GB conversion IVA" },
+      { id: "msva", label: "When it is MSVA rather than IVA" },
+      { id: "blocked", label: "The cars that cannot be registered at all" },
+      { id: "tax-trap", label: "The exemption that still needs a certificate" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "Do cars over 10 years old need an IVA test?",
+        a: "No. GOV.UK's exemption list states that cars and minibuses with eight passenger seats or less that are over 10 years old do not need vehicle approval, and the import guidance puts it as first registered or manufactured more than 10 years ago. That is why a great deal of Japanese import volume sits deliberately on the far side of that line.",
+      },
+      {
+        q: "Does an EU car need an IVA test to register in the UK?",
+        a: "Usually not. For a vehicle already registered in the EU, GOV.UK says to get a European Certificate of Conformity from the manufacturer, which serves as your proof of approval. The exception is a left-hand-drive vehicle, which also needs a certificate of GB conversion Individual Vehicle Approval — a £100 paper application to the Vehicle Certification Agency rather than a test.",
+      },
+      {
+        q: "What is GB conversion IVA?",
+        a: "It is the certificate that covers converting an EU-approved, EU-registered left-hand-drive vehicle for British use. You apply to the Vehicle Certification Agency on a form specific to the vehicle type — motorcycle, car, van or motorhome — and the fee is £100. It is not available for lorries or goods vehicles over 3,500kg, which need a full IVA instead.",
+      },
+      {
+        q: "Do I still need vehicle approval to tax an exempt car?",
+        a: "Sometimes, and this is the trap in the exemption. GOV.UK states you will need vehicle approval to tax the vehicle if it was first registered on or after 1 March 2001 with EU type approval and it is a light goods vehicle, or a car or minibus of eight seats or less with a CO₂ figure in g/km. If you do not have it, DVLA asks for a covering letter explaining why.",
+      },
+      {
+        q: "Can a written-off or salvage car be imported and registered?",
+        a: "Not if it counts as seriously damaged. GOV.UK is explicit that a seriously damaged vehicle cannot be registered or taxed, and that money spent on vehicle approval will not be refunded if you try. For imports, look for wording like statutory write-off, scrapped or non-repairable on the foreign registration certificate, and check with the issuing authority before you commit rather than after.",
+      },
+    ],
+  },
+  {
+    slug: "iva-test-cost",
+    title: "What an IVA Test Costs",
+    h1: "What an IVA Test Costs: Every DVSA Fee, Line by Line",
+    seoTitle: "IVA Test Cost 2026: Every DVSA Fee, Line by Line",
+    description:
+      "DVSA's published IVA fees for cars: inspection, re-inspection and appeal, in and out of hours, plus the mutual recognition and DVLA fees.",
+    excerpt:
+      "The inspection fee is the small number. Here is the whole published fee table, and the costs that sit either side of it.",
+    cluster: "UK Registration & IVA",
+    primaryKeyword: "iva test cost",
+    keywords: [
+      "iva test cost",
+      "iva test fee",
+      "dvsa iva fees",
+      "how much is an iva test",
+      "iva re-inspection fee",
+      "cost to register an imported car uk",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-01",
+    updatedDate: "2026-09-01",
+    readingTimeMins: 10,
+    heroImage: "/source-cars/blog/iva-test-cost.webp",
+    ogImage: "/source-cars/blog/og/iva-test-cost.jpg",
+    heroAlt: "A Mitsubishi Delica D:5",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      "import-japanese-cars-to-uk",
+      "iva-test-explained",
+      "do-i-need-an-iva-test",
+      "registering-an-imported-car-in-the-uk",
+      "iva-test-requirements",
+    ],
+    toc: [
+      { id: "headline", label: "The headline number, and its conditions" },
+      { id: "statutory", label: "The statutory fee table for cars" },
+      { id: "voluntary", label: "Voluntary IVA, and why it carries VAT" },
+      { id: "certificates", label: "Certificates and replacements" },
+      { id: "around-it", label: "The costs either side of the test" },
+      { id: "worked", label: "A worked total for a Japanese import" },
+      { id: "not-changed", label: "What has not changed" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "How much does an IVA test cost for a car?",
+        a: "DVSA's published fee for a car inspection is £199 in working hours and £294 outside them, for both normal IVA and basic IVA in the low-volume, hearse, left-hand-drive and personal-import classes. Amateur-built, rebuilt and parts-of-a-registered-vehicle cars are charged at £450 in working hours and £545 outside them. A re-inspection is £40 and £90 respectively.",
+      },
+      {
+        q: "Is there VAT on an IVA test?",
+        a: "Not on a statutory one. DVSA's fee table shows statutory IVA fees as single figures with no VAT line, and shows voluntary IVA — the test for a vehicle already registered in the UK — split into a service charge plus VAT. A voluntary car inspection is £213.98 plus £42.80 VAT, £256.78 in total, in working hours.",
+      },
+      {
+        q: "What does it cost to register an imported car in the UK?",
+        a: "The DVLA first registration fee is £55, and you tax the vehicle at the same time. That sits on top of any customs duty and import VAT paid at the border, the approval fee if the car needs one, and an MOT if the car is over three years old. Registration itself is the cheapest line in the whole exercise.",
+      },
+      {
+        q: "Do I pay again if my car fails the IVA?",
+        a: "You pay a re-inspection fee rather than a second full fee. For a car that is £40 in working hours and £59 outside them in the basic low-volume and personal-import classes, and £90 and £109 for amateur-built and rebuilt vehicles. An appeal is charged at the full inspection fee and refunded in part or in full if the appeal succeeds.",
+      },
+      {
+        q: "Have IVA fees gone up in 2026?",
+        a: "No. The GOV.UK page carrying DVSA's IVA fee tables for cars was last updated on 13 December 2022, and the figures on it are the ones in force when we checked on 1 September 2026. Any 2026 figure you see quoted that is not £199, £450 or their out-of-hours equivalents did not come from the published table.",
+      },
+    ],
+  },
+  {
+    slug: "iva-test-requirements",
+    title: "How to Pass an IVA Test",
+    h1: "How to Pass an IVA Test: DVSA's Own Top Ten Failure Points",
+    seoTitle: "IVA Test Requirements: How to Pass It First Time",
+    description:
+      "DVSA's top ten reasons cars fail Individual Vehicle Approval, from headlamp aim and rear fog lamps to speedometers and brakes, for an import.",
+    excerpt:
+      "Headlamps that dip the wrong way and a speedometer in km/h fail more imported cars than mechanical faults do. Both are fixable before the car is booked in.",
+    cluster: "UK Registration & IVA",
+    primaryKeyword: "iva test requirements",
+    keywords: [
+      "iva test requirements",
+      "iva test checklist",
+      "how to pass an iva test",
+      "iva headlamp requirements",
+      "iva rear fog lamp",
+      "iva speedometer mph",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-01",
+    updatedDate: "2026-09-01",
+    readingTimeMins: 11,
+    heroImage: "/source-cars/blog/iva-test-requirements.webp",
+    ogImage: "/source-cars/blog/og/iva-test-requirements.jpg",
+    heroAlt: "A Mazda RX-7 (FD)",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      "import-japanese-cars-to-uk",
+      "iva-test-explained",
+      "iva-test-cost",
+      "do-i-need-an-iva-test",
+      "registering-an-imported-car-in-the-uk",
+    ],
+    toc: [
+      { id: "the-list", label: "DVSA's own top ten" },
+      { id: "headlamps", label: "Headlamp aim, the number one failure" },
+      { id: "fog", label: "The rear fog lamp an import will not have" },
+      { id: "speedo", label: "Speedometers, and why km/h fails" },
+      { id: "brakes", label: "The brake efficiency figures" },
+      { id: "projections", label: "Exterior projections and the 100mm sphere" },
+      { id: "rest", label: "Plates, belts, emissions and interior" },
+      { id: "order", label: "The order to do the work in" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "What is the most common reason cars fail an IVA test?",
+        a: "Headlamp aim is first on DVSA's published top-ten list for M1 vehicles. The lamps must produce a clear beam image with the cut-off to the left, and DVSA says headlamps on vehicles imported from countries that drive on the right may need converting or replacing. Masking a headlamp, inside or out, is not accepted.",
+      },
+      {
+        q: "Does an imported car need a rear fog lamp for IVA?",
+        a: "Yes, and DVSA expects a car imported from outside the EU not to have one fitted at all. It must sit at the centre or offside rear, be a matched symmetrical pair if two are fitted, carry an 'e' or 'E' approval mark with a 'B' or 'F', have secure insulated wiring and a warning device, and light only when the dipped, main or front fog lamps are on.",
+      },
+      {
+        q: "Does an IVA speedometer have to read in mph?",
+        a: "Yes. DVSA's guidance states the speedometer must indicate mph and read accurately, and that accuracy is checked on calibrated rollers between 35 and 70 mph. It has to be readable by the driver at all times, with maximum marked increments of 20 mph. GPS units and bicycle or racing instruments are not accepted.",
+      },
+      {
+        q: "What brake efficiency does an IVA require?",
+        a: "DVSA publishes minimums of 60% service brake efficiency, 25% secondary brake performance where testable, and 18% parking brake efficiency, all calculated on design gross weight or calculated laden weight. These are different from MOT requirements, so an MOT pass is an indication rather than a guarantee.",
+      },
+      {
+        q: "Can I do the IVA test by video call?",
+        a: "Not for a car. DVSA's video-call option covers vans and light goods vehicles, heavy goods vehicles and trailers — categories N1, N2, N3 and O1 to O4. A passenger car in category M1 has to be presented at a test centre in person.",
+      },
+    ],
+  },
+  {
+    slug: "iva-test-centres-uk",
+    title: "Every IVA Test Centre in Great Britain",
+    h1: "Every IVA Test Centre in Great Britain, and Which Ones Take Cars",
+    seoTitle: "IVA Test Centres UK: Full List and Which Take Cars",
+    description:
+      "All 22 IVA test centres in England, Scotland and Wales, including the seven private sites: what each can test and how to name one on your form.",
+    excerpt:
+      "Twenty-two centres, seven of them privately operated, and only eighteen that take a car. Where you can test is a real constraint on an import.",
+    cluster: "UK Registration & IVA",
+    primaryKeyword: "iva test centres",
+    keywords: [
+      "iva test centres",
+      "iva test centre locations",
+      "where to book an iva test",
+      "private iva test centre",
+      "vehicle examination facility",
+      "iva test centre near me",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-01",
+    updatedDate: "2026-09-01",
+    readingTimeMins: 10,
+    heroImage: "/source-cars/blog/iva-test-centres-uk.webp",
+    ogImage: "/source-cars/blog/og/iva-test-centres-uk.jpg",
+    heroAlt: "A Suzuki Jimny",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      "import-japanese-cars-to-uk",
+      "iva-test-explained",
+      "do-i-need-an-iva-test",
+      "iva-test-requirements",
+      "iva-test-cost",
+    ],
+    toc: [
+      { id: "who-tests", label: "Who actually carries out the test" },
+      { id: "private", label: "The seven privately operated sites" },
+      { id: "cars", label: "Only three of them take cars" },
+      { id: "full-list", label: "All 22 centres, by region" },
+      { id: "restrictions", label: "Restrictions worth reading first" },
+      { id: "booking", label: "How you choose a centre" },
+      { id: "geography", label: "The geography problem" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "Can a private company carry out an IVA test?",
+        a: "No. A private company can host one. DVSA's Vehicle Examination Facility model allows approval tests to be conducted at third-party sites, but DVSA is explicit that DVSA staff continue to carry out the test. There is no such thing as a privately approved IVA tester — the examiner is always DVSA's, wherever the ramp is.",
+      },
+      {
+        q: "How many IVA test centres are there in the UK?",
+        a: "Twenty-two in England, Scotland and Wales as at DVSA's list of 14 August 2026. Fifteen are DVSA's own test centres and seven are privately operated sites. Eighteen of the twenty-two can test passenger vehicles. The list applies to Great Britain; Northern Ireland runs its own arrangements through the DVA.",
+      },
+      {
+        q: "Which private IVA centres can test cars?",
+        a: "Three of the seven. Castle Donington (My Car Import) and Milton Keynes (Ship My Car) both take passenger vehicles, with Milton Keynes listed for normal and basic IVA. Purfleet (Ensign Bus Company) takes passenger vehicles for normal IVA only. The other four — Halesowen, Peterborough, Sheffield and Lancashire — are goods-vehicle, trailer and specialist sites.",
+      },
+      {
+        q: "How do I book an IVA test at a particular centre?",
+        a: "You choose the test centre as part of your DVSA application rather than contacting the site directly. GOV.UK's instruction is to say which centre you want to use when you apply, and DVSA will usually offer you an inspection within 20 working days at the location you chose, wherever possible.",
+      },
+      {
+        q: "Are there IVA test centres in Scotland and Wales?",
+        a: "One each. Edinburgh (at Livingston) is the only IVA centre in Scotland and Cardiff (at Miskin) the only one in Wales, and both are DVSA sites that take passenger vehicles. Every other centre on the list is in England, which makes transport a real line in a Scottish or Welsh importer's budget.",
+      },
+    ],
+  },
+  {
+    slug: "registering-an-imported-car-in-the-uk",
+    title: "Registering an Imported Car in the UK",
+    h1: "Registering an Imported Car in the UK, Step by Step",
+    seoTitle: "Registering an Imported Car in the UK: Full Process",
+    description:
+      "Registering an imported car in the UK: the 14-day NOVA notification, duty and VAT, vehicle approval, the DVLA pack, the £55 fee and the V5C wait.",
+    excerpt:
+      "Six steps, in a fixed order, and each one gates the next. Miss the first and the last cannot happen.",
+    cluster: "UK Registration & IVA",
+    primaryKeyword: "registering an imported car uk",
+    keywords: [
+      "registering an imported car uk",
+      "nova declaration",
+      "import car to uk process",
+      "dvla imported vehicle registration",
+      "v55 imported car",
+      "uk car import duty vat",
+    ],
+    author: AUTHOR,
+    publishDate: "2026-09-01",
+    updatedDate: "2026-09-01",
+    readingTimeMins: 12,
+    heroImage: "/source-cars/blog/registering-an-imported-car-in-the-uk.webp",
+    ogImage: "/source-cars/blog/og/registering-an-imported-car-in-the-uk.jpg",
+    heroAlt: "A Toyota Vellfire",
+    // Brand touchpoints → the Japan → UK landing page (brand-position.md §12).
+    ...blogCtaFields(ARTICLE_CTAS.japanUk),
+    related: [
+      "import-japanese-cars-to-uk",
+      "iva-test-explained",
+      "do-i-need-an-iva-test",
+      "iva-test-cost",
+      "iva-test-requirements",
+    ],
+    toc: [
+      { id: "sequence", label: "The sequence, and why order matters" },
+      { id: "nova", label: "Telling HMRC within 14 days" },
+      { id: "duty-vat", label: "Duty and VAT at the border" },
+      { id: "approval", label: "Proving the car is approved" },
+      { id: "dvla", label: "The DVLA pack" },
+      { id: "mot-tax", label: "MOT, tax and the number plate" },
+      { id: "older", label: "Where classics get an easier run" },
+      { id: "faqs", label: "FAQs" },
+    ],
+    faqs: [
+      {
+        q: "How long do I have to tell HMRC about an imported car?",
+        a: "Fourteen days from the vehicle arriving in the UK permanently. GOV.UK is direct about the consequence: you cannot register the vehicle until you have done it, and you may be fined if you are late. The declaration is made through the Notification of Vehicle Arrivals service, by you, your customs agent or HMRC's CARS team.",
+      },
+      {
+        q: "How much is customs duty and VAT on a car imported to the UK?",
+        a: "For a used car imported into Great Britain from outside the UK, the UK Integrated Online Tariff shows a third-country duty rate of 10% and VAT at 20%, checked on 1 September 2026. Trade agreements change the duty: a Japanese-built car with valid proof of origin can qualify at 0%, and CPTPP members show a 2% preferential rate. Duty is charged before VAT, and VAT is charged on the total including the duty.",
+      },
+      {
+        q: "How long does DVLA take to register an imported car?",
+        a: "GOV.UK says it can take up to six weeks for the V5C registration certificate to arrive, and you need the V5C before number plates can be made up. That six weeks starts after the NOVA declaration is processed, any duty and VAT are paid, and proof of approval is in hand — so it is the last leg of the process, not the whole of it.",
+      },
+      {
+        q: "What documents does DVLA need for an imported vehicle?",
+        a: "Originals, not copies: proof of vehicle approval, form V267 if the vehicle is new, evidence of the date the vehicle was collected such as the supplier's invoice, and the original foreign registration certificate showing the manufacture date — which you do not get back. Form V627/3 is added if the vehicle has been structurally modified beyond the manufacturer's specification.",
+      },
+      {
+        q: "Does an imported classic car need an MOT?",
+        a: "Not if it was built or first registered more than 40 years ago and has had no substantial changes, such as a replacement chassis, body, axles or engine that changes how it works. Vehicle tax is a separate test: a vehicle built before 1 January 1986 can be put in the historic tax class, and if the build date is unknown, registration before 8 January 1986 does the same.",
+      },
+    ],
+  },
+];
+
+export const BLOG_POSTS: BlogPost[] = [
+  ...IRELAND_POSTS,
+  ...MODEL_POSTS,
+  ...JAPAN_UK_POSTS,
+  ...UK_IVA_POSTS,
+  ...COUNTRY_BLOG_POSTS,
+  ...DEALER_SOURCING_POSTS,
+  ...MOTORCYCLE_POSTS,
+];
 
 // ── Roadmap — remaining cluster posts to build in later batches ──────────────
 // Cost & Cheapest:  (covered)
@@ -566,13 +1387,16 @@ const SUGGESTED_BY_DESTINATION: Record<string, string[]> = {
     "importing-hybrids-and-evs-to-sri-lanka",
     "sri-lanka-car-import-documents-explained",
   ],
-  // Importing *into* the UK — most of our UK-bound volume comes off the
-  // Japanese auction floor, so lead with that, then the Dubai alternative.
+  // Importing *into* the UK — registration is the step that actually worries
+  // a UK-bound buyer, so lead with approval and registration, then the sourcing
+  // corridor most of our UK volume comes from.
   unitedkingdom: [
+    "import-japanese-cars-to-uk",
+    "registering-an-imported-car-in-the-uk",
+    "do-i-need-an-iva-test",
+    "iva-test-explained",
     "how-to-buy-a-car-at-japanese-auction",
     "cost-to-import-a-car-from-japan",
-    "japanese-auction-grades-explained",
-    "how-to-import-a-car-from-the-uae",
   ],
   india: [
     "how-to-import-a-car-from-india",
@@ -649,8 +1473,12 @@ export function getSuggestedPosts(options?: {
 
 export const CLUSTER_ORDER: BlogCluster[] = [
   "Guides",
+  "Dealer Sourcing",
+  "Japan to UK",
+  "Motorcycles",
   "Japan",
   "United Kingdom",
+  "UK Registration & IVA",
   "UAE",
   "India",
   "Thailand",

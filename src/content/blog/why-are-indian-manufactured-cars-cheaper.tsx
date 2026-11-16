@@ -47,7 +47,7 @@ export default function Body() {
           </>,
           <>
             The remaining risk isn&rsquo;t the factory — it&rsquo;s{" "}
-            <Strong>buying blind</Strong>. Independent pre-export inspection
+            <Strong>importing blind</Strong>. Independent pre-export inspection
             closes it.
           </>,
         ]}
@@ -188,7 +188,7 @@ export default function Body() {
       <P>
         So the honest summary: Indian-built cars kept the cost advantage while
         the build-quality gap closed. What remains is the same risk you&rsquo;d
-        face buying any car remotely — the condition of the <em>individual</em>{" "}
+        face importing any car remotely — the condition of the <em>individual</em>{" "}
         unit. Which is where we come in.
       </P>
 
@@ -197,14 +197,14 @@ export default function Body() {
       </H2>
       <P>
         Providence&rsquo;s team has spent the past years building direct
-        connections with India&rsquo;s large dealer networks. Buying closer to
-        the source is what lets us bring cars in{" "}
+        connections with India&rsquo;s large dealer networks. Exporting from closer
+        to the source is what lets us bring cars in{" "}
         <Strong>faster, cheaper and safer</Strong> than a traditional import
         chain — fewer intermediaries, better prices, verified provenance.
       </P>
       <P>
         And because the one legitimate worry left is unit condition, safety is
-        where we deliberately spend the most time and money. Every car we source
+        where we deliberately spend the most time and money. Every car we export
         passes an independent <Strong>multi-point pre-export inspection</Strong>{" "}
         — structure, brakes, engine, transmission, electronics and safety
         equipment — and you see the report and photographs <em>before</em> any

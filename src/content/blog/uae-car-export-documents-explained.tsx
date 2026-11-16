@@ -136,7 +136,7 @@ export default function Body() {
 
       <H2 id="customs">Free-zone customs clearance</H2>
       <P>
-        Vehicles bought for export move through an established free-zone regime,
+        Vehicles destined for export move through an established free-zone regime,
         which is a large part of why the UAE clears cars faster than most of our
         network. The clearance produces the export declaration, and three fields
         on it matter most:
@@ -206,7 +206,7 @@ export default function Body() {
         <InlineLink href="/blog/cost-to-import-a-car-from-the-uae">
           what it costs
         </InlineLink>
-        . Our <InlineLink href="/source-cars-from/uae">UAE office</InlineLink>{" "}
+        . Our <InlineLink href="/import-cars-from/uae">UAE team</InlineLink>{" "}
         handles the whole file locally.
       </P>
 

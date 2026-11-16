@@ -1,0 +1,401 @@
+# Sourcing & Profit Analyzer — Methodology
+
+**What the tool at `/admin/sourcing-calculator` actually does under the hood.** Every rate, formula, filter and assumption behind the landed cost, the comparable search, the margin figures and the buy/avoid verdict — written so a sales team member can defend a number to a buyer, and so an engineer can change one without breaking the rest.
+
+The governing principle: **numbers are computed, prose is generated.** Every figure on screen comes out of a pure TypeScript function over real inputs. The AI model reads finished numbers and writes sentences about them. It never produces a price, a margin, a rate or a recommendation that the code did not already determine.
+
+---
+
+## 1. Where the code lives
+
+| Concern | File |
+|---|---|
+| Rates, constants, landed-cost engine, reverse bid solver | `src/lib/uk-landed-cost.ts` |
+| Deterministic price statistics | `src/lib/market-stats.ts` |
+| Scraper client (Apify) + per-source search URLs | `src/lib/scrapers/client.ts` |
+| Per-source field mapping | `src/lib/scrapers/autotrader.ts`, `src/lib/scrapers/pistonheads.ts` |
+| Data hygiene + cross-source dedupe | `src/lib/scrapers/clean.ts` |
+| Identity matching + comparable ranking | `src/lib/scrapers/matching.ts` |
+| FX, auction-sheet extraction, market orchestration, verdict, persistence | `src/actions/sourcing-actions.ts` |
+| The whole UI and the live recompute | `src/app/admin/sourcing-calculator/LandedCostClient.tsx` |
+| PDF export | `src/actions/sourcing-pdf-actions.tsx` |
+| Tests for the engine | `src/lib/__tests__/uk-landed-cost.test.ts` |
+
+Rates come from the validated HMRC-based reference *"UK Tax Guide for Importing a Car"* (current 23 June 2026). Where a business directive deliberately departs from that guide, it is marked as such below and in the code.
+
+---
+
+## 2. The landed-cost calculation
+
+### 2.1 CIF — what the customs value is built from
+
+CIF ("cost, insurance and freight") is the value the car arrives at the UK border with. It is assembled **in the auction currency** (JPY by default) and only then converted to GBP:
+
+```
+CIF_currency = hammer price
+             + auction & export agent fees
+             + inland transport in the origin country
+             + ocean freight to the UK port
+             + marine insurance
+
+CIF_GBP = CIF_currency × FX rate
+```
+
+Two defaults fill themselves in:
+
+- **Auction & export agent fees — 7% of the hammer price** (`AUCTION_FEE_RATE`). The field auto-recalculates as the hammer price changes, until the operator types over it; from that point it stays fixed and a "Reset to 7%" link appears.
+- **Ocean freight — ¥350,000 per car** (`DEFAULT_OCEAN_FREIGHT_JPY`, business directive of 15 September 2026, down from ¥400,000). This one is genuinely per car, not a container charge divided down — unlike two of the post-border clearance lines in §2.6, which are. Editable per shipment.
+
+Freight and insurance sit *inside* the customs value. That is the point of the CIF basis and it is why duty is not charged on the hammer price alone.
+
+### 2.2 FX
+
+The rate is entered as **units per GBP** (¥ per £), because that is how the desk thinks about it, and inverted internally to GBP-per-unit for the engine.
+
+It is prefilled from the ECB daily reference rate via Frankfurter (`getGbpFxRates`, cached 24h, free, no key), with a static indicative fallback if the feed is unreachable. **This is a spot indication, not the official figure** — HMRC uses its own published *monthly* rate for the customs declaration. The field is editable for exactly that reason.
+
+### 2.3 Customs value
+
+```
+customs value = CIF_GBP × CUSTOMS_VALUE_FRACTION      // fraction = 1
+```
+
+Duty is charged on the **full CIF value**. An earlier business directive charged it on 60% of CIF; that override has been **reverted**. The constant remains in the code as the single knob should it ever return, but it is `1` today, and the UI states that the customs value is the full CIF.
+
+### 2.4 Customs duty
+
+Passenger cars sit under **tariff heading 8703**. The rate is decided by the country of *manufacture* — not the port the car ships from.
+
+| Basis | Rate | When it applies |
+|---|---|---|
+| `mfn` | **10%** | The default for everything |
+| `japan_cepa` | 0% | Japan-built **and** a valid CEPA statement of origin is held |
+| `commercial_pickup` | 22% | Reclassified commercial: single cab, no rear passenger comforts |
+| `historic` | 0% | 30+ years old, substantially original, commodity code 9705 |
+
+**The standing rule: duty starts at 10% and only ever drops to 0% for a Japanese car with the paperwork in hand.** This is a deliberate departure from the underlying guide, which also recognises EU/UK/Australia/New Zealand preferences. Those preferences are real in law, but they are not underwritten here, because a preference you cannot evidence at clearance becomes 10% on the day — and a margin built on it evaporates. Non-Japanese origins are therefore priced at 10% regardless of what documents are claimed.
+
+Consequences in the UI:
+
+- **The statement-of-origin question only appears when the country of manufacture is Japan** (`ORIGIN_STATEMENT_COUNTRIES`). For every other origin it is not asked, because the answer would not change the number.
+- **It defaults to "No / not sure"**, so a fresh analysis prices duty at 10% until someone confirms otherwise.
+
+Two classification rules override origin entirely: a commercial pickup is 22% whatever its origin, and a 30+ year old car is 0% under code 9705 (a *classification*, not a trade preference — which is why it survives the Japan-only rule). Historic status is auto-detected from the Year field and flagged for HMRC confirmation.
+
+```
+duty = customs value × duty rate
+```
+
+### 2.5 Import VAT — excluded
+
+**Import VAT is not part of the landed cost in this tool.**
+
+A VAT-registered importer reclaims import VAT as input tax. It moves cash, it does not consume margin, and carrying it into the landed figure would understate every margin the analyzer reports and reject cars that are in fact profitable. The engine's `includeVat` flag is set to `false` on this page; the breakdown, the PDF and the verdict prompt all say so explicitly rather than silently omitting a line.
+
+The VAT machinery still exists in `uk-landed-cost.ts` (`VatBasis`, 20% standard / 5% historic / 0% relieved, charged on customs value + duty) and `includeVat` defaults to `true`. That is for consumer-facing surfaces such as `LandedCostBar`, where the buyer is a private individual who genuinely pays it. Do not delete it, and do not flip the analyzer's flag without understanding which audience the surface serves.
+
+### 2.6 Post-border UK costs
+
+What the car costs once it reaches the UK — at the border and after it. Outside the customs value, inside the true landed cost.
+
+The figures are the desk's own, transcribed from the **"Import IVA and Clearance Costs" workbook, revision 15 September 2026**, which is the operational source of truth for what a car costs to land and register. They are two groups: base costs that land on every car, and IVA costs that land only when the car has to sit the approval test.
+
+That workbook prices the IVA and registration blocks **twice, once per supplier** — an SMC column and a Calibre column. The defaults follow **SMC**, because SMC is the column the workbook's own summary totals pull from. The two columns differ by £728 per car in total (IVA £719 vs £922, registration £661.25 vs £1,186.25), and neither is complete on its own: SMC leaves the DVLA first-registration application fee unpriced ("TBC") where Calibre quotes £790, and Calibre books the admin fee at an explicit £0 where SMC charges £275.
+
+**Two departures from the workbook (business instruction, 2026-10-29).** The £275 admin fee is charged on **IVA cars only** — for a non-IVA car the desk does the registration admin itself — so it sits in the IVA block. And the rear fog light and mph speedo conversion is a **£200 base line on every car**, because every import needs that work whether or not it sits an IVA test; the IVA supplier charges more for the same work, so the IVA block carries the difference as a **£170 surcharge** in place of the workbook's £175 speedo and £195 fog-light lines. The all-in IVA figure is unchanged at £2,451.92; the non-IVA figure falls by £75.
+
+```
+POST_BORDER_BASE_ITEMS                          POST_BORDER_IVA_ITEMS
+  Clearance                                       Admin fee             £275
+    Customs clearance (share)      £66.67         Fog/speedo surcharge  £170
+    Unloading, handling & docs     £410.00        IVA test fee          £199
+    Calibre admin fee               £45.00        IVA test presentation £150
+    Transport (port → premises)    £200.00                            ───────
+                                 ─────────        POST_BORDER_IVA       £794
+                                  £721.67
+  Registration (SMC)
+    DVLA registration fee           £55.00
+    Road tax (6 months)            £206.25
+    MOT (agent-arranged)            £75.00
+    DVLA first-reg app. (TBC)        £0.00
+    Number plates                   £50.00
+    Fog light & speedo conversion  £200.00
+                                 ─────────
+                                  £586.25
+  General
+    Refurb                         £200.00
+    Cleaning                        £50.00
+    Warranty provision             £100.00
+                                 ─────────
+                                  £350.00
+                                 ═════════
+  POST_BORDER_BASE               £1,657.92
+```
+
+| IVA required | Post-border total |
+|---|---|
+| Yes | **£2,451.92** (£1,657.92 + £794) |
+| No | **£1,657.92** — outside the IVA scheme, so only the approval block falls away. Nothing is substituted for it: the MOT and the fog-light and speedo conversion are base lines charged either way. |
+
+Note the direction of travel at the 15 September revision: the base rose by £373 while the all-in IVA figure *fell* by £108, so this revision is not a uniform uplift and no summary of it as "costs went up" is true for the whole fleet.
+
+**Customs clearance and unloading are quoted per container, not per car.** The workbook divides £200 and £1,230 across a three-car container (`CARS_PER_CONTAINER`, `CONTAINER_SHARED_ITEMS`). That divisor is a standing assumption about how the desk ships (§8.12), not a fact about a given shipment — a car shipped alone bears the whole £1,430. Both fields carry the derivation as an on-screen hint so the number is not read as a per-car price.
+
+The shares are rounded to the penny, so the all-in figure is £2,451.92 against the workbook cell's £2,451.9166…. The third of a penny is the whole of the difference, and it disappears the moment either figure is shown in pounds.
+
+**Three lines carry a note under the field**, because the figure alone would be read as something it is not: the two container shares, the MOT (£75 is the supplier's price; DVSA caps the test itself at £54.85), and the DVLA first-registration application (£0 means *unpriced*, not free — see §8.13).
+
+**Every line is editable per run.** The two *totals* are derived from the item maps rather than hard-coded, so the app and the engine can never disagree about them — but the figures quoted in this section, and the ones pinned in `uk-landed-cost.test.ts` and `LandedCostClient.test.tsx`, are transcriptions. A workbook revision has to be carried into all three by hand.
+
+**Whether IVA applies** defaults from age — under 10, or an unknown Year, means yes (`ivaRequiredForAge`); 10 or over means no. It is a **checkbox the operator owns**: the moment they touch it, their answer sticks and the age no longer overrides it. That matters because the real determinant is the clearance timeline, not the car's birthday.
+
+**The near-10-year prompt.** A car bought at nine-and-a-bit years old will usually clear customs and reach registration *after* its tenth birthday, by which point the IVA requirement has already fallen away. From age 9 (`IVA_WAIVER_FROM_AGE`) the card shows a note inviting the operator to untick IVA. It is deliberately **never automatic** — it is a judgement about the shipping timeline, which only the person booking the shipment can make.
+
+### 2.7 The total
+
+```
+total landed cost = CIF_GBP + duty + post-border total
+```
+
+(Plus VAT, for callers that include it.)
+
+The tool's headline badge shows duty as a percentage of CIF.
+
+---
+
+## 3. The market search
+
+### 3.1 Sources, and why in that order
+
+**AutoTrader first, PistonHeads only if AutoTrader is thin.** Both run as managed Apify actors.
+
+- **AutoTrader** (`memo23~autotrader-cheerio`) is the priority source — the deepest UK used-car pool. Its actor pushes results incrementally and takes ~100s to finish, far longer than a serverless function allows, so the client **starts the run, polls the dataset for a bounded window (~38s) and takes the partial set**. The run completes server-side regardless. A partial sample of a large pool is statistically fine; a timeout that yields nothing is not.
+- **PistonHeads** (`parseforge~pistonheads-scraper`) is parametric and fast (~14s). It is only invoked when AutoTrader produced **fewer than 6 comparable matches**, so the second source costs credits only when it will actually change the answer.
+
+Search URLs are built at **make + model level, never at trim level**. AutoTrader's derivative filter is unreliable, so the pool is deliberately kept wide and narrowed in the matching layer where the logic is ours and testable.
+
+Two search-URL quirks are handled explicitly: AutoTrader wants `"G Class"` and `"3 Series"` with a space (hyphens return zero results) while keeping hyphens elsewhere like `"CX-5"`, so only those two families are normalised (`autoTraderModelToken`). Common make aliases are canonicalised — `benz`/`merc`/`mercedes` → `Mercedes-Benz`, `vw` → `Volkswagen`, and so on (`canonicalMake`).
+
+### 3.2 Pre-filtering at the source
+
+The source search is pre-filtered wider than the final match band, so the capped results page comes back dense with genuine comparables rather than needing a huge scrape:
+
+- **Year:** ±max(3, configured year band) around the target year.
+- **Mileage:** the configured mileage percentage **+ 15 percentage points** of cushion.
+
+The precise band is applied afterwards, locally.
+
+### 3.3 Cleaning
+
+`cleanListings` drops anything that cannot be trusted in the statistics:
+
+- no usable price;
+- no year (the matcher needs it for the year window);
+- mileage under 100 miles — these are delivery-mileage or new cars, a different market from a used import comparison.
+
+### 3.4 Dedupe
+
+The same physical car is routinely cross-posted on multiple sites, and a registration or VIN is rarely exposed. `dedupeListings` collapses near-duplicates heuristically: **same year, mileage within ~500 miles, price within ~£250**. First one wins.
+
+### 3.5 Identity matching — the hard gate
+
+`matchesIdentity` requires **both**:
+
+- **Make** — either name contains the other after normalisation, so "Mercedes" matches "Mercedes-Benz".
+- **Model** — the normalised model string appears as a phrase anywhere across the listing's make + model + trim text. This handles "G Class", "3 Series", single-letter models, and PistonHeads listings that append the trim to the model field ("Macan Turbo").
+
+Normalisation is lowercase, punctuation to spaces, whitespace collapsed. Tokenisation deliberately **keeps single characters**, because "G", "M" and "3" are meaningful in car names.
+
+### 3.6 Bands, trim and ranking
+
+Listings that pass identity are then filtered by the operator's tolerances — **default ±1 year and ±20% mileage**, both editable in the UI.
+
+**Trim is a preference, not a gate.** Distinctive trim tokens are the trim words minus the model words (so model "Macan" + edition "Macan Turbo" yields `["turbo"]`). If listings matching every trim token exist, those are used; if requiring the trim would leave nothing, the model-level set is kept instead and the result is flagged as trim-not-applied. Showing model-level comparables beats showing none.
+
+The surviving set is ranked and the **best 10** kept (`selectTopComparables`), in strict priority order:
+
+1. Closest year to the target.
+2. Most engine/transmission tokens matched (the "refine" signal — a `3.0 V6 Automatic` target ranks a `3.0 V6` listing above a `2.0 Manual` one).
+3. Closest mileage.
+
+### 3.7 Operator override
+
+The comparable set is editable in the UI and every figure recomputes live from it:
+
+- **Remove** a listing that does not fit.
+- **Add** any listing from the full scraped set — it is already in memory from the crawl, so pulling one in **spends no further scraper credits**.
+
+Because the verdict prose is written against a specific set, the set is signed (sorted listing keys, hashed by join). If the set changes after a verdict, the UI says so: the figures are already current, the narrative is not, and a re-run button is offered.
+
+---
+
+## 4. The statistics
+
+`computeMarketStats` is pure, deterministic and never sees an LLM.
+
+**Outlier trimming.** With **8 or more** priced listings, the 1.5×IQR rule is applied on the pre-trim quartiles: anything below `Q1 − 1.5·IQR` or above `Q3 + 1.5·IQR` is excluded. This removes mis-priced ads, salvage, and the occasional different variant that slipped the search. Below 8 listings no trimming happens — with a small sample you cannot tell an outlier from the market. The count of excluded listings is always displayed.
+
+From the kept set: count, min, max, mean, **median**, p25, p75, standard deviation, and an 8-bucket histogram spanning min→max. The bucket containing the landed cost is highlighted in blue on the chart, and each bucket expands into the actual listings inside it, with links.
+
+**The median is the reference price for every margin figure**, not the mean — it is far less sensitive to one absurd asking price in a thin sample.
+
+**Manual median override.** The operator can replace the computed median with their own retail figure — "Set the median myself", under the stat tiles, prefilled with the scraped median. It is a deliberate escape hatch, because the alternative the desk was using is worse: nudging the median by adding and removing comparables edits the evidence to reach a number, and leaves no trace that it happened.
+
+The rules that keep it honest:
+
+- **It is an operator input, never a model output.** The governing principle is unchanged — no LLM produces this or any other figure. It is typed by a person who is accountable for it.
+- **It is entered VAT-inclusive**, on the same basis as the scraped asking prices, and is divided by 1.2 like any other median (§5.1). Entering a net figure would overstate margin by the VAT fraction.
+- **Only the median moves.** Count, min, max, mean, p25/p75, standard deviation, the histogram, the outlier count and the listings themselves still describe the real crawl, and are still displayed as such.
+- **Everything that consumes a median consumes this one:** net resale, profit, ROI, the ceiling bid (§5.3), the verdict prompt (§6.1), the PDF and the saved run — including the `marketMedian` column of `sourcingAnalyses`, so the stored row records the number the decision was actually taken on.
+- **Every surface labels it.** The stat tile reads "Median (manual)" and keeps the scraped figure beside it, the summary panel's sub-line names it, the PDF row is labelled and the provenance line records what the listings gave, and the verdict prompt is told the median is a desk figure rather than a market statistic.
+- **A new crawl clears it.** An override belongs to the car it was typed for; carrying it silently into the next vehicle would be the worst failure this feature could have.
+- **Changing it stales an existing verdict**, exactly as adding or removing a listing does (§3.7) — the effective median is part of the signature the narrative is signed against.
+
+**Estimated sale price, before any crawl.** The same operator figure can be entered when there are no comparables at all: before a crawl, or after a crawl that matched nothing. It is the "Estimated sale price" field in the summary panel, and it writes the same state as the override above. It exists so the desk can price a car without spending scraper credits. The rules above stand unchanged: it is an operator input, entered VAT-inclusive and divided by 1.2, and a new crawl clears it. Two things differ:
+
+- **It is labelled as an estimate, not a median.** The summary panel reads "Estimated resale (ex VAT)" with "manual estimate · no comparables" beneath it, and the ceiling bid names it the same way. There is no scraped figure to show beside it, because there is none.
+- **It drives the P&L and the ceiling bid only.** Net resale, profit, ROI and the maximum bid (§5.3) all read it. The written verdict (§6.1), the PDF and the saved run still need crawled comparables, because the verdict prompt describes the listing distribution and an estimate has none. Once listings are in the comparison, by a crawl or by hand, the figure behaves exactly as the override above, and reaches every surface that list names.
+
+**Confidence flag.** Fewer than 5 comparables marks the analysis as thin supply / lower confidence, which cascades into the verdict (see §6).
+
+---
+
+## 5. Margin and the ceiling bid
+
+### 5.1 Margin — net against net
+
+Scraped forecourt listings are advertised **VAT-inclusive**. The landed cost on this page deliberately **excludes** import VAT (§2.5), because the importer reclaims it. Comparing a gross asking price against a net cost would overstate every margin by the VAT fraction, so the resale side has the VAT taken back out first:
+
+```
+net resale    = market median ÷ 1.2          // RESALE_VAT_DIVISOR = 1 + STANDARD_VAT_RATE
+profit (PNL)  = net resale − total landed cost
+ROI %         = profit ÷ total landed cost
+```
+
+Both halves of the subtraction are now net figures. **Never compare the raw median against the landed cost** — that is the single easiest way to make an unprofitable car look like a buy. Where the operator has overridden the median (§4), that figure takes its place here and everywhere below, on the same VAT-inclusive basis.
+
+The percentage is measured **against landed cost**, not against the sale price. £5,000 on a £20,000 landed car is 25%, not 20%. Both the money figure and the percentage are displayed, colour-coded against the target, with an explicit "clears / below the target" badge, and the on-screen line shows the arithmetic ("net resale £8,792 (median £10,550 ÷ 1.2) − landed £6,768").
+
+The dark summary panel carries the whole P&L in one column — CIF, duty, VAT (excluded), UK costs, total landed, net resale, profit and ROI, then the ceiling bid — so the decision does not require scrolling.
+
+### 5.2 The target
+
+```
+TARGET_MARGIN_PCT = 0.30        // the standing desk minimum, and the default
+clampTargetMargin(pct)          // holds any entry inside 0–200%
+```
+
+**30% ROI on landed cost is the desk minimum.** It is a business directive held in one constant — but it is also **editable per run** from a *Minimum ROI* field in the summary panel, because the right threshold is a judgement (a thin, risky car may need 35%; a quick flip may not).
+
+Whatever it is set to, it moves **the badge, the ceiling bid, the verdict policy and the PDF together** — the client passes it to `getVerdict` and into the PDF payload rather than each surface reading the constant independently. `clampTargetMargin` guards the entry so a typo cannot silently make every car look like a buy; a non-numeric entry falls back to 30%.
+
+### 5.3 The maximum auction price
+
+The most useful number in the room is not the margin on a bid already placed — it is **the biggest bid that still works**. `maxAuctionPriceForMargin` inverts the engine to produce it.
+
+Landed cost is linear in CIF, so the inversion is exact rather than a search:
+
+```
+landed budget      = net resale (median ÷ 1.2) ÷ (1 + target margin)
+CIF multiplier     = 1 + f·d + f·(1+d)·r        // f = customs fraction, d = duty rate, r = VAT rate
+max CIF (GBP)      = (landed budget − post-border total) ÷ CIF multiplier
+max CIF (currency) = max CIF (GBP) ÷ FX rate
+max hammer         = (max CIF (currency) − other CIF costs) ÷ (1 + auction fee rate)
+```
+
+"Other CIF costs" are inland transport, ocean freight and marine insurance — plus the auction fee itself **when the operator has typed a fixed amount**, in which case the fee rate drops to zero so the fee is not counted twice. When the fee is still auto-deriving at 7%, it stays a rate, because it scales with the very number being solved for.
+
+The result is shown in the auction currency (the number you bid), its GBP equivalent, the landed cost it implies, and — once a hammer price is entered — **the headroom left or the amount over the ceiling**.
+
+**A note on solving this in a spreadsheet.** A sheet that holds duty fixed at the *actual* car's duty while solving for a lower bid overshoots, because duty should fall with the bid — so its ceiling lands just under target. The solver here re-derives duty from the bid being solved for, which is why the round-trip is exact. Where the two disagree, the tool is right. `workbook parity` in `uk-landed-cost.test.ts` asserts the round-trip lands on the target to ten decimal places; it no longer cross-checks a ceiling-bid cell, because the 15 September 2026 workbook is a clearance-cost sheet and carries no freight, duty or bid columns to check against.
+
+If fixed costs alone exceed the landed budget, the tool says the target is **unreachable at any bid** rather than printing a negative or a zero. Tests round-trip the solver back through `computeLandedCost` and assert the margin lands exactly on target, with and without VAT.
+
+---
+
+## 6. The verdict
+
+### 6.1 Division of labour
+
+The AI (Gemini) is handed a block of **already-computed facts** and asked for four things only: a recommendation enum, a headline, 2–4 sentences of reasoning, and a confidence level. Response schema is enforced by the API (`responseSchema` with `responseMimeType: application/json`), so parsing is not a guess.
+
+Facts supplied: the vehicle, the landed cost (with an explicit note that VAT is excluded and why), the full market statistics, the net-of-VAT resale figure and how it was derived, the profit in pounds and percent, whether it clears the run's target, the ceiling bid, and the listing count as a liquidity signal.
+
+The margin maths is **not** recomputed server-side from the raw median — `getVerdict` takes `resaleExVatGbp` and `targetMarginPct` from the client, so the prose and the panel can never disagree about which numbers were compared.
+
+When the median has been overridden (§4), `medianOverridden` is passed with it and the fact block says so in words: the median is the desk's own expected retail price, not a market-derived statistic, and the rest of the distribution is still the scraped listings. The model is not told to weigh it differently — it is told what it is looking at.
+
+### 6.2 Guardrails applied in code, after the model answers
+
+- **The target is enforced, not requested.** A car below the run's target can never come back as "source". If the model says `source` and the margin is short, the recommendation is downgraded to `marginal` on return. The model remains free to go *lower* than that, and free to withhold `source` above target for other reasons — thin supply, a widened match, a suspicious spread.
+- **Widened match caps confidence.** Fewer than 5 comparables means fewer exact matches, so `high` confidence is downgraded to `medium`.
+
+The stored `Verdict` therefore always carries `grossMargin`, `marginPct`, `targetMarginPct` and `meetsTarget` alongside the prose — the numbers travel with the narrative, so a saved analysis can be re-audited later without re-running anything.
+
+### 6.3 Recommendation vocabulary
+
+| Verdict | Meaning |
+|---|---|
+| **source** | Clears 30% with reasonable confidence in the comparables |
+| **marginal** | Short of 30% but close, or at/above it with thin supply, low confidence or a widened match |
+| **avoid** | Far short of 30%, or negative once selling time and negotiation are allowed for. **Not** reconditioning — refurb, cleaning and the warranty provision are inside the landed cost from the 15 September 2026 revision (§2.6), so deducting them again would double-count, and the verdict prompt says so explicitly. |
+
+---
+
+## 7. Auction-sheet extraction
+
+Uploading a Japanese auction sheet (image or PDF) sends it to Gemini multimodally with a schema-constrained prompt, and pre-fills the vehicle fields: make, model, trim/grade, chassis code, Western year (Japanese era converted — H28/12 → December 2016, R6 → 2024), mileage in km **and** miles, displacement, fuel, drivetrain, transmission, seats, colour, auction grade, interior grade, features and inspector condition notes.
+
+Rules the extractor operates under:
+
+- Anything it cannot read with confidence comes back `null` for a human to fill.
+- **It never reads or infers a price.** Auction cost is always entered by the operator.
+- The km→miles conversion is re-derived in code if the model omits it.
+- Everything it extracts is presented as "Extracted — please verify". It is a typing shortcut, not a source of truth.
+
+Model fallback: `gemini-2.5-flash` → `gemini-2.5-flash-lite` → `gemini-flash-lite-latest`, with one quick retry on a 503 (transient overload) and an immediate move to the next model on a 429 (quota). Both the extraction and the verdict share this path.
+
+---
+
+## 8. Standing assumptions
+
+Every one of these is a stated assumption, not a fact about a specific car. They are listed here so a reviewer can attack them directly.
+
+1. **The market median is the achievable resale price.** In practice a dealer rarely gets the full median — there is haggling and time-to-sell. (Prep is no longer in this list: refurb and cleaning are costed inside the landed figure from the 15 September 2026 revision.) The verdict prompt is told to allow headroom for this; the margin figure itself is not discounted for it. Where the operator has overridden the median (§4), the assumption becomes their own: the tool believes the figure it was given, and every downstream number inherits whatever judgement went into it.
+   - **The car resells at the standard 20% VAT rate.** The net resale figure is a flat median ÷ 1.2. A margin-scheme sale (VAT on the profit only, not the full price) would earn more than the tool credits, so the figure is conservative rather than wrong.
+2. **A fixed retail-prep allowance *is* in the landed cost — reconditioning to the extent of that allowance, and no further.** From the 15 September 2026 revision the base carries refurb £200, cleaning £50 and a warranty provision £100 (§2.6). This **reverses** the assumption that stood here until that date ("no paint, no tyres, no service, no warranty provision"), and it changes what the 30% ROI target measures, because the denominator now includes prep. The consequence everywhere downstream is that reconditioning must not be deducted a second time — the verdict prompt is told so in as many words. A car needing more than £350 of work is still worse than the number says. **This reversal follows the desk's workbook rather than a ratified policy decision, and is logged as pending in `brand-position.md` §11.3.**
+3. **Selling costs are not in the landed cost.** No advertising, no forecourt time, no finance commission clawback. The warranty provision in §8.2 sits on the line between prep and selling cost; it is counted as prep here.
+4. **The importer is VAT-registered and reclaims import VAT.** If that is ever untrue, the landed figure is understated by roughly 20% of (CIF + duty) and the tool must be reconfigured.
+5. **The FX rate is a spot indication.** HMRC's monthly rate governs the actual declaration.
+6. **Duty rate is the desk's conservative reading, not a tariff lookup.** Confirm against the live UK Trade Tariff at the 10-digit commodity code before committing.
+7. **Post-border figures are a mix of supplier quotes and desk estimates.** The clearance and unloading charges are the agent's; the IVA test fee is DVSA's published statutory fee; refurb, cleaning and the warranty provision are desk allowances. None is a binding quote for a specific car. Where the workbook prices a line twice, the SMC column is used (§2.6).
+8. **Vehicle age is calendar-year arithmetic** — current year minus the Year field. It does not know the registration month, which is exactly why the IVA decision near the 10-year mark is a human one.
+9. **Scraped listings are asking prices, not sold prices.** Asking prices run above transaction prices, and AutoTrader exposes no ad-posted date, so time-on-market cannot be measured. Listing count is the only liquidity signal available.
+10. **The comparable set is a snapshot.** Re-running tomorrow can legitimately give a different answer.
+11. **Partial AutoTrader results are accepted by design** (see §3.1). The sample is not the whole pool.
+12. **Every car ships three to a container.** `CARS_PER_CONTAINER = 3` divides the £200 customs-clearance and £1,230 unloading charges down to a per-car share (§2.6). The engine has no way to know what a given shipment actually holds, so a car shipped alone is under-costed by £953 unless the operator retypes both fields. The fields carry the divisor as a hint; there is no control for the count.
+13. **The DVLA first-registration application fee is carried at £0 because it is unpriced, not because it is free.** The workbook's SMC column reads "TBC" and Excel's `SUM` silently skips the text, so the workbook's own £1,732.92 is a subtotal with a declared hole. The alternate supplier quotes £790 for the same line — roughly 11% of a £7,000 landed cost, and the one figure here most likely to move a verdict. It is carried as a visible, labelled £0 line rather than omitted, so the gap is on screen rather than buried. **Logged as pending in `brand-position.md` §11.3.**
+14. **"Road tax (6 months)" carries the workbook's own label, not a checked revenue figure.** It replaces a first-year CO2-banded VED charge with £206.25, which is a different tax event rather than a repricing — and the half-year reading is the supplier's wording, not something confirmed against DVLA: six months at the £195 standard rate would be £107.25, while £206.25 sits close to an uplifted *annual* standard rate. So the line is either mislabelled or a second half-year is missing, and for a high-emitting import the first-year charge can run well past either. **Logged as pending in `brand-position.md` §11.3.**
+
+---
+
+## 9. Failure modes worth recognising
+
+| Symptom | Usual cause |
+|---|---|
+| "Market scraper is blocked… monthly usage limit" | The Apify account cap. Raise it in the Apify console — this is not a code bug. See memory `apify-free-tier-cap`. |
+| "GEMINI_API_KEY / APIFY_TOKEN is not configured" | The key is set locally but missing on that Railway service. |
+| Listings scraped, none matched | The year or mileage band is too tight. A year band of ±0 matches the exact year only. Widen, or add listings manually from the scraped set. Or enter an estimated sale price (§4) to price the car without comparables. |
+| Verdict prose disagrees with the figures on screen | The comparable set was edited after the verdict ran. The banner says so; re-run it. |
+| Zero results for a Mercedes or BMW model | A model-token quirk in the search URL. `autoTraderModelToken` covers the *Class* and *Series* families; a new pattern may need adding. |
+
+---
+
+## 10. Credit usage
+
+Both paid dependencies are metered in the UI, always visible — the point of a remaining-balance meter is to see it *before* spending.
+
+- **Gemini tokens** are read from `usageMetadata.totalTokenCount` on each response, which costs nothing extra. Google publishes no per-key usage API, so the allowance has to be declared via `GEMINI_TOKEN_BUDGET`; unset simply hides the bar rather than inventing a total.
+- **Apify spend and cap** are read live from `/v2/users/me/limits`, a free endpoint that consumes no actor credits.
+
+Two AI calls exist per analysis: the auction-sheet extraction and the verdict. One or two scraper runs exist per crawl. Editing the comparable set costs nothing.

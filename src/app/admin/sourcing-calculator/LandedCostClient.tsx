@@ -38,18 +38,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { scrollBehavior } from "@/lib/fluid";
 import { computeMarketStats, type NormalizedListing } from "@/lib/market-stats";
 import {
+  AUCTION_FEE_RATE,
+  clampTargetMargin,
   computeLandedCost,
+  DEFAULT_OCEAN_FREIGHT_JPY,
   DUTY_LABELS,
-  FTA_COUNTRIES,
   fmtGBP,
   fmtPct,
+  isNearIvaExemption,
+  ivaRequiredForAge,
+  maxAuctionPriceForMargin,
   ORIGIN_COUNTRY_LABELS,
+  ORIGIN_STATEMENT_COUNTRIES,
   type OriginCountry,
-  POST_BORDER_DEFAULTS,
-  postBorderForAge,
+  POST_BORDER_BASE_ITEMS,
+  POST_BORDER_HINTS,
+  POST_BORDER_IVA_ITEMS,
+  POST_BORDER_LABELS,
+  type PostBorderBaseKey,
+  type PostBorderIvaKey,
+  RESALE_VAT_DIVISOR,
+  resaleExVat,
   resolveTaxTreatment,
+  TARGET_MARGIN_PCT,
 } from "@/lib/uk-landed-cost";
 
 // Fuel types offered for the vehicle.
@@ -211,7 +225,7 @@ function UsageMeter({
         className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200"
       >
         <div
-          className={`h-full rounded-full transition-all ${bar}`}
+          className={`h-full rounded-full ${bar}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -339,12 +353,17 @@ export default function LandedCostClient({
   useEffect(() => {
     if (!feeManual) {
       const h = num(hammerPrice);
-      setAuctionExportFees(h > 0 ? String(Math.round(h * 0.07)) : "");
+      setAuctionExportFees(
+        h > 0 ? String(Math.round(h * AUCTION_FEE_RATE)) : "",
+      );
     }
   }, [hammerPrice, feeManual]);
   const [inlandTransportOrigin, setInlandTransportOrigin] = useState("");
-  // Default freight: 260,000 JPY for a 3-car container (editable per shipment).
-  const [oceanFreight, setOceanFreight] = useState("260000");
+  // Default freight comes from DEFAULT_OCEAN_FREIGHT_JPY, per car and editable
+  // per shipment — kept as a reference so the two can never drift apart.
+  const [oceanFreight, setOceanFreight] = useState(
+    String(DEFAULT_OCEAN_FREIGHT_JPY),
+  );
   const [marineInsurance, setMarineInsurance] = useState("");
 
   // FX — displayed and entered as units-per-GBP (e.g. JPY per GBP), the intuitive
@@ -355,7 +374,9 @@ export default function LandedCostClient({
 
   // ── Tax treatment (salesperson-friendly inputs → duty/VAT derived) ──────────
   const [country, setCountry] = useState<OriginCountry>("japan");
-  const [hasOriginStatement, setHasOriginStatement] = useState(true); // default Yes
+  // Default No: duty starts at the 10% MFN rate and only drops to 0% once the
+  // desk confirms a Japan CEPA statement of origin is actually held.
+  const [hasOriginStatement, setHasOriginStatement] = useState(false);
   const [isCommercialPickup, setIsCommercialPickup] = useState(false);
 
   const vehicleAgeYears = year
@@ -374,35 +395,51 @@ export default function LandedCostClient({
   const dutyBasis = treatment.dutyBasis;
   const vatBasis = treatment.vatBasis;
 
-  // ── Post-border GBP costs (editable defaults) ───────────────────────────────
-  const [dvlaRegistration, setDvla] = useState(
-    String(POST_BORDER_DEFAULTS.dvlaRegistration),
+  // ── Post-border GBP costs (the desk's line items, editable per run) ─────────
+  // Base costs land on every car; the IVA block lands only when the car has to
+  // sit the approval test. Both come pre-filled from the desk's own figures.
+  const [baseCosts, setBaseCosts] = useState(
+    () =>
+      Object.fromEntries(
+        Object.entries(POST_BORDER_BASE_ITEMS).map(([k, v]) => [k, String(v)]),
+      ) as Record<PostBorderBaseKey, string>,
   );
-  const [numberPlates, setPlates] = useState(
-    String(POST_BORDER_DEFAULTS.numberPlates),
+  const [ivaCosts, setIvaCosts] = useState(
+    () =>
+      Object.fromEntries(
+        Object.entries(POST_BORDER_IVA_ITEMS).map(([k, v]) => [k, String(v)]),
+      ) as Record<PostBorderIvaKey, string>,
   );
-  const [approvalTest, setApproval] = useState(
-    String(POST_BORDER_DEFAULTS.approvalTest),
-  );
-  const [ivaModifications, setMods] = useState(
-    String(POST_BORDER_DEFAULTS.ivaModifications),
-  );
-  const [ukInlandTransport, setUkTransport] = useState(
-    String(POST_BORDER_DEFAULTS.ukInlandTransport),
-  );
-  // Default post-border is the age-based figure; the operator can switch to the
-  // itemised breakdown to override.
-  const [postBorderDetailed, setPostBorderDetailed] = useState(false);
 
-  const detailedPostBorder =
-    num(dvlaRegistration) +
-    num(numberPlates) +
-    num(approvalTest) +
-    num(ivaModifications) +
-    num(ukInlandTransport);
-  const postBorderTotal = postBorderDetailed
-    ? detailedPostBorder
-    : postBorderForAge(vehicleAgeYears);
+  // Whether the IVA test applies. Derived from age (under 10 = yes, unknown =
+  // assume yes) until the operator says otherwise — from then on their answer
+  // sticks, because the real determinant is the clearance timeline, which only
+  // the person booking the shipment knows.
+  const [ivaRequired, setIvaRequired] = useState(true);
+  const [ivaManual, setIvaManual] = useState(false);
+  useEffect(() => {
+    if (!ivaManual) setIvaRequired(ivaRequiredForAge(vehicleAgeYears));
+  }, [vehicleAgeYears, ivaManual]);
+  // A car within a year of the exemption usually registers after its birthday,
+  // so the operator is prompted (never forced) to drop the IVA block.
+  const ivaWaiverOffered = isNearIvaExemption(vehicleAgeYears);
+
+  const baseCostTotal = Object.values(baseCosts).reduce(
+    (a, v) => a + num(v),
+    0,
+  );
+  const ivaCostTotal = Object.values(ivaCosts).reduce((a, v) => a + num(v), 0);
+  const postBorderTotal = baseCostTotal + (ivaRequired ? ivaCostTotal : 0);
+
+  // ── Minimum ROI ─────────────────────────────────────────────────────────────
+  // The desk minimum is 30% gross margin on landed cost, but it is a judgement
+  // the operator can move per run (a thin, risky car may need 35%). It drives
+  // the badge, the ceiling bid, the verdict policy and the PDF together.
+  const [targetMarginInput, setTargetMarginInput] = useState(
+    String(TARGET_MARGIN_PCT * 100),
+  );
+  const targetMarginPct = clampTargetMargin(num(targetMarginInput) / 100);
+  const targetLabel = `${Number((targetMarginPct * 100).toFixed(1))}%`;
 
   // GBP per 1 unit of currency, from the JPY-per-GBP the operator enters.
   const fxGbpPerUnit = num(fxRate) > 0 ? 1 / num(fxRate) : 0;
@@ -419,6 +456,9 @@ export default function LandedCostClient({
         fxRate: fxGbpPerUnit,
         dutyBasis,
         vatBasis,
+        // Import VAT is reclaimed by the (VAT-registered) importer, so it is
+        // cash-flow, not cost — carrying it here would understate margin.
+        includeVat: false,
         postBorderTotal,
       }),
     [
@@ -466,11 +506,47 @@ export default function LandedCostClient({
     [editableListings],
   );
 
+  // ── Manual median override ─────────────────────────────────────────────────
+  // The scraped median is the default, but the desk often knows the retail
+  // number better than a thin comparable set does. Rather than nudging the
+  // median by adding and removing listings, the operator types the figure the
+  // car will actually sell at. Everything downstream — net resale, profit, the
+  // ceiling bid, the verdict, the PDF and the saved run — reads the effective
+  // median below, so one number moves the whole page at once.
+  //
+  // With no comparables — no crawl yet, or a crawl that matched nothing — there
+  // is no scraped median to fall back on, so a figure typed into the summary
+  // panel's "Estimated sale price" is in force on its own. That lets the desk
+  // price a car without spending scraper credits.
+  const [medianOverrideOn, setMedianOverrideOn] = useState(false);
+  const [medianOverrideInput, setMedianOverrideInput] = useState("");
+  const noComparables = liveStats.count === 0;
+  const medianOverridden =
+    (medianOverrideOn || noComparables) && num(medianOverrideInput) > 0;
+  // A resale figure exists to measure against: scraped, or typed by the desk.
+  const hasResale = !noComparables || medianOverridden;
+  const manualResaleLabel = noComparables ? "manual estimate" : "manual median";
+  const effectiveMedian = medianOverridden
+    ? num(medianOverrideInput)
+    : liveStats.median;
+
+  // The scraped stats with the median swapped for the operator's. The rest of
+  // the distribution (range, IQR, histogram, outlier count) still describes the
+  // real listings, because it still is the real listings.
+  const stats = useMemo(
+    () =>
+      medianOverridden ? { ...liveStats, median: effectiveMedian } : liveStats,
+    [liveStats, medianOverridden, effectiveMedian],
+  );
+
   // Auto-scroll to the results once an analysis lands.
   const marketRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (market) {
-      marketRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      marketRef.current?.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "start",
+      });
     }
   }, [market]);
 
@@ -522,15 +598,63 @@ export default function LandedCostClient({
   );
 
   // Live margin, recomputed from the current listing set.
-  const liveMargin = liveStats.median - result.totalLanded;
+  // Scraped forecourt prices are VAT-inclusive; the landed cost above excludes
+  // import VAT because the importer reclaims it. Take the VAT back out of the
+  // resale side so both halves of the margin are net figures.
+  const medianExVat = resaleExVat(effectiveMedian);
+  const liveMargin = medianExVat - result.totalLanded;
+  const liveMarginPct =
+    result.totalLanded > 0 ? liveMargin / result.totalLanded : 0;
+
+  // The ceiling bid: back-solve the engine from the median resale price to the
+  // biggest hammer that still clears the target margin. Fees that scale with the
+  // hammer stay a rate; a manually-entered fee is a fixed CIF component.
+  const maxBid = useMemo(
+    () =>
+      maxAuctionPriceForMargin({
+        targetMarginPct,
+        resaleGbp: medianExVat,
+        postBorderTotal,
+        dutyRate: result.dutyRate,
+        vatEffectiveRate: result.vatEffectiveRate,
+        fxRate: fxGbpPerUnit,
+        otherCifCosts:
+          num(inlandTransportOrigin) +
+          num(oceanFreight) +
+          num(marineInsurance) +
+          (feeManual ? num(auctionExportFees) : 0),
+        auctionFeeRate: feeManual ? 0 : AUCTION_FEE_RATE,
+      }),
+    [
+      medianExVat,
+      targetMarginPct,
+      postBorderTotal,
+      result.dutyRate,
+      result.vatEffectiveRate,
+      fxGbpPerUnit,
+      inlandTransportOrigin,
+      oceanFreight,
+      marineInsurance,
+      auctionExportFees,
+      feeManual,
+    ],
+  );
+  // How the ceiling compares with what's actually being bid.
+  const bidHeadroom = maxBid.achievable
+    ? maxBid.maxHammer - num(hammerPrice)
+    : 0;
 
   // The verdict narrative is written against a specific set of comparables.
   // Signing the set lets us tell the operator when the prose has fallen behind
   // an add/remove — length alone would miss an add that offsets a removal.
   const [verdictSignature, setVerdictSignature] = useState<string | null>(null);
   const listingsSignature = useMemo(
-    () => editableListings.map(listingKey).sort().join("~"),
-    [editableListings],
+    () =>
+      [
+        editableListings.map(listingKey).sort().join("~"),
+        `median:${Math.round(effectiveMedian)}`,
+      ].join("|"),
+    [editableListings, effectiveMedian],
   );
   const verdictStale =
     verdict != null && verdictSignature !== listingsSignature;
@@ -546,15 +670,17 @@ export default function LandedCostClient({
           cifGbp: result.cifGbp,
           duty: result.duty,
           dutyLabel: `Customs duty (${fmtPct(result.dutyRate)})`,
-          vat: result.vat,
-          vatLabel: `Import VAT (${fmtPct(result.vatEffectiveRate)})`,
           postBorder: result.postBorderTotal,
+          iva: ivaRequired ? ivaCostTotal : 0,
           totalLanded: result.totalLanded,
         },
         market: {
           count: liveStats.count,
           min: liveStats.min,
-          median: liveStats.median,
+          median: effectiveMedian,
+          medianOverridden,
+          scrapedMedian: liveStats.median,
+          medianExVat,
           mean: liveStats.mean,
           max: liveStats.max,
           p25: liveStats.p25,
@@ -580,8 +706,14 @@ export default function LandedCostClient({
         verdict: {
           ...verdict,
           grossMargin: liveMargin,
-          marginPct:
-            result.totalLanded > 0 ? liveMargin / result.totalLanded : 0,
+          marginPct: liveMarginPct,
+          targetMarginPct,
+        },
+        maxBid: {
+          currency,
+          maxHammer: maxBid.maxHammer,
+          maxLandedGbp: maxBid.maxLandedGbp,
+          achievable: maxBid.achievable,
         },
         usage: {
           aiTokens: extractTokens + verdictTokens,
@@ -627,15 +759,14 @@ export default function LandedCostClient({
         // Save the live (possibly edited) set so the stored figures match.
         market: {
           ...market,
-          stats: liveStats,
+          stats,
           listings: editableListings,
           widened: liveStats.count < 5,
         },
         verdict: {
           ...verdict,
           grossMargin: liveMargin,
-          marginPct:
-            result.totalLanded > 0 ? liveMargin / result.totalLanded : 0,
+          marginPct: liveMarginPct,
         },
       });
       if (res.success) {
@@ -661,6 +792,9 @@ export default function LandedCostClient({
     setMarket(null);
     setVerdict(null);
     setVerdictSignature(null);
+    // A stale override belongs to the previous car, not this one.
+    setMedianOverrideOn(false);
+    setMedianOverrideInput("");
     setSaved(false);
     try {
       // Make + model gate the match (case-insensitive); trim is a preference;
@@ -716,9 +850,18 @@ export default function LandedCostClient({
       const v = await getVerdict({
         vehicle: { make, model, edition, year, mileage },
         landedCostGbp: result.totalLanded,
-        stats: liveStats,
+        stats,
+        medianOverridden,
+        // The net figure the margin is actually measured against.
+        resaleExVatGbp: medianExVat,
+        targetMarginPct,
         matchUsed: market.matchUsed,
         widened: liveStats.count < 5,
+        maxBid: {
+          currency,
+          maxHammer: maxBid.maxHammer,
+          achievable: maxBid.achievable,
+        },
       });
       if (v.success) {
         setVerdict(v.data);
@@ -1015,8 +1158,8 @@ export default function LandedCostClient({
                   }}
                   hint={
                     feeManual
-                      ? "Manually set — 7% of hammer is the default"
-                      : "Auto: 7% of hammer value (editable)"
+                      ? `Manually set — ${(AUCTION_FEE_RATE * 100).toFixed(0)}% of hammer is the default`
+                      : `Auto: ${(AUCTION_FEE_RATE * 100).toFixed(0)}% of hammer value (editable)`
                   }
                 />
                 {feeManual ? (
@@ -1025,7 +1168,7 @@ export default function LandedCostClient({
                     onClick={() => setFeeManual(false)}
                     className="text-[11px] font-medium text-sky-600 hover:underline -mt-2 justify-self-start"
                   >
-                    Reset to 7%
+                    Reset to {(AUCTION_FEE_RATE * 100).toFixed(0)}%
                   </button>
                 ) : null}
                 <Field
@@ -1037,7 +1180,7 @@ export default function LandedCostClient({
                   label="Ocean freight to UK port"
                   value={oceanFreight}
                   onChange={setOceanFreight}
-                  hint="Default 260,000 JPY for a 3-car container — adjust per shipment"
+                  hint={`Default ${DEFAULT_OCEAN_FREIGHT_JPY.toLocaleString()} JPY per car — adjust per shipment`}
                 />
                 <Field
                   label="Marine insurance"
@@ -1101,10 +1244,10 @@ export default function LandedCostClient({
                 </div>
               </div>
 
-              {FTA_COUNTRIES.includes(country) ? (
+              {ORIGIN_STATEMENT_COUNTRIES.includes(country) ? (
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-zinc-600">
-                    Statement of origin from exporter?
+                    CEPA statement of origin from exporter?
                   </Label>
                   <Select
                     value={hasOriginStatement ? "yes" : "no"}
@@ -1119,8 +1262,8 @@ export default function LandedCostClient({
                     </SelectContent>
                   </Select>
                   <p className="text-[11px] text-zinc-400">
-                    Required for the 0% preferential rate; often hard to obtain
-                    for a used re-export.
+                    Japan-built cars only. Held documents drop duty to 0%;
+                    without them the car is priced at 10%.
                   </p>
                 </div>
               ) : null}
@@ -1138,12 +1281,14 @@ export default function LandedCostClient({
                 </p>
                 <div className="flex items-center justify-between border-t border-zinc-200 pt-2">
                   <span className="text-sm text-zinc-600">Import VAT</span>
-                  <span className="text-sm font-bold text-zinc-900">
-                    {fmtPct(result.vatEffectiveRate)}
+                  <span className="text-sm font-bold text-zinc-500">
+                    Excluded
                   </span>
                 </div>
                 <p className="text-[11px] text-zinc-500 -mt-1">
-                  {treatment.vatReason}
+                  Reclaimed as input tax by the importer, so it is cash-flow
+                  rather than cost — it is left out of the landed figure and the
+                  margin below.
                 </p>
                 {treatment.isHistoric ? (
                   <p className="text-[11px] text-amber-700">
@@ -1165,75 +1310,89 @@ export default function LandedCostClient({
               <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-zinc-600">
-                    {postBorderDetailed
-                      ? "Itemised total"
-                      : "Estimated clearance + registration"}
+                    Total UK costs
+                    {ivaRequired ? " (incl. IVA)" : " (no IVA)"}
                   </span>
                   <span className="text-lg font-bold text-zinc-900">
                     {fmtGBP(postBorderTotal)}
                   </span>
                 </div>
-                {!postBorderDetailed ? (
-                  <p className="text-[11px] text-zinc-400 mt-1">
-                    {vehicleAgeYears != null && vehicleAgeYears >= 10
-                      ? "10+ yrs: £800 standard clearance (no IVA)."
-                      : "Under 10 yrs: £1,000 clearance + £800 IVA buffer = £1,800."}
-                  </p>
-                ) : null}
-                <button
-                  type="button"
-                  onClick={() => setPostBorderDetailed((v) => !v)}
-                  className="mt-2 text-[11px] font-medium text-sky-600 hover:underline"
-                >
-                  {postBorderDetailed
-                    ? "Use the standard estimate"
-                    : "Itemise costs instead"}
-                </button>
+                <p className="text-[11px] text-zinc-400 mt-1">
+                  {fmtGBP(baseCostTotal)} base
+                  {ivaRequired ? ` + ${fmtGBP(ivaCostTotal)} IVA` : ""} · every
+                  line is editable
+                </p>
               </div>
 
-              {postBorderDetailed ? (
-                <>
-                  <div className="flex gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-[12px] text-amber-800">
-                    <span aria-hidden>⚠️</span>
-                    <p>
-                      Indicative placeholder figures — confirm each against your
-                      actual costs before relying on the landed-cost total.
-                    </p>
-                  </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {(Object.keys(baseCosts) as PostBorderBaseKey[]).map((k) => (
+                  <Field
+                    key={k}
+                    label={POST_BORDER_LABELS[k]}
+                    hint={POST_BORDER_HINTS[k]}
+                    value={baseCosts[k]}
+                    onChange={(v) =>
+                      setBaseCosts((prev) => ({ ...prev, [k]: v }))
+                    }
+                    prefix="£"
+                  />
+                ))}
+              </div>
+
+              {/* The IVA block. Age sets the default; the operator owns the
+                  call, because it turns on the clearance timeline. */}
+              <div className="rounded-lg border border-zinc-200 p-3 space-y-3">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={ivaRequired}
+                    onChange={(e) => {
+                      setIvaManual(true);
+                      setIvaRequired(e.target.checked);
+                    }}
+                    className="mt-0.5 size-4 shrink-0 accent-sky-600"
+                  />
+                  <span>
+                    <span className="block text-[13px] font-medium text-zinc-800">
+                      IVA test required — adds {fmtGBP(ivaCostTotal)}
+                    </span>
+                    <span className="block text-[11px] text-zinc-500 mt-0.5">
+                      {vehicleAgeYears == null
+                        ? "No year entered, so the IVA cost is assumed to apply."
+                        : vehicleAgeYears >= 10
+                          ? `${vehicleAgeYears} yrs old — outside the IVA scheme, so the whole approval block falls away. The MOT and the fog-light and speedo conversion are base lines either way.`
+                          : `${vehicleAgeYears} yrs old — inside the IVA scheme.`}
+                    </span>
+                  </span>
+                </label>
+
+                {ivaWaiverOffered && ivaRequired ? (
+                  <p className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-[11px] text-sky-800">
+                    This car turns 10 before it is likely to clear. Shipping and
+                    clearance usually take long enough that registration falls
+                    after the 10-year mark, where the IVA approval requirement
+                    falls away — untick above if the timeline supports it. Your
+                    call.
+                  </p>
+                ) : null}
+
+                {ivaRequired ? (
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <Field
-                      label="DVLA registration"
-                      value={dvlaRegistration}
-                      onChange={setDvla}
-                      prefix="£"
-                    />
-                    <Field
-                      label="Number plates"
-                      value={numberPlates}
-                      onChange={setPlates}
-                      prefix="£"
-                    />
-                    <Field
-                      label="IVA / MOT test"
-                      value={approvalTest}
-                      onChange={setApproval}
-                      prefix="£"
-                    />
-                    <Field
-                      label="IVA modifications"
-                      value={ivaModifications}
-                      onChange={setMods}
-                      prefix="£"
-                    />
-                    <Field
-                      label="UK inland transport"
-                      value={ukInlandTransport}
-                      onChange={setUkTransport}
-                      prefix="£"
-                    />
+                    {(Object.keys(ivaCosts) as PostBorderIvaKey[]).map((k) => (
+                      <Field
+                        key={k}
+                        label={POST_BORDER_LABELS[k]}
+                        hint={POST_BORDER_HINTS[k]}
+                        value={ivaCosts[k]}
+                        onChange={(v) =>
+                          setIvaCosts((prev) => ({ ...prev, [k]: v }))
+                        }
+                        prefix="£"
+                      />
+                    ))}
                   </div>
-                </>
-              ) : null}
+                ) : null}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -1246,7 +1405,7 @@ export default function LandedCostClient({
                 Landed cost
               </CardTitle>
               <Badge variant="secondary" className="text-[10px]">
-                {fmtPct(result.taxPctOfCif)} tax / CIF
+                {fmtPct(result.taxPctOfCif)} duty / CIF
               </Badge>
             </div>
             <p className="text-3xl font-bold mt-2">
@@ -1258,12 +1417,7 @@ export default function LandedCostClient({
               <BreakdownRow
                 label="CIF value"
                 value={fmtGBP(result.cifGbp)}
-                sub={cifLabel}
-              />
-              <BreakdownRow
-                label="Customs value (60% of CIF)"
-                value={fmtGBP(result.customsValue)}
-                sub="Valuation basis for duty & VAT"
+                sub={`${cifLabel} · full CIF is the customs value`}
               />
               <BreakdownRow
                 label={`Customs duty (${fmtPct(result.dutyRate)})`}
@@ -1271,30 +1425,192 @@ export default function LandedCostClient({
                 sub={DUTY_LABELS[result.dutyBasis]}
               />
               <BreakdownRow
-                label={`Import VAT (${fmtPct(result.vatEffectiveRate)})`}
-                value={fmtGBP(result.vat)}
-                sub={`On ${fmtGBP(result.vatBase)}`}
+                label="Import VAT"
+                value="Excluded"
+                sub="Reclaimed by the importer — not a cost"
               />
               <BreakdownRow
-                label="Post-border fees"
+                label="UK costs"
                 value={fmtGBP(result.postBorderTotal)}
                 sub={
-                  postBorderDetailed
-                    ? "Itemised (DVLA, plates, IVA/MOT, mods, transport)"
-                    : "Standard clearance + registration (by age)"
+                  ivaRequired
+                    ? `Clearance, transport, registration, prep + ${fmtGBP(ivaCostTotal)} IVA`
+                    : "Clearance, transport, registration, prep · no IVA"
                 }
               />
             </div>
             <Separator className="my-3 bg-zinc-700" />
-            <BreakdownRow
-              label="Total landed cost"
-              value={fmtGBP(result.totalLanded)}
-              strong
-            />
+            {/* The one number the operator would otherwise add up by hand.
+                Written out rather than using BreakdownRow's strong variant,
+                which paints zinc-900 text — invisible on this dark card. */}
+            <div className="flex items-start justify-between py-2 border-b border-zinc-700">
+              <div>
+                <p className="text-sm font-semibold text-white">Total cost</p>
+                <p className="text-[11px] text-zinc-400 mt-0.5">
+                  CIF + duty + UK costs, all in
+                </p>
+              </div>
+              <p className="text-base font-bold text-white tabular-nums">
+                {fmtGBP(result.totalLanded)}
+              </p>
+            </div>
+
+            {/* The other half of the P&L: what the car earns net of VAT, and
+                what is left after every cost above. */}
+            {/* No comparables to take a median from, so the desk can type
+                the price it expects instead. Same state as "Set the median
+                myself" below, so it survives listings being added by hand. */}
+            {noComparables ? (
+              <div className="mt-3 rounded-lg border border-zinc-700 px-3 py-2">
+                <div className="flex items-center justify-between gap-3">
+                  <label
+                    htmlFor="manual-estimate"
+                    className="text-[11px] uppercase tracking-widest text-zinc-400"
+                  >
+                    Estimated sale price
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-zinc-400">
+                      £
+                    </span>
+                    <Input
+                      id="manual-estimate"
+                      inputMode="decimal"
+                      value={medianOverrideInput}
+                      onChange={(e) => {
+                        setMedianOverrideInput(e.target.value);
+                        setMedianOverrideOn(true);
+                      }}
+                      className="h-8 w-28 border-zinc-600 bg-zinc-800 pl-6 text-right text-sm text-white tabular-nums"
+                    />
+                  </div>
+                </div>
+                <p className="mt-1 text-[11px] text-zinc-500">
+                  VAT-inclusive retail, like a forecourt listing — divided by{" "}
+                  {RESALE_VAT_DIVISOR} for profit. A crawl replaces it with the
+                  market median.
+                </p>
+              </div>
+            ) : null}
+
+            {hasResale ? (
+              <div className="[&_p]:text-zinc-300 [&_.border-zinc-100]:border-zinc-700">
+                <BreakdownRow
+                  label={
+                    noComparables
+                      ? "Estimated resale (ex VAT)"
+                      : "Median resale (ex VAT)"
+                  }
+                  value={fmtGBP(medianExVat)}
+                  sub={
+                    noComparables
+                      ? `${fmtGBP(effectiveMedian)} manual estimate ÷ ${RESALE_VAT_DIVISOR} · no comparables`
+                      : medianOverridden
+                        ? `${fmtGBP(effectiveMedian)} manual median ÷ ${RESALE_VAT_DIVISOR} · scraped ${fmtGBP(liveStats.median)}`
+                        : `${fmtGBP(liveStats.median)} market median ÷ ${RESALE_VAT_DIVISOR}`
+                  }
+                />
+                <div className="flex items-start justify-between py-2">
+                  <div>
+                    <p className="text-sm font-semibold text-zinc-100">
+                      Profit after all costs
+                    </p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                      {liveMarginPct >= targetMarginPct
+                        ? `Clears the ${targetLabel} minimum ROI`
+                        : `Below the ${targetLabel} minimum ROI`}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p
+                      className={`text-lg font-bold tabular-nums ${
+                        liveMarginPct >= targetMarginPct
+                          ? "text-emerald-400"
+                          : "text-red-400"
+                      }`}
+                    >
+                      {fmtGBP(liveMargin)}
+                    </p>
+                    <p
+                      className={`text-[11px] font-medium tabular-nums ${
+                        liveMarginPct >= targetMarginPct
+                          ? "text-emerald-400"
+                          : "text-red-400"
+                      }`}
+                    >
+                      {(liveMarginPct * 100).toFixed(1)}% ROI
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {/* The policy knob. Moving it moves the badge, the ceiling bid and
+                the verdict together. */}
+            <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-zinc-700 px-3 py-2">
+              <label
+                htmlFor="target-roi"
+                className="text-[11px] uppercase tracking-widest text-zinc-400"
+              >
+                Minimum ROI
+              </label>
+              <div className="flex items-center gap-1">
+                <Input
+                  id="target-roi"
+                  inputMode="decimal"
+                  value={targetMarginInput}
+                  onChange={(e) => setTargetMarginInput(e.target.value)}
+                  className="h-8 w-20 border-zinc-600 bg-zinc-800 text-right text-sm text-white tabular-nums"
+                />
+                <span className="text-sm text-zinc-400">%</span>
+              </div>
+            </div>
+
+            {/* The ceiling bid — the single number a buyer needs in the room.
+                Only meaningful once there's a resale figure to work back from. */}
+            {hasResale ? (
+              <div className="mt-4 rounded-lg border border-zinc-700 bg-zinc-800/60 p-3">
+                <p className="text-[10px] uppercase tracking-widest text-zinc-400">
+                  Max auction bid for {targetLabel} ROI
+                </p>
+                {maxBid.achievable ? (
+                  <>
+                    <p className="mt-1 text-2xl font-bold tabular-nums">
+                      {currency === "JPY" ? "¥" : "$"}
+                      {Math.round(maxBid.maxHammer).toLocaleString()}
+                    </p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">
+                      ≈ {fmtGBP(maxBid.maxHammer * fxGbpPerUnit)} · lands at{" "}
+                      {fmtGBP(maxBid.maxLandedGbp)} against a{" "}
+                      {fmtGBP(medianExVat)} net resale
+                      {medianOverridden ? ` (${manualResaleLabel})` : ""}
+                    </p>
+                    {num(hammerPrice) > 0 ? (
+                      <p
+                        className={`text-[11px] mt-1.5 font-medium ${
+                          bidHeadroom >= 0 ? "text-emerald-400" : "text-red-400"
+                        }`}
+                      >
+                        {bidHeadroom >= 0
+                          ? `${Math.round(bidHeadroom).toLocaleString()} ${currency} of headroom left on your bid`
+                          : `${Math.round(-bidHeadroom).toLocaleString()} ${currency} over the ceiling`}
+                      </p>
+                    ) : null}
+                  </>
+                ) : (
+                  <p className="mt-1 text-sm font-semibold text-red-400">
+                    Unreachable — freight, duty and UK costs alone exceed{" "}
+                    {fmtGBP(maxBid.maxLandedGbp)}. No bid clears {targetLabel}{" "}
+                    on this car.
+                  </p>
+                )}
+              </div>
+            ) : null}
+
             <p className="text-[11px] text-zinc-500 mt-4 leading-relaxed">
-              Indicative HMRC-based estimate. Confirm duty against the live UK
-              Trade Tariff (10-digit code) and use HMRC's monthly FX rate before
-              committing.
+              Indicative HMRC-based estimate, excluding reclaimable import VAT.
+              Confirm duty against the live UK Trade Tariff (10-digit code) and
+              use HMRC's monthly FX rate before committing.
             </p>
 
             {/* Step 2: once costs are in and listings crawled, get the verdict */}
@@ -1311,7 +1627,9 @@ export default function LandedCostClient({
             </Button>
             <p className="mt-2 text-[11px] text-zinc-500">
               {!market
-                ? "Crawl market listings first (top-left), then add costs."
+                ? medianOverridden
+                  ? "Your estimate already drives profit and the ceiling bid; the written verdict needs crawled comparables."
+                  : "Crawl market listings first (top-left), or enter an estimated sale price above."
                 : liveStats.count === 0
                   ? "No comparable listings yet — widen the match range and re-crawl."
                   : "Uses the crawled comparables + the landed cost above."}
@@ -1373,7 +1691,8 @@ export default function LandedCostClient({
                   {market.totalScraped === 1 ? " was" : "s were"} scraped, but
                   none fit <strong>{market.matchUsed}</strong>. Widen the year
                   or mileage range (a Year range of ±0 only matches the exact
-                  year) and re-run.
+                  year) and re-run, or enter an estimated sale price in the
+                  landed-cost panel.
                 </p>
                 {market.allListings.length > 0 ? (
                   <>
@@ -1399,23 +1718,103 @@ export default function LandedCostClient({
                 {/* Stat tiles */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {[
-                    { label: "Lowest", value: liveStats.min },
-                    { label: "Median", value: liveStats.median },
-                    { label: "Mean", value: liveStats.mean },
-                    { label: "Highest", value: liveStats.max },
+                    { label: "Lowest", value: liveStats.min, median: false },
+                    { label: "Median", value: effectiveMedian, median: true },
+                    { label: "Mean", value: liveStats.mean, median: false },
+                    { label: "Highest", value: liveStats.max, median: false },
                   ].map((s) => (
                     <div
                       key={s.label}
-                      className="rounded-lg border border-zinc-200 p-3"
+                      className={`rounded-lg border p-3 ${
+                        s.median && medianOverridden
+                          ? "border-sky-300 bg-sky-50"
+                          : "border-zinc-200"
+                      }`}
                     >
                       <p className="text-[11px] uppercase tracking-wide text-zinc-400">
-                        {s.label}
+                        {s.median && medianOverridden
+                          ? "Median (manual)"
+                          : s.label}
                       </p>
                       <p className="text-lg font-bold text-zinc-900">
                         {fmtGBP(s.value)}
                       </p>
+                      {s.median && medianOverridden ? (
+                        <p className="text-[11px] text-sky-700">
+                          scraped {fmtGBP(liveStats.median)}
+                        </p>
+                      ) : null}
                     </div>
                   ))}
+                </div>
+
+                {/* Manual median override. Quicker, and more honest, than
+                    moving the median by dropping listings that were genuinely
+                    comparable: the crawled set stays as it was, and the number
+                    the desk actually believes drives the P&L. */}
+                <div className="rounded-lg border border-zinc-200 p-3">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={medianOverrideOn}
+                      onChange={(e) => {
+                        setMedianOverrideOn(e.target.checked);
+                        if (e.target.checked && !medianOverrideInput) {
+                          setMedianOverrideInput(
+                            String(Math.round(liveStats.median)),
+                          );
+                        }
+                      }}
+                      className="mt-0.5 size-4 shrink-0 accent-sky-600"
+                    />
+                    <span>
+                      <span className="block text-[13px] font-medium text-zinc-800">
+                        Set the median myself
+                      </span>
+                      <span className="block text-[11px] text-zinc-500 mt-0.5">
+                        Replaces the {fmtGBP(liveStats.median)} scraped median
+                        everywhere — net resale, profit, ROI, the ceiling bid,
+                        the verdict, the PDF and the saved run. Enter a
+                        VAT-inclusive retail price, the same basis the listings
+                        are on; it is divided by {RESALE_VAT_DIVISOR} like any
+                        other median.
+                      </span>
+                    </span>
+                  </label>
+                  {medianOverrideOn ? (
+                    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 pl-7">
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-zinc-400">
+                          £
+                        </span>
+                        <Input
+                          inputMode="decimal"
+                          aria-label="Manual median"
+                          value={medianOverrideInput}
+                          onChange={(e) =>
+                            setMedianOverrideInput(e.target.value)
+                          }
+                          className="h-9 w-40 pl-7 tabular-nums"
+                        />
+                      </div>
+                      <p className="text-[11px] text-zinc-500">
+                        {medianOverridden
+                          ? `= ${fmtGBP(medianExVat)} net of VAT`
+                          : "Enter a figure above £0, or the scraped median stays in force."}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setMedianOverrideInput(
+                            String(Math.round(liveStats.median)),
+                          )
+                        }
+                        className="text-[12px] font-medium text-sky-700 hover:underline"
+                      >
+                        Reset to the scraped {fmtGBP(liveStats.median)}
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Histogram */}
@@ -1562,19 +1961,55 @@ export default function LandedCostClient({
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="text-[11px] uppercase tracking-wide text-zinc-400">
-                        Gross margin at median resale
+                        Profit at median resale (ex VAT)
                       </p>
-                      <p
-                        className={`text-2xl font-bold ${
-                          liveMargin >= 0 ? "text-emerald-600" : "text-red-600"
-                        }`}
-                      >
-                        {fmtGBP(liveMargin)}
-                      </p>
+                      <div className="flex items-baseline gap-2">
+                        <p
+                          className={`text-2xl font-bold ${
+                            liveMarginPct >= targetMarginPct
+                              ? "text-emerald-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {fmtGBP(liveMargin)}
+                        </p>
+                        <span
+                          className={`text-lg font-bold tabular-nums ${
+                            liveMarginPct >= targetMarginPct
+                              ? "text-emerald-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {(liveMarginPct * 100).toFixed(1)}%
+                        </span>
+                        <Badge
+                          className={`text-[10px] ${
+                            liveMarginPct >= targetMarginPct
+                              ? "bg-emerald-100 text-emerald-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {liveMarginPct >= targetMarginPct
+                            ? `clears the ${targetLabel} target`
+                            : `below the ${targetLabel} target`}
+                        </Badge>
+                      </div>
                       <p className="text-[11px] text-zinc-400">
-                        median {fmtGBP(liveStats.median)} − landed{" "}
-                        {fmtGBP(result.totalLanded)}
+                        net resale {fmtGBP(medianExVat)} (
+                        {medianOverridden ? "manual median" : "median"}{" "}
+                        {fmtGBP(effectiveMedian)} ÷ {RESALE_VAT_DIVISOR}) −
+                        landed {fmtGBP(result.totalLanded)} · % of landed cost
                       </p>
+                      {maxBid.achievable ? (
+                        <p className="text-[11px] text-zinc-500 mt-1">
+                          Max bid for {targetLabel}:{" "}
+                          <span className="font-semibold text-zinc-700 tabular-nums">
+                            {currency === "JPY" ? "¥" : "$"}
+                            {Math.round(maxBid.maxHammer).toLocaleString()}
+                          </span>{" "}
+                          hammer ({fmtGBP(maxBid.maxHammer * fxGbpPerUnit)})
+                        </p>
+                      ) : null}
                     </div>
                     {verdict ? (
                       <Badge
@@ -1603,9 +2038,9 @@ export default function LandedCostClient({
                       {verdictStale ? (
                         <div className="mt-2 flex flex-wrap items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
                           <p className="text-[11px] text-amber-800">
-                            Your listing set changed. The figures above already
-                            reflect it; the written narrative is from the
-                            previous set.
+                            The comparables or the median changed. The figures
+                            above already reflect it; the written narrative is
+                            from the previous set.
                           </p>
                           <Button
                             size="sm"

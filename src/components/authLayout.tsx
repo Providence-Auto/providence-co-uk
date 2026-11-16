@@ -27,7 +27,7 @@ export function AuthLayout({
           src={image}
           alt="Anime Event"
           style={{ maxHeight: "100vh" }}
-          className="h-full w-full object-cover grayscale transition-all duration-1000 hover:grayscale-0"
+          className="h-full w-full object-cover grayscale transition-feedback hover:grayscale-0"
         />
         <div className="absolute bottom-10 left-10 z-20 text-white max-w-lg">
           <blockquote className="space-y-2">

@@ -23,6 +23,8 @@ import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
+import SocialIcon from "@/components/SocialIcon";
+import { SOCIAL_PLATFORMS, type SocialLinks } from "@/lib/social-links";
 import { formatLeadPrice, formatVehicleTitle } from "@/lib/vehicle";
 
 // Icons a member can attach to an expertise card, resolved from the stored
@@ -70,6 +72,7 @@ type Profile = {
     rating: number;
   }[];
   whatsappNumber?: string;
+  socialLinks?: SocialLinks;
   userId: string;
 };
 
@@ -90,6 +93,14 @@ export default function TeamProfileClient({
     (profile.displayName || "").split(" ")[0] || "our specialist";
   const wa = waLink(profile.whatsappNumber);
   const bioParagraphs = (profile.bio || "").split(/\n\n+/).filter(Boolean);
+  // Only the links the consultant actually filled in get an icon.
+  const socials = [
+    ...(wa ? [{ key: "whatsapp" as const, label: "WhatsApp", href: wa }] : []),
+    ...SOCIAL_PLATFORMS.flatMap((p) => {
+      const href = profile.socialLinks?.[p.key];
+      return href ? [{ key: p.key, label: p.label, href }] : [];
+    }),
+  ];
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col relative overflow-x-hidden font-sans selection:bg-black/10 selection:text-black">
@@ -113,7 +124,7 @@ export default function TeamProfileClient({
                 className="inline-flex items-center gap-2 text-zinc-500 font-bold tracking-[0.18em] uppercase text-xs mb-5"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
-                Providence Auto · Personal Sourcing Consultant
+                Providence Auto · Sales Consultant
               </Reveal>
               <Reveal
                 immediate
@@ -122,7 +133,7 @@ export default function TeamProfileClient({
                 delay={0.05}
                 className="text-4xl md:text-6xl font-bold tracking-tighter mb-5 whitespace-pre-line"
               >
-                {profile.headline || `Sourced by ${firstName}.`}
+                {profile.headline || `Imported with ${firstName}.`}
               </Reveal>
               <Reveal
                 immediate
@@ -144,7 +155,7 @@ export default function TeamProfileClient({
                 {profile.yearsExperience ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-black/5 px-4 py-2 text-sm font-semibold">
                     <Award size={14} className="text-sky-500" />{" "}
-                    {profile.yearsExperience}+ years sourcing
+                    {profile.yearsExperience}+ years exporting
                   </span>
                 ) : null}
                 {profile.languages && profile.languages.length > 0 && (
@@ -153,16 +164,21 @@ export default function TeamProfileClient({
                     {profile.languages.join(" · ")}
                   </span>
                 )}
-                {profile.sourcingCountries &&
-                  profile.sourcingCountries.length > 0 && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-black/5 px-4 py-2 text-lg leading-none">
-                      {profile.sourcingCountries.map((c, i) => (
-                        <span key={i} title={c.country}>
-                          {c.flag}
-                        </span>
-                      ))}
-                    </span>
-                  )}
+                {/* One pill per market. A single pill of bare flags read as an
+                    unlabelled blob — each country gets its own named box. */}
+                {profile.sourcingCountries?.map((c) => (
+                  <span
+                    key={c.country}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-black/5 px-4 py-2 text-sm font-semibold"
+                  >
+                    {c.flag ? (
+                      <span className="text-base leading-none">{c.flag}</span>
+                    ) : (
+                      <MapPin size={14} className="text-sky-500" />
+                    )}
+                    {c.country}
+                  </span>
+                ))}
               </Reveal>
 
               <Reveal
@@ -188,13 +204,31 @@ export default function TeamProfileClient({
                   Start an inquiry
                   <ArrowRight
                     size={16}
-                    className="group-hover:translate-x-1 transition-transform"
+                    className="group-hover:translate-x-1 transition-feedback"
                   />
                 </a>
               </Reveal>
+              {socials.length > 0 && (
+                <ul className="flex flex-wrap items-center gap-2 mt-5">
+                  {socials.map((s) => (
+                    <li key={s.key}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer me"
+                        aria-label={`${firstName} on ${s.label}`}
+                        title={s.label}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/5 text-zinc-700 hover:bg-black hover:text-white transition-colors"
+                      >
+                        <SocialIcon platform={s.key} size={17} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
               <p className="text-xs text-zinc-400 mt-5">
-                Backed by Providence Auto — UK-registered vehicle sourcing &amp;
-                export.
+                Backed by Providence Auto — a global vehicle sourcing &amp;
+                export group with our own teams in seven countries.
               </p>
             </div>
 
@@ -205,7 +239,7 @@ export default function TeamProfileClient({
                   // biome-ignore lint/performance/noImgElement: R2-hosted portrait, no next/image loader configured
                   <img
                     src={profile.photoUrl}
-                    alt={profile.displayName || "Sourcing consultant"}
+                    alt={profile.displayName || "Sales consultant"}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -287,7 +321,7 @@ export default function TeamProfileClient({
               y={20}
               className="text-2xl md:text-3xl font-bold tracking-tight mb-3"
             >
-              Where I source from
+              Where I export from
             </Reveal>
             <Reveal
               as="p"
@@ -348,7 +382,7 @@ export default function TeamProfileClient({
               y={20}
               className="text-2xl md:text-3xl font-bold tracking-tight mb-3"
             >
-              Cars I'm sourcing right now
+              Cars I'm exporting right now
             </Reveal>
             <Reveal
               as="p"
@@ -377,7 +411,7 @@ export default function TeamProfileClient({
                           src={img}
                           alt={title}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.2s] ease-out"
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-feedback"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-zinc-300">
@@ -486,9 +520,7 @@ export default function TeamProfileClient({
         <footer className="border-t border-black/5 py-10 px-4">
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-zinc-500">
             <p className="font-semibold text-zinc-900">Providence Auto</p>
-            <p className="font-light">
-              UK-registered vehicle sourcing &amp; export.
-            </p>
+            <p className="font-light">Global vehicle sourcing &amp; export.</p>
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 font-semibold text-zinc-900 hover:text-sky-500 transition-colors"

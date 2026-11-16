@@ -19,7 +19,7 @@ export default function Body() {
         one-tonne pickups in Thailand and export them to more than a hundred
         countries. Every layer of margin between that production line and a
         foreign showroom is a layer you can remove — which is the entire
-        argument for buying here. Here is how it works.
+        argument for importing from here. Here is how it works.
       </Lead>
 
       <KeyTakeaways
@@ -54,7 +54,7 @@ export default function Body() {
       <P>Three consequences follow:</P>
       <UL>
         <CheckLI>
-          <Strong>Factory-gate pricing.</Strong> Buying at source removes the
+          <Strong>Factory-gate pricing.</Strong> Importing direct from source removes the
           distributor and dealer margins a destination showroom stacks on top.
         </CheckLI>
         <CheckLI>

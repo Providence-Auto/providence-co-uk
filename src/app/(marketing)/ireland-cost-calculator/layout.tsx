@@ -5,10 +5,20 @@ import type { Metadata } from "next";
 const PATH = "/ireland-cost-calculator";
 const URL = `https://www.providenceauto.co.uk${PATH}`;
 
-const TITLE =
-  "Ireland Car Import Cost Calculator 2026 – VRT, VAT & Customs Duty";
+const TITLE = "Ireland Car Import Cost Calculator: VRT, VAT, Duty";
 const DESCRIPTION =
-  "Free calculator for the cost of importing a car to Ireland — VRT, VAT, customs duty and the NOx levy on 2026 Revenue rates. Covers cars from the UK, Japan, the EU and beyond, with live exchange rates.";
+  "Work out the cost of importing a car to Ireland: VRT, VAT, customs duty and the NOx levy on 2026 Revenue rates, for cars from the UK, Japan and the EU.";
+
+// A static file, not an opengraph-image route: the generated card was served
+// `max-age=0` and uncached at the edge, slow enough on a cold render for
+// WhatsApp's crawler to give up and cache a preview with no image.
+const OG_IMAGE = {
+  url: "https://www.providenceauto.co.uk/og/ireland-cost-calculator.jpg",
+  width: 1200,
+  height: 630,
+  type: "image/jpeg",
+  alt: "Ireland Car Import Cost Calculator — VRT, VAT & Customs Duty",
+};
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -33,11 +43,13 @@ export const metadata: Metadata = {
     siteName: "Providence Auto",
     title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
   robots: {
     index: true,
@@ -97,6 +109,7 @@ const breadcrumbSchema = {
   ],
 };
 
+// biome-ignore lint/correctness/noUnusedVariables: held back until verified, see below
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -106,7 +119,7 @@ const faqSchema = {
       name: "How much does it cost to import a car to Ireland in 2026?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The total landed cost is the purchase price plus shipping, customs duty (0% or 10%), VAT (23% where it applies), Vehicle Registration Tax (VRT, 7%–41% of the car's OMSP based on CO₂ emissions) and a NOx levy on petrol and diesel cars. Use the calculator for an exact estimate based on your car and where you're buying it.",
+        text: "The total landed cost is the purchase price plus shipping, customs duty (0% or 10%), VAT (23% where it applies), Vehicle Registration Tax (VRT, 7%–41% of the car's OMSP based on CO₂ emissions) and a NOx levy on petrol and diesel cars. Use the calculator for an exact estimate based on your car and where you're importing it from.",
       },
     },
     {
@@ -138,7 +151,7 @@ const faqSchema = {
       name: "What is VRT and how is it calculated in Ireland?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Vehicle Registration Tax is charged at 7% to 41% of the car's OMSP (Open Market Selling Price), with the rate set by the car's WLTP CO₂ emissions. Electric cars fall in the lowest 7% band and qualify for VRT relief of up to €5,000 until 31 December 2026. Classic cars over 30 years old pay a flat €200.",
+        text: "Vehicle Registration Tax is charged at 7% to 41% of the car's OMSP (Open Market Selling Price), with the rate set by the car's WLTP CO₂ emissions. Electric cars fall in the lowest 7% band and qualify for VRT relief of up to €5,000 until 31 December 2028. Classic cars over 30 years old pay a flat €200.",
       },
     },
     {
@@ -169,11 +182,10 @@ export default function IrelandCostCalculatorLayout({
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {/* faqSchema is held back (audit Q14, 2026-11-03): its six answers are
+          not shown on the page, and their VRT and relief figures are to be
+          re-verified against Revenue before they are. Render them and restore
+          this block together — never the markup without the visible text. */}
       {children}
     </>
   );

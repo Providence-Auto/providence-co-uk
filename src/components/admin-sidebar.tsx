@@ -5,12 +5,15 @@ import {
   Calculator, // Sourcing & profit analyzer
   Car,
   ChevronRight,
+  Database, // DBFlex sign-in
   FilePlus2,
+  Handshake, // Dealer inquiries
   IdCard,
   Instagram,
   LayoutDashboard,
   LogOut,
   Settings,
+  ShieldCheck, // Client KYC
   User,
   UserIcon,
   Users,
@@ -36,6 +39,12 @@ const navItems = [
   { title: "My Profile Page", url: "/admin/my-profile", icon: IdCard },
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Archived", url: "/admin/archived", icon: Archive },
+  {
+    title: "Dealer Inquiries",
+    url: "/admin/dealer-inquiries",
+    icon: Handshake,
+  },
+  { title: "Client KYC", url: "/admin/kyc", icon: ShieldCheck },
   { title: "Cars", url: "/admin/dossiers", icon: Car },
   {
     title: "Sourcing Analyzer",
@@ -44,6 +53,7 @@ const navItems = [
   },
   { title: "Create Spec", url: "/admin/specs", icon: FilePlus2 },
   { title: "Social Posts", url: "/admin/social-posts", icon: Instagram },
+  { title: "DBFlex", url: "/admin/dbflex", icon: Database },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
@@ -96,7 +106,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton
                   asChild
                   isActive={pathname === item.url}
-                  className="rounded-xl h-11 px-4 hover:bg-black/5 data-[active=true]:bg-black data-[active=true]:text-white transition-all"
+                  className="rounded-xl h-11 px-4 hover:bg-black/5 data-[active=true]:bg-black data-[active=true]:text-white transition-feedback"
                 >
                   <Link href={item.url}>
                     <item.icon />
@@ -133,7 +143,7 @@ export function AdminSidebar() {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-bold text-zinc-600 hover:text-red-600 bg-white hover:bg-red-50 border border-black/5 rounded-xl transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-bold text-zinc-600 hover:text-red-600 bg-white hover:bg-red-50 border border-black/5 rounded-xl transition-feedback shadow-sm"
           >
             <LogOut size={14} />
             Sign Out

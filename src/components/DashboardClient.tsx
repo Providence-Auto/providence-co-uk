@@ -28,31 +28,11 @@ import { isLhdLead, pathnameToSource } from "@/lib/leadSource";
 import RequestTableClient from "./RequestTableClient";
 import "react-day-picker/dist/style.css"; // Basic styles
 
-const PIPELINE_STAGES = [
-  "New",
-  "Vehicle Selection",
-  "Price Agreement",
-  "Deposit Collected",
-  "Vehicle Purchased",
-  "Preparation",
-  "Shipped",
-  "Arrived at Port",
-  "Cleared Customs",
-];
-
-// Simplify the list
-const SALES_STATUSES = [
-  "Action required",
-  "No Response",
-  "Stopped Responding",
-  "Replied (Email)",
-  "Replied (WhatsApp)",
-  "Replied (Both)",
-  "Active Conversation",
-  "SQL: Moved to vehicle offering stage",
-  "Not Qualified",
-  "Lead Lost", // "Lead Closed" removed as it is now grouped with Lead Lost
-];
+// Both lists live in src/lib/leadConversion.ts, beside the table mapping each
+// sales label to the offline conversion it earns. They are imported rather
+// than repeated because a local copy is how the dropdown and the conversion
+// logic drifted apart in the first place.
+import { PIPELINE_STAGES, SALES_STATUSES } from "@/lib/leadConversion";
 
 export default function DashboardClient({
   requests,
@@ -61,6 +41,13 @@ export default function DashboardClient({
 }: any) {
   // Filter & Sort States
   const [searchQuery, setSearchQuery] = useState("");
+  // `/admin?q=<email>` opens the table already searched — how a KYC record's
+  // "Open lead" link lands on its lead. Read after mount so the server render
+  // and the first client render agree.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) setSearchQuery(q);
+  }, []);
   const [stageFilter, setStageFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [staffFilter, setStaffFilter] = useState("All");
@@ -175,9 +162,12 @@ export default function DashboardClient({
           sourceFilter === "All" ||
           normalizeSource(req.source || "") === sourceFilter;
 
-        // "LHD" quick toggle — only leads that came through the Japanese
-        // left-hand-drive landing page (same rule as the table's LHD badge).
-        const matchesLhd = !lhdOnly || isLhdLead(req.source);
+        // "LHD" quick toggle — the customer's own choice on a car page wins,
+        // and leads without one still fall back to the Japanese left-hand-drive
+        // landing page (same rule as the table's LHD badge).
+        const matchesLhd =
+          !lhdOnly ||
+          (req.steering ? req.steering === "LHD" : isLhdLead(req.source));
 
         const matchesContactDue =
           contactDueFilter === "All" ||
@@ -339,7 +329,7 @@ export default function DashboardClient({
             placeholder="Search clients, makes, or models..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 text-base bg-white border border-zinc-200 shadow-sm focus:border-black focus:ring-4 focus:ring-black/5 outline-none rounded-2xl transition-all font-medium text-black placeholder:text-zinc-400"
+            className="w-full pl-12 pr-4 py-4 text-base bg-white border border-zinc-200 shadow-sm focus:border-black focus:ring-4 focus:ring-black/5 outline-none rounded-2xl transition-feedback font-medium text-black placeholder:text-zinc-400"
           />
         </div>
 
@@ -352,7 +342,7 @@ export default function DashboardClient({
               onClick={() => setMyLeadsOnly((v) => !v)}
               aria-pressed={myLeadsOnly}
               title="Show only leads assigned to me"
-              className={`flex items-center gap-2 pl-3 pr-3.5 py-2 text-sm font-semibold rounded-xl border transition-all ${
+              className={`flex items-center gap-2 pl-3 pr-3.5 py-2 text-sm font-semibold rounded-xl border transition-feedback ${
                 myLeadsOnly
                   ? "bg-blue-600 border-blue-600 text-white shadow-sm hover:bg-blue-700"
                   : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-300"
@@ -369,7 +359,7 @@ export default function DashboardClient({
               onClick={() => setLhdOnly((v) => !v)}
               aria-pressed={lhdOnly}
               title="Show only left-hand-drive leads"
-              className={`flex items-center gap-2 pl-3 pr-3.5 py-2 text-sm font-semibold rounded-xl border transition-all ${
+              className={`flex items-center gap-2 pl-3 pr-3.5 py-2 text-sm font-semibold rounded-xl border transition-feedback ${
                 lhdOnly
                   ? "bg-red-600 border-red-600 text-white shadow-sm hover:bg-red-700"
                   : "bg-white border-zinc-200 text-zinc-600 hover:border-zinc-300"
@@ -383,7 +373,7 @@ export default function DashboardClient({
             <select
               value={staffFilter}
               onChange={(e) => setStaffFilter(e.target.value)}
-              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
             >
               <option value="All">All Staff</option>
               <option value="Unassigned">Unassigned</option>
@@ -397,7 +387,7 @@ export default function DashboardClient({
             <select
               value={carFilter}
               onChange={(e) => setCarFilter(e.target.value)}
-              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
             >
               <option value="All">All Cars</option>
               {uniqueCars.map((car: any) => (
@@ -410,7 +400,7 @@ export default function DashboardClient({
             <select
               value={countryFilter}
               onChange={(e) => setCountryFilter(e.target.value)}
-              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
             >
               <option value="All">All Countries</option>
 
@@ -424,7 +414,7 @@ export default function DashboardClient({
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
-              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
             >
               <option value="All">All Stages</option>
               {PIPELINE_STAGES.map((stage) => (
@@ -437,7 +427,7 @@ export default function DashboardClient({
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
             >
               <option value="All">All Status</option>
               {SALES_STATUSES.map((status) => (
@@ -450,7 +440,7 @@ export default function DashboardClient({
             <select
               value={sourceFilter}
               onChange={(e) => setSourceFilter(e.target.value)}
-              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+              className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
             >
               <option value="All">All Sources</option>
               {uniqueSources.map((source) => (
@@ -465,7 +455,7 @@ export default function DashboardClient({
               value={contactDueFilter}
               onChange={(e) => setContactDueFilter(e.target.value)}
               title="Filter by when the lead asked to be contacted (IST)"
-              className={`pl-3 pr-8 py-2 text-sm border rounded-xl font-semibold cursor-pointer outline-none transition-all appearance-none bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] ${contactDueFilter !== "All" ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-zinc-200 hover:border-zinc-300 text-zinc-600"}`}
+              className={`pl-3 pr-8 py-2 text-sm border rounded-xl font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] ${contactDueFilter !== "All" ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-zinc-200 hover:border-zinc-300 text-zinc-600"}`}
             >
               <option value="All">Contact due: Any</option>
               {CONTACT_DUE_OPTIONS.map((opt) => (

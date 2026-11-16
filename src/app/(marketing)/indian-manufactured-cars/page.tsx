@@ -5,6 +5,10 @@ import IndianCarsLanding from "./IndianCarsLanding";
 const SITE = "https://www.providenceauto.co.uk";
 const PATH = "/indian-manufactured-cars";
 const URL = `${SITE}${PATH}`;
+// Same source photo as the hero, cropped to the 1200×630 size link-preview
+// crawlers (Facebook, LinkedIn, X, Slack…) expect so the image reliably renders.
+const OG_IMAGE =
+  "https://images.unsplash.com/photo-1663852408695-f57f4d75a536?q=80&w=1200&h=630&fit=crop&auto=format";
 
 // Brands promoted on this page — kept in sync with the client grid for the
 // ItemList schema so AI search engines can enumerate what we source.
@@ -46,8 +50,10 @@ export const metadata: Metadata = {
     description: indianCampaignConfig.meta.description,
     images: [
       {
-        url: indianCampaignConfig.hero.backgroundImage,
-        alt: "Indian-manufactured cars sourced by Providence Auto",
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Indian-manufactured cars exported by Providence Auto",
       },
     ],
   },
@@ -55,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: indianCampaignConfig.meta.title,
     description: indianCampaignConfig.meta.description,
-    images: [indianCampaignConfig.hero.backgroundImage],
+    images: [OG_IMAGE],
   },
   robots: {
     index: true,
@@ -79,7 +85,21 @@ export default function IndianManufacturedCarsPage() {
     serviceType: "Vehicle sourcing and import",
     description: indianCampaignConfig.meta.description,
     url: URL,
-    areaServed: ["United Kingdom", "Europe", "Middle East"],
+    // Kept in sync with DESTINATIONS in IndianCarsLanding.tsx — the countries
+    // the destination picker actually quotes rules and routes for.
+    areaServed: [
+      "United Kingdom",
+      "Ireland",
+      "Sri Lanka",
+      "Kenya",
+      "Tanzania",
+      "Uganda",
+      "Mauritius",
+      "Seychelles",
+      "Trinidad and Tobago",
+      "Jamaica",
+      "Grenada",
+    ],
     provider: {
       "@type": "Organization",
       name: "Providence Auto",
@@ -106,7 +126,7 @@ export default function IndianManufacturedCarsPage() {
   const brandListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Indian-manufactured car brands sourced by Providence Auto",
+    name: "Indian-manufactured car brands exported by Providence Auto",
     itemListElement: BRAND_NAMES.map((name, i) => ({
       "@type": "ListItem",
       position: i + 1,

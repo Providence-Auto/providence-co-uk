@@ -49,6 +49,8 @@ vi.mock("@/db", () => {
       id: "req_id_col",
       isDraft: "req_draft_col",
       createdAt: "req_created_col",
+      followUpAt: "req_followup_col",
+      statusUpdatedAt: "req_status_updated_col",
     },
     users: {
       id: "user_id_col",
@@ -61,10 +63,15 @@ vi.mock("@/db", () => {
   };
 });
 
-// Mock conversion triggers
+// Mock conversion triggers. These resolve to the real success shape, because
+// the action only writes its ledger when `result.ok` is true.
 vi.mock("@/lib/conversions", () => ({
-  sendGoogleConversion: vi.fn().mockResolvedValue(true),
-  sendMetaConversion: vi.fn().mockResolvedValue(true),
+  sendGoogleConversion: vi
+    .fn()
+    .mockResolvedValue({ ok: true, eventsReceived: 1, fbtraceId: null }),
+  sendMetaConversion: vi
+    .fn()
+    .mockResolvedValue({ ok: true, eventsReceived: 1, fbtraceId: null }),
 }));
 
 // Mock email service
@@ -164,38 +171,268 @@ describe("admin-actions", () => {
       expect(result.success).toBe(true);
     });
 
-    it("should trigger conversion events when status is Qualified", async () => {
-      const mockRequestExisting = {
+    describe("reassignment history", () => {
+      const lead = {
         id: "req-1",
-        leadStatus: "New",
-        notes: "",
-        statusHistory: [],
-        createdAt: new Date(),
-      };
-      const mockRequestUpdated = {
-        id: "req-1",
-        leadStatus: "Qualified",
-        notes: "",
-        statusHistory: [],
+        status: "Request Initiated",
+        statusHistory: [{ action: "Earlier entry" }],
+        assignedToId: "u-abd",
+        assignedToName: "Abdallah",
         createdAt: new Date(),
       };
 
-      vi.mocked(db.then)
-        .mockImplementationOnce((onFulfilled) =>
-          onFulfilled([mockRequestExisting]),
-        )
-        .mockImplementationOnce((onFulfilled) =>
-          onFulfilled([mockRequestUpdated]),
-        );
+      function primeDb(existing: object) {
+        vi.mocked(db.then)
+          .mockImplementationOnce((onFulfilled) => onFulfilled([existing]))
+          .mockImplementationOnce((onFulfilled) => onFulfilled([existing]));
+      }
 
-      const result = await updateRequestStatus("req-1", "ContactedStage", {
-        leadStatus: "Qualified",
-        salesComment: "Qualified lead.",
-        dossierIds: [],
+      it("logs the previous and the new owner when a lead is reassigned", async () => {
+        primeDb(lead);
+
+        await updateRequestStatus("req-1", "Request Initiated", {
+          assignedToId: "u-chat",
+          assignedToName: "Chathuranga Pitigala",
+          salesComment: "",
+        });
+
+        const saved = vi.mocked(db.set).mock.calls[0][0];
+        expect(saved.assignedToId).toBe("u-chat");
+        expect(saved.statusHistory).toHaveLength(2);
+        expect(saved.statusHistory[0]).toEqual({ action: "Earlier entry" });
+        expect(saved.statusHistory[1]).toMatchObject({
+          action: "Reassigned: Abdallah → Chathuranga Pitigala",
+          performedBy: "Admin User",
+        });
       });
 
-      expect(sendGoogleConversion).toHaveBeenCalled();
-      expect(sendMetaConversion).toHaveBeenCalled();
+      it("logs nothing when the assign dialog is saved unchanged", async () => {
+        primeDb(lead);
+
+        await updateRequestStatus("req-1", "Request Initiated", {
+          assignedToId: "u-abd",
+          assignedToName: "Abdallah",
+          salesComment: "",
+        });
+
+        expect(
+          vi.mocked(db.set).mock.calls[0][0].statusHistory,
+        ).toBeUndefined();
+      });
+
+      it("names an unassigned lead's first owner", async () => {
+        primeDb({ ...lead, assignedToId: null, assignedToName: null });
+
+        await updateRequestStatus("req-1", "Request Initiated", {
+          assignedToId: "u-abd",
+          assignedToName: "Abdallah",
+          salesComment: "",
+        });
+
+        expect(vi.mocked(db.set).mock.calls[0][0].statusHistory[1].action).toBe(
+          "Reassigned: Unassigned → Abdallah",
+        );
+      });
+    });
+
+    // These use the labels the dashboard dropdown actually produces. The
+    // previous version of this test used "New" -> "Qualified", neither of
+    // which the UI can emit, which is why it stayed green while production
+    // uploaded every rejected lead to Meta as a conversion.
+    describe("offline conversion uploads", () => {
+      const baseLead = {
+        id: "req-1",
+        notes: "",
+        statusHistory: [],
+        createdAt: new Date(),
+        status: "New",
+        metaQualifiedSentAt: null,
+        metaPurchaseSentAt: null,
+        googleQualifiedSentAt: null,
+      };
+
+      /** Prime the select (existing row) and the update's returning() row. */
+      function primeDb(existing: object, updated: object) {
+        vi.mocked(db.then)
+          .mockImplementationOnce((onFulfilled) => onFulfilled([existing]))
+          .mockImplementationOnce((onFulfilled) => onFulfilled([updated]));
+      }
+
+      const SQL_STATUS = "SQL: Moved to vehicle offering stage";
+
+      it("uploads to both platforms when the team moves a lead to SQL", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: "Action required" },
+          { ...baseLead, leadStatus: SQL_STATUS },
+        );
+
+        const result = await updateRequestStatus("req-1", "New", {
+          leadStatus: SQL_STATUS,
+          salesComment: "Real buyer.",
+          dossierIds: [],
+        });
+
+        expect(result.success).toBe(true);
+        expect(sendMetaConversion).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "req-1" }),
+          "QualifiedLead",
+          expect.anything(),
+        );
+        expect(sendGoogleConversion).toHaveBeenCalled();
+      });
+
+      // The regression this whole change exists for. "Not Qualified" contains
+      // the substring "qualified".
+      it("uploads NOTHING when the team marks a lead Not Qualified", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: "Action required" },
+          { ...baseLead, leadStatus: "Not Qualified" },
+        );
+
+        await updateRequestStatus("req-1", "New", {
+          leadStatus: "Not Qualified",
+          salesComment: "Tyre kicker.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+        expect(sendGoogleConversion).not.toHaveBeenCalled();
+      });
+
+      it("uploads nothing for Lead Lost", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: "Active Conversation" },
+          { ...baseLead, leadStatus: "Lead Lost" },
+        );
+
+        await updateRequestStatus("req-1", "New", {
+          leadStatus: "Lead Lost",
+          salesComment: "Went elsewhere.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+        expect(sendGoogleConversion).not.toHaveBeenCalled();
+      });
+
+      it("uploads nothing for a lead still in play", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: "Action required" },
+          { ...baseLead, leadStatus: "Active Conversation" },
+        );
+
+        await updateRequestStatus("req-1", "New", {
+          leadStatus: "Active Conversation",
+          salesComment: "Spoke today.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+        expect(sendGoogleConversion).not.toHaveBeenCalled();
+      });
+
+      // Under the old code this lead looked as though it had already
+      // converted, so its real qualification was silently dropped.
+      it("still uploads a lead rescued from Not Qualified to SQL", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: "Not Qualified" },
+          { ...baseLead, leadStatus: SQL_STATUS },
+        );
+
+        await updateRequestStatus("req-1", "New", {
+          leadStatus: SQL_STATUS,
+          salesComment: "Called back, real budget.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).toHaveBeenCalled();
+        expect(sendGoogleConversion).toHaveBeenCalled();
+      });
+
+      // Without a transition test, the first edit to any historical deal would
+      // replay it into a live ad account stamped with today's date.
+      it("does not backfill a lead that was already at SQL before this edit", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: SQL_STATUS },
+          { ...baseLead, leadStatus: SQL_STATUS },
+        );
+
+        await updateRequestStatus("req-1", "New", {
+          leadStatus: SQL_STATUS,
+          salesComment: "Just adding a note months later.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+        expect(sendGoogleConversion).not.toHaveBeenCalled();
+      });
+
+      it("does not backfill Purchase for a deal already past the deposit", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: "Action required", status: "Shipped" },
+          {
+            ...baseLead,
+            leadStatus: "Action required",
+            status: "Arrived at Port",
+          },
+        );
+
+        await updateRequestStatus("req-1", "Arrived at Port", {
+          leadStatus: "Action required",
+          salesComment: "Docked.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+      });
+
+      it("does not upload twice for a lead already reported", async () => {
+        const alreadySent = {
+          ...baseLead,
+          leadStatus: SQL_STATUS,
+          metaQualifiedSentAt: new Date("2026-08-01"),
+          googleQualifiedSentAt: new Date("2026-08-01"),
+        };
+        primeDb(alreadySent, alreadySent);
+
+        await updateRequestStatus("req-1", "New", {
+          leadStatus: SQL_STATUS,
+          salesComment: "Adding a note.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+        expect(sendGoogleConversion).not.toHaveBeenCalled();
+      });
+
+      // Purchase comes off the delivery pipeline, not the sales label.
+      it("uploads Purchase once the deposit stage is reached", async () => {
+        primeDb(
+          {
+            ...baseLead,
+            leadStatus: "Action required",
+            status: "Price Agreement",
+          },
+          {
+            ...baseLead,
+            leadStatus: "Action required",
+            status: "Deposit Collected",
+            agreedPrice: 42000,
+          },
+        );
+
+        await updateRequestStatus("req-1", "Deposit Collected", {
+          leadStatus: "Action required",
+          salesComment: "Deposit in.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "req-1" }),
+          "Purchase",
+          expect.objectContaining({ value: 42000, currency: "USD" }),
+        );
+      });
     });
   });
 
@@ -208,6 +445,86 @@ describe("admin-actions", () => {
 
       const result = await setFollowUpTimer("req-1", "2026-07-10T12:00:00Z");
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe("expireFollowUpTimer", () => {
+    const past = new Date(Date.now() - 60_000);
+    const setAt = new Date(Date.now() - 2 * 86_400_000);
+    const baseLead = {
+      id: "req-1",
+      leadStatus: "Opened",
+      followUpAt: past,
+      followUpSetAt: setAt,
+      statusUpdatedAt: null as Date | null,
+      statusHistory: [],
+    };
+
+    it("resets an untouched lead to Action required", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((ok) => ok([baseLead]))
+        .mockImplementationOnce((ok) => ok([{ id: "req-1" }]));
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "reset" });
+      const written = vi.mocked(db.set).mock.calls[0][0];
+      expect(written.leadStatus).toBe("Action required");
+      expect(written.followUpAt).toBeNull();
+    });
+
+    it("keeps a status the salesperson set after the reminder (the reported bug)", async () => {
+      const lead = {
+        ...baseLead,
+        leadStatus: "Replied (WhatsApp)",
+        statusUpdatedAt: new Date(setAt.getTime() + 3_600_000),
+      };
+      vi.mocked(db.then)
+        .mockImplementationOnce((ok) => ok([lead]))
+        .mockImplementationOnce((ok) => ok([{ id: "req-1" }]));
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "keep-status" });
+      const written = vi.mocked(db.set).mock.calls[0][0];
+      expect(written).not.toHaveProperty("leadStatus");
+      expect(written).not.toHaveProperty("statusUpdatedAt");
+      expect(written.followUpAt).toBeNull();
+      expect(written.statusHistory.at(-1).action).toBe(
+        "Follow-up reminder passed",
+      );
+    });
+
+    it("writes nothing when the timer was already cleared (stale tab)", async () => {
+      vi.mocked(db.then).mockImplementationOnce((ok) =>
+        ok([{ ...baseLead, followUpAt: null, followUpSetAt: null }]),
+      );
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "none" });
+      expect(db.update).not.toHaveBeenCalled();
+    });
+
+    it("writes nothing when the timer is not yet due on the server", async () => {
+      vi.mocked(db.then).mockImplementationOnce((ok) =>
+        ok([{ ...baseLead, followUpAt: new Date(Date.now() + 3_600_000) }]),
+      );
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "not-due" });
+      expect(db.update).not.toHaveBeenCalled();
+    });
+
+    it("reports none when another tab or a save changed the row first", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((ok) => ok([baseLead]))
+        .mockImplementationOnce((ok) => ok([])); // conditional update matched nothing
+
+      const result = await expireFollowUpTimer("req-1");
+
+      expect(result).toEqual({ success: true, outcome: "none" });
     });
   });
 

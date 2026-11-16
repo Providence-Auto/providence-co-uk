@@ -2,13 +2,18 @@
 
 import {
   Armchair,
+  CalendarClock,
   ExternalLink,
   Eye,
   Globe,
   Hash,
   Info,
+  Layers,
   Link2,
   Loader2,
+  Newspaper,
+  Palette,
+  Plus,
   Printer,
   Save,
   Settings2,
@@ -22,6 +27,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { generateDossierPdfAction } from "@/actions/pdf-actions";
 // Actions & Components
 import { getSpecDossierById, saveSpecDossier } from "@/actions/spec-actions";
+import { DestinationEditor } from "@/components/DestinationEditor";
+import { GradeEditor, SteeringOptionsEditor } from "@/components/GradeEditor";
 import { SpecSection } from "@/components/SpecSection";
 import { Badge } from "@/components/ui/badge";
 // UI Components
@@ -36,9 +43,39 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FEATURED_DESTINATION_LIMIT } from "@/config/destinations";
+import {
+  parseTags,
+  slugifyTag,
+  TAG_BASE_PATH,
+  TAG_COLLECTIONS,
+} from "@/config/vehicle-tags";
 import { getPresignedUrls } from "@/lib/file-actions";
 import { CAR_MAKES, getLogoFilename } from "@/lib/logo-utils";
-import { galleryPathForDossier, isLiveStatus } from "@/lib/vehicle";
+import {
+  galleryPathForDossier,
+  isLiveStatus,
+  parseSteeringOptions,
+} from "@/lib/vehicle";
+import {
+  colorLabel,
+  emptyColor,
+  parseColors,
+  swatchStyle,
+  type VehicleColor,
+} from "@/lib/vehicle-colors";
+import {
+  cleanDestinationsForSave,
+  defaultDestinationSlugs,
+  parseDestinationSlugs,
+} from "@/lib/vehicle-destinations";
+import {
+  cleanGradesForSave,
+  emptyGrade,
+  parseGrades,
+  type VehicleGrade,
+} from "@/lib/vehicle-grades";
+import { MOTORCYCLE_MAKES } from "@/lib/vehicle-type";
 
 // Full Country List for the Datalist
 const COUNTRIES = [
@@ -285,11 +322,19 @@ interface SpecDataType {
   emissions: string;
   steering: string;
   status: string;
+  /** Marks the model as coming soon rather than available to order today. */
+  isUpcoming: boolean;
+  expectedAvailability: string;
+  /** Slug of the /latest-news announcement this model launched in. */
+  newsSlug: string;
   customData: CustomDataEntry[];
   valuePoints: ValuePointEntry[];
+  /** "car" or "motorcycle" — decides the public URL and which listings it joins. */
+  vehicleType: string;
 }
 
 const initialSpecData: SpecDataType = {
+  vehicleType: "car",
   make: "",
   model: "",
   year: "",
@@ -312,9 +357,215 @@ const initialSpecData: SpecDataType = {
   emissions: "",
   steering: "RHD",
   status: "Draft",
+  isUpcoming: false,
+  expectedAvailability: "",
+  newsSlug: "",
   customData: [],
   valuePoints: [],
 };
+
+/**
+ * One palette editor — used twice, for exterior paint and interior trim.
+ * Rows are edited in place: name, primary swatch, and (when two-tone) a
+ * secondary swatch plus its own name so the lead reads "Sonic Grey / Black
+ * roof" rather than an ambiguous "two-tone".
+ *
+ * Each row can also be linked to one of the dossier's photographs, so picking
+ * that swatch on the car page swaps the gallery to the car in that finish.
+ */
+function ColorPaletteEditor({
+  title,
+  description,
+  colors,
+  onChange,
+  onAdd,
+  onRemove,
+  namePlaceholder,
+  secondaryPlaceholder,
+  images,
+}: {
+  title: string;
+  description: string;
+  colors: VehicleColor[];
+  onChange: (index: number, patch: Partial<VehicleColor>) => void;
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  namePlaceholder: string;
+  secondaryPlaceholder: string;
+  /** The dossier's gallery, in order — `imageIndex` points into this. */
+  images: string[];
+}) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label className="font-bold text-lg">{title}</Label>
+        <p className="text-sm text-zinc-500 mt-1">{description}</p>
+      </div>
+
+      <div className="p-6 bg-zinc-50 rounded-[2.5rem] border border-zinc-200 space-y-4">
+        {colors.length === 0 && (
+          <p className="text-zinc-500 text-sm italic px-1">
+            No colours added yet. Customers will see a free-text colour field on
+            the inquiry form instead.
+          </p>
+        )}
+
+        {colors.map((color, index) => (
+          <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: rows are positional and freely reorderable by add/remove; no stable id exists
+            key={index}
+            className="bg-white rounded-[1.75rem] border border-black/5 p-5 space-y-4"
+          >
+            <div className="flex items-start gap-4">
+              {/* Live preview of exactly what the customer will see. */}
+              <div
+                className="h-12 w-12 shrink-0 rounded-full border border-black/10 shadow-inner"
+                style={swatchStyle(color)}
+                aria-hidden="true"
+              />
+
+              <div className="flex-1 grid sm:grid-cols-[1fr_auto] gap-3 items-start">
+                <Input
+                  value={color.name}
+                  onChange={(e) => onChange(index, { name: e.target.value })}
+                  placeholder={namePlaceholder}
+                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
+                />
+                <input
+                  type="color"
+                  aria-label={`${title} primary swatch`}
+                  value={color.hex}
+                  onChange={(e) => onChange(index, { hex: e.target.value })}
+                  className="h-11 w-16 rounded-xl border border-zinc-200 bg-white p-1 cursor-pointer"
+                />
+              </div>
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => onRemove(index)}
+                aria-label={`Remove ${color.name || "colour"}`}
+                className="shrink-0 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
+              >
+                <Trash2 size={16} />
+              </Button>
+            </div>
+
+            <div className="pl-16 space-y-3">
+              <button
+                type="button"
+                onClick={() =>
+                  onChange(index, { isDualTone: !color.isDualTone })
+                }
+                aria-pressed={color.isDualTone === true}
+                className="inline-flex items-center gap-2.5 text-xs font-bold text-zinc-600 hover:text-black transition-colors"
+              >
+                <span
+                  className={`h-4 w-7 shrink-0 rounded-full p-0.5 transition-colors ${
+                    color.isDualTone ? "bg-sky-500" : "bg-zinc-300"
+                  }`}
+                >
+                  <span
+                    className={`block h-3 w-3 rounded-full bg-white transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${
+                      color.isDualTone ? "translate-x-3" : "translate-x-0"
+                    }`}
+                  />
+                </span>
+                Dual tone
+              </button>
+
+              {color.isDualTone && (
+                <div className="grid sm:grid-cols-[1fr_auto] gap-3 items-start">
+                  <Input
+                    value={color.secondaryName || ""}
+                    onChange={(e) =>
+                      onChange(index, { secondaryName: e.target.value })
+                    }
+                    placeholder={secondaryPlaceholder}
+                    className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
+                  />
+                  <input
+                    type="color"
+                    aria-label={`${title} secondary swatch`}
+                    value={color.hex2 || "#f5f5f5"}
+                    onChange={(e) => onChange(index, { hex2: e.target.value })}
+                    className="h-11 w-16 rounded-xl border border-zinc-200 bg-white p-1 cursor-pointer"
+                  />
+                </div>
+              )}
+
+              {/* Link this finish to the photograph that shows it. Optional —
+                  most of a factory palette has no matching shot, and an
+                  unlinked swatch simply stays non-interactive on the car page
+                  rather than showing the car in the wrong colour. */}
+              {images.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 mb-2">
+                    Linked photo
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onChange(index, { imageIndex: undefined })}
+                      aria-pressed={color.imageIndex === undefined}
+                      className={`h-12 px-3 rounded-lg border-2 text-[11px] font-bold uppercase tracking-wider transition-feedback ${
+                        color.imageIndex === undefined
+                          ? "border-black bg-black text-white"
+                          : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400"
+                      }`}
+                    >
+                      None
+                    </button>
+                    {images.map((img, imgIdx) => (
+                      <button
+                        // biome-ignore lint/suspicious/noArrayIndexKey: the index IS the stored value
+                        key={imgIdx}
+                        type="button"
+                        onClick={() => onChange(index, { imageIndex: imgIdx })}
+                        aria-pressed={color.imageIndex === imgIdx}
+                        title={`Link photo ${imgIdx + 1}`}
+                        className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-feedback ${
+                          color.imageIndex === imgIdx
+                            ? "border-sky-500 ring-2 ring-sky-200"
+                            : "border-zinc-200 hover:border-zinc-400"
+                        }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Photo ${imgIdx + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {color.name.trim() && (
+                <p className="text-[11px] text-zinc-400 font-medium">
+                  Shows as{" "}
+                  <span className="text-zinc-600 font-bold">
+                    {colorLabel(color)}
+                  </span>
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onAdd}
+          className="w-full h-12 rounded-xl border-dashed border-zinc-300 text-zinc-600 hover:text-black hover:border-zinc-400 bg-white"
+        >
+          <Plus size={16} className="mr-2" /> Add colour
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 function SpecBuilderContent() {
   const searchParams = useSearchParams();
@@ -344,12 +595,35 @@ function SpecBuilderContent() {
   const [newFeature, setNewFeature] = useState("");
   const [searchTags, setSearchTags] = useState<string[]>([]);
   const [newSearchTag, setNewSearchTag] = useState("");
+  // Landing-page tags: each one is a public page at /import/<tag>.
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
 
   const [newCustomLabel, setNewCustomLabel] = useState("");
   const [newCustomValue, setNewCustomValue] = useState("");
 
   const [newValueTitle, setNewValueTitle] = useState("");
   const [newValueDesc, setNewValueDesc] = useState("");
+
+  // Colour palettes. Edited in place (rather than the add-then-commit pattern
+  // used for pricing) because a colour is three coupled fields — name, swatch,
+  // second swatch — and admins invariably tweak the hex after naming it.
+  const [exteriorColors, setExteriorColors] = useState<VehicleColor[]>([]);
+  const [interiorColors, setInteriorColors] = useState<VehicleColor[]>([]);
+
+  // Grade ladder and the hands this model can be sourced in. Both are kept
+  // out of specData because they are lists edited in place, like the colour
+  // palettes above, rather than single scalar fields.
+  const [grades, setGrades] = useState<VehicleGrade[]>([]);
+  const [steeringOptions, setSteeringOptions] = useState<string[]>(["RHD"]);
+
+  // Destination markets this car is offered into. An ORDERED list of slugs —
+  // the order is the ranking the car page renders, so it is never sorted here.
+  // A new listing starts on the default markets so no car page goes out
+  // without a country selector; the admin re-ranks or trims from there.
+  const [destinations, setDestinations] = useState<string[]>(() =>
+    defaultDestinationSlugs(["RHD"]),
+  );
 
   // Image Management State
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -388,11 +662,39 @@ function SpecBuilderContent() {
               mileage: res.data.mileage || "",
               customData: res.data.customData || [],
               valuePoints: res.data.valuePoints || [],
+              isUpcoming: res.data.isUpcoming === true,
+              expectedAvailability: res.data.expectedAvailability || "",
+              newsSlug: res.data.newsSlug || "",
+              vehicleType: res.data.vehicleType || "car",
             }));
             setPricing(res.data.pricing || []);
             setFeatures(res.data.features || []);
             setSearchTags(res.data.searchTags || []);
+            setTags(parseTags(res.data.tags));
             setExistingImages(res.data.images || []);
+            setExteriorColors(parseColors(res.data.exteriorColors));
+            setInteriorColors(parseColors(res.data.interiorColors));
+            setGrades(parseGrades(res.data.grades));
+            // Falls back to the single `steering` column for every dossier
+            // authored before this list existed.
+            setSteeringOptions(
+              parseSteeringOptions(res.data.steeringOptions, res.data.steering),
+            );
+            // A dossier saved with no markets is prefilled with the defaults,
+            // so saving it puts the country selector on its page.
+            const savedDestinations = parseDestinationSlugs(
+              res.data.destinations,
+            );
+            setDestinations(
+              savedDestinations.length > 0
+                ? savedDestinations
+                : defaultDestinationSlugs(
+                    parseSteeringOptions(
+                      res.data.steeringOptions,
+                      res.data.steering,
+                    ),
+                  ),
+            );
           } else {
             alert("Dossier not found or error fetching.");
           }
@@ -492,7 +794,7 @@ function SpecBuilderContent() {
 
   const handleInputChange = (
     field: keyof typeof initialSpecData,
-    value: string,
+    value: string | boolean,
   ) => {
     setIsDirty(true);
 
@@ -500,6 +802,71 @@ function SpecBuilderContent() {
       ...prev,
       [field]: value,
     }));
+  };
+
+  // --- Colour palette helpers -------------------------------------------
+  // Both palettes share one set of handlers, parameterised by which setter to
+  // drive, so the exterior and interior editors can't drift apart.
+  const updateColor = (
+    setter: React.Dispatch<React.SetStateAction<VehicleColor[]>>,
+    index: number,
+    patch: Partial<VehicleColor>,
+  ) => {
+    setIsDirty(true);
+    setter((prev) =>
+      prev.map((c, i) => (i === index ? { ...c, ...patch } : c)),
+    );
+  };
+
+  const addColor = (
+    setter: React.Dispatch<React.SetStateAction<VehicleColor[]>>,
+  ) => {
+    setIsDirty(true);
+    setter((prev) => [...prev, emptyColor()]);
+  };
+
+  const removeColor = (
+    setter: React.Dispatch<React.SetStateAction<VehicleColor[]>>,
+    index: number,
+  ) => {
+    setIsDirty(true);
+    setter((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateGrade = (index: number, patch: Partial<VehicleGrade>) => {
+    setIsDirty(true);
+    setGrades((prev) =>
+      prev.map((g, i) => {
+        if (i !== index) {
+          // Marking one grade as the default un-marks the rest — the car page
+          // opens on exactly one, so two ticks is not a state to save.
+          return patch.isDefault === true ? { ...g, isDefault: false } : g;
+        }
+        return { ...g, ...patch };
+      }),
+    );
+  };
+
+  const addGrade = () => {
+    setIsDirty(true);
+    setGrades((prev) => [...prev, emptyGrade()]);
+  };
+
+  const removeGrade = (index: number) => {
+    setIsDirty(true);
+    setGrades((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  /** Reorder a grade. The list order is the ladder order on the car page. */
+  const moveGrade = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    setGrades((prev) => {
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+    setIsDirty(true);
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -541,6 +908,15 @@ function SpecBuilderContent() {
     const val = newSearchTag.trim().toLowerCase();
     if (val && !searchTags.includes(val)) setSearchTags([...searchTags, val]);
     setNewSearchTag("");
+  };
+
+  const addTag = (raw: string) => {
+    const slug = slugifyTag(raw);
+    if (slug && !tags.includes(slug)) {
+      setTags([...tags, slug]);
+      setIsDirty(true);
+    }
+    setNewTag("");
   };
 
   const handleSave = async () => {
@@ -600,13 +976,36 @@ function SpecBuilderContent() {
         ? specData.heroImageUrl
         : finalImageUrls[0] || "";
 
+      // Drop half-filled colour rows (an admin clicked "add" then moved on) so
+      // an unnamed swatch never renders on the public page or a lead. Also
+      // clear any photo link that now points past the end of the gallery —
+      // deleting an image would otherwise leave the swatch aimed at nothing.
+      const namedColors = (colors: VehicleColor[]) =>
+        colors
+          .filter((c) => c.name.trim().length > 0)
+          .map((c) =>
+            typeof c.imageIndex === "number" &&
+            c.imageIndex >= finalImageUrls.length
+              ? { ...c, imageIndex: undefined }
+              : c,
+          );
+
       const payload: any = {
         ...specData,
         heroImageUrl: resolvedHero,
         features,
         searchTags,
+        tags,
         images: finalImageUrls,
         pricing,
+        exteriorColors: namedColors(exteriorColors),
+        interiorColors: namedColors(interiorColors),
+        grades: cleanGradesForSave(grades, finalImageUrls.length),
+        destinations: cleanDestinationsForSave(destinations),
+        steeringOptions,
+        // The legacy single-value column stays the primary hand, so the PDF
+        // and anything else reading `steering` keeps working unchanged.
+        steering: steeringOptions[0] || "RHD",
       };
       let result = await saveSpecDossier(payload);
 
@@ -672,6 +1071,7 @@ function SpecBuilderContent() {
           _id: editId,
           slug: specData.slug,
           status: specData.status,
+          vehicleType: specData.vehicleType,
         })
       : null;
 
@@ -732,6 +1132,36 @@ function SpecBuilderContent() {
         <div className="lg:col-span-4 space-y-8">
           <SpecSection title="Target Market & Origin" icon={Globe}>
             <div className="space-y-4">
+              {/* Car or motorcycle: a motorcycle's page is
+                  /import-bikes/<slug>, listed on /import-bikes and kept out of
+                  the car gallery. */}
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase text-zinc-400">
+                  Vehicle type
+                </Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: "car", label: "Car" },
+                    { value: "motorcycle", label: "Motorcycle" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={specData.vehicleType === option.value}
+                      onClick={() =>
+                        handleInputChange("vehicleType", option.value)
+                      }
+                      className={`h-11 rounded-xl text-sm font-bold border transition-colors ${
+                        specData.vehicleType === option.value
+                          ? "bg-black text-white border-black"
+                          : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase text-zinc-400">
                   Spec / Country of Origin
@@ -760,18 +1190,23 @@ function SpecBuilderContent() {
                 <Label className="text-[10px] font-black uppercase text-zinc-400">
                   Steering Configuration
                 </Label>
-                <Select
-                  value={specData.steering}
-                  onValueChange={(v) => handleInputChange("steering", v)}
-                >
-                  <SelectTrigger className="rounded-xl h-11">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="RHD">Right Hand (RHD)</SelectItem>
-                    <SelectItem value="LHD">Left Hand (LHD)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <SteeringOptionsEditor
+                  value={steeringOptions}
+                  onChange={(next) => {
+                    setIsDirty(true);
+                    setSteeringOptions(next);
+                    // While the markets are still the untouched defaults, keep
+                    // them in step with the hand: an LHD-only car drops the
+                    // markets that require right-hand drive.
+                    const untouched = defaultDestinationSlugs(steeringOptions);
+                    if (
+                      destinations.length === untouched.length &&
+                      destinations.every((slug, i) => slug === untouched[i])
+                    ) {
+                      setDestinations(defaultDestinationSlugs(next));
+                    }
+                  }}
+                />
               </div>
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase text-zinc-400">
@@ -800,7 +1235,7 @@ function SpecBuilderContent() {
                 placeholder="Internal notes regarding this specific vehicle blueprint..."
                 value={specData.notes}
                 onChange={(e) => handleInputChange("notes", e.target.value)}
-                className="min-h-[150px] rounded-[2rem] bg-zinc-50 border-transparent p-6 focus:bg-white transition-all"
+                className="min-h-[150px] rounded-[2rem] bg-zinc-50 border-transparent p-6 focus:bg-white transition-feedback"
               />
             </div>
 
@@ -833,6 +1268,113 @@ function SpecBuilderContent() {
               </div>
             </div>
 
+            {/* --- Upcoming / Coming Soon ------------------------------- */}
+            {/* Orthogonal to status: an upcoming car is still Active and still
+                has a public page — it just sells a pre-order, and every lead
+                off it is flagged for the pipeline. */}
+            <div className="pt-6 border-t border-black/5 space-y-4">
+              <Label className="font-bold flex items-center gap-2 text-zinc-700">
+                <CalendarClock size={18} className="text-zinc-400" /> Release
+                Status
+              </Label>
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleInputChange("isUpcoming", !specData.isUpcoming)
+                }
+                aria-pressed={specData.isUpcoming}
+                className={`w-full flex items-start gap-3 p-4 rounded-2xl border text-left transition-colors ${
+                  specData.isUpcoming
+                    ? "bg-sky-50 border-sky-200"
+                    : "bg-zinc-50 border-transparent hover:border-zinc-200"
+                }`}
+              >
+                <span
+                  className={`mt-0.5 h-5 w-9 shrink-0 rounded-full p-0.5 transition-colors ${
+                    specData.isUpcoming ? "bg-sky-500" : "bg-zinc-300"
+                  }`}
+                >
+                  <span
+                    className={`block h-4 w-4 rounded-full bg-white transition-transform duration-(--pa-spring-snappy-duration) ease-(--pa-spring-snappy) ${
+                      specData.isUpcoming ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  />
+                </span>
+                <span>
+                  <span className="block text-sm font-bold text-zinc-800">
+                    Mark as an upcoming car / coming soon
+                  </span>
+                  <span className="block text-[11px] text-zinc-500 leading-snug mt-0.5">
+                    Adds a &ldquo;Coming Soon&rdquo; badge to the gallery and
+                    car page, lists it on Latest News, and tags every inquiry
+                    from this page as an upcoming-car lead.
+                  </span>
+                </span>
+              </button>
+
+              {specData.isUpcoming && (
+                <div className="space-y-4 pl-1">
+                  <div className="space-y-1">
+                    <Label className="text-xs font-bold text-zinc-600">
+                      Expected availability
+                    </Label>
+                    <Input
+                      placeholder="e.g. Q3 2026, or Deliveries from March 2027"
+                      value={specData.expectedAvailability}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "expectedAvailability",
+                          e.target.value,
+                        )
+                      }
+                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback"
+                    />
+                    <p className="text-[10px] text-zinc-400 pl-1 font-medium">
+                      Shown verbatim on the car page. Leave blank if the date
+                      isn&rsquo;t confirmed &mdash; don&rsquo;t guess.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs font-bold text-zinc-600 flex items-center gap-1.5">
+                      <Newspaper size={13} className="text-zinc-400" />
+                      Announcement article slug
+                    </Label>
+                    <Input
+                      placeholder="e.g. monterey-car-week-2026-new-car-debuts"
+                      value={specData.newsSlug}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "newsSlug",
+                          e.target.value
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")
+                            .replace(/[^a-z0-9-_]/g, ""),
+                        )
+                      }
+                      className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-xs"
+                    />
+                    {specData.newsSlug ? (
+                      <a
+                        href={`/latest-news/${specData.newsSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] text-sky-600 hover:text-sky-700 font-mono break-all inline-flex items-start gap-1 pl-1"
+                      >
+                        {`/latest-news/${specData.newsSlug}`}
+                        <ExternalLink size={11} className="shrink-0 mt-0.5" />
+                      </a>
+                    ) : (
+                      <p className="text-[10px] text-zinc-400 pl-1 font-medium">
+                        Links this car to its launch story, both ways.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* --- ADD THIS SLUG INPUT BOX DIRECTLY UNDER THE NOTES AREA CONTAINER --- */}
             <div className="space-y-4 pt-4 border-t border-black/5">
               <Label className="font-bold flex items-center gap-2 text-zinc-700">
@@ -851,7 +1393,7 @@ function SpecBuilderContent() {
                       .replace(/[^a-z0-9-_]/g, "");
                     handleInputChange("slug", processedSlug);
                   }}
-                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-all font-mono text-sm text-zinc-800"
+                  className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-sm text-zinc-800"
                 />
                 <p className="text-[10px] text-zinc-400 pl-1 font-medium">
                   Used for building clean routing addresses. Spaces
@@ -880,7 +1422,7 @@ function SpecBuilderContent() {
                       rel="noopener noreferrer"
                       className="text-[11px] text-sky-600 hover:text-sky-700 font-mono break-all leading-snug flex items-start gap-1"
                     >
-                      {`/b2c/gallery/${specData.slug}`}
+                      {publicPath}
                       <ExternalLink size={11} className="shrink-0 mt-0.5" />
                     </a>
                   ) : (
@@ -969,7 +1511,7 @@ function SpecBuilderContent() {
                 ))}
 
                 {/* Upload Trigger */}
-                <label className="flex flex-col items-center justify-center aspect-video rounded-2xl border-2 border-dashed border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all cursor-pointer">
+                <label className="flex flex-col items-center justify-center aspect-video rounded-2xl border-2 border-dashed border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-feedback cursor-pointer">
                   <div className="flex flex-col items-center gap-2 text-zinc-500">
                     <Save size={24} />
                     <span className="text-xs font-bold uppercase tracking-wider">
@@ -1019,11 +1561,14 @@ function SpecBuilderContent() {
                   list="make-list"
                   value={specData.make}
                   onChange={(e) => handleInputChange("make", e.target.value)}
-                  className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all"
+                  className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                   placeholder="Select or type a brand"
                 />
                 <datalist id="make-list">
-                  {CAR_MAKES.map((make) => (
+                  {(specData.vehicleType === "motorcycle"
+                    ? MOTORCYCLE_MAKES
+                    : CAR_MAKES
+                  ).map((make) => (
                     <option key={make} value={make} />
                   ))}
                 </datalist>
@@ -1086,7 +1631,7 @@ function SpecBuilderContent() {
                             mileage: opt.value === "New" ? "" : prev.mileage,
                           }));
                         }}
-                        className={`flex-1 h-12 rounded-xl font-bold border transition-all ${active ? "bg-black text-white border-black shadow-md" : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"}`}
+                        className={`flex-1 h-12 rounded-xl font-bold border transition-feedback ${active ? "bg-black text-white border-black shadow-md" : "bg-zinc-50 text-zinc-500 border-transparent hover:border-black/20"}`}
                       >
                         {opt.label}
                       </button>
@@ -1157,7 +1702,7 @@ function SpecBuilderContent() {
                     onChange={(e) =>
                       handleInputChange(item.id as any, e.target.value)
                     }
-                    className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all"
+                    className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback"
                     placeholder={item.placeholder}
                   />
                 </div>
@@ -1169,7 +1714,7 @@ function SpecBuilderContent() {
                   value={specData.fuelSystem}
                   onValueChange={(v) => handleInputChange("fuelSystem", v)}
                 >
-                  <SelectTrigger className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-all">
+                  <SelectTrigger className="rounded-xl h-12 bg-zinc-50 border-transparent focus:bg-white transition-feedback">
                     <SelectValue placeholder="Select Fuel Type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1182,6 +1727,69 @@ function SpecBuilderContent() {
                 </Select>
               </div>
             </div>
+          </div>
+
+          {/* Grades / Variants Section */}
+          <div className="bg-white border border-black/5 rounded-[3rem] p-10 shadow-sm">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="bg-violet-50 text-violet-600 p-4 rounded-2xl">
+                <Layers size={28} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold">Grades &amp; Variants</h3>
+                <p className="text-sm text-zinc-500 mt-1">
+                  One page, the whole ladder. Each grade you add becomes a
+                  selectable variant on the car page and an option on the
+                  inquiry form, and the customer&rsquo;s choice lands on the
+                  lead next to the make and model.
+                </p>
+              </div>
+            </div>
+
+            <GradeEditor
+              grades={grades}
+              baseSpecs={{
+                engineConfig: specData.engineConfig,
+                displacement: specData.displacement,
+                maxPower: specData.maxPower,
+                maxTorque: specData.maxTorque,
+                transmission: specData.transmission,
+                fuelSystem: specData.fuelSystem,
+                emissions: specData.emissions,
+              }}
+              images={existingImages}
+              onChange={updateGrade}
+              onAdd={addGrade}
+              onRemove={removeGrade}
+              onMove={moveGrade}
+            />
+          </div>
+
+          {/* Destination Markets Section */}
+          <div className="bg-white border border-black/5 rounded-[3rem] p-10 shadow-sm">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="bg-sky-50 text-sky-600 p-4 rounded-2xl">
+                <Globe size={28} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold">Destination Markets</h3>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Where this car can be imported to. The top{" "}
+                  {FEATURED_DESTINATION_LIMIT} become buttons on the car page
+                  and the rest become text links; every one of them gets its own
+                  shareable URL that opens on that country, with the market
+                  rules on screen and the inquiry form already set to it.
+                </p>
+              </div>
+            </div>
+
+            <DestinationEditor
+              value={destinations}
+              onChange={(next) => {
+                setIsDirty(true);
+                setDestinations(next);
+              }}
+            />
           </div>
 
           {/* Tags & Features Section */}
@@ -1215,6 +1823,47 @@ function SpecBuilderContent() {
                   className="rounded-xl h-12 bg-zinc-50"
                 />
               </div>
+            </div>
+
+            {/* --- Colour palettes ------------------------------------- */}
+            <div className="space-y-8 mb-10 pt-8 border-t border-black/5">
+              <div className="flex items-center gap-3">
+                <Palette size={20} className="text-zinc-400" />
+                <h4 className="text-lg font-bold">Colours &amp; Finishes</h4>
+              </div>
+              <p className="text-sm text-zinc-500 -mt-4">
+                Whatever you list here becomes the colour picker on this
+                car&rsquo;s inquiry form, and the customer&rsquo;s choice is
+                written onto the lead.
+              </p>
+
+              <ColorPaletteEditor
+                title="Exterior colours"
+                description="Paint options offered for this model. Use dual tone for a contrast roof or two-tone body."
+                colors={exteriorColors}
+                onChange={(i, patch) =>
+                  updateColor(setExteriorColors, i, patch)
+                }
+                onAdd={() => addColor(setExteriorColors)}
+                onRemove={(i) => removeColor(setExteriorColors, i)}
+                namePlaceholder="e.g. Sonic Grey Pearl"
+                secondaryPlaceholder="Second tone, e.g. Black roof"
+                images={existingImages}
+              />
+
+              <ColorPaletteEditor
+                title="Interior colours"
+                description="Cabin trim options. Use dual tone for two-tone upholstery or a contrast stitch."
+                colors={interiorColors}
+                onChange={(i, patch) =>
+                  updateColor(setInteriorColors, i, patch)
+                }
+                onAdd={() => addColor(setInteriorColors)}
+                onRemove={(i) => removeColor(setInteriorColors, i)}
+                namePlaceholder="e.g. Black Semi-Aniline Leather"
+                secondaryPlaceholder="Second tone, e.g. Saddle Tan inserts"
+                images={existingImages}
+              />
             </div>
 
             {/* Physical Features Array */}
@@ -1274,6 +1923,91 @@ function SpecBuilderContent() {
                     className="bg-zinc-950 text-white hover:bg-zinc-900 rounded-xl h-12 px-6"
                   >
                     Add
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Landing-page tags: each becomes a page at /import/<tag> */}
+            <div className="space-y-4">
+              <Label className="font-bold text-lg flex items-center gap-2">
+                <Hash size={20} className="text-zinc-400" /> Landing-page tags
+              </Label>
+              <p className="text-sm text-zinc-500">
+                Each tag is a public landing page at {TAG_BASE_PATH}/&lt;tag&gt;
+                listing every live vehicle that carries it, e.g. Luxury Cars
+                becomes {TAG_BASE_PATH}/luxury-cars. Pick a suggested one, or
+                type a new tag to create a new page.
+              </p>
+              <div className="p-8 bg-zinc-50 rounded-[2.5rem] space-y-6 border border-zinc-200">
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      className="bg-sky-100 text-sky-900 hover:bg-sky-200 border-transparent px-4 py-2 rounded-full gap-2 transition-colors cursor-default"
+                    >
+                      {TAG_BASE_PATH}/{tag}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTags(tags.filter((t) => t !== tag));
+                          setIsDirty(true);
+                        }}
+                        className="focus:outline-none flex items-center justify-center rounded-full hover:bg-red-200 p-0.5 transition-colors"
+                      >
+                        <Trash2
+                          size={12}
+                          className="text-zinc-500 hover:text-red-600"
+                        />
+                      </button>
+                    </Badge>
+                  ))}
+                  {tags.length === 0 && (
+                    <p className="text-zinc-400 text-sm italic">
+                      No landing-page tags yet...
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {TAG_COLLECTIONS.filter(
+                    (c) =>
+                      !c.all &&
+                      !tags.includes(c.slug) &&
+                      (c.vehicleType === null ||
+                        c.vehicleType ===
+                          (specData.vehicleType === "motorcycle"
+                            ? "motorcycle"
+                            : "car")),
+                  ).map((c) => (
+                    <button
+                      key={c.slug}
+                      type="button"
+                      onClick={() => addTag(c.slug)}
+                      className="px-3 py-1.5 rounded-full border border-dashed border-zinc-300 text-xs font-medium text-zinc-600 hover:border-black hover:text-black transition-colors"
+                    >
+                      + {c.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    className="bg-white border-zinc-200 text-black h-12 rounded-xl"
+                    placeholder="New tag (e.g. Diesel Cars)..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addTag(newTag);
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => addTag(newTag)}
+                    className="bg-black text-white hover:bg-zinc-800 rounded-xl h-12 px-6"
+                  >
+                    Add Tag
                   </Button>
                 </div>
               </div>

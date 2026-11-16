@@ -140,7 +140,7 @@ export default function Body() {
           = (NEDC × 1.1405) + 12.858 = <Strong>~123.5 g/km</Strong> — jumping it
           to the 16.75% band. On a €20,000 OMSP that&rsquo;s the difference
           between €2,250 and €3,350. Always check for a genuine WLTP figure on
-          the Certificate of Conformity before buying.
+          the Certificate of Conformity before importing.
         </p>
       </Callout>
 
@@ -148,7 +148,7 @@ export default function Body() {
       <UL>
         <CheckLI>
           <Strong>Battery EVs</Strong> — lowest 7% band, zero NOx, and up to
-          €5,000 VRT relief until 31 December 2026 (tapering between €40,000 and
+          €5,000 VRT relief until 31 December 2028 (tapering between €40,000 and
           €50,000 OMSP).
         </CheckLI>
         <CheckLI>

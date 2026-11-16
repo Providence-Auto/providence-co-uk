@@ -1,0 +1,259 @@
+// Guards for /b2b-inquiry: the SEO limits, and the three lists the
+// market check is built from — which have to agree with COUNTRIES, the
+// destination registry and the source-country pages, or a dealer is told the
+// wrong thing about their own country.
+
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { isSupportedCountry } from "libphonenumber-js/max";
+import { describe, expect, it } from "vitest";
+import { COUNTRY_PAGES } from "@/config/countries";
+import {
+  DEALER_ONLY_SOURCE_MARKETS,
+  DEALER_SOURCE_MARKETS,
+  DEALER_SOURCING_ANSWER,
+  DEALER_SOURCING_DESCRIPTION,
+  DEALER_SOURCING_H1,
+  DEALER_SOURCING_PATH,
+  DEALER_SOURCING_TITLE,
+  flagSrc,
+  joinSourceMarkets,
+  LEFT_TRAFFIC_COUNTRIES,
+  parseSourceMarkets,
+  sourceMarketCurrency,
+  sourceMarketName,
+} from "@/config/dealer-sourcing";
+import { DESTINATIONS } from "@/config/destinations";
+import { COUNTRIES } from "@/lib/countries";
+import { currencyForCountry, getCurrency } from "@/lib/currencies";
+import { buildMarketOptions, marketStatusFor } from "@/lib/dealer-markets";
+
+const COUNTRY_NAMES = new Set(COUNTRIES.map((c) => c.n));
+const PUBLIC = join(process.cwd(), "public");
+
+describe("dealer sourcing page — SEO minimum", () => {
+  it("keeps the title under 60 and the description under 155 characters", () => {
+    expect(DEALER_SOURCING_TITLE.length).toBeLessThanOrEqual(60);
+    expect(DEALER_SOURCING_DESCRIPTION.length).toBeLessThanOrEqual(155);
+  });
+
+  it("puts the inquiry in the path, the title and the description", () => {
+    // The H1 was set to "Automobile Importing Solutions for Dealerships" by
+    // business instruction (2026-10-10), so the keyword lives in these three.
+    expect(DEALER_SOURCING_PATH).toBe("/b2b-inquiry");
+    expect(DEALER_SOURCING_TITLE.toLowerCase()).toContain("b2b inquiry");
+    expect(DEALER_SOURCING_DESCRIPTION.toLowerCase()).toContain("b2b inquiry");
+  });
+
+  it("leaves the dealer-sourcing phrase to /b2b", () => {
+    // Business instruction (2026-09-30): /b2b's title is "Dealer Car
+    // Sourcing"; this page is about the inquiry, so the two never compete.
+    for (const text of [
+      DEALER_SOURCING_TITLE,
+      DEALER_SOURCING_H1,
+      DEALER_SOURCING_DESCRIPTION,
+    ]) {
+      expect(text.toLowerCase()).not.toMatch(/car sourcing|dealer sourcing/);
+    }
+  });
+
+  it("opens with a short direct answer that makes the reader the subject", () => {
+    // Wording by business instruction (2026-10-10): 38 words, opening "Your
+    // dealership can" rather than the "You can" the other landing pages use.
+    const words = DEALER_SOURCING_ANSWER.trim().split(/\s+/).length;
+    expect(DEALER_SOURCING_ANSWER).toMatch(/^(You|Your dealership) can /);
+    expect(words).toBeGreaterThanOrEqual(35);
+    expect(words).toBeLessThanOrEqual(55);
+  });
+});
+
+describe("dealer sourcing page — copy rules", () => {
+  // The rendered copy, not the comments that explain it.
+  const source = readFileSync(
+    join(process.cwd(), "src/app/(marketing)/b2b-inquiry/page.tsx"),
+    "utf8",
+  )
+    .split("\n")
+    .filter((line) => !/^\s*(\/\/|\/\*|\*)/.test(line))
+    .join("\n");
+
+  it("carries none of the banned concierge phrasing (writing-angle.md §2)", () => {
+    for (const banned of [
+      "so you don't have to",
+      "handle everything",
+      "door-to-door",
+      "hassle-free",
+      "white glove",
+      "white-glove",
+      "concierge",
+    ]) {
+      expect(source.toLowerCase()).not.toContain(banned);
+    }
+  });
+
+  it("claims auctions for Japan only (business-context.md §2)", () => {
+    const auctionLines = source
+      .split("\n")
+      .filter((line) => /auction/i.test(line) && !line.trim().startsWith("//"));
+    for (const line of auctionLines) {
+      expect(line).toMatch(/Japan/);
+    }
+  });
+
+  it("does not sell the dealer platform on this page", () => {
+    for (const platform of ["dashboard", "embed", "/saas", "white-label"]) {
+      expect(source.toLowerCase()).not.toContain(platform);
+    }
+  });
+});
+
+describe("source markets", () => {
+  it("names the seven countries we buy in, plus the dealer-only markets", () => {
+    expect(DEALER_SOURCE_MARKETS.map((m) => m.slug).sort()).toEqual(
+      [
+        ...COUNTRY_PAGES.map((p) => p.slug),
+        ...DEALER_ONLY_SOURCE_MARKETS,
+      ].sort(),
+    );
+    // A dealer-only market must not also have a country page.
+    for (const slug of DEALER_ONLY_SOURCE_MARKETS) {
+      expect(
+        COUNTRY_PAGES.some((p) => p.slug === slug),
+        slug,
+      ).toBe(false);
+    }
+  });
+
+  it("has a flag for every source market", () => {
+    for (const market of DEALER_SOURCE_MARKETS) {
+      const src = flagSrc(market.iso);
+      expect(src, market.slug).toBeTruthy();
+      expect(existsSync(join(PUBLIC, src as string)), `${src}`).toBe(true);
+    }
+  });
+
+  it("prices each source market in that country's own currency", () => {
+    const names: Record<string, string> = {
+      "united-kingdom": "United Kingdom",
+      uae: "United Arab Emirates",
+    };
+    for (const market of DEALER_SOURCE_MARKETS) {
+      expect(getCurrency(market.currency), market.slug).toBeTruthy();
+      expect(market.currency, market.slug).toBe(
+        currencyForCountry(names[market.slug] ?? market.name),
+      );
+      expect(sourceMarketCurrency(market.slug)).toBe(market.currency);
+    }
+    expect(sourceMarketCurrency("")).toBe("");
+  });
+});
+
+describe("left-traffic countries", () => {
+  it("are spelled exactly as COUNTRIES spells them", () => {
+    for (const name of Object.keys(LEFT_TRAFFIC_COUNTRIES)) {
+      expect(COUNTRY_NAMES.has(name), `"${name}" is not in COUNTRIES`).toBe(
+        true,
+      );
+    }
+  });
+
+  it("all have a phone numbering plan and a flag", () => {
+    for (const [name, iso] of Object.entries(LEFT_TRAFFIC_COUNTRIES)) {
+      expect(isSupportedCountry(iso), `${name} (${iso})`).toBe(true);
+      const src = flagSrc(iso) as string;
+      expect(existsSync(join(PUBLIC, src)), `${name}: ${src}`).toBe(true);
+    }
+  });
+});
+
+describe("the market check", () => {
+  it("knows which side of the road every destination drives on", () => {
+    for (const d of DESTINATIONS) {
+      expect(["left", "right"], d.slug).toContain(d.drives);
+    }
+  });
+
+  it("covers every left-traffic destination in the phone map", () => {
+    for (const d of DESTINATIONS.filter((x) => x.drives === "left")) {
+      expect(
+        LEFT_TRAFFIC_COUNTRIES[d.formCountry],
+        `${d.formCountry} drives on the left but has no ISO code`,
+      ).toBeTruthy();
+    }
+  });
+
+  it("offers every left-traffic destination — 33 of the 34 — and turns Germany away", () => {
+    const options = buildMarketOptions();
+    // Northern Ireland is in the picker too, and answers as the UK does.
+    const destinations = options
+      .filter((o) => o.status === "destination")
+      .map((o) => o.name)
+      .filter((name) => name !== "Northern Ireland");
+    expect(DESTINATIONS).toHaveLength(34);
+    expect(destinations.sort()).toEqual(
+      DESTINATIONS.filter((d) => d.drives === "left")
+        .map((d) => d.formCountry)
+        .sort(),
+    );
+    expect(destinations).toHaveLength(33);
+    expect(marketStatusFor("Germany")).toBe("right-traffic");
+  });
+
+  it("answers a listed, an unlisted and a right-traffic country", () => {
+    expect(marketStatusFor("Kenya")).toBe("destination");
+    expect(marketStatusFor("Sri Lanka")).toBe("destination");
+    expect(marketStatusFor("Trinidad and Tobago")).toBe("destination");
+    expect(marketStatusFor("Namibia")).toBe("unlisted");
+    expect(marketStatusFor("Japan")).toBe("unlisted");
+    expect(marketStatusFor("United States")).toBe("right-traffic");
+    expect(marketStatusFor("United Arab Emirates")).toBe("right-traffic");
+  });
+
+  it("files every destination under the markets we ship to — Germany included", () => {
+    const options = buildMarketOptions();
+    const listed = options.filter((o) => o.listed).map((o) => o.name);
+    for (const d of DESTINATIONS) expect(listed).toContain(d.formCountry);
+    const germany = options.find((o) => o.name === "Germany");
+    expect(germany).toMatchObject({ listed: true, status: "right-traffic" });
+    expect(options.find((o) => o.name === "Namibia")?.listed).toBe(false);
+  });
+
+  it("treats Northern Ireland as the UK", () => {
+    expect(marketStatusFor("Northern Ireland")).toBe("destination");
+  });
+
+  it("rejects a value the picker never offered", () => {
+    expect(marketStatusFor("Atlantis")).toBeNull();
+    expect(marketStatusFor("")).toBeNull();
+  });
+
+  it("offers every country in the picker exactly once", () => {
+    const options = buildMarketOptions();
+    expect(options).toHaveLength(COUNTRIES.length);
+    expect(new Set(options.map((o) => o.name)).size).toBe(options.length);
+    for (const option of options) {
+      if (option.status === "right-traffic") expect(option.iso).toBeNull();
+      else expect(option.iso).toBeTruthy();
+    }
+  });
+});
+
+describe("several source markets in one value", () => {
+  it("round-trips a pick order, dropping blanks and repeats", () => {
+    expect(parseSourceMarkets("united-kingdom, japan,,japan")).toEqual([
+      "united-kingdom",
+      "japan",
+    ]);
+    expect(parseSourceMarkets("")).toEqual([]);
+    expect(parseSourceMarkets(null)).toEqual([]);
+    expect(joinSourceMarkets(["uae", "india", "uae"])).toBe("uae,india");
+  });
+
+  it("names every market and prices in the first one picked", () => {
+    expect(sourceMarketName("united-kingdom,japan")).toBe("UK, Japan");
+    expect(sourceMarketName("japan")).toBe("Japan");
+    expect(sourceMarketName("")).toBe("");
+    expect(sourceMarketCurrency("united-kingdom,japan")).toBe("GBP");
+    expect(sourceMarketCurrency("japan,united-kingdom")).toBe("JPY");
+  });
+});

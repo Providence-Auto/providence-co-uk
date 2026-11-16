@@ -21,8 +21,9 @@ export default function Body() {
         creates an opportunity and a risk, and — this is the part people miss —
         both come from exactly the same place. Enormous turnover means
         extraordinary choice of nearly new, low-mileage, high-specification
-        cars. It also means damaged stock circulates alongside the good. Here is
-        how to work the market properly.
+        Japanese 4x4s — Land Cruisers, Lexus, Patrols. It also means damaged
+        stock circulates alongside the good. Here is how to work the market
+        properly.
       </Lead>
 
       <KeyTakeaways
@@ -58,9 +59,9 @@ export default function Body() {
         free-zone customs regime at Jebel Ali exists precisely to move it.
       </P>
       <P>
-        Add a heavy weighting toward large SUVs, luxury saloons and performance
-        cars, plus left-hand drive, and you get the single largest accessible
-        pool of nearly new LHD stock in the world.
+        Add a heavy weighting toward large Japanese 4x4s — Toyota, Lexus and
+        Nissan above all — plus left-hand drive, and you get the single largest
+        accessible pool of nearly new LHD Japanese stock in the world.
       </P>
 
       <H2 id="stock">Where the stock comes from</H2>
@@ -80,12 +81,12 @@ export default function Body() {
           repossessions. Good value where the history checks out.
         </CheckLI>
         <CheckLI>
-          <Strong>Specialist retailers.</Strong> The route for supercars and
-          limited-run models, where the specification and the service record
-          matter more than the price.
+          <Strong>Specialist retailers.</Strong> The route for rare
+          specifications — a particular Land Cruiser or Lexus trim — where the
+          specification and the service record matter more than the price.
         </CheckLI>
       </UL>
-      <Callout title="Where we buy, and why" tone="sky">
+      <Callout title="Where we export from, and why" tone="sky">
         <p>
           Our UAE team weights heavily toward main-dealer trade-ins and
           specialists for exactly one reason: those cars come with a documented
@@ -99,7 +100,7 @@ export default function Body() {
         This is the section that matters. Any market with this much turnover
         accumulates damaged stock, and the region has seen significant flooding
         events. Pretending otherwise would not help you. Screening is what makes
-        the market safe to buy in, and it runs in this order:
+        the market safe to import from, and it runs in this order:
       </P>
       <OL>
         <LI>
@@ -155,7 +156,7 @@ export default function Body() {
 
       <H2 id="clearance">Free-zone export clearance</H2>
       <P>
-        This is where the UAE is genuinely fast. Vehicles bought for export move
+        This is where the UAE is genuinely fast. Vehicles destined for export move
         through an established free-zone customs regime designed for the
         purpose. The steps:
       </P>

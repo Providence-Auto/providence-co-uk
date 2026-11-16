@@ -1,12 +1,22 @@
 import type { ReactElement } from "react";
 import { Resend } from "resend";
 import { getSuggestedPosts } from "@/config/blog";
+import { CONTACT_EMAIL } from "@/config/contact";
 import AdminInvitationEmail from "@/emails/admin-invitation";
 import AuthActionEmail from "@/emails/auth-action";
 import { toEmailBlogPosts } from "@/emails/blog-suggestions";
 import CalculatorBreakdownEmail from "@/emails/calculator-breakdown";
 import ContactScheduledEmail from "@/emails/contact-scheduled";
 import CustomerConfirmationEmail from "@/emails/customer-confirmation";
+import DealerInquiryAlertEmail, {
+  type DealerInquiryAlertProps,
+} from "@/emails/dealer-inquiry-alert";
+import DealerInquiryConfirmationEmail, {
+  type DealerInquiryConfirmationProps,
+} from "@/emails/dealer-inquiry-confirmation";
+import KycSubmittedAlertEmail, {
+  type KycSubmittedAlertProps,
+} from "@/emails/kyc-submitted-alert";
 import LeadQualifiedAlertEmail from "@/emails/lead-qualified-alert";
 import StaffAlertEmail from "@/emails/staff-alert";
 import type { BreakdownData } from "@/lib/ireland-cost";
@@ -209,12 +219,62 @@ export const emailService = {
     });
   },
 
+  /**
+   * A dealer inquiry from /b2b-inquiry, to the consultant it was
+   * assigned to (or the general inbox when no one could be).
+   */
+  sendDealerInquiryAlert: async (to: string, data: DealerInquiryAlertProps) => {
+    const cars = data.cars.length;
+    await sendEmail({
+      to,
+      subject: `New dealer inquiry: ${data.dealershipName || data.contactName} (${data.country}) — ${
+        cars ? `${cars} car${cars > 1 ? "s" : ""}` : "sourcing"
+      } · ${data.reference}`,
+      component: DealerInquiryAlertEmail(data),
+    });
+  },
+
+  /**
+   * The dealer's receipt for their inquiry. Sent from the assigned consultant
+   * (From + reply-to), the same way the B2C confirmation is; with no consultant
+   * a reply still reaches a person, at the general inbox.
+   *
+   * The subject carries only our own reference — never the dealership name.
+   * The form is public, so anything typed into it could otherwise put
+   * someone else's words in a subject line sent from our domain.
+   */
+  sendDealerInquiryConfirmation: async (
+    to: string,
+    data: DealerInquiryConfirmationProps,
+  ) => {
+    await sendEmail({
+      to,
+      subject: `Your sourcing request ${data.reference} — Providence Auto`,
+      from: agentFrom(data.agent?.name),
+      replyTo: data.agent?.email || CONTACT_EMAIL,
+      component: DealerInquiryConfirmationEmail(data),
+    });
+  },
+
   sendLeadQualifiedAlert: async (data: any, requestId: string) => {
     const targetEmail = "info@providenceauto.uk.com"; // Hardcoded as requested
     await sendEmail({
       to: targetEmail,
       subject: `✅ Lead Qualified: ${data.name} - ${data.make} ${data.vehicle_model}`,
       component: LeadQualifiedAlertEmail({ data, requestId }),
+    });
+  },
+
+  /**
+   * Tells the assigned salesperson (or the general inbox) that a customer sent
+   * their KYC details. The subject carries only our reference — the name is
+   * customer-typed text — and the body carries no ID, address or bank detail.
+   */
+  sendKycSubmittedAlert: async (to: string, data: KycSubmittedAlertProps) => {
+    await sendEmail({
+      to,
+      subject: `New KYC submission · ${data.reference}`,
+      component: KycSubmittedAlertEmail(data),
     });
   },
 };

@@ -20,11 +20,11 @@ Sections top to bottom. All content is editable via the My Profile editor; copy 
 Abdallah launch content.
 
 ### 2.1 Hero — "the handshake"
-- Large portrait photo (left/overlap), Providence Auto badge ("Providence Auto · Personal Sourcing Consultant")
+- Large portrait photo (left/overlap), Providence Auto badge ("Providence Auto · Sales Consultant")
 - Name + headline + one-line tagline
-- Quick-fact chips: years of experience · languages · sourcing countries (flag row)
+- Quick-fact chips: years of experience · languages · one chip per sourcing country (flag + country name, never a single combined flag block)
 - Two CTAs: **"Message me on WhatsApp"** (wa.me deep link) and **"Start an inquiry"** (smooth-scroll to form)
-- Small trust line: "Backed by Providence Auto — UK-registered vehicle sourcing & export"
+- Small trust line: "Backed by Providence Auto — a global vehicle sourcing & export group with our own teams in seven countries"
 
 ### 2.2 About / "Who you're dealing with"
 - 2–3 paragraph personal bio (personality-forward, first person)
@@ -34,14 +34,14 @@ Abdallah launch content.
 ### 2.3 Expertise — "What I'm good at"
 - 4 icon cards (same visual grammar as `valueProps` in `src/config/landing-pages.ts`)
 
-### 2.4 Sourcing countries — "Where I source from"
+### 2.4 Sourcing countries — "Where I export from"
 - Card/flag grid: country, flag, one-sentence note on the member's edge in that market
 
 ### 2.5 Track-record strip (public vanity stats — manually entered, NOT live DB numbers)
 - e.g. "120+ cars delivered · 14 countries · <1 hr avg. response" — three editable stat fields
 - These are marketing claims the member maintains themselves; do not wire to live data
 
-### 2.6 Featured vehicles — "Cars I'm sourcing right now"
+### 2.6 Featured vehicles — "Cars I'm exporting right now"
 - Grid of SpecDossier cards chosen by the member from the gallery list (picker in the editor)
 - Each card links to the existing `/b2c/gallery/[id]` detail page
 - Empty state: hide the section entirely
@@ -57,7 +57,7 @@ Abdallah launch content.
 - Providence branding, link back to main site, standard footer
 
 ### SEO / meta
-- Title: `{Name} — Personal Car Sourcing Consultant | Providence Auto`
+- Title: `{Name} — Sales Consultant | Providence Auto`
 - Description built from headline + sourcing countries
 - Add published profiles to `src/app/sitemap.ts`
 
@@ -179,12 +179,12 @@ per-lead landing-page data; the member's own page appears as **"My Profile Page"
 
 **Slug:** `abdallah` · **Display name:** Abdallah ⚠️(surname?) · **WhatsApp:** ⚠️ · **Photo:** ⚠️
 
-**Meta title:** `Abdallah — Personal Car Sourcing Consultant | Providence Auto`
-**Meta description:** `Work directly with Abdallah, Providence Auto's sourcing consultant for Japan, India and the UK. Grade-verified cars, one honest landed price, and one person handling your import end to end.`
+**Meta title:** `Abdallah — Sales Consultant | Providence Auto`
+**Meta description:** `Work directly with Abdallah, Providence Auto's sales consultant for Japan, India and the UK. Grade-verified cars, one honest landed price, and one person from your first message to your port.`
 
 ### Hero
-- Tagline chip: `Providence Auto · Personal Sourcing Consultant`
-- H1: `Your car, sourced by someone\nwho picks up the phone.`
+- Tagline chip: `Providence Auto · Sales Consultant`
+- H1: `Your car, exported by someone\nwho picks up the phone.`
 - Sub: `I'm Abdallah. I find, verify and land cars from Japan, India and the UK for clients who want a specialist on their side — not a ticket number.`
 - Chips: `7+ years in vehicle sourcing` ⚠️ · `English · Arabic` ⚠️ · 🇯🇵 🇮🇳 🇬🇧 🇦🇪
 - CTA 1: `Message me on WhatsApp` · CTA 2: `Start an inquiry`
@@ -194,7 +194,7 @@ per-lead landing-page data; the member's own page appears as **"My Profile Page"
 >
 > I started in this trade because I watched too many buyers get burned by photos that hid rust and "clean" cars with rolled-back odometers. Seven years later, I've built my reputation on one habit: I never ask a client to pay for a car I wouldn't buy myself. If the auction sheet doesn't add up, I walk away — and I tell you why.
 >
-> When you send an inquiry through this page, it doesn't go into a pool. It comes to my phone, and I answer it personally — usually within the hour. From the first search to the day your car clears customs, you deal with one person: me.
+> When you send an inquiry through this page, it doesn't go into a pool. It comes to my phone, and I answer it personally — usually within the hour. From the first search to the day your car reaches your port and through its clearance, you deal with one person: me.
 >
 > — Abdallah
 

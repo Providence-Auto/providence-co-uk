@@ -1,10 +1,16 @@
 "use server";
 
 import crypto from "node:crypto";
-import { and, desc, eq, ne, sql } from "drizzle-orm";
+import { and, arrayOverlaps, desc, eq, inArray, ne, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import {
+  dossierMatchesTag,
+  parseTags,
+  type TagCollection,
+} from "@/config/vehicle-tags";
 import { db, specDossiers } from "@/db";
+import { parseVehicleType, type VehicleType } from "@/lib/vehicle-type";
 import { auth } from "@/utils/auth";
 
 /**
@@ -145,8 +151,13 @@ export async function saveSpecDossier(payload: any) {
       "transmission",
       "fuelSystem",
       "steering",
+      "steeringOptions",
       "emissions",
       "pricing",
+      "exteriorColors",
+      "interiorColors",
+      "grades",
+      "destinations",
       "upholstery",
       "infotainment",
       "features",
@@ -158,11 +169,24 @@ export async function saveSpecDossier(payload: any) {
       "slug",
       "notes",
       "status",
+      "isUpcoming",
+      "expectedAvailability",
+      "newsSlug",
+      "vehicleType",
+      "tags",
     ];
     for (const key of allowedKeys) {
       if (resolvedPayload[key] !== undefined) {
         dataToSave[key] = resolvedPayload[key];
       }
+    }
+    // Normalised on the way in, so a tag typed as "Luxury Cars" is stored as
+    // the slug its page is served at, and a type is only ever car/motorcycle.
+    if (dataToSave.tags !== undefined) {
+      dataToSave.tags = parseTags(dataToSave.tags);
+    }
+    if (dataToSave.vehicleType !== undefined) {
+      dataToSave.vehicleType = parseVehicleType(dataToSave.vehicleType);
     }
 
     // biome-ignore lint/suspicious/noImplicitAnyLet: dynamic assignment
@@ -200,8 +224,13 @@ export async function saveSpecDossier(payload: any) {
           transmission: dataToSave.transmission ?? "",
           fuelSystem: dataToSave.fuelSystem ?? "Petrol",
           steering: dataToSave.steering ?? "RHD",
+          steeringOptions: dataToSave.steeringOptions ?? [],
           emissions: dataToSave.emissions ?? "",
           pricing: dataToSave.pricing ?? [],
+          exteriorColors: dataToSave.exteriorColors ?? [],
+          interiorColors: dataToSave.interiorColors ?? [],
+          grades: dataToSave.grades ?? [],
+          destinations: dataToSave.destinations ?? [],
           upholstery: dataToSave.upholstery ?? "",
           infotainment: dataToSave.infotainment ?? "",
           features: dataToSave.features ?? [],
@@ -213,6 +242,11 @@ export async function saveSpecDossier(payload: any) {
           slug: dataToSave.slug ?? "",
           notes: dataToSave.notes ?? "",
           status: dataToSave.status ?? "Draft",
+          isUpcoming: dataToSave.isUpcoming ?? false,
+          expectedAvailability: dataToSave.expectedAvailability ?? "",
+          newsSlug: dataToSave.newsSlug ?? "",
+          vehicleType: dataToSave.vehicleType ?? "car",
+          tags: dataToSave.tags ?? [],
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -223,6 +257,13 @@ export async function saveSpecDossier(payload: any) {
     revalidatePath("/admin/dossiers");
     revalidatePath("/admin/specs");
     revalidatePath("/b2c/gallery");
+    revalidatePath("/import-bikes");
+    // The news index carries the upcoming-cars rail, so flipping a dossier's
+    // coming-soon flag has to invalidate it too.
+    revalidatePath("/latest-news");
+    // A new or renamed vehicle changes the URL set, so the sitemap has to be
+    // rebuilt rather than served from its hourly ISR cache.
+    revalidatePath("/sitemap.xml");
 
     return {
       success: true,
@@ -355,6 +396,11 @@ export async function updateDossierStatus(id: string, status: string) {
       .where(eq(specDossiers.id, id));
 
     revalidatePath("/admin/dossiers");
+    // Status is what makes a dossier public, so it both adds and removes a
+    // sitemap URL — and the gallery listing changes with it.
+    revalidatePath("/b2c/gallery");
+    revalidatePath("/latest-news");
+    revalidatePath("/sitemap.xml");
     return { success: true, message: `Status updated to ${status}` };
   } catch (_error) {
     return { success: false, message: "Failed to update status." };
@@ -378,6 +424,11 @@ export async function deleteSpecDossier(id: string) {
 
     revalidatePath("/admin/dossiers");
     revalidatePath("/admin/specs");
+    revalidatePath("/b2c/gallery");
+    // Deleting an upcoming car has to clear it from the news rail too,
+    // otherwise the card lingers there and links to a 404.
+    revalidatePath("/latest-news");
+    revalidatePath("/sitemap.xml");
 
     return { success: true, message: "Template deleted successfully." };
   } catch (error) {
@@ -406,7 +457,7 @@ export async function getSpecDossiersByTags(tags: string[]) {
     const dossiers = await db.query.specDossiers.findMany({
       where: and(
         eq(specDossiers.status, "Active"),
-        sql`${specDossiers.searchTags} && ${normalizedTags}::text[]`,
+        arrayOverlaps(specDossiers.searchTags, normalizedTags),
       ),
       orderBy: desc(specDossiers.createdAt),
     });
@@ -440,12 +491,14 @@ export async function getSpecDossiersByTags(tags: string[]) {
 export async function getGalleryPreviewCars(tags?: string[], limit = 12) {
   const actionName = "[getGalleryPreviewCars]";
   try {
-    const conditions = [eq(specDossiers.status, "Active")];
+    // Cars only: every strip that calls this links into /b2c/gallery.
+    const conditions = [
+      eq(specDossiers.status, "Active"),
+      eq(specDossiers.vehicleType, "car"),
+    ];
     if (tags && tags.length > 0) {
       const normalizedTags = tags.map((t) => t.toLowerCase());
-      conditions.push(
-        sql`${specDossiers.searchTags} && ${normalizedTags}::text[]`,
-      );
+      conditions.push(arrayOverlaps(specDossiers.searchTags, normalizedTags));
     }
 
     const dossiers = await db.query.specDossiers.findMany({
@@ -458,6 +511,9 @@ export async function getGalleryPreviewCars(tags?: string[], limit = 12) {
         heroImageUrl: true,
         images: true,
         pricing: true,
+        isUpcoming: true,
+        expectedAvailability: true,
+        grades: true,
       },
       where: and(...conditions),
       orderBy: desc(specDossiers.createdAt),
@@ -475,5 +531,226 @@ export async function getGalleryPreviewCars(tags?: string[], limit = 12) {
       message: "Error fetching preview cars.",
       data: [],
     };
+  }
+}
+
+/**
+ * GET CARS FOR A NEWS ARTICLE
+ *
+ * Unions the two directions the link can be authored from:
+ *  - the dossier's `newsSlug`, set by the admin toggle (the usual path, and
+ *    the one that needs no code change to add a car to a story), and
+ *  - the article's `linkedVehicleSlugs`, set in the news registry when an
+ *    editor wants to name cars explicitly.
+ *
+ * Only Active dossiers are returned, so a draft car page can't be linked into
+ * a published story. Slugs that don't resolve are simply absent — a story
+ * naming a car we haven't built a page for yet must not break the article.
+ */
+export async function getCarsForNewsArticle(
+  articleSlug: string,
+  linkedVehicleSlugs: string[] = [],
+) {
+  const actionName = "[getCarsForNewsArticle]";
+  try {
+    const columns = {
+      id: true,
+      make: true,
+      model: true,
+      year: true,
+      trim: true,
+      slug: true,
+      heroImageUrl: true,
+      images: true,
+      pricing: true,
+      expectedAvailability: true,
+      newsSlug: true,
+      isUpcoming: true,
+      grades: true,
+    } as const;
+
+    const matchers = [
+      // Cars pointed at this article from the admin builder.
+      ...(articleSlug ? [eq(specDossiers.newsSlug, articleSlug)] : []),
+      // Cars named by the article itself.
+      ...(linkedVehicleSlugs.length > 0
+        ? [inArray(specDossiers.slug, linkedVehicleSlugs)]
+        : []),
+    ];
+
+    if (matchers.length === 0) return { success: true, data: [] };
+
+    const dossiers = await db.query.specDossiers.findMany({
+      columns,
+      where: and(eq(specDossiers.status, "Active"), or(...matchers)),
+      orderBy: desc(specDossiers.createdAt),
+    });
+
+    return {
+      success: true,
+      data: dossiers.map((d) => ({ ...d, _id: d.id })),
+    };
+  } catch (error) {
+    console.error(`${actionName} Error:`, error);
+    return { success: false, message: "Error fetching linked cars.", data: [] };
+  }
+}
+
+/**
+ * GET UPCOMING CARS
+ * Active dossiers flagged as coming soon, newest first. Powers the "Upcoming
+ * cars & new model releases" rail on /latest-news and the coming-soon strip on
+ * the gallery, so it selects only the columns a card needs — including the
+ * `newsSlug` that links each car back to its launch announcement.
+ */
+export async function getUpcomingCars(limit = 12) {
+  const actionName = "[getUpcomingCars]";
+  try {
+    const dossiers = await db.query.specDossiers.findMany({
+      columns: {
+        id: true,
+        make: true,
+        model: true,
+        year: true,
+        trim: true,
+        slug: true,
+        heroImageUrl: true,
+        images: true,
+        pricing: true,
+        expectedAvailability: true,
+        newsSlug: true,
+        grades: true,
+      },
+      where: and(
+        eq(specDossiers.status, "Active"),
+        eq(specDossiers.isUpcoming, true),
+        // The rail is "Upcoming cars"; a coming-soon bike lives on /import-bikes.
+        eq(specDossiers.vehicleType, "car"),
+      ),
+      orderBy: desc(specDossiers.createdAt),
+      limit,
+    });
+
+    return {
+      success: true,
+      data: dossiers.map((d) => ({ ...d, _id: d.id })),
+    };
+  } catch (error) {
+    console.error(`${actionName} Error:`, error);
+    return {
+      success: false,
+      message: "Error fetching upcoming cars.",
+      data: [],
+    };
+  }
+}
+
+/** The columns a listing card needs, plus what tag matching reads. */
+const LISTING_COLUMNS = {
+  id: true,
+  make: true,
+  model: true,
+  year: true,
+  trim: true,
+  slug: true,
+  heroImageUrl: true,
+  images: true,
+  pricing: true,
+  isUpcoming: true,
+  expectedAvailability: true,
+  grades: true,
+  countryOfOrigin: true,
+  vehicleType: true,
+  tags: true,
+  searchTags: true,
+  updatedAt: true,
+} as const;
+
+/**
+ * GET LIVE VEHICLES OF ONE TYPE
+ * Active dossiers of one vehicle type, newest first, as listing cards. Powers
+ * /import-bikes (motorcycles) and the sitemap's bike URLs.
+ */
+export async function getLiveVehicles(vehicleType: VehicleType) {
+  const actionName = "[getLiveVehicles]";
+  try {
+    const dossiers = await db.query.specDossiers.findMany({
+      columns: LISTING_COLUMNS,
+      where: and(
+        eq(specDossiers.status, "Active"),
+        eq(specDossiers.vehicleType, vehicleType),
+      ),
+      orderBy: desc(specDossiers.createdAt),
+    });
+    return {
+      success: true,
+      data: dossiers.map(serializeDossier),
+    };
+  } catch (error) {
+    console.error(`${actionName} Error:`, error);
+    return { success: false, message: "Error fetching vehicles.", data: [] };
+  }
+}
+
+/**
+ * GET VEHICLES FOR A LANDING-PAGE TAG
+ * Every Active dossier on /import/<tag>: the ones carrying the tag in `tags`,
+ * plus — for a registry tag — the older dossiers whose free-form searchTags
+ * name one of its aliases. Filtered in SQL, then re-checked through the pure
+ * dossierMatchesTag so the page and the tests share one rule.
+ */
+export async function getVehiclesForTag(tag: TagCollection) {
+  const actionName = "[getVehiclesForTag]";
+  try {
+    const conditions = [eq(specDossiers.status, "Active")];
+    if (tag.vehicleType) {
+      conditions.push(eq(specDossiers.vehicleType, tag.vehicleType));
+    }
+    if (!tag.all) {
+      const aliases = (tag.aliases ?? []).map((a) => a.toLowerCase());
+      const byTag = arrayOverlaps(specDossiers.tags, [tag.slug]);
+      conditions.push(
+        aliases.length > 0
+          ? // biome-ignore lint/style/noNonNullAssertion: or() of two conditions is defined
+            or(byTag, arrayOverlaps(specDossiers.searchTags, aliases))!
+          : byTag,
+      );
+    }
+
+    const dossiers = await db.query.specDossiers.findMany({
+      columns: LISTING_COLUMNS,
+      where: and(...conditions),
+      orderBy: desc(specDossiers.createdAt),
+    });
+
+    const matched = dossiers.filter((d) =>
+      dossierMatchesTag(d, tag, parseVehicleType(d.vehicleType)),
+    );
+    return { success: true, data: matched.map(serializeDossier) };
+  } catch (error) {
+    console.error(`${actionName} Error:`, error);
+    return {
+      success: false,
+      message: "Error fetching tagged vehicles.",
+      data: [],
+    };
+  }
+}
+
+/**
+ * GET EVERY LANDING-PAGE TAG IN USE
+ * Distinct `tags` across Active dossiers — the free tags that need a page and
+ * a sitemap entry on top of the registry.
+ */
+export async function getTagsInUse(): Promise<string[]> {
+  try {
+    const rows = await db.query.specDossiers.findMany({
+      columns: { tags: true },
+      where: eq(specDossiers.status, "Active"),
+    });
+    return [...new Set(rows.flatMap((r) => parseTags(r.tags)))].sort();
+  } catch (error) {
+    console.error("[getTagsInUse] Error:", error);
+    return [];
   }
 }

@@ -23,6 +23,7 @@ import {
   listGalleryForPicker,
   updateMyProfile,
 } from "@/actions/sales-profile-actions";
+import SocialIcon from "@/components/SocialIcon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadProfileImage } from "@/lib/file-actions";
+import { SOCIAL_PLATFORMS } from "@/lib/social-links";
 import { formatVehicleTitle } from "@/lib/vehicle";
 
 const EXPERTISE_ICONS = [
@@ -110,6 +112,7 @@ export default function MyProfileAdminPage() {
         String(id),
       ),
       whatsappNumber: profile.whatsappNumber,
+      socialLinks: profile.socialLinks || {},
     });
     setSaving(false);
     if (res.success) {
@@ -178,7 +181,7 @@ export default function MyProfileAdminPage() {
             type="button"
             key={t.id}
             onClick={() => setTab(t.id as any)}
-            className={`px-5 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-2 ${
+            className={`px-5 py-2 text-sm font-bold rounded-lg transition-feedback flex items-center gap-2 ${
               tab === t.id
                 ? "bg-white text-black shadow-sm"
                 : "text-zinc-400 hover:text-zinc-900"
@@ -310,6 +313,39 @@ function ProfileEditor({
                 placeholder="English, Arabic"
               />
             </Field>
+          </div>
+        </Card>
+
+        {/* Social links */}
+        <Card
+          title="Social links"
+          hint="Each one shows as an icon on your page. Leave a box empty and its icon stays hidden. WhatsApp uses the number above."
+        >
+          <div className="grid sm:grid-cols-2 gap-4">
+            {SOCIAL_PLATFORMS.map((p) => (
+              <Field key={p.key} label={p.label}>
+                <div className="relative">
+                  <SocialIcon
+                    platform={p.key}
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"
+                  />
+                  <Input
+                    className="pl-9"
+                    value={profile.socialLinks?.[p.key] || ""}
+                    onChange={(e) =>
+                      set({
+                        socialLinks: {
+                          ...(profile.socialLinks || {}),
+                          [p.key]: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder={p.placeholder}
+                  />
+                </div>
+              </Field>
+            ))}
           </div>
         </Card>
 

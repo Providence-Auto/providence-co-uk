@@ -190,7 +190,7 @@ export default function Body() {
         total={{ label: "Landed cost", value: "100%" }}
       />
       <P>
-        Note the accessory line. Five percent of the landed cost buys equipment
+        Note the accessory line. Five percent of the landed cost pays for equipment
         that would commonly cost three or four times as much fitted at
         destination — which is why we recommend specifying it up front rather
         than treating it as something to sort out later. Model choice is covered

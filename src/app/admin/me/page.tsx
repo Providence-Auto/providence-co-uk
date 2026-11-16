@@ -78,7 +78,7 @@ export default function OperationsOverviewDashboard() {
             <button
               key={t}
               onClick={() => setTimeframe(t)}
-              className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${timeframe === t ? "bg-white text-black shadow-sm" : "text-zinc-400 hover:text-zinc-900"}`}
+              className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-feedback ${timeframe === t ? "bg-white text-black shadow-sm" : "text-zinc-400 hover:text-zinc-900"}`}
             >
               {t}
             </button>

@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Before writing or editing any customer-facing copy** — marketing pages, campaign pages, car pages, blog posts, news articles, sales-profile content, or any claim about what Providence Auto does, where it operates, or what it delivers — read these four at the repo root first:
+
+- `page-types.md` — **settle this one first.** Is the page *informational* (how something works in the world, for the reader's benefit — `/blog`, `/latest-news`), a *landing page* (what something is in the context of Providence Auto, selling one service into the funnel — most of the rest), or a *tool* (it computes an answer from the reader's own input — `/ireland-cost-calculator`)? The answer changes where the facts must come from and what may be written without asking. An informational page is fact-checked like journalism; a landing page carries **no section that was not asked for**; a tool answers to both — sourced rates with the working shown, and an ask-first conversion path.
+- `business-context.md` — the central source of truth for the business itself (identity, the presence/source/destination geography split, the customs-clearance and CNF-delivery boundaries, values, offers). It also indexes every other standing doc.
+- `brand-position.md` — the position: Providence gives you **direct access** to the world's auctions plus the tools, documentation and people to use it. **You import the car; we make it possible.** Not a concierge, not "we handle everything".
+- `writing-angle.md` — how to phrase it: the customer is the subject of the sentence. Bans "so you don't have to", "we handle everything", "hassle-free", blanket "door-to-door". **The customer imports and we export** (§10, decided 2026-10-09): never *buy*/*sell* for those two acts, and *source* as a verb becomes *import* (the reader) or *export* (us); the noun stays.
+
+These are about *what the site should say*; this file is about *how the site is built*.
+
+**Read all four every time — not "when in doubt".** The August 2026 repositioning had to be done twice because the first pass swept seven files and left the retired vocabulary standing on `/b2c`, `/b2b`, `/request` and the gallery.
+
+**Never change a source-of-truth document on your own authority.** That means these four plus `news-editorial-playbook.md`, `sourcing-analyzer-methodology.md`, `seo-aeo-optimization-guide.md` and `sales-profile-spec.md`. When work shows one of them is wrong, incomplete or self-contradictory, raise it as a numbered question with a recommendation, log it in `brand-position.md` §11.3, and **keep re-raising it until answered** — a pending documented-truth change is carried into the next session, never quietly closed. This is narrow: ordinary suggestions about the site are raised once and dropped if not taken up. Full rule: `brand-position.md` §11.2.
+
 ## Commands
 
 ```bash
@@ -29,7 +42,9 @@ Required:
 - `GEMINI_API_KEY` — **Sourcing & Profit Analyzer** (admin): Gemini auction-sheet extraction + buy/avoid verdict. Missing → the tool reports "GEMINI_API_KEY is not configured".
 - `APIFY_TOKEN` — **Sourcing & Profit Analyzer** (admin): AutoTrader + PistonHeads market data. Missing → "APIFY_TOKEN is not configured".
 
-Optional: `GEMINI_TOKEN_BUDGET` (the AI token allowance the sourcing tool's usage meter measures against — Google exposes no usage API for a key, so the total must be declared; unset just hides the bar. Apify's monthly spend and cap are read live from `/v2/users/me/limits`, so they need no equivalent), `RESEND_API_KEY` (email), `R2_*` (file storage), social-provider client IDs/secrets, and the Meta/Google ad-conversion keys. See `.env.example` for the full list.
+Optional: `GEMINI_TOKEN_BUDGET` (the AI token allowance the sourcing tool's usage meter measures against — Google exposes no usage API for a key, so the total must be declared; unset just hides the bar. Apify's monthly spend and cap are read live from `/v2/users/me/limits`, so they need no equivalent), `RESEND_API_KEY` (email), `R2_*` (file storage), social-provider client IDs/secrets, and the Meta/Google ad-conversion keys (dealer stages use their own `GOOGLE_DEALER_QUALIFIED_ACTION_ID` / `GOOGLE_DEALER_ONBOARDED_ACTION_ID`). See `.env.example` for the full list.
+
+**Lead tracking** — how both forms reach GTM, Meta and Google Ads, and the manual GTM/Meta/Ads steps the code relies on — is in `tracking-setup.md`. Both forms push `generate_lead` (with `lead_type`) through `src/lib/lead-events.ts` only after the server has stored the lead; never add a second Lead from the server or a click trigger.
 
 ## Architecture Overview
 
@@ -53,11 +68,12 @@ Optional: `GEMINI_TOKEN_BUDGET` (the AI token allowance the sourcing tool's usag
 ### Data Layer
 
 Drizzle tables are defined in `src/db/schema.ts`. Import the `db` client and tables from `@/db` and query with drizzle-orm operators (`eq`, `and`, `desc`, `inArray`, …). Application tables:
-- **requests** — Car purchase requests from customers (lead tracking, assignment, shipping, docs, payments, UTM/click attribution)
-- **specDossiers** — Vehicle inventory with multi-country `pricing` matrix and media (JSONB/array columns)
+- **requests** — Car purchase requests from customers (lead tracking, assignment, shipping, docs, payments, UTM/click attribution). `isUpcomingVehicle` flags a pre-order lead; `exteriorColor`/`interiorColor` hold the customer's colour choice as a display label.
+- **specDossiers** — Vehicle inventory with multi-country `pricing` matrix and media (JSONB/array columns). Also carries the `exteriorColors`/`interiorColors` palettes and the upcoming-car fields (`isUpcoming`, `expectedAvailability`, `newsSlug`), `vehicleType` (`car` | `motorcycle`) and the landing-page `tags`.
 - **socialPosts** — Instagram embed posts per page (home/b2c/b2b), ordered via a `page_order_idx`
 - **salesProfiles** — Per-agent public sales landing-page profiles
 - **sourcingAnalyses** — Saved landed-cost / market analyses from the sourcing tool
+- **dealerInquiries** (`dealerinquiry`) — Sourcing requests from `/b2b-inquiry`: the market the dealer checked, the dealership, the contact (WhatsApp stored as E.164), a preferred source market and up to five cars (`cars` jsonb, shape in `src/lib/dealer-inquiry.ts`). Its own status vocabulary (`DEALER_INQUIRY_STATUSES`), never the B2C lead statuses. It drives its own conversion ledger (`*SentAt` columns): **Qualified** uploads `QualifiedDealerLead` and **Onboarded** uploads `DealerOnboarded` (business instruction 2026-11-01), mapped in `src/lib/dealerConversion.ts`. **Deleting is soft** (`deletedAt`, business instruction 2026-11-01): anyone on the panel can delete, a deleted inquiry is never sent to a non-admin and cannot be edited by one, and only admins see the Deleted tab and can restore. Not the same thing as `dealerProfiles`, which is an account on the dealer *platform*.
 
 Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). JSON-shaped fields (`pricing`, `statusHistory`, `documents`, testimonials, etc.) use `jsonb`; list fields use Postgres text arrays.
 
@@ -67,10 +83,282 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 
 - `scripts/migrate-mongo-to-pg.js` — one-off backfill copying documents from the old MongoDB into Postgres.
 - `scripts/migrate.mjs` — runs the generated `drizzle/` SQL migrations against `DATABASE_URL` (SSL configured for the Railway pool).
+- `scripts/create-car-page.mjs` — upserts a spec dossier (a public car page) from a JSON brief, uploading any local images to R2. Supports `--dry-run`, `--publish` and `--env dev|staging|production`; upserts by slug so re-running an edited brief updates the same page. Driven by the `car-landing-page` skill (`/car-landing-page`). Briefs for pages that are meant to exist in every environment are kept in `scripts/briefs/` so the same page can be recreated on staging and production — **a car page is a database row, so a code deploy never carries one between environments; re-run the brief with `--env` against each.**
+- `scripts/optimize-car-images.mjs` — re-encodes a folder of car photographs to WebP at a display width. Car images under `public/` are served as plain `<img>` tags, so nothing resizes them at request time; run this before committing manufacturer JPEGs.
+- `scripts/blur-plate.mjs` — pixelates and blurs one or more `x,y,w,h` rectangles of a car photo in place (WebP or JPEG), for removing a number plate that does not match the page's country. See `car-imagery-checklist.md`.
+- `scripts/apply-grade-columns.mjs` — adds the grade/steering columns (`drizzle/0004_grade_columns.sql`) to one environment. Read-only until `--apply`.
+- `scripts/apply-destination-column.mjs` — adds `specdossier.destinations` (`drizzle/0006_destination_column.sql`) to one environment. Read-only until `--apply`. Like every column change here, it has to be run against dev, staging and production separately.
+- `scripts/apply-lead-attribution-columns.mjs` — adds `request.landingUrl`, `pageUrl`, `referrer` and `repCode` (`drizzle/0008_lead_attribution_columns.sql`) to one environment. Read-only until `--apply`. **Run it before the deploy** — the build names these columns in every lead select and insert, so without them no lead can be read or written.
+- `scripts/apply-dealer-inquiry-table.mjs` — creates the `dealerinquiry` table from `drizzle/0007_dealer_inquiry_table.sql` in one environment (it reads that file, so the SQL has one source). Read-only until `--apply`, idempotent, and checks every column, index and the foreign key. **Run it against an environment before deploying the dealer page there** — the form's submit fails without the table.
+- `scripts/apply-vehicle-type-tags-columns.mjs` — adds `specdossier.vehicleType` and `specdossier.tags` (`drizzle/0011_vehicle_type_and_tags.sql`) to one environment. Read-only until `--apply`. **Run it before the deploy** — every dossier query names both columns. Applied to dev and staging on 2026-11-03.
+- `scripts/apply-dealer-conversion-columns.mjs` — adds the dealer-inquiry conversion ledger (`drizzle/0009_dealer_conversion_ledger.sql`) to one environment. Read-only until `--apply`. **Run it before the deploy** — every dealer-inquiry query names these columns.
+- `scripts/apply-dealer-inquiry-delete-columns.mjs` — adds `dealerinquiry.deletedAt` / `deletedByName` (`drizzle/0010_dealer_inquiry_soft_delete.sql`) to one environment. Read-only until `--apply`. **Run it before the deploy** — every dealer-inquiry query names these columns.
+- `scripts/backfill-dossier-destinations.mjs` — offers every existing car page into the core five markets (Ireland, UK, Kenya, Tanzania, Sri Lanka). Read-only until `--apply`, idempotent, and **merges** rather than replacing, so a car that already has destinations keeps its ranking. Skips the markets flagged `rhdOnly` for a dossier that can only be sourced LHD, and says so rather than silently listing a car the buyer could not register. `--empty-only` fills only the car pages with no markets at all and leaves every curated list — a market removed on purpose included — untouched; use it to catch up car pages created before the admin defaulted the markets.
+- `scripts/repair-followup-timer-resets.mjs` — restores sales statuses the follow-up timer wrongly reset to "Action required" before the 2026-11-13 fix (`followUpExpiryOutcome` in `src/lib/followUpTimer.ts`: an expiring timer now keeps a decided status, or one set after the timer started). Read-only until `--apply`, idempotent, `--skip=<id>,…` to leave named leads alone. It cannot tell a reminder set by hand after the status (whose reset was intended), so review the list before applying.
+
+### Sourcing & Profit Analyzer
+
+The admin tool at `/admin/sourcing-calculator`: landed cost → live UK market comparables → margin and buy/avoid verdict.
+
+**Before changing any rate, filter or formula, read `sourcing-analyzer-methodology.md` at the repo root.** It documents the whole pipeline — the CIF/duty/post-border maths, the reverse solver for the maximum auction bid, how listings are scraped, cleaned, deduped, matched and ranked, how the statistics are trimmed, and every standing assumption.
+
+The rules that most often trip people up:
+
+- **Numbers are computed, prose is generated.** Every figure comes from a pure function (`src/lib/uk-landed-cost.ts`, `src/lib/market-stats.ts`); Gemini only narrates finished numbers. Never let a model produce a price, rate or margin.
+- **Duty defaults to 10% MFN**; the only 0% route is Japan-built with a CEPA statement of origin, which is why the statement-of-origin question appears for Japan alone.
+- **Import VAT is excluded** from the analyzer's landed cost (the importer reclaims it), via `includeVat: false`. The VAT machinery stays in the engine for consumer-facing surfaces like `LandedCostBar`, which default to including it.
+- **30% ROI on landed cost** (`TARGET_MARGIN_PCT`) is the desk minimum and the default, editable per run from the *Minimum ROI* field. Whatever it is set to is enforced in code after the model answers — a car below target can never come back as "source".
+- **Resale is compared net of VAT.** Scraped listings are VAT-inclusive; the landed cost is not. The market median is divided by 1.2 (`resaleExVat`) before any profit, ROI or ceiling-bid figure is derived. Never subtract a landed cost from a raw median.
+
+### Vehicles: grades, steering, colours, destinations and upcoming models
+
+Car pages are **database rows, not files** — they can't be added by committing code. Create them in `/admin/specs` or via `scripts/create-car-page.mjs`.
+
+- **Colours** — `exteriorColors` / `interiorColors` on a dossier are arrays of `{ name, hex, hex2?, isDualTone?, secondaryName? }`. Shared helpers live in `src/lib/vehicle-colors.ts` (`parseColors`, `colorLabel`, `swatchStyle`); use them rather than reading the jsonb directly. A dossier's palette becomes the colour picker on that car's inquiry form, and the customer's choice is written onto the lead as a display label ("Emotional Red / Black roof"). No palette → the form falls back to a free-text colour field.
+- **Upcoming cars** — `isUpcoming` on a dossier is orthogonal to `status`: the car is still Active with a real public page, it just sells a pre-order. It adds a Coming Soon badge, reframes the inquiry section, lists the car in the upcoming rail on `/latest-news`, and flags every lead off the page with `isUpcomingVehicle` (shown as an *Upcoming Car* badge in the admin leads table).
+- **Grades** — `grades` on a dossier is the model's ladder (Ti, Ti+, Ti-L, Ti-L Reserve) rather than four near-duplicate pages competing for one keyword. **A grade stores only what it changes**: every spec field is optional and blank means "inherit from the dossier", so authoring a ladder is four short lists of differences. Helpers live in `src/lib/vehicle-grades.ts` (`parseGrades`, `gradeSpec`, `gradeFeatures`, `gradePricing`, `cleanGradesForSave`) — use them rather than reading the jsonb. Selecting a grade on the car page re-resolves the spec table, feature list, pricing and gallery photo, prefills the inquiry form's Grade field, and writes the grade onto the lead beside the make and model. The admin editor is `src/components/GradeEditor.tsx`.
+- **Steering** — `steeringOptions` on a dossier lists every hand the model can be sourced in; the legacy single `steering` column stays as the primary and as the fallback for every dossier written before the list existed. Always read it through `parseSteeringOptions` (`src/lib/vehicle.ts`), which never returns an empty list. Offering both puts a Steering selector on the car page and an RHD/LHD field on the inquiry form, and the choice lands on the lead — where it now drives the admin table's LHD badge and the dashboard's LHD filter in preference to inferring the hand from the landing page the lead arrived through.
+- **Destinations** — `destinations` on a dossier is an **ordered** list of destination slugs from `src/config/destinations.ts`: the markets that car may be imported to. The order is the ranking — the first five eligible entries render as buttons on the car page and the rest as small text links — so never sort it. Read it through `parseDestinations` / `parseDestinationSlugs` (`src/lib/vehicle-destinations.ts`), save it through `cleanDestinationsForSave`. Empty means no country selector at all, and **every car page should carry one** (business instruction 2026-10-13): a new listing in the admin starts on `DEFAULT_DESTINATION_SLUGS` (the core five, minus the `rhdOnly` markets for an LHD-only car, via `defaultDestinationSlugs`), an existing listing saved with none is prefilled with them when opened in the editor, and a `create-car-page.mjs` brief with no `destinations` key gets them too (an explicit `[]` is respected). The page itself never defaults — it reads only what was saved. The admin editor is `src/components/DestinationEditor.tsx`. Selecting a destination opens its copy (`DestinationBrief`) inside the hero's choices card, directly under the buttons, and never scrolls the page.
+
+  Selecting a destination rewrites the URL to `/b2c/gallery/<car>/import-to-<destination>`, a real route (`src/app/(static)/b2c/gallery/[id]/[destination]/page.tsx`) that opens on that market with the inquiry form's country pre-set. **Three rules govern that registry, and all three are load-bearing:**
+  - **`formCountry` must be the exact `n` string from `COUNTRIES` in `src/lib/countries.ts`.** The form matches on `===`; a near miss still passes validation, selects nothing in the dropdown and resolves no currency. `src/config/__tests__/destinations.test.ts` fails the build on a mismatch.
+  - **No invented figures.** Every tax, duty, age-limit and levy claim in the registry is one that is already live and reviewed on `/import-japanese-cars` or `/indian-manufactured-cars`. A market we hold no reviewed claim for is `depth: "listed"` — its page still exists and still prefills the form, but it makes no market-specific claim.
+
+  **Every `/import-to-<destination>` page, `full` or `listed`, canonicalises to its car page and stays out of the sitemap** (business decision 2026-10-27). The pages exist for sharing, ads and rep links, not to rank. When they were self-canonical and in the sitemap, Search Console left 99 of them, and 8 of the car pages they copy, "Discovered – currently not indexed": each one is the car page plus a market block that reads the same on every car. Do not add them back to the index without per-car, per-market content that actually differs.
+  - **Origin changes the rule.** A duty that applies to a Japan-built car does not necessarily apply to an India-built one, so origin-specific claims live in `byOrigin`, keyed on the dossier's `countryOfOrigin`, and are merged over the base copy by `destinationCopy`.
+
+  The registry also carries **`rhdOnly`** — true only where we publish a right-hand-drive requirement, traceable to the live campaign-page copy. It is not an adjudication of LHD legality worldwide: false means "we state no blanket requirement", which is why Ireland, the UK and New Zealand are false and the `listed` markets make no hand claim at all. A car that can only be sourced in one hand must not be offered into a market that cannot register it.
+
+  The registry also carries `focusList`. `false` means the market ranks and links normally but never takes one of the five button slots — `splitDestinations` enforces it in code so the rule holds for a page built by `scripts/create-car-page.mjs` too. It is a channel-policy decision (`business-context.md` §14.2) and **never appears in public copy**.
+
+- **Motorcycles** — a dossier with `vehicleType: "motorcycle"` is a bike: its page is `/import-bikes/<slug>` (the "import <make> <model>" URL), it is listed on `/import-bikes`, and it is kept out of the car gallery, the preview strips, the upcoming-cars rail and the destination selector (the destination registry's rules are written for cars). The old `/b2c/gallery/<slug>` URL 308s to it. It renders through the same `GalleryDetailClient`, which drops steering, destinations, the spec-sheet PDF and the car FAQ for a bike and gives the inquiry form `MOTORCYCLE_MAKES`. Always build a vehicle's URL with `vehiclePath` (`src/lib/vehicle-type.ts`), never a literal `/b2c/gallery/`. Set it in `/admin/specs` (Vehicle type) or with `"vehicleType": "motorcycle"` in a `create-car-page.mjs` brief.
+- **Landing-page tags** — `tags` on a dossier are slugs, each a landing page at `/import/<tag>` ("Import Luxury Cars") listing every live vehicle carrying it, so a tag added in the admin is a new page with no code change. Separate from `searchTags`, the free-form gallery filters (`pt5654`, `graphite-black`), which would make junk pages. `src/config/vehicle-tags.ts` is the registry: a label, the vehicle type a tag is limited to, the older `searchTags` aliases that also count (so the existing dossiers populate the pages), and the `footer` flag for the footer's Import column. A tag page with no live vehicle is `noindex` and out of the sitemap; a free tag with none 404s. Its copy is the shared proposition with the label named in it (`tagIntro`) — no per-tag claim is written.
+- **Car ↔ news linking** is two-way and either side can author it: a dossier's `newsSlug`, or an article's `linkedVehicleSlugs` in `src/config/news.ts`. `getCarsForNewsArticle` unions both and only returns Active dossiers, so unresolved slugs are skipped rather than breaking the article.
 
 ### CI/CD
 
 `.github/workflows/ci.yml` enforces a `dev → staging → production` branch pipeline on PRs and runs lint (non-blocking), `tsc --noEmit`, and a dry `next build` (with mock env vars) as required checks.
+
+### Editorial: blog vs news
+
+Both are **informational** pages under `page-types.md` §1.1 — the subject is how something works in the world, not what Providence sells. Everything in §2 of that document applies to both: verified primary sources only for any tax, duty or government claim, a second independent source for anything load-bearing, and no pitching in the body. Two separate content systems, deliberately not merged:
+
+- **`/blog`** — evergreen how-to guides in keyword clusters. Registry `src/config/blog.ts`, bodies `src/content/blog/`, schema `BlogPosting`. Gets updated, does not age.
+- **`/latest-news`** — dated automotive reporting: new-model releases, industry moves, auction results, market data, and the tax/policy changes that move landed cost. Registry `src/config/news.ts`, bodies `src/content/news/`, schema `NewsArticle`. Ages, and is fed to Google News.
+
+Adding a news article touches **three** files — `src/config/news.ts`, `src/content/news/<slug>.tsx`, and the `NEWS_BODIES` map in `src/content/news/index.ts`. Missing the third 404s the page.
+
+News-only prose components (`PullQuote`, `Timeline`, `ProfileCard`, `ConfirmedLedger`) live in `src/components/news/newsProse.tsx`; the shared kit stays in `src/components/blog/prose.tsx`.
+
+Feeds and discovery, all automatic: `/news-sitemap.xml` (Google News, 48-hour window), `/latest-news/rss.xml`, and `/latest-news/category/[category]` archives generated from `NEWS_CATEGORIES` (categories with no articles 404 by design).
+
+**Before writing any news article, read `news-editorial-playbook.md` at the repo root.** It defines the target market (all RHD destinations, plus LHD for luxury, sports and hyper cars from Japan), the two reader segments, the relevance gate, the seven landed-cost lenses, the "Landed Desk" voice, the SEO/AEO spec and the mandatory fact-checking protocol. The repeatable weekly run — 20 publish-ready stories — is the `news-desk` skill (`/news-desk`).
+
+**Every article carries three brand touchpoints** (`brand-position.md` §12, decided 2026-10-07): a publisher note under the byline, at most one contextual sentence-link in the body, and the closing CTA — all pointing at the one landing page that matches the article. They are wired through `src/config/article-ctas.ts`: a blog post sets its CTA with `blogCtaFields(ARTICLE_CTAS.<preset>)`, a news article with its `cta` field; `ArticleShell` and `NewsShell` render the publisher note and CTA from it. `src/config/__tests__/japan-uk.test.ts` fails any article whose CTA points outside `ARTICLE_CTA_ROUTES`.
+
+**Japan → UK cluster.** Research base `japanese-car-import-uk-research.md` (every rule sourced and dated); guides in `src/config/blog-japan-uk.ts`; landing-page copy in `src/config/japan-uk.ts`. The landing pages state **no duty rate** (business decision 2026-10-07).
+
+Three standing editorial rules: **never invent a tax, duty or registration-tax figure** — cite the revenue authority, date the check and add `<Disclaimer />`; **never forecast a currency** — name the pair, date the level, and say which side of the trade it lands on (a weak *source* currency makes the car cheaper; a weak *destination* currency makes everything dearer); and **a missing number is not a failure, a wrong number is.**
+
+### Heading language: one heading says the whole thing
+
+Section headings carry their own label. Do **not** stack a small eyebrow label
+above a heading that then restates the same idea — fold the label into the
+heading so one sentence does both jobs.
+
+| Don't | Do |
+| --- | --- |
+| `Who we are` + `Not a marketplace. Not a broker network.` | `We are not a marketplace, and not a broker network.` |
+| `The problem` + `Buying a car still means settling.` | `The problem is, buying a car still means settling.` |
+| `How it works` + `Request it. We source it. It ships.` | `Here's how it works — you request it, we source it, it ships.` |
+| `Our network` + `Eight offices. Forty-plus markets.` | `Our network is eight offices and forty-plus markets.` |
+
+The rules:
+
+- **One heading per section.** The label ("the problem", "our network", "the
+  difference", "who we serve") becomes the subject of the sentence rather than a
+  separate line above it.
+- **Write it as a natural sentence**, not `Label: the thing`. A colon that just
+  re-splits the two halves is the same mistake with different punctuation.
+- **Keep it short enough to set at `text-5xl`** — one line of thought, usually
+  under twelve words.
+- **Replace the eyebrow's visual job with a rule, not with more text.**
+  `/about-us` uses a 48 px sky→violet hairline (`SectionRule` in that page) above
+  each H2 to keep the visual step down from one section to the next.
+- **The one exception is an AEO direct-answer block**, where the eyebrow is the
+  *question* a reader or an LLM would ask ("What is Providence Auto?") and the
+  body is the 40–50 word answer. That question/answer pair is the whole point of
+  the pattern — leave it alone.
+
+This governs every marketing page, campaign page, car page, blog post and news
+article written from now on, not just the page where it was introduced.
+
+**A two-tone heading is allowed** (decided 2026-10-09): one heading, one
+sentence, the second clause set in muted ink (`zinc-400` on white) —
+"You choose the exact car, *and see the landed figure first.*" It is still
+one heading with no eyebrow, so every rule above applies to it. Never on the
+`/import-cars-from` keyword H1s. See `landing-page-playbook.md` recipe R1.
+
+### Secondary CTAs: one style, and always below the primary
+
+A page has **one primary CTA** — the thing it exists to drive. On editorial
+and campaign pages that is the black block (`BlogCTA` and its per-page
+equivalents) or the inquiry form. Everything else that asks the reader to act
+— the Google preferred-source opt-in, RSS, a newsletter, "browse the guides"
+— is a **secondary CTA**, and there is exactly one treatment for it.
+
+**Use `<SecondaryCTA>`** (`src/components/SecondaryCTA.tsx`), which applies the
+`.pa-cta-secondary` surface defined in `globals.css`: a sky→violet accent bar,
+a tinted wash and a coloured lift shadow. Do not hand-roll another bordered
+`bg-zinc-50` panel — that is what the surrounding prose cards already look
+like, so a secondary CTA built that way reads as body content and is skipped.
+That is the exact failure this style was introduced to fix.
+
+The rules:
+
+- **Never place a secondary CTA above the primary one.** Nothing competes with
+  the main CTA. In practice that means after `<BlogCTA />`, after the inquiry
+  section, at the foot of the page — not between the article and the CTA, and
+  not immediately above a form.
+- **One secondary CTA per page.** Two of them is a menu, and a menu converts
+  worse than either option alone.
+- **It stays light.** The primary CTA owns black. A secondary CTA that also
+  went dark would compete with it, which defeats the point.
+- **The heading rule above still applies** — `title` is one full sentence, no
+  eyebrow label above it, and `body` (optional) carries a real fact rather
+  than restating the heading.
+
+### SEO & AEO: standing requirement for every new page
+
+**Before creating or publishing any new page** — marketing/campaign page, car page (spec dossier), blog post, or news article — read `seo-aeo-optimization-guide.md` at the repo root. It is the canonical SEO/AEO playbook: user-intent identification, keyword/entity research, on-page copywriting (title tags, meta descriptions, header hierarchy), the technical SEO checklist, JSON-LD structured-data selection, and AEO/LLM optimization (featured-snippet answers, tables/lists, E-E-A-T). Run every new page through its Phase 1–5 process and the final pre-publishing checklist before treating the page as done.
+
+**Before auditing the site, or planning or building any public page, read `seo-page-rules.md` at the repo root.** It maps every search for what we offer — source, destination, vehicle class (cars, motorcycles, trucks), make, model, audience (direct buyers, dealerships, vehicle brokers) and service — to the one page type that owns it, and gives each page type its agreed structure (elements, H1, H2s), its technical rules (metadata, served HTML, schema, links, sitemap, indexing minimum) and its tests. Its section sets are the agreed structure under `page-types.md` §3 (2026-11-03): they fix structure, not wording, so a landing-page plan is still agreed before copy. The term pool behind it is `search-query-map.md`.
+
+Every new page ships with all of the following by default — a page missing any of these is incomplete, not "SEO to follow up later":
+
+- **Title tag** — under 60 characters, primary keyword near the front, unique per page. Set via `export const metadata: Metadata`, following the existing pattern in `src/app/(marketing)/*/page.tsx`.
+- **Meta description** — under 155 characters, includes a call to action.
+- **Open Graph + Twitter Card, with a visible preview image** — `openGraph.images` must include explicit `width`/`height` (1200×630) on a real, reachable image URL. A missing/404 image or one without declared dimensions will fail to render in link previews on Slack/LinkedIn/X/iMessage. Verify with `curl -o /dev/null -w "%{http_code} %{content_type}"` on the exact image URL before shipping.
+- **Canonical URL** — `alternates: { canonical: PATH }`.
+- **Structured data (JSON-LD)** — match the schema to the page's core entity per the guide's Phase 4 (Product/Service, Article/NewsArticle, FAQPage, LocalBusiness, ItemList, etc.) — see existing examples in `src/app/(marketing)/indian-manufactured-cars/page.tsx` and `src/content/news/`.
+- **One H1, hierarchical H2/H3s**, BLUF-style copy (answer the primary question in the first ~100 words), and at least one direct 40–50 word answer to a likely AI/voice query, for AEO.
+- **`robots` metadata set explicitly** (`index: true, follow: true`) unless the page is intentionally noindexed.
+
+This is additive to, not a replacement for, the per-content-type rules above — `sourcing-analyzer-methodology.md` still governs the sourcing tool's numbers, and `news-editorial-playbook.md` still governs news articles' voice and fact-checking.
+
+### Landing pages: one keyword, one simple template
+
+**First, the process gate — `page-types.md` §3.** Nothing goes on a landing page by default. When a landing page is requested: research the SEO for the exact phrase first, come back with **the content sections needed to rank for it**, and ask your questions **before** writing any claim or any passage of prose. General copy about what Providence offers or handles is allowed on a landing page **only when the business asks for it on that page** — never reached for to fill a section. The section list below is the *agreed outcome* of that process for the `/import-cars-from` country pages, not a default to apply to the next page.
+
+**When proposing sections, draw them from `landing-page-playbook.md`** — the pattern library (hero diagram, audience tabs, the tools demonstrated, the landed-quote structure, the five steps, the form), the copy constructions, the motion tokens and the build recipes, from a teardown of surge.cloud. It ranks below every source-of-truth document and is never a default section list.
+
+Every landing page is built for **the phrase a buyer types**, and nothing
+else. The keyword goes in the URL slug, the title tag, the H1, the first
+sentence and the H2s, verbatim — `/import-cars-from/australia`, "Import Cars
+from Australia", "How to import a car from Australia in five steps". An
+internal name for the thing ("source", "network", "hub") never reaches the URL
+or a heading if buyers do not search for it. The `/source-cars-from` pages were
+renamed to `/import-cars-from` on 2026-09-24 for exactly this reason.
+
+**Split the intent: the guide informs, the landing page converts.** Every
+country has two pages that sound alike and must not compete:
+
+| Page | Intent | Owns the query | Ends with |
+| --- | --- | --- | --- |
+| `/blog/how-to-import-a-car-from-<country>` (+ the cost, documents and best-cars posts) | Informational — researching | "how to import a car from Australia", "cost to import a car from Australia" | A `BlogCTA` whose button is the transactional keyword ("Import a car from Australia") and goes to the landing page's form |
+| `/import-cars-from/<country>` | Transactional — ready to import now | "import cars from Australia" | The inquiry form |
+
+So the landing page's title says "Get a Quote", its headings speak to someone
+acting ("Import your car from Australia in five steps", "Your landed quote
+covers five costs"), and its FAQ is pre-purchase only — quote, payment,
+timing, delivery. It never uses "How to …" or "How much does it cost to …?" as
+a heading and never lists the cost keyword; it links to the guides that own
+those phrases instead ("Researching first? Read our guide…"). The guides, in
+turn, never target "import cars from X". The CTA wiring lives in `post()` in
+`src/config/blog-countries.ts`.
+
+**A landing page is our process for one service — not a general guide, and not
+a feature about the place.** It states the facts a buyer needs in order to act
+and links the guide that owns the explanation; it does not teach the mechanism
+(`page-types.md` §3.7). The ten sections below are the list agreed for the
+country pages. Write those, and stop:
+
+1. **H1 = the keyword.** Directly under it, a **40–55 word direct answer**
+   starting "You can …" that names our own team, the inspection before payment
+   and the one landed price. It is the BLUF paragraph and the AI-answer extract.
+2. **The facts, as a `<table>`** — drive side, where we buy, the history check,
+   ports, transit, where we ship. Plain values, no adjectives.
+3. **The steps, as an `<ol>`** — "Import your car from X in N steps" — with a
+   link to the how-to guide for readers still researching.
+4. **What the quote covers** — the cost *components*, never an invented
+   figure — linking to the cost guide for the full breakdown.
+5. **The documents**, as a list.
+6. **The cars people commonly import**, as text, not a photo grid (each photo
+   is one more thing that can fail `car-imagery-checklist.md`).
+7. **Our office**: address, phone, email, hours and what the team does.
+8. **The inquiry form** — the primary CTA.
+9. **The FAQ, pre-purchase questions only, rendered as plain `<h3>` + `<p>`**,
+   not an accordion: a collapsed accordion keeps its answers out of the served
+   HTML. The FAQPage JSON-LD must read the same list the page renders (see
+   `countryFaqs()`).
+10. Related guides, the other countries, then the one secondary CTA.
+
+What does **not** go on it: a manifesto, a "why this country is special"
+feature block, a stats strip of claims nobody searches for, a country's
+industrial history, or any line whose only job is atmosphere — "built for the
+worst roads on earth" is a headline for an ad, not a landing page. If a fact
+is specific and useful (the PPSR check in Australia, the auction sheet in
+Japan), it goes in the facts table, a step or one FAQ answer — one line, not a
+section.
+
+The country pages live in `src/config/countries.ts` and render through
+`src/app/(marketing)/import-cars-from/[country]/CountryLanding.tsx`; the
+standard FAQ and the test that enforces title length, description length,
+answer length and "only Japan bids at auction" sit beside them. Add a country
+by adding an entry — never by forking the template.
+
+### Car imagery: the car must exist, match, and carry the right plate
+
+**Before adding or replacing any photograph of a car** — on a car page, a
+country page, a campaign page, a blog post, a news article or an OG image —
+run it through `car-imagery-checklist.md` at the repo root. The short version:
+
+- **The make and model must exist**, confirmed on the manufacturer's site or a
+  named motoring publication — never a render, a forum or a guess.
+- **The photo must show the make and model the copy names** (and the
+  generation, if named). Check badges and lights; alt text describes what is
+  actually in the frame.
+- **A visible number plate must match the page's country, or be removed** —
+  dealer placards, trade plates and background cars included. Remove one with
+  `scripts/blur-plate.mjs`, on every size of the image.
+
+### Motion and interaction: read the rule book first
+
+**Before adding, changing or reviewing any animation or interaction on any
+page** — a reveal, hover or press state, accordion, step change, drawer,
+carousel, drag, counter, canvas loop or scroll effect — read
+`motion-interaction-rulebook.md` at the repo root. Every time, not "when in
+doubt". It is the web translation of the Fluid Motion spec (2026-10-27), and
+for anything that moves it outranks `landing-page-playbook.md` §4.9/§10.3.
+
+The short version:
+
+- **Name the kind of motion first** (rule book §2: appearance, feedback, state
+  change, enter/exit, direct manipulation, scroll-linked, ambient) — the kind
+  picks the mechanism. Appearance is still `<Reveal>`.
+- **Anything a person causes moves on a spring token** from
+  `src/lib/fluid.ts` — `springTransition()` for framer-motion, the
+  `--pa-spring-*` pairs in `globals.css` for CSS. Never an ad-hoc
+  `duration`/`ease`. Default `smooth`; `throw` only after a flick.
+- **Feedback on press, everything interruptible, input never locked, exits
+  mirror entries, never hijack the page scroll.**
+- **Custom draggables** track 1:1 after 10 px, rubber-band past their bounds,
+  project the flick to a snap point and hand the release velocity to the
+  spring — the loop in rule book §6, built on `fluid.ts`.
+- **Only `transform` and `opacity` per frame; reduced motion shows the
+  finished state.**
+- The CSS spring tokens are generated by `cssSpring()`; `fluid.test.ts` fails
+  if they are hand-edited out of step.
 
 ### Route Structure
 
@@ -78,12 +366,30 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 /                          Public marketing home
 /(static)/b2b|b2c|saas    Marketing landing pages
 /(static)/b2c/gallery      Vehicle gallery + [id] detail
+/(static)/b2c/gallery/[id]/import-to-[destination]
+                           One car, into one market — shareable per-country URL
 /campaigns/[slug]          Dynamic campaign pages
 /auth/*                    Sign-in, sign-up, password reset
 /request                   Customer car request form
 /track/[id]                Request tracking by ID
 /dealer-dashboard          Dealer interface
 /ireland-cost-calculator   Landed cost calculator tool
+/blog, /blog/[slug]        Evergreen import guides
+/import-bikes              Motorcycles landing page ("import bikes")
+/import-bikes/[slug]       One motorcycle — "import <make> <model>"
+/import/[tag]              One page per landing-page tag ("Import Luxury Cars")
+/latest-news               Automotive news index
+/latest-news/[slug]        News article
+/latest-news/category/*    News category archives
+/latest-news/rss.xml       RSS feed
+/news-sitemap.xml          Google News sitemap
+/import-japanese-cars/uk   Japanese cars into the UK (main landing page)
+/import-japanese-cars/uk/personal-buyer   B2C: one car, for yourself
+/import-japanese-cars/dealership          B2B: UK dealerships buying Japanese stock
+/import-cars-from          Import-from hub (was /source-cars-from, which 301s)
+/import-cars-from/[country] One page per country we buy in
+/b2b-inquiry               B2B inquiry landing page: market check + 3-step dealer form (contact first, dealership optional)
+/admin/dealer-inquiries    The dealer inquiries it produces
 /admin/*                   Protected admin dashboard
 /api/v1/*                  REST API routes
 ```
@@ -91,7 +397,29 @@ Plus the Better-Auth tables (`users`, `sessions`, `accounts`, `verifications`). 
 ### Server Actions
 
 All mutations go through server actions in `src/actions/`, not API routes. Key actions:
-- `submitCarRequest` — creates Request, assigns agent round-robin, sends email alerts
+- `submitCarRequest` — creates Request, assigns agent (profile-page pin to that person whatever their position, then a rep link, else round-robin across **B2C Sales** and **Sales**), sends email alerts
+
+**Hard rule — one account takes every lead** (`ALL_LEADS_OWNER_EMAIL` in `src/lib/lead-routing.ts`): while set, every B2C lead *and* every dealer inquiry goes to that account ahead of everything below except a page owner, recorded as `assignmentMethod: "hard-rule"`. **Off (`null`) since 2026-11-12** — it held Amy for one day (2026-11-11); she now takes only her page and her rep link (below). The machinery stays for the next time it is asked for.
+
+**Page owners — ahead of everything** (business instruction 2026-11-12): `PAGE_LEAD_OWNERS` in `src/lib/lead-routing.ts` maps a page's pathname to one account, and every inquiry sent from that page goes to it first, rep links included — **`/import-japanese-cars/dealership` → Ishak** (dealer form) and **`/japanese-luxury-cars-lhd` → Amy** (B2C lead form). The dealer form sends `pagePath` (`window.location.pathname`); the B2C form sends the full `pageUrl`, read through `pagePathFromUrl` — never `source`, which a `?ref=` can replace. Recorded as `assignmentMethod: "page-owner"`; an account that is missing or banned falls through to the rest, with a warning in the server log.
+
+**Held out of every rotation** (`ROTATION_EXCLUDED`, business instruction 2026-11-12): **Amy** takes only leads routed to her by name — her page, `?rep=amy`, her own profile page — and never a B2C or dealer rotation turn, whatever her position. Strict: if she were the only one left, the lead goes unassigned rather than to her.
+
+**Rep links** (`src/lib/rep-link.ts`, business instruction 2026-10-16): any page with an inquiry form takes `?rep=<name>` (or the bare `?<name>`), where the name is the part of a salesperson's company email before the @ — `?rep=shaq` → `shaq@providenceauto.uk.com` — or a customer-facing name listed in `REP_LINK_ALIASES` (**`shiraz` → Abdallah**). Every inquiry sent on that visit, B2C or dealer, goes to that person, **ahead of a country owner** and the rotation, recorded as `assignmentMethod: "rep-link"` (kept out of the rotation's history). Any sales position qualifies, whichever kind of lead it is, and `DEALER_ROTATION_EXCLUDED` does not apply: a dealer who came through Chathuranga's own link is his. Anyone else, or a departed name, falls back to normal routing. `<RepLinkCapture />` in the root layout remembers the name for **`REP_LINK_DAYS` (7) days** in localStorage (Meta's click window), because Meta-ad visitors come back later in a new tab or their own browser; a newer rep link replaces it. The car page's destination picker keeps `?rep=` when it rewrites the URL (`repSearch`), so "Open in browser" from an in-app browser still carries it, and a `?rep=` value with URL debris after it (`shiraz?utm_source=fb`) still reads as the name. Only a `/team/[slug]` profile-page pin beats it.
+
+**Lead origin** (`src/lib/lead-attribution.ts`): every B2C lead stores the full `landingUrl` (first URL of the tab, query string and all), the `pageUrl` it was sent from, the landing page's `referrer`, and the `repCode` the browser sent **whether or not it matched** — shown under *Lead Origin* in the lead's details. `source` stays the bare pathname the dashboards group by. Use these to answer "why did this lead go to that person?" before changing routing.
+- `dealer-inquiry-actions.ts` — `submitDealerInquiry` (public, from `/b2b-inquiry`) and the `/admin/dealer-inquiries` actions. See "B2B inquiry page" below.
+
+### B2B inquiry page (`/b2b-inquiry`)
+
+A landing page built around one action — a dealership sending a sourcing inquiry — built on 2026-09-29 to the sections the business asked for: the market check, the shared value proposition *without* the dealer platform, and each source market's speed (ports and sea transit, read from `COUNTRY_PAGES` so they never drift from the `/import-cars-from` pages). The rules that matter:
+
+- **The market check never prints the destination list.** It answers from `DESTINATIONS` (`src/lib/dealer-markets.ts`, server-side): a destination whose traffic keeps left (every one but Germany — `drives` on each registry entry) → "yes"; a left-traffic country we don't list (`LEFT_TRAFFIC_COUNTRIES` in `src/config/dealer-sourcing.ts`) → let through, flagged "not on list" for the consultant to confirm; right-traffic → pointed at `/japanese-luxury-cars-lhd`. The copy says "drive on the left", never "RHD market" — see the note above `listed()` in `src/config/destinations.ts`.
+- **One set of rules on both sides.** `src/lib/dealer-inquiry.ts` holds every validator; the form runs them for inline errors and `submitDealerInquiry` runs them again before storing anything. The WhatsApp number is checked with libphonenumber's *max* metadata against the dealer's own country (the default metadata only checks length); the form loads it lazily.
+- **Assignment** (`src/lib/lead-routing.ts`): a country owner first (`DEALER_COUNTRY_LEAD_OWNERS`), then a least-recently-assigned rotation across **B2B Sales** and **Sales** — its own rotation, separate from B2C leads — under a transaction-scoped advisory lock, stamped with the database clock once the lock is held, so two submissions can't land on the same person. **`DEALER_ROTATION_EXCLUDED` keeps Chathuranga out of it** — keyed on his account email (`chathuranga@providenceauto.uk.com`, business instruction 2026-09-30), never on the name, which is common enough to catch someone else. An exclusion never falls back to the excluded person: the inquiry goes unassigned and the alert goes to the general inbox. **Every Malta and Cyprus dealer inquiry goes to Shaq** (country owner; Cyprus since 2026-09-30, Malta since 2026-10-14). B2C leads have no country owners: every one goes to B2C Sales (2026-10-14).
+- **Abuse limits** (`src/lib/rate-limit.ts`, in memory): 5 complete requests an hour per client address and at most 2 receipts a day per inbox; a failed insert gives its hit back, and loopback addresses (a local server) are never limited. The receipt's subject carries only our reference, never dealer-typed text.
+- **It is framed on the inquiry, not on "dealer car sourcing"** (business instruction 2026-09-30): `/b2b` keeps that phrase, and a test fails if this page's title, H1 or description reaches for it.
+- **The per-car vocabulary is shared** with the B2C form through `src/lib/vehicle-inquiry.ts` (makes, year presets, mileage, timelines, the NHTSA model lookup) and `src/components/DualRangeSlider.tsx`, so the two forms can't drift apart.
 - `admin-actions.ts` — user/request management for admin
 - `pdf-actions.tsx` — PDF generation for dossiers
 - `spec-actions.ts` — SpecDossier CRUD
@@ -99,7 +427,9 @@ All mutations go through server actions in `src/actions/`, not API routes. Key a
 
 ### Auth & Roles
 
-Better-Auth custom fields on users: `role` (user/Sales/admin), `isBanned`, `badges`, `whatsappNumber`. Social providers: Google, Facebook, Discord. No `middleware.ts` — route protection is handled at the component/action level.
+Better-Auth custom fields on users: `role` (user/Staff/Admin, or a sales position), `isBanned`, `badges`, `whatsappNumber`.
+
+**Sales positions** (business instruction 2026-10-14) are roles set on `/admin/users`: **B2C Sales** takes every lead except dealer inquiries, **B2B Sales** takes dealer inquiries, **Sales** takes both. The lists and the `takesB2cLeads` / `takesDealerLeads` / `isSalesRole` helpers live in `src/lib/lead-routing.ts` — compare roles through them, never against the literal `"sales"`, which would leave the two new positions out. Roles are stored with inconsistent capitalisation across environments, so the helpers normalise. Social providers: Google, Facebook, Discord. No `middleware.ts` — route protection is handled at the component/action level.
 
 ### shadcn Components
 

@@ -7,7 +7,9 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { db, requests, salesProfiles, specDossiers } from "@/db";
 import { pathnameToSource } from "@/lib/leadSource";
+import { cleanSocialLinksForSave, parseSocialLinks } from "@/lib/social-links";
 import { auth } from "@/utils/auth";
+import { isSalesRole } from "@/lib/lead-routing";
 
 // Slugs that must never become a member profile (would collide with real routes
 // or read as spam). Compared case-insensitively.
@@ -64,10 +66,9 @@ function isAdminRole(role?: string) {
   return normalizeRole(role) === "admin";
 }
 
-/** Only Sales/admin users may own or edit a profile. */
+/** Only admins and people in a sales position may own or edit a profile. */
 function canOwnProfile(role?: string) {
-  const r = normalizeRole(role);
-  return r === "sales" || r === "admin";
+  return isAdminRole(role) || isSalesRole(role);
 }
 
 /** Strip a Mongoose doc to a plain, serialisable object for the client. */
@@ -93,6 +94,7 @@ function mapSalesProfile(raw: typeof salesProfiles.$inferSelect) {
       note: string;
     }[],
     trackRecord: (raw.trackRecord || []) as { value: string; label: string }[],
+    socialLinks: parseSocialLinks(raw.socialLinks),
     testimonials: (raw.testimonials || []) as {
       name: string;
       title: string;
@@ -277,6 +279,7 @@ export async function updateMyProfile(input: {
   }[];
   featuredDossierIds?: string[];
   whatsappNumber?: string;
+  socialLinks?: Record<string, string>;
 }) {
   try {
     const session = await requireSession();
@@ -380,6 +383,19 @@ export async function updateMyProfile(input: {
       updateData.testimonials = input.testimonials;
     if (input.whatsappNumber !== undefined)
       updateData.whatsappNumber = input.whatsappNumber;
+    if (input.socialLinks !== undefined) {
+      const { links, invalid } = cleanSocialLinksForSave(input.socialLinks);
+      if (invalid) {
+        return {
+          success: false,
+          message:
+            invalid === "Website"
+              ? "That website link doesn't look right — paste the full address, starting https://."
+              : `That ${invalid} link doesn't look right — paste the full link from ${invalid}, or just your handle.`,
+        };
+      }
+      updateData.socialLinks = links;
+    }
     if (input.featuredDossierIds !== undefined) {
       updateData.featuredDossierIds = input.featuredDossierIds.filter(
         (id) => typeof id === "string" && id.trim() !== "",
@@ -394,6 +410,12 @@ export async function updateMyProfile(input: {
 
     revalidatePath(`/team/${slug}`);
     revalidatePath("/admin/my-profile");
+    // The team index and the sitemap both list published profiles, and both
+    // publishing and a slug change alter that list.
+    revalidatePath("/team");
+    revalidatePath("/sitemap.xml");
+    // A renamed profile leaves its old URL behind in both caches.
+    if (slug !== existing.slug) revalidatePath(`/team/${existing.slug}`);
 
     const mappedUpdated = mapSalesProfile(updated);
 
@@ -432,6 +454,50 @@ export async function listPublishedProfileSlugs() {
     return plain(mappedProfiles) as { slug: string; updatedAt: string }[];
   } catch (error) {
     console.error("[listPublishedProfileSlugs] Error:", error);
+    return [];
+  }
+}
+
+/**
+ * PUBLIC — every published profile, in the shape the /team index needs. Ordered
+ * by experience so the most senior consultants lead the grid, then by name so
+ * the order is stable between renders.
+ */
+export async function listPublishedProfiles() {
+  try {
+    const profiles = await db
+      .select({
+        slug: salesProfiles.slug,
+        displayName: salesProfiles.displayName,
+        headline: salesProfiles.headline,
+        tagline: salesProfiles.tagline,
+        photoUrl: salesProfiles.photoUrl,
+        yearsExperience: salesProfiles.yearsExperience,
+        languages: salesProfiles.languages,
+        sourcingCountries: salesProfiles.sourcingCountries,
+      })
+      .from(salesProfiles)
+      .where(eq(salesProfiles.isPublished, true));
+
+    const mapped = profiles
+      .map((p) => ({
+        ...p,
+        languages: p.languages || [],
+        sourcingCountries: (p.sourcingCountries || []) as {
+          country: string;
+          flag: string;
+          note: string;
+        }[],
+      }))
+      .sort(
+        (a, b) =>
+          (b.yearsExperience || 0) - (a.yearsExperience || 0) ||
+          (a.displayName || "").localeCompare(b.displayName || ""),
+      );
+
+    return plain(mapped);
+  } catch (error) {
+    console.error("[listPublishedProfiles] Error:", error);
     return [];
   }
 }

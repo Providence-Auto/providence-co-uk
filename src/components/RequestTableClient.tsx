@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Box,
+  CalendarClock,
   DollarSign,
   ExternalLink,
   Eye,
@@ -38,6 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatBudget } from "@/lib/currencies";
 import { isLhdLead, pathnameToSource } from "@/lib/leadSource";
 import { type PageSize, paginate } from "@/lib/pagination";
 
@@ -51,31 +53,12 @@ import { type PageSize, paginate } from "@/lib/pagination";
 const PAGE_SIZE_OPTIONS: PageSize[] = [25, 50, 100, 200, "All"];
 const DEFAULT_PAGE_SIZE = 50;
 
-const PIPELINE_STAGES = [
-  "New",
-  "Vehicle Selection",
-  "Price Agreement",
-  "Deposit Collected",
-  "Vehicle Purchased",
-  "Preparation",
-  "Shipped",
-  "Arrived at Port",
-  "Cleared Customs",
-];
+// Both lists live in src/lib/leadConversion.ts, beside the table mapping each
+// sales label to the offline conversion it earns. SALES_STATUSES is re-exported
+// here because RequestActionModal has always imported it from this file.
+import { PIPELINE_STAGES, SALES_STATUSES } from "@/lib/leadConversion";
 
-// Exporting this so you can potentially import it in your Modal component
-export const SALES_STATUSES = [
-  "Action required",
-  "No Response",
-  "Stopped Responding",
-  "Replied (Email)",
-  "Replied (WhatsApp)",
-  "Replied (Both)",
-  "Active Conversation",
-  "SQL: Moved to vehicle offering stage",
-  "Not Qualified",
-  "Lead Lost",
-];
+export { SALES_STATUSES };
 
 const BASE_URL = "https://providenceauto.co.uk";
 
@@ -372,6 +355,12 @@ export default function RequestTableClient({
                         )}
                       </div>
                       <div className="text-[10px] text-zinc-400 mt-0.5">
+                        Budget:{" "}
+                        {formatBudget(req.budgetAmount, req.budgetCurrency) || (
+                          <span className="text-zinc-300">—</span>
+                        )}
+                      </div>
+                      <div className="text-[10px] text-zinc-400 mt-0.5">
                         Created: {new Date(req.createdAt).toLocaleString()}
                       </div>
                     </TableCell>
@@ -380,11 +369,36 @@ export default function RequestTableClient({
                       <span className="font-bold text-black text-sm">
                         {req.make} {req.vehicle_model}
                       </span>
+                      {/* The grade the customer picked, beside the model —
+                          a Ti and a Ti-L Reserve are different quotes, and
+                          the agent has to see which one before they call. */}
+                      {req.grade && (
+                        <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 bg-violet-100 text-violet-700 border border-violet-200 rounded text-[10px] font-bold tracking-wide align-middle">
+                          {req.grade}
+                        </span>
+                      )}
                       <br />
                       <div className="flex flex-wrap gap-1 mt-1.5">
-                        {isLhdLead(req.source) && (
+                        {/* Prefer what the customer actually selected on the
+                            car page; fall back to inferring it from the
+                            landing page they arrived through. */}
+                        {(req.steering
+                          ? req.steering === "LHD"
+                          : isLhdLead(req.source)) && (
                           <span className="px-1.5 py-0.5 bg-red-600 text-white rounded text-[10px] font-bold tracking-wide">
                             LHD
+                          </span>
+                        )}
+                        {req.steering === "RHD" && (
+                          <span className="px-1.5 py-0.5 bg-zinc-800 text-white rounded text-[10px] font-bold tracking-wide">
+                            RHD
+                          </span>
+                        )}
+                        {/* Pre-order rather than a car we can quote today —
+                            the agent needs to see this before they call. */}
+                        {req.isUpcomingVehicle && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-sky-600 text-white rounded text-[10px] font-bold tracking-wide">
+                            <CalendarClock size={9} /> Upcoming Car
                           </span>
                         )}
                         {req.condition === "Used" ? (
@@ -403,6 +417,25 @@ export default function RequestTableClient({
                           </span>
                         )}
                       </div>
+
+                      {/* Colour choices. Always rendered, with an em dash when
+                          the customer didn't pick one, so "not asked for" is
+                          distinguishable from a field nobody has looked at. */}
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-zinc-500">
+                        <span>
+                          <span className="font-bold uppercase tracking-wide text-zinc-400">
+                            Ext:
+                          </span>{" "}
+                          {req.exteriorColor || "—"}
+                        </span>
+                        <span>
+                          <span className="font-bold uppercase tracking-wide text-zinc-400">
+                            Int:
+                          </span>{" "}
+                          {req.interiorColor || "—"}
+                        </span>
+                      </div>
+
                       {req.source && (
                         <div className="mt-2">
                           <a
@@ -820,7 +853,7 @@ export default function RequestTableClient({
                   setPageSize(next === "All" ? "All" : Number(next));
                   setPage(1);
                 }}
-                className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-all appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
+                className="pl-3 pr-8 py-2 text-sm bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl text-zinc-600 font-semibold cursor-pointer outline-none transition-feedback appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat"
               >
                 {PAGE_SIZE_OPTIONS.map((opt) => (
                   <option key={opt} value={String(opt)}>

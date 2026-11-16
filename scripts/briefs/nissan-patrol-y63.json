@@ -1,0 +1,215 @@
+{
+  "_comment": "Nissan Patrol Y63, Australian spec, right-hand drive. Coming soon. Each environment has its own database, so publishing this page on one does not create it on the others. Recreate it with: node --env-file=.env.local scripts/create-car-page.mjs scripts/briefs/nissan-patrol-y63.json --env staging --publish (or --env production). Sources: nissan.com.au all-new-patrol (grade equipment, colours, engine, towing); nissan.com.au news 2026/august, 'Nissan announces pricing and key specifications for all-new Patrol in Australia', 27 August 2026 (the six-grade ladder and the MSRPs); CarExpert (Australian launch timing). Images are Nissan Australia press shots of a pre-production car, stored under public/cars/nissan-patrol-y63/.",
+
+  "make": "Nissan",
+  "model": "Patrol",
+  "year": "2027",
+  "trim": "",
+  "condition": "New",
+  "countryOfOrigin": "Australia",
+  "slug": "nissan-patrol-y63",
+
+  "engineConfig": "Twin-turbo V6 petrol",
+  "displacement": "3.5-litre",
+  "maxPower": "317 kW",
+  "maxTorque": "700 Nm",
+  "transmission": "Nine-speed automatic",
+  "fuelSystem": "Petrol",
+  "steeringOptions": ["RHD"],
+
+  "_destinationsComment": "Right-hand-drive markets only, since the Y63 is sourced in Australian spec. Ranked: the first five render as buttons on the car page, the rest as text links, and each gets its own /import-to- URL.",
+  "destinations": [
+    "united-kingdom",
+    "ireland",
+    "kenya",
+    "new-zealand",
+    "jamaica",
+    "sri-lanka",
+    "malaysia",
+    "tanzania"
+  ],
+
+  "upholstery": "Synthetic leather on Ti, Ti+ and Ti-L; genuine leather on Ti-L+ and Ti-L Reserve",
+  "infotainment": "Dual 12.3-inch displays on Ti and Ti+, dual 14.3-inch from Ti-L up, NissanConnect with Google built-in",
+
+  "isUpcoming": true,
+  "expectedAvailability": "Australian deliveries reported from Q1 2027",
+
+  "grades": [
+    {
+      "name": "Ti",
+      "isDefault": true,
+      "summary": "The entry to the range, and already the full dual-range four-wheel-drive hardware.",
+      "highlights": [
+        "Dual 12.3-inch monolith touchscreen infotainment displays",
+        "3D fixed Intelligent Around View Monitor with invisible hood \"skeleton view\"",
+        "18-inch gunmetal alloy wheels",
+        "Synthetic leather seats and leather-accented steering wheel",
+        "Four-wheel drive with dual-range interlocking transfer case (4H & 4L)",
+        "Eight drive and terrain modes",
+        "Electronic locking rear differential",
+        "Tri-zone automatic climate control",
+        "NissanConnect connected car services with Google built-in",
+        "ProPILOT"
+      ]
+    },
+    {
+      "name": "Ti+",
+      "summary": "Ti equipment, plus the glass roof and the load-and-go hardware.",
+      "highlights": [
+        "Tilt and slide power sunroof with panoramic glass roof",
+        "Privacy glass (second row and rear windows)",
+        "Power tailgate",
+        "Roof rails",
+        "Intelligent Rear View Mirror",
+        "Rain-sensing front windscreen wipers"
+      ]
+    },
+    {
+      "name": "Ti-L",
+      "summary": "Bigger screens, Klipsch audio and adaptive damping on 20-inch wheels.",
+      "highlights": [
+        "Dual 14.3-inch monolith touchscreen infotainment displays",
+        "Klipsch 12-speaker premium audio system",
+        "Head-Up Display",
+        "eDamper electric shock absorber",
+        "20-inch machined alloy wheels",
+        "3D rotation Intelligent Around View Monitor with skeleton view hood"
+      ]
+    },
+    {
+      "name": "Ti-L+",
+      "summary": "Ti-L hardware, trimmed properly: real leather and a front row that heats, cools and massages.",
+      "highlights": [
+        "Genuine leather trim",
+        "Heated and ventilated front seats",
+        "Massaging driver's seat",
+        "Heated steering wheel",
+        "Cool box",
+        "Biometric cooling",
+        "Ambient lighting"
+      ]
+    },
+    {
+      "name": "PRO-4X",
+      "summary": "The off-road grade: adaptive air suspension, all-terrain tyres and the towing hardware.",
+      "highlights": [
+        "Adaptive air suspension",
+        "Black alloy wheels on all-terrain tyres",
+        "Unique off-road front bumper",
+        "Trailer docking support",
+        "Electronic trailer brake controller"
+      ]
+    },
+    {
+      "name": "Ti-L Reserve",
+      "summary": "The flagship: 22-inch wheels, a second row that gets its own screens and massage seats for both front occupants.",
+      "highlights": [
+        "Adaptive air suspension and eDamper electric shock absorber",
+        "22-inch step-machined alloy wheels",
+        "Dual 12.8-inch second-row entertainment screens",
+        "Driver and passenger front massage seats"
+      ]
+    }
+  ],
+
+  "images": [
+    "/cars/nissan-patrol-y63/range-hero.webp",
+    "/cars/nissan-patrol-y63/black-front.webp",
+    "/cars/nissan-patrol-y63/black-rear.webp",
+    "/cars/nissan-patrol-y63/black-rear-wide.webp",
+    "/cars/nissan-patrol-y63/black-quarry.webp",
+    "/cars/nissan-patrol-y63/white-front.webp",
+    "/cars/nissan-patrol-y63/white-rear.webp",
+    "/cars/nissan-patrol-y63/interior-dashboard.webp",
+    "/cars/nissan-patrol-y63/interior-display.webp",
+    "/cars/nissan-patrol-y63/interior-massage-seats.webp",
+    "/cars/nissan-patrol-y63/engine-v6.webp"
+  ],
+  "heroImageUrl": "/cars/nissan-patrol-y63/range-hero.webp",
+
+  "exteriorColors": [
+    { "name": "Black Onyx", "hex": "#141414", "imageIndex": 1 },
+    { "name": "Pearl White", "hex": "#f1f1ee", "imageIndex": 5 },
+    { "name": "Gun Metallic", "hex": "#6a6d70" },
+    { "name": "Deep Ocean Blue", "hex": "#1f3550" },
+    {
+      "name": "Pearl White",
+      "hex": "#f1f1ee",
+      "isDualTone": true,
+      "hex2": "#141414",
+      "secondaryName": "Black roof",
+      "imageIndex": 0
+    },
+    {
+      "name": "Forest Green",
+      "hex": "#31463a",
+      "isDualTone": true,
+      "hex2": "#141414",
+      "secondaryName": "Black roof",
+      "imageIndex": 0
+    },
+    {
+      "name": "Gun Metallic",
+      "hex": "#6a6d70",
+      "isDualTone": true,
+      "hex2": "#141414",
+      "secondaryName": "Black roof"
+    }
+  ],
+
+  "interiorColors": [
+    { "name": "Synthetic leather", "hex": "#23262b", "imageIndex": 8 },
+    { "name": "Beige genuine leather-accented", "hex": "#cec2ad", "imageIndex": 7 }
+  ],
+
+  "features": [
+    "Seven seats",
+    "3.7-tonne braked towing capacity",
+    "Four-wheel drive, dual-range transfer case",
+    "Eight drive and terrain modes",
+    "Electronic locking rear differential",
+    "Tri-zone automatic climate control",
+    "NissanConnect with Google built-in",
+    "ProPILOT"
+  ],
+
+  "customData": [
+    { "label": "Generation", "value": "Y63" },
+    { "label": "Market specification", "value": "Australian" },
+    { "label": "Seats", "value": "7" },
+    { "label": "Braked towing capacity", "value": "3,700 kg" },
+    { "label": "Drivetrain", "value": "Four-wheel drive, dual-range transfer case" },
+    { "label": "Grades on this page", "value": "Ti, Ti+, Ti-L, Ti-L+, PRO-4X, Ti-L Reserve" }
+  ],
+
+  "valuePoints": [
+    {
+      "title": "You buy in Australia, not through a re-exporter",
+      "description": "Australia is one of the seven countries our own team buys in. You order the Patrol through the Australian retail network yourself, and the margin a re-exporter would take on the way out stays with you."
+    },
+    {
+      "title": "One landed number, before you commit",
+      "description": "You choose the grade you want, and we map the duty, VAT and registration-tax position for your destination onto it and give you a single landed figure with the freight in it. You decide on the real number, not an estimate."
+    },
+    {
+      "title": "Right-hand drive, with the file to prove it",
+      "description": "Our Australian office clears the car for export and prepares the pack your own authority asks for — build date, VIN, compliance and the exact grade specification — and we support your clearance at the destination port."
+    }
+  ],
+
+  "searchTags": [
+    "nissan",
+    "patrol",
+    "y63",
+    "pro-4x",
+    "suv",
+    "7-seater",
+    "4wd",
+    "australia",
+    "upcoming",
+    "coming-soon"
+  ],
+
+  "notes": "The Y63 Patrol drops the V8 for a 317 kW twin-turbo V6 — order it in Australian spec, right-hand drive, in Ti, Ti+, Ti-L, Ti-L+, PRO-4X or Ti-L Reserve. It is the same 3.5-litre engine and nine-speed automatic in all of them, on a dual-range transfer case and rated to tow 3.7 tonnes braked, so the ladder from Ti to Ti-L Reserve is about wheels, screens and suspension rather than what is under the bonnet. Pick a grade above and the specification below follows it. Australia is one of the seven countries we buy in, so you can order this one at Australian retail and ship it to your own market. Register your interest and we will come back with a landed cost for your country. Photography is Nissan Australia press imagery of a pre-production car; Nissan states that Australian specifications, features, design elements and availability are subject to change without notice."
+}

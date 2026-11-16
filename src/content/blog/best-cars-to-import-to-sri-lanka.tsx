@@ -100,7 +100,7 @@ export default function Body() {
       </UL>
       <P>
         These come predominantly from{" "}
-        <InlineLink href="/source-cars-from/japan">Japan</InlineLink>, where the
+        <InlineLink href="/import-cars-from/japan">Japan</InlineLink>, where the
         auction system provides an independent condition grade before anyone
         bids — worth having on a used hybrid.
       </P>
@@ -123,7 +123,7 @@ export default function Body() {
         <CheckLI>
           <Strong>Suzuki Vitara and India-built compact SUVs.</Strong> Worth
           comparing against Japanese stock — freight from{" "}
-          <InlineLink href="/source-cars-from/india">India</InlineLink> is
+          <InlineLink href="/import-cars-from/india">India</InlineLink> is
           shorter and cheaper, and new units remove condition risk entirely.
         </CheckLI>
       </UL>
@@ -141,7 +141,7 @@ export default function Body() {
           conditions, with good local parts support and strong resale.
           Thai-built body-on-frame SUVs — the Fortuner and Pajero Sport — are
           the other realistic route, and can be supplied new from our{" "}
-          <a href="/source-cars-from/thailand">Thailand office</a>. Model the
+          <a href="/import-cars-from/thailand">Thailand team</a>. Model the
           landed cost on the specific engine before committing.
         </p>
       </Callout>
@@ -180,7 +180,7 @@ export default function Body() {
       <P>
         Which produces a slightly deflating but genuinely useful conclusion: on
         this market, the conventional choice is usually the financially correct
-        one. If you want something unusual, buy it knowing that the
+        one. If you want something unusual, import it knowing that the
         individuality has a price attached at both ends of the ownership.
       </P>
       <P>

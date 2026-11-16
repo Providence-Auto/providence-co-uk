@@ -1,21 +1,23 @@
-"use client";
+// Every answer is rendered as plain text, never behind a closed accordion.
+//
+// This section used to be a Radix accordion, which renders nothing for a
+// closed item: the answers reached crawlers only inside scripts, while every
+// page that uses it also emits FAQPage JSON-LD for them — structured data for
+// content that isn't on the page (seo-page-rules.md T-10, T-11, T-43; CLAUDE.md
+// landing pages item 9). It is used by the blog and news templates, the
+// campaign landings, /b2c, the gallery and every car page, so keep it static.
 
 import { Reveal } from "@/components/Reveal";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import type { LandingPageConfig } from "@/config/landing-pages";
 
-const FAQ_DATA = [
+/** The general questions, shown where a page has no FAQ of its own. */
+export const DEFAULT_FAQ_CATEGORIES = [
   {
     category: "Safety & Security",
     items: [
       {
         q: "How do I know my money is safe?",
-        a: "Your payment is held in a secure escrow arrangement until the vehicle is confirmed, inspected, and ready for shipment. We've been operating for 15+ years and have long-standing relationships supplying the dealerships you already trust.",
+        a: "Your payment is held securely and released only once the vehicle is confirmed, inspected and cleared for shipment. We've been operating for 15+ years and have long-standing relationships supplying the dealerships you already trust.",
       },
       {
         q: "What if the car isn't what was described?",
@@ -23,19 +25,19 @@ const FAQ_DATA = [
       },
       {
         q: "What happens if the car is damaged during shipping?",
-        a: "Every vehicle is covered by comprehensive marine insurance, door-to-door. In the unlikely event of transit damage, you're fully protected. We handle the entire claims process—zero paperwork for you.",
+        a: "Every vehicle is covered by marine insurance for the voyage. In the unlikely event of transit damage, we run the claim with the insurer and keep you updated — you are not left to chase it alone.",
       },
       {
         q: "Is Providence Auto a registered and licensed business?",
-        a: "Yes. We are a registered vehicle sourcing and export group with over 15 years of trading history and physical offices across Europe, Asia, the Middle East and Oceania, operating under all applicable international trade and export regulations in every market where we buy and sell.",
+        a: "Yes. We are a registered vehicle sourcing and export group with over 15 years of trading history and our own teams across Europe, Asia, the Middle East and Oceania, operating under all applicable international trade and export regulations in every market we export from and to.",
       },
       {
-        q: "Can I visit your office or speak to someone in person?",
-        a: "Absolutely. We have physical offices and operations teams in the UK, Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka — and we're opening more as our volumes grow. You're welcome to visit any of them, or we can jump on a video call so you can put a face to the name. We're real people, not a faceless website.",
+        q: "Can I speak to someone in person?",
+        a: "Absolutely. Our head office is in London and you're welcome to arrange a visit, and we have our own teams in Japan, the UAE, India, Thailand, Australia and New Zealand — with more markets added as our volumes grow. Wherever your car is coming from, we can jump on a video call so you can put a face to the name. We're real people, not a faceless website.",
       },
       {
-        q: "Which countries do you source vehicles from?",
-        a: "We buy directly in the eight countries where we have our own offices — the UK, Japan, the UAE, India, Thailand, Australia, New Zealand and Sri Lanka — and we source from many more markets besides. For any given specification we compare the total landed cost across every country that can supply it, then buy where it lands cheapest for you.",
+        q: "Which countries do you export vehicles from?",
+        a: "We export directly from the seven countries where we have our own sourcing teams — the UK, Japan, the UAE, India, Thailand, Australia and New Zealand — and we search many more markets besides. For any given specification we compare the total landed cost across every country that can supply it, then export from where it lands cheapest for you.",
       },
     ],
   },
@@ -44,7 +46,7 @@ const FAQ_DATA = [
     items: [
       {
         q: "How do you verify the condition of the car?",
-        a: "Every vehicle is independently inspected by a qualified third-party assessor. This covers mechanical condition, bodywork, interior, service history, and mileage verification. You receive the full report before anything moves.",
+        a: "Every vehicle gets the same multi-point physical inspection from our own team, whichever country it is exported from — mechanical condition, bodywork, underbody, electronics, interior, service history and mileage. You receive the full report and photographs before your payment is released.",
       },
       {
         q: "Can I request additional photos or a video walkaround?",
@@ -55,8 +57,8 @@ const FAQ_DATA = [
         a: "We stand behind our sourcing. If there is a discrepancy between the documentation and the arrival condition, we work with you to resolve it. Our reputation is built on 15 years of trust.",
       },
       {
-        q: "Are the cars you source accident-free?",
-        a: "We do not buy cars with accident histories. We provide full vehicle history, including service and ownership records. We'd rather lose a sale than deliver a surprise.",
+        q: "Are the cars you export accident-free?",
+        a: "We do not export cars with accident histories. We provide full vehicle history, including service and ownership records. We'd rather lose a sale than deliver a surprise.",
       },
       {
         q: "Do the cars come with valid service history?",
@@ -69,11 +71,11 @@ const FAQ_DATA = [
     items: [
       {
         q: "How long does the whole process take?",
-        a: "Typically 1 week to source and confirm, then 3–4 weeks for transit to your destination port. We provide a specific timeline at the quote stage.",
+        a: "Typically 1 week to find and confirm, then 3–4 weeks for transit to your destination port. We provide a specific timeline at the quote stage.",
       },
       {
         q: "Do I need to handle any paperwork or customs forms?",
-        a: "No. We handle 100% of the documentation—Bill of Lading, export compliance, customs declarations, and HS codes. You do zero paperwork. Literally.",
+        a: "Very little, and never on your own. We prepare and file the export side ourselves — Bill of Lading, export compliance, HS codes and whatever pre-shipment inspection your country requires — and send you the completed file rather than a list of things to go and find. At your end, we ship to your destination port rather than to your door: the import entry is made in your name, and we prepare the documents, tell you exactly what happens at the port, and support you through clearance.",
       },
       {
         q: "Will the car be legal to drive in my country?",
@@ -99,7 +101,7 @@ const DEFAULT_FAQ_CONFIG: LandingPageConfig["faqs"] = {
   title: "Frequently Asked Questions",
   subtitle:
     "Everything you need to know about our global direct import network.",
-  categories: FAQ_DATA,
+  categories: DEFAULT_FAQ_CATEGORIES,
 };
 
 type FAQSectionProps = {
@@ -125,33 +127,32 @@ export default function FAQSection({
         {/* Categories */}
         <div className="space-y-16">
           {data.categories.map((section, idx) => (
-            <Reveal key={idx} y={20} duration={0.5} delay={idx * 0.1}>
-              <h3 className="text-xs font-bold tracking-[0.3em] uppercase text-zinc-400 mb-8 ml-2">
+            <Reveal
+              key={section.category}
+              y={20}
+              duration={0.5}
+              delay={idx * 0.1}
+            >
+              {/* A label, not a heading: the questions are the H3s under the
+                  section's H2, so the outline never skips a level. */}
+              <p className="text-xs font-bold tracking-[0.3em] uppercase text-zinc-400 mb-8 ml-2">
                 {section.category}
-              </h3>
+              </p>
 
               <div className="bg-white rounded-[2rem] border border-black/5 p-2 md:p-6 shadow-[0_20px_40px_rgba(0,0,0,0.02)]">
-                <Accordion type="single" collapsible className="w-full">
-                  {section.items.map((faq, i) => (
-                    <AccordionItem
-                      key={i}
-                      value={`${idx}-${i}`}
-                      className="border-none px-4"
-                    >
-                      <AccordionTrigger className="text-left hover:no-underline py-6 text-lg font-medium text-zinc-900 group">
-                        <span className="group-data-[state=open]:text-blue-600 transition-colors">
-                          {faq.q}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="text-zinc-500 font-light leading-relaxed text-base pb-6">
-                        {faq.a}
-                      </AccordionContent>
-                      {i !== section.items.length - 1 && (
-                        <div className="h-px bg-black/5 mx-auto" />
-                      )}
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                {section.items.map((faq, i) => (
+                  <div key={faq.q} className="px-4">
+                    <h3 className="pt-6 pb-3 text-lg font-medium text-zinc-900">
+                      {faq.q}
+                    </h3>
+                    <p className="text-zinc-500 font-light leading-relaxed text-base pb-6">
+                      {faq.a}
+                    </p>
+                    {i !== section.items.length - 1 && (
+                      <div className="h-px bg-black/5 mx-auto" />
+                    )}
+                  </div>
+                ))}
               </div>
             </Reveal>
           ))}

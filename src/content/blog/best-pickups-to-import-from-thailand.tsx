@@ -19,7 +19,7 @@ export default function Body() {
         Six pickups dominate Thai production, four SUVs are built on their
         bones, and the differences between them matter more than the badges
         suggest. This is an honest comparison of which suits which job — not a
-        ranking, because a mining fleet and a family buying a weekend tow
+        ranking, because a mining fleet and a family importing a weekend tow
         vehicle should not choose the same truck.
       </Lead>
 
@@ -161,7 +161,7 @@ export default function Body() {
       />
       <P>
         These are genuinely tough vehicles rather than crossovers with cladding,
-        which is the point of buying one from Thailand rather than a monocoque
+        which is the point of importing one from Thailand rather than a monocoque
         SUV from anywhere else.
       </P>
 
@@ -174,7 +174,7 @@ export default function Body() {
         genuinely new option.
       </P>
       <P>
-        Three things to settle before buying one, all of which vary more than
+        Three things to settle before importing one, all of which vary more than
         the vehicles do:
       </P>
       <UL>

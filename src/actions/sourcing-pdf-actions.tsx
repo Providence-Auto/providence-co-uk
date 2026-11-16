@@ -30,15 +30,28 @@ export interface SourcingPdfData {
     cifGbp: number;
     duty: number;
     dutyLabel: string;
-    vat: number;
-    vatLabel: string;
     postBorder: number;
+    // The IVA approval block inside postBorder, or 0 when the car is outside the
+    // scheme. Carried separately so the row can say what the figure contains —
+    // the report prints one aggregate UK-cost number.
+    iva?: number;
     totalLanded: number;
   };
   market: {
     count: number;
     min: number;
+    // The median the figures were actually built on — the scraped one unless
+    // the operator overrode it.
     median: number;
+    // True when that median is the desk's own retail figure rather than the
+    // scraped one. The report says so, because a reader would otherwise take
+    // it for a market statistic.
+    medianOverridden?: boolean;
+    // What the listings alone produced, kept for the record when overridden.
+    scrapedMedian?: number;
+    // The median with VAT taken back out — the figure the margin is measured
+    // against, since the landed cost excludes reclaimable import VAT.
+    medianExVat: number;
     mean: number;
     max: number;
     p25: number;
@@ -69,6 +82,14 @@ export interface SourcingPdfData {
     confidence: string;
     grossMargin: number;
     marginPct: number;
+    targetMarginPct: number;
+  };
+  // The biggest hammer price that still clears the target margin.
+  maxBid: {
+    currency: string;
+    maxHammer: number;
+    maxLandedGbp: number;
+    achievable: boolean;
   };
   usage: {
     aiTokens: number;
@@ -245,6 +266,9 @@ const ReportPDF = ({
   const vehicleLine = [v.year, v.make, v.model, v.edition]
     .filter(Boolean)
     .join(" ");
+  const targetLabel = `${(data.verdict.targetMarginPct * 100).toFixed(0)}%`;
+  const meetsTarget = data.verdict.marginPct >= data.verdict.targetMarginPct;
+  const bidCcy = data.maxBid.currency === "JPY" ? "¥" : "$";
   return (
     <Document title={`Sourcing Report — ${vehicleLine}`}>
       <Page size="A4" style={styles.page}>
@@ -267,15 +291,19 @@ const ReportPDF = ({
               </Text>
             </View>
             <View style={{ alignItems: "flex-end" }}>
-              <Text style={styles.totalLabel}>Gross margin (at median)</Text>
+              <Text style={styles.totalLabel}>Profit (at median, ex VAT)</Text>
               <Text
                 style={{
                   fontSize: 18,
                   fontFamily: "Helvetica-Bold",
-                  color: data.verdict.grossMargin >= 0 ? SKY : "#f87171",
+                  color: meetsTarget ? SKY : "#f87171",
                 }}
               >
-                {fmtGBP(data.verdict.grossMargin)}
+                {fmtGBP(data.verdict.grossMargin)} ·{" "}
+                {(data.verdict.marginPct * 100).toFixed(1)}%
+              </Text>
+              <Text style={{ fontSize: 8, color: "#a1a1aa", marginTop: 2 }}>
+                {meetsTarget ? "clears" : "below"} the {targetLabel} target
               </Text>
             </View>
           </View>
@@ -291,16 +319,42 @@ const ReportPDF = ({
           ) : null}
 
           <Text style={styles.sectionTitle}>Landed Cost (GBP)</Text>
-          <Row label="CIF value" value={fmtGBP(data.landed.cifGbp)} />
-          <Row label={data.landed.dutyLabel} value={fmtGBP(data.landed.duty)} />
-          <Row label={data.landed.vatLabel} value={fmtGBP(data.landed.vat)} />
           <Row
-            label="Post-border fees"
+            label="CIF value (full customs value)"
+            value={fmtGBP(data.landed.cifGbp)}
+          />
+          <Row label={data.landed.dutyLabel} value={fmtGBP(data.landed.duty)} />
+          <Row
+            label="Import VAT"
+            value="Excluded — reclaimed by the importer"
+          />
+          <Row
+            label={`UK costs (clearance, registration, prep${
+              data.landed.iva ? `, IVA ${fmtGBP(data.landed.iva)}` : ""
+            })`}
             value={fmtGBP(data.landed.postBorder)}
           />
           <Row
             label="Total landed cost"
             value={fmtGBP(data.landed.totalLanded)}
+          />
+          <Row
+            label="Median resale, net of VAT (median ÷ 1.2)"
+            value={fmtGBP(data.market.medianExVat)}
+          />
+          <Row
+            label="Profit after all costs"
+            value={`${fmtGBP(data.verdict.grossMargin)} · ${(
+              data.verdict.marginPct * 100
+            ).toFixed(1)}% ROI`}
+          />
+          <Row
+            label={`Max auction bid for ${targetLabel} ROI`}
+            value={
+              data.maxBid.achievable
+                ? `${bidCcy}${Math.round(data.maxBid.maxHammer).toLocaleString()} hammer`
+                : `Unreachable at any bid`
+            }
           />
 
           <Text style={styles.sectionTitle}>
@@ -312,7 +366,14 @@ const ReportPDF = ({
             )
           </Text>
           <Row label="Lowest" value={fmtGBP(data.market.min)} />
-          <Row label="Median" value={fmtGBP(data.market.median)} />
+          <Row
+            label={
+              data.market.medianOverridden
+                ? "Median (VAT-inclusive · set manually)"
+                : "Median (VAT-inclusive asking price)"
+            }
+            value={fmtGBP(data.market.median)}
+          />
           <Row label="Mean" value={fmtGBP(data.market.mean)} />
           <Row label="Highest" value={fmtGBP(data.market.max)} />
           <Row
@@ -325,6 +386,13 @@ const ReportPDF = ({
             comparable
             {data.market.trimmedOutliers > 0
               ? ` · ${data.market.trimmedOutliers} price outlier${data.market.trimmedOutliers === 1 ? "" : "s"} excluded`
+              : ""}
+            {data.market.medianOverridden
+              ? ` · median set manually to ${fmtGBP(data.market.median)}${
+                  data.market.scrapedMedian
+                    ? ` (the listings gave ${fmtGBP(data.market.scrapedMedian)})`
+                    : ""
+                }; every margin figure follows the manual number`
               : ""}
           </Text>
 
@@ -380,11 +448,27 @@ const ReportPDF = ({
               ]}
             >
               {VERDICT_LABEL[data.verdict.recommendation]} ·{" "}
-              {(data.verdict.marginPct * 100).toFixed(1)}% margin ·{" "}
-              {data.verdict.confidence} confidence
+              {(data.verdict.marginPct * 100).toFixed(1)}% margin vs{" "}
+              {targetLabel} target · {data.verdict.confidence} confidence
             </Text>
             <Text style={styles.verdictHeadline}>{data.verdict.headline}</Text>
             <Text style={styles.verdictBody}>{data.verdict.reasoning}</Text>
+            {data.maxBid.achievable ? (
+              <Text style={styles.verdictBody}>
+                Ceiling bid: do not exceed {bidCcy}
+                {Math.round(data.maxBid.maxHammer).toLocaleString()} at the
+                hammer — that lands the car at{" "}
+                {fmtGBP(data.maxBid.maxLandedGbp)} and holds the {targetLabel}{" "}
+                margin against the median resale.
+              </Text>
+            ) : (
+              <Text style={styles.verdictBody}>
+                No hammer price reaches {targetLabel} on this car: freight, duty
+                and UK-side costs alone exceed the{" "}
+                {fmtGBP(data.maxBid.maxLandedGbp)} landed budget the median
+                resale allows.
+              </Text>
+            )}
           </View>
 
           <View style={styles.usageBox}>
@@ -399,7 +483,8 @@ const ReportPDF = ({
 
           <Text style={styles.disclaimer}>
             Disclaimer: Indicative analysis only. Landed cost uses HMRC-based
-            rates — confirm duty against the live UK Trade Tariff (10-digit
+            rates and excludes import VAT, which a VAT-registered importer
+            reclaims — confirm duty against the live UK Trade Tariff (10-digit
             code) and use HMRC's monthly FX rate. Market figures are scraped
             from live third-party listings and reflect a snapshot at generation
             time; a widened match means fewer exact comparables. The verdict is

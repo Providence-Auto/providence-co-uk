@@ -55,8 +55,8 @@ export default function Body() {
         The result is a market where the Toyota Aqua, Prius and Axio and the
         Honda Fit and Vezel are not niche choices but the default. That
         concentration then becomes self-reinforcing: deep parts availability,
-        mechanics who have seen thousands of them, and strong resale. Buying
-        into it is usually the financially correct decision rather than merely
+        mechanics who have seen thousands of them, and strong resale. Choosing
+        one is usually the financially correct decision rather than merely
         the conventional one.
       </P>
 
@@ -71,9 +71,8 @@ export default function Body() {
           This treatment has been revised more than once, in both directions.
           What was favourable three years ago may not be favourable now, and
           something that was unattractive may have become the smart choice. This
-          is one of the specific things our Colombo team confirms with Sri Lanka
-          Customs before sourcing — never from a published table, including
-          ours.
+          is one of the specific things we confirm with Sri Lanka Customs before
+          ordering — never from a published table, including ours.
         </p>
       </Callout>
       <P>
@@ -120,7 +119,7 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        Every hybrid we source is tested at origin and the result is included in
+        Every hybrid we export is tested at origin and the result is included in
         the report you see before payment is released.
       </P>
 
@@ -163,7 +162,7 @@ export default function Body() {
       <P>
         There is a third, smaller issue: older Japanese-origin EVs commonly use
         the CHAdeMO fast-charging standard while much of the world has moved to
-        CCS. Check what your local network actually supports before buying.
+        CCS. Check what your local network actually supports before importing.
       </P>
 
       <H2 id="verdict">A practical recommendation</H2>
@@ -193,13 +192,9 @@ export default function Body() {
         </CheckLI>
       </UL>
       <P>
-        Our{" "}
-        <InlineLink href="/source-cars-from/sri-lanka">
-          Colombo office
-        </InlineLink>{" "}
-        confirms the current position before sourcing and compares the landed
-        figure across our Japan, Thailand, India and UK offices for the
-        specification you want.
+        Our <InlineLink href="/team">sales team</InlineLink> confirms the
+        current position before ordering and compares the landed figure across
+        our Japan, Thailand, India and UK teams for the specification you want.
       </P>
 
       <Disclaimer>

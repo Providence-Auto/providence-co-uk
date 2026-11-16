@@ -89,6 +89,9 @@ export const salesProfiles = pgTable("salesprofile", {
   testimonials: jsonb("testimonials").notNull().default([]),
   featuredDossierIds: text("featuredDossierIds").array().notNull().default([]),
   whatsappNumber: text("whatsappNumber").notNull(),
+  // { instagram?, linkedin?, tiktok?, facebook?, x?, youtube?, website? } —
+  // full https URLs, shape and validation in src/lib/social-links.ts.
+  socialLinks: jsonb("socialLinks").notNull().default({}),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -107,8 +110,28 @@ export const requests = pgTable("request", {
   countryCode: text("countryCode").notNull(),
   phone: text("phone").notNull(),
   countryOfImport: text("countryOfImport").notNull(),
+  // Budget from the inquiry form: the figure the customer entered plus the
+  // ISO 4217 code they entered it in, kept apart so leads stay sortable and
+  // comparable rather than being a formatted string.
+  budgetAmount: doublePrecision("budgetAmount"),
+  budgetCurrency: text("budgetCurrency"),
   importTimeline: text("importTimeline"),
   dossierIds: text("dossierIds").array().notNull().default([]),
+  // Set when the inquiry came from a dossier flagged as an upcoming /
+  // coming-soon model, so the pipeline can tell a pre-order from a car we can
+  // quote and ship today.
+  isUpcomingVehicle: boolean("isUpcomingVehicle").default(false).notNull(),
+  // Colour choices carried over from the inquiry form. Stored as the rendered
+  // label ("Sonic Grey / Black roof") rather than a dossier reference, so the
+  // lead stays readable even if the dossier's palette is later edited.
+  exteriorColor: text("exteriorColor"),
+  interiorColor: text("interiorColor"),
+  // The grade/variant the customer picked on the car page ("Ti-L Reserve"),
+  // and the hand the car has to be built in. Both are stored as the display
+  // label rather than a dossier reference, for the same reason the colours
+  // are: the lead has to stay readable after the dossier is edited.
+  grade: text("grade"),
+  steering: text("steering"),
   contactMethods: text("contactMethods").array().notNull().default([]),
   contactDays: text("contactDays").array().notNull().default([]),
   contactTimeWindow: text("contactTimeWindow"),
@@ -140,12 +163,27 @@ export const requests = pgTable("request", {
   customsNotes: text("customsNotes"),
   adminNotes: text("adminNotes"),
   source: text("source"),
+  // Full URLs the lead came through and the rep code the browser sent,
+  // matched or not (src/lib/lead-attribution.ts). Diagnostic only.
+  landingUrl: text("landingUrl"),
+  pageUrl: text("pageUrl"),
+  referrer: text("referrer"),
+  repCode: text("repCode"),
   followUpAt: timestamp("followUpAt"),
   followUpSetAt: timestamp("followUpSetAt"),
   gclid: text("gclid"),
   fbclid: text("fbclid"),
   fbc: text("fbc"),
   fbp: text("fbp"),
+  // Offline-conversion upload ledger. NULL means "never uploaded"; a timestamp
+  // means "already uploaded, never send it again". A record rather than
+  // something inferred from the lead's current label — inferring it from the
+  // label is what uploaded rejected leads to Meta as conversions. See
+  // src/lib/leadConversion.ts.
+  metaLeadSentAt: timestamp("metaLeadSentAt"),
+  metaQualifiedSentAt: timestamp("metaQualifiedSentAt"),
+  metaPurchaseSentAt: timestamp("metaPurchaseSentAt"),
+  googleQualifiedSentAt: timestamp("googleQualifiedSentAt"),
   assignedToId: text("assignedToId").references(() => users.id, {
     onDelete: "set null",
   }),
@@ -172,8 +210,29 @@ export const specDossiers = pgTable("specdossier", {
   transmission: text("transmission").default("").notNull(),
   fuelSystem: text("fuelSystem").default("Petrol").notNull(),
   steering: text("steering").default("RHD").notNull(),
+  // Every hand this model can be sourced in. Empty falls back to the single
+  // `steering` value above, which is what every pre-existing dossier has —
+  // read it through parseSteeringOptions rather than directly.
+  steeringOptions: text("steeringOptions").array().notNull().default([]),
   emissions: text("emissions").default("").notNull(),
   pricing: jsonb("pricing").notNull().default([]),
+  // Colour palettes offered for this model. Each entry is
+  // { name, hex, hex2?, isDualTone? } — hex2 is only meaningful when
+  // isDualTone is true (e.g. a contrast roof, or a two-tone cabin).
+  exteriorColors: jsonb("exteriorColors").notNull().default([]),
+  interiorColors: jsonb("interiorColors").notNull().default([]),
+  // Grades / variants of this one model — Ti, Ti-L, Ti-L Reserve. Each entry
+  // stores only what it *changes* off the base spec above, so the ladder is
+  // cheap to author and the page can show the reader the real differences.
+  // Shape and inheritance rules live in src/lib/vehicle-grades.ts.
+  grades: jsonb("grades").notNull().default([]),
+  // Destination markets this car is offered into, as an ORDERED list of slugs
+  // from src/config/destinations.ts. The order is the admin's ranking: the
+  // first five eligible entries become the buttons on the car page and the
+  // rest become text links. Empty — which is every dossier written before this
+  // column existed — means the page shows no destination selector at all.
+  // Read it through parseDestinations (src/lib/vehicle-destinations.ts).
+  destinations: text("destinations").array().notNull().default([]),
   upholstery: text("upholstery").default("").notNull(),
   infotainment: text("infotainment").default("").notNull(),
   features: text("features").array().notNull().default([]),
@@ -185,6 +244,22 @@ export const specDossiers = pgTable("specdossier", {
   slug: text("slug").default("").notNull(),
   notes: text("notes").default("").notNull(),
   status: text("status").default("Draft").notNull(),
+  // --- Upcoming / coming-soon models ------------------------------------
+  // A car we are taking interest in ahead of availability. It still gets a
+  // full public page, but the page sells a pre-order rather than a car in
+  // stock, and every lead off it is flagged for the sales pipeline.
+  isUpcoming: boolean("isUpcoming").default(false).notNull(),
+  /** Free text, e.g. "Q3 2026" or "Deliveries from March 2027". */
+  expectedAvailability: text("expectedAvailability").default("").notNull(),
+  /** Slug of the /latest-news announcement this model was launched in. */
+  newsSlug: text("newsSlug").default("").notNull(),
+  // --- Motorcycles and landing-page tags (drizzle/0011) ------------------
+  /** "car" or "motorcycle" — see src/lib/vehicle-type.ts. */
+  vehicleType: text("vehicleType").default("car").notNull(),
+  // Landing-page tags as slugs ("luxury-cars"); each has a page at
+  // /import/<tag>. Separate from `searchTags`, which are free-form gallery
+  // filter keywords. Registry and parsing: src/config/vehicle-tags.ts.
+  tags: text("tags").array().notNull().default([]),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -233,6 +308,152 @@ export const sourcingAnalyses = pgTable("sourcinganalysis", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
+
+// A dealership asking us to source cars for it, from /b2b-inquiry.
+// Not the same thing as `dealerProfiles` below, which is an account on the
+// dealer *platform* (the embed and dashboard): an inquiry needs no account, and
+// most dealers who send one will never have one.
+export const dealerInquiries = pgTable(
+  "dealerinquiry",
+  {
+    id: text("id").primaryKey(),
+    // The market the dealer checked, spelled as COUNTRIES spells it, and what
+    // the check said about it: "destination" (one of ours) or "unlisted" (a
+    // left-traffic country not on our list yet, so the route is confirmed
+    // before anything else).
+    country: text("country").notNull(),
+    marketStatus: text("marketStatus").notNull(),
+    dealershipName: text("dealershipName").notNull(),
+    // At least one of these two is always present.
+    website: text("website"),
+    socialMedia: text("socialMedia"),
+    contactName: text("contactName").notNull(),
+    designation: text("designation").notNull(),
+    email: text("email").notNull(),
+    // E.164, checked against the dealer's own country before it is stored.
+    whatsapp: text("whatsapp").notNull(),
+    // A slug from DEALER_SOURCE_MARKETS, or null for no preference.
+    sourceMarket: text("sourceMarket"),
+    // Up to five DealerCar objects (src/lib/dealer-inquiry.ts). Empty when the
+    // dealer only chose a source market.
+    cars: jsonb("cars").notNull().default([]),
+    notes: text("notes"),
+    // The inquiry's own vocabulary — DEALER_INQUIRY_STATUSES — never the B2C
+    // lead statuses. It drives its own conversion ledger below, through
+    // src/lib/dealerConversion.ts.
+    status: text("status").default("New").notNull(),
+    statusHistory: jsonb("statusHistory").notNull().default([]),
+    assignedToId: text("assignedToId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    assignedToName: text("assignedToName"),
+    // "round-robin", "country" or "manual" (reassigned from the admin panel).
+    assignmentMethod: text("assignmentMethod").default("round-robin").notNull(),
+    // Response-time instrumentation: when it reached someone, and when that
+    // person first moved it on from New. Neither can be backfilled later.
+    assignedAt: timestamp("assignedAt"),
+    firstContactedAt: timestamp("firstContactedAt"),
+    isArchived: boolean("isArchived").default(false).notNull(),
+    source: text("source"),
+    gclid: text("gclid"),
+    fbclid: text("fbclid"),
+    fbc: text("fbc"),
+    fbp: text("fbp"),
+    // Offline-conversion ledger (drizzle/0009_dealer_conversion_ledger.sql).
+    // NULL = not uploaded yet; a timestamp = accepted, never send again.
+    metaQualifiedSentAt: timestamp("metaQualifiedSentAt"),
+    metaOnboardedSentAt: timestamp("metaOnboardedSentAt"),
+    googleQualifiedSentAt: timestamp("googleQualifiedSentAt"),
+    googleOnboardedSentAt: timestamp("googleOnboardedSentAt"),
+    // Soft delete (drizzle/0010_dealer_inquiry_soft_delete.sql). A deleted
+    // inquiry is hidden from everyone but admins, who see it under Deleted and
+    // can restore it. The row itself is never removed.
+    deletedAt: timestamp("deletedAt"),
+    deletedByName: text("deletedByName"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("dealerinquiry_created_idx").on(table.createdAt),
+    index("dealerinquiry_assigned_idx").on(table.assignedToId),
+  ],
+);
+
+// Client KYC records from /kyc (drizzle/0012_kyc_submission_table.sql). The
+// rules and the wording of the declarations live in src/lib/kyc.ts.
+export const kycSubmissions = pgTable(
+  "kycsubmission",
+  {
+    id: text("id").primaryKey(),
+    fullName: text("fullName").notNull(),
+    // YYYY-MM-DD, kept as text so no timezone can move the day.
+    dateOfBirth: text("dateOfBirth").notNull(),
+    // Country names, spelled as COUNTRIES spells them.
+    nationality: text("nationality").notNull(),
+    addressLine1: text("addressLine1").notNull(),
+    addressLine2: text("addressLine2"),
+    city: text("city").notNull(),
+    region: text("region"),
+    postcode: text("postcode"),
+    country: text("country").notNull(),
+    // E.164, checked against its dial code before it is stored.
+    phone: text("phone").notNull(),
+    email: text("email").notNull(),
+    // "passport", "national-id" or "driving-licence" (ID_DOCUMENT_TYPES).
+    idDocumentType: text("idDocumentType").notNull(),
+    // Object keys in the KYC bucket, never public URLs: the files are only
+    // ever read through the staff-only route at /admin/kyc/<id>/document/<side>.
+    idFrontKey: text("idFrontKey").notNull(),
+    idFrontType: text("idFrontType").notNull(),
+    // Null for a passport, which has no back worth photographing.
+    idBackKey: text("idBackKey"),
+    idBackType: text("idBackType"),
+    paymentCountry: text("paymentCountry").notNull(),
+    bankName: text("bankName").notNull(),
+    sourceOfFunds: text("sourceOfFunds").notNull(),
+    sourceOfFundsDetail: text("sourceOfFundsDetail"),
+    // The two declarations are required to submit, so both are always true;
+    // they are stored anyway, with when and from where they were made.
+    sanctionsDeclared: boolean("sanctionsDeclared").notNull(),
+    pepDeclared: boolean("pepDeclared").notNull(),
+    declaredAt: timestamp("declaredAt").notNull(),
+    submittedIp: text("submittedIp"),
+    userAgent: text("userAgent"),
+    // KYC_STATUSES. The office checks are the staff's own screening, apart
+    // from the customer's declarations; Approved needs both.
+    status: text("status").default("Submitted").notNull(),
+    idVerified: boolean("idVerified").default(false).notNull(),
+    sanctionsScreened: boolean("sanctionsScreened").default(false).notNull(),
+    reviewNotes: text("reviewNotes"),
+    reviewedById: text("reviewedById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    reviewedByName: text("reviewedByName"),
+    reviewedAt: timestamp("reviewedAt"),
+    // Records sent before 2026-11-03 carry the ?rep= code they arrived on.
+    // Nothing is assigned from it any more: a KYC is assigned by hand, or
+    // from the lead it is linked to.
+    repCode: text("repCode"),
+    assignedToId: text("assignedToId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    assignedToName: text("assignedToName"),
+    // "manual" or "lead" (taken from the linked lead's consultant); null when
+    // unassigned (drizzle/0013_kyc_lead_link.sql).
+    assignmentMethod: text("assignmentMethod"),
+    // The system lead this customer's KYC belongs to — linked from the admin
+    // panel, or created there from the KYC itself.
+    requestId: text("requestId").references(() => requests.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("kycsubmission_created_idx").on(table.createdAt),
+    index("kycsubmission_request_idx").on(table.requestId),
+  ],
+);
 
 export const dealerProfiles = pgTable("dealerprofile", {
   id: text("id").primaryKey(),

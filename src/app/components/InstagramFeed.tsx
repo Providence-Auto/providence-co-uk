@@ -1,8 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Instagram } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { scrollBehavior } from "@/lib/fluid";
 
 interface SocialPost {
   _id: string;
@@ -46,7 +46,7 @@ export default function InstagramFeed({
     const amount = 340;
     scrollRef.current.scrollBy({
       left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
+      behavior: scrollBehavior(),
     });
   };
 
@@ -72,13 +72,13 @@ export default function InstagramFeed({
             <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => scroll("left")}
-                className="h-12 w-12 rounded-full border border-zinc-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all duration-300"
+                className="h-12 w-12 rounded-full border border-zinc-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-feedback"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
                 onClick={() => scroll("right")}
-                className="h-12 w-12 rounded-full border border-zinc-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all duration-300"
+                className="h-12 w-12 rounded-full border border-zinc-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-feedback"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -89,34 +89,26 @@ export default function InstagramFeed({
         {/* Scrollable Carousel */}
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6 snap-x snap-mandatory"
+          className="flex gap-5 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6 overscroll-x-contain scroll-px-6 snap-x snap-proximity"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}
         >
-          <AnimatePresence>
-            {posts.map((post, index) => (
-              <motion.div
-                key={post._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="flex-shrink-0 w-[320px] snap-start"
-              >
-                <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-white shadow-sm hover:shadow-lg transition-shadow duration-500 group">
-                  <div className="w-full h-[420px]">
-                    <iframe
-                      src={`https://www.instagram.com/p/${post.shortcode}/embed`}
-                      className="w-full h-full border-0"
-                      loading="lazy"
-                      allowTransparency
-                    />
-                  </div>
+          {posts.map((post) => (
+            <div key={post._id} className="flex-shrink-0 w-[320px] snap-start">
+              <div className="rounded-2xl overflow-hidden border border-zinc-100 bg-white shadow-sm hover:shadow-lg transition-shadow duration-500 group">
+                <div className="w-full h-[420px]">
+                  <iframe
+                    src={`https://www.instagram.com/p/${post.shortcode}/embed`}
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowTransparency
+                  />
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Instagram CTA */}
@@ -125,7 +117,7 @@ export default function InstagramFeed({
             href="https://www.instagram.com/providenceauto"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-zinc-200 text-sm font-medium text-zinc-700 hover:bg-black hover:text-white hover:border-black transition-all duration-300"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-zinc-200 text-sm font-medium text-zinc-700 hover:bg-black hover:text-white hover:border-black transition-feedback"
           >
             <Instagram className="h-4 w-4" />
             Follow @providenceauto

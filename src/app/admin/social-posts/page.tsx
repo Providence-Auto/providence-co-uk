@@ -206,7 +206,7 @@ export default function SocialPostsAdmin() {
                 key={page.id}
                 onClick={() => setActivePage(page.id)}
                 className={`
-                                    px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300
+                                    px-5 py-2.5 rounded-full text-sm font-medium transition-feedback
                                     ${
                                       activePage === page.id
                                         ? "bg-black text-white shadow-md"
@@ -245,7 +245,7 @@ export default function SocialPostsAdmin() {
                 setAddError("");
               }}
               placeholder="Paste Instagram post or reel URL..."
-              className="flex-1 px-4 py-3 rounded-xl border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-zinc-400 transition-all placeholder:text-zinc-400"
+              className="flex-1 px-4 py-3 rounded-xl border border-zinc-200 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-zinc-400 transition-feedback placeholder:text-zinc-400"
               onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             />
 
@@ -265,7 +265,7 @@ export default function SocialPostsAdmin() {
             <button
               onClick={handleAdd}
               disabled={saving || !newUrl.trim()}
-              className="px-6 py-3 bg-black text-white text-sm font-medium rounded-xl hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-black text-white text-sm font-medium rounded-xl hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-feedback flex items-center gap-2"
             >
               {saving ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

@@ -31,17 +31,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getPresignedUrls } from "@/lib/file-actions";
 
-const PIPELINE_STAGES = [
-  "New",
-  "Vehicle Selection",
-  "Price Agreement",
-  "Deposit Collected",
-  "Vehicle Purchased",
-  "Preparation",
-  "Shipped",
-  "Arrived at Port",
-  "Cleared Customs",
-];
+import { PIPELINE_STAGES } from "@/lib/leadConversion";
 
 type HistoryStyle = {
   dot: string;
@@ -152,9 +142,9 @@ export default function RequestActionModal({
   const [dossiers, setDossiers] = useState<any[]>([]);
 
   const inputClasses =
-    "bg-zinc-50 border-black/10 text-black placeholder:text-zinc-400 focus-visible:ring-black/5 focus-visible:border-black/30 transition-all rounded-xl";
+    "bg-zinc-50 border-black/10 text-black placeholder:text-zinc-400 focus-visible:ring-black/5 focus-visible:border-black/30 transition-feedback rounded-xl";
   const selectClasses =
-    "w-full bg-zinc-50 border border-black/10 text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-all rounded-xl px-4 py-3 appearance-none cursor-pointer";
+    "w-full bg-zinc-50 border border-black/10 text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-feedback rounded-xl px-4 py-3 appearance-none cursor-pointer";
 
   useEffect(() => {
     if (modal.isOpen && modal.request) {
@@ -472,6 +462,124 @@ export default function RequestActionModal({
                     {modal.request.make} {modal.request.vehicle_model}
                   </span>
                 </div>
+                {/* Grade, steering and colour. All shown whether or not the
+                    customer made a choice — "N/A" is an answer, a missing row
+                    is just a gap. */}
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Grade
+                  </span>
+                  <span
+                    className={
+                      modal.request.grade
+                        ? "font-medium text-black"
+                        : "font-medium text-zinc-400"
+                    }
+                  >
+                    {modal.request.grade || "N/A"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Steering
+                  </span>
+                  <span
+                    className={
+                      modal.request.steering
+                        ? "font-medium text-black"
+                        : "font-medium text-zinc-400"
+                    }
+                  >
+                    {modal.request.steering || "N/A"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Exterior Colour
+                  </span>
+                  <span
+                    className={
+                      modal.request.exteriorColor
+                        ? "font-medium text-black"
+                        : "font-medium text-zinc-400"
+                    }
+                  >
+                    {modal.request.exteriorColor || "N/A"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Interior Colour
+                  </span>
+                  <span
+                    className={
+                      modal.request.interiorColor
+                        ? "font-medium text-black"
+                        : "font-medium text-zinc-400"
+                    }
+                  >
+                    {modal.request.interiorColor || "N/A"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Where the lead came from, as full URLs — the answer to "why
+                did this lead go to that person?". See
+                src/lib/lead-attribution.ts. Leads older than these columns
+                show N/A. */}
+            <div className="bg-white border border-black/5 shadow-sm rounded-2xl p-5 space-y-4 text-sm">
+              <h4 className="font-bold text-black border-b border-black/5 pb-2">
+                Lead Origin
+              </h4>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Assigned By
+                  </span>
+                  <span className="font-medium text-black">
+                    {modal.request.assignmentMethod || "N/A"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                    Rep Link
+                  </span>
+                  <span
+                    className={
+                      modal.request.repCode
+                        ? "font-medium text-black"
+                        : "font-medium text-zinc-400"
+                    }
+                  >
+                    {modal.request.repCode || "N/A"}
+                  </span>
+                </div>
+                {(
+                  [
+                    ["Landing Page", modal.request.landingUrl],
+                    ["Sent From", modal.request.pageUrl],
+                    ["Referrer", modal.request.referrer],
+                  ] as const
+                ).map(([label, url]) => (
+                  <div key={label} className="col-span-2">
+                    <span className="block text-zinc-400 text-[10px] uppercase tracking-widest font-bold mb-1">
+                      {label}
+                    </span>
+                    {url ? (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-blue-600 hover:underline break-all"
+                      >
+                        {url}
+                      </a>
+                    ) : (
+                      <span className="font-medium text-zinc-400">N/A</span>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -626,7 +734,7 @@ export default function RequestActionModal({
                       href={doc.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 bg-white border border-black/5 rounded-xl hover:bg-zinc-50 transition-all group"
+                      className="flex items-center gap-3 p-3 bg-white border border-black/5 rounded-xl hover:bg-zinc-50 transition-feedback group"
                     >
                       <div className="p-2 bg-zinc-100 rounded-lg text-zinc-500 group-hover:text-black group-hover:bg-black/5 transition-colors">
                         {doc.fileType === "pdf" ? (
@@ -714,7 +822,7 @@ export default function RequestActionModal({
                     return (
                       <label
                         key={d._id}
-                        className={`flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-all ${
+                        className={`flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-feedback ${
                           isChecked
                             ? "bg-zinc-900 border-zinc-900 text-white shadow-sm"
                             : "bg-zinc-50 border-black/5 text-black hover:bg-zinc-100"

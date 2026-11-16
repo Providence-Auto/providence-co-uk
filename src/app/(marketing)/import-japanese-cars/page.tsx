@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
+import ToolDemos from "@/components/tool-demos/ToolDemos";
 import { japanImportCampaignConfig } from "@/config/landing-pages";
 import JapanImportLanding from "./JapanImportLanding";
 
 const SITE = "https://www.providenceauto.co.uk";
 const PATH = "/import-japanese-cars";
 const URL = `${SITE}${PATH}`;
+// 1200×630, self-hosted, so link previews never depend on a third-party CDN —
+// and declared with explicit dimensions, without which Slack, LinkedIn, X and
+// iMessage render no preview at all. Cropped from this page's hero photograph.
+const OG_IMAGE = `${SITE}/import-cars/og/import-japanese-cars.jpg`;
+const OG_ALT =
+  "A Toyota Land Cruiser FJ62 in desert terrain — Japanese cars exported by Providence Auto";
 
 // Models promoted on this page — kept in sync with the client grid for the
 // ItemList schema so AI search engines can enumerate our stock.
@@ -32,7 +39,7 @@ const MODEL_NAMES = [
 const DESTINATION_COUNTRIES = [
   "United Kingdom",
   "Ireland",
-  "New Zealand",
+  "Cyprus",
   "Kenya",
   "Tanzania",
   "Uganda",
@@ -50,7 +57,7 @@ export const metadata: Metadata = {
     "import cars from japan to uk",
     "import cars from japan to ireland",
     "import cars from japan to kenya",
-    "import cars from japan to new zealand",
+    "import cars from japan to cyprus",
     "import cars from japan to tanzania",
     "import cars from japan to uganda",
     "toyota aqua import",
@@ -69,8 +76,11 @@ export const metadata: Metadata = {
     description: japanImportCampaignConfig.meta.description,
     images: [
       {
-        url: japanImportCampaignConfig.hero.backgroundImage,
-        alt: "Japanese cars sourced at auction by Providence Auto",
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        type: "image/jpeg",
+        alt: OG_ALT,
       },
     ],
   },
@@ -78,7 +88,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: japanImportCampaignConfig.meta.title,
     description: japanImportCampaignConfig.meta.description,
-    images: [japanImportCampaignConfig.hero.backgroundImage],
+    images: [OG_IMAGE],
   },
   robots: {
     index: true,
@@ -99,7 +109,8 @@ export default function ImportJapaneseCarsPage() {
     "@context": "https://schema.org",
     "@type": "Service",
     name: "Japanese Car Sourcing & Import",
-    serviceType: "Vehicle sourcing and import from Japanese auctions",
+    serviceType:
+      "Vehicle sourcing and import from Japanese dealers and auctions",
     description: japanImportCampaignConfig.meta.description,
     url: URL,
     areaServed: [
@@ -131,7 +142,7 @@ export default function ImportJapaneseCarsPage() {
   const modelListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Fast-moving Japanese models sourced by Providence Auto",
+    name: "Fast-moving Japanese models exported by Providence Auto",
     itemListElement: MODEL_NAMES.map((name, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -173,7 +184,14 @@ export default function ImportJapaneseCarsPage() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be inlined as a script tag for crawlers
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <JapanImportLanding />
+      <JapanImportLanding
+        tools={
+          <ToolDemos
+            source="japan"
+            cards={["inspection", "documents", "landed", "tracking"]}
+          />
+        }
+      />
     </>
   );
 }
