@@ -15,7 +15,13 @@ export interface DealerInquiryConfirmationProps {
   country: string;
   /** Display name of the preferred source market, or "". */
   sourceMarket: string;
-  cars: { make: string; model: string; condition: string }[];
+  cars: {
+    make: string;
+    model: string;
+    condition: string;
+    /** The model year, for a car picked from the stock list. */
+    yearRange?: string | null;
+  }[];
   /** Null when no one could be assigned — the email then signs off as the company. */
   agent: {
     name: string;
@@ -99,7 +105,14 @@ export const DealerInquiryConfirmationEmail = ({
                 key={`${car.make}-${car.model}-${index}`}
                 style={valueStyle}
               >
-                {conditionLabel(car.condition)} {car.make} {car.model}
+                {[
+                  conditionLabel(car.condition),
+                  car.condition === "Stock" ? car.yearRange : null,
+                  car.make,
+                  car.model,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
               </Text>
             ))}
           </>

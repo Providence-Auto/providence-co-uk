@@ -455,6 +455,79 @@ export const kycSubmissions = pgTable(
   ],
 );
 
+// --- Stock list (drizzle/0014_stock_list_tables.sql) ---
+//
+// The cars the sales team has on offer. Each salesperson keeps their own rows
+// at /admin/stock; the public list at /available-cars is every live row from
+// every salesperson, read straight from this table, so an edit on one list is
+// on the shared one the moment it is saved. Shape and validation live in
+// src/lib/stock.ts.
+export const stockCars = pgTable(
+  "stockcar",
+  {
+    id: text("id").primaryKey(),
+    make: text("make").notNull(),
+    model: text("model").notNull(),
+    year: integer("year").notNull(),
+    color: text("color").notNull(),
+    engine: text("engine").notNull(),
+    // "RHD" or "LHD" (STOCK_STEERING).
+    steering: text("steering").notNull(),
+    // The FOB price as a plain amount, with its ISO 4217 currency kept apart
+    // so the list stays sortable (STOCK_CURRENCIES).
+    fobPrice: doublePrecision("fobPrice").notNull(),
+    fobCurrency: text("fobCurrency").default("USD").notNull(),
+    shippingPort: text("shippingPort").notNull(),
+    // The uploader's team-member code — the part of their company email
+    // before the @, upper-cased (memberCodeFor). Copied onto the row rather
+    // than joined, so it still reads correctly if the account is removed.
+    memberCode: text("memberCode").notNull(),
+    ownerId: text("ownerId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    ownerName: text("ownerName"),
+    // Removed cars leave the lists but are never deleted, so the history
+    // below always has the car it describes.
+    isRemoved: boolean("isRemoved").default(false).notNull(),
+    removedAt: timestamp("removedAt"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("stockcar_owner_idx").on(table.ownerId),
+    index("stockcar_live_idx").on(table.isRemoved),
+  ],
+);
+
+// One row per change to a stock car: who did it, when, and each field's value
+// before and after (StockChange[] in src/lib/stock.ts). Append-only, shown to
+// admins at /admin/stock/history.
+export const stockCarHistory = pgTable(
+  "stockcarhistory",
+  {
+    id: text("id").primaryKey(),
+    carId: text("carId")
+      .notNull()
+      .references(() => stockCars.id, { onDelete: "cascade" }),
+    // "created", "updated", "removed" or "restored".
+    action: text("action").notNull(),
+    changes: jsonb("changes").notNull().default([]),
+    // The car's fields as they stood after the change, so an entry still
+    // reads on its own.
+    snapshot: jsonb("snapshot").notNull().default({}),
+    actorId: text("actorId").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    actorName: text("actorName"),
+    memberCode: text("memberCode"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("stockcarhistory_car_idx").on(table.carId),
+    index("stockcarhistory_created_idx").on(table.createdAt),
+  ],
+);
+
 export const dealerProfiles = pgTable("dealerprofile", {
   id: text("id").primaryKey(),
   userId: text("userId")

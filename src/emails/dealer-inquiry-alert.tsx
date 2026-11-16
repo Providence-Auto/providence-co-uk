@@ -1,6 +1,7 @@
 import { Link, Section, Text } from "@react-email/components";
 import { whatsappLink } from "@/config/contact";
 import { formatBudget } from "@/lib/currencies";
+import { type DealerStockRef, stockCarLine } from "@/lib/dealer-inquiry";
 import { conditionLabel } from "@/lib/vehicle-inquiry";
 import EmailLayout from "./layout";
 
@@ -19,6 +20,8 @@ export interface DealerInquiryAlertCar {
   budgetAmount: number;
   budgetCurrency: string;
   importTimeline: string;
+  /** Set on a car picked from the stock list at /available-cars. */
+  stock?: DealerStockRef;
 }
 
 export interface DealerInquiryAlertProps {
@@ -115,34 +118,48 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
         {carCount === 0 && !props.sourceMarket && (
           <Text style={valueStyle}>No market or car named.</Text>
         )}
-        {props.cars.map((car, index) => (
-          <Section key={`${car.make}-${car.model}-${index}`} style={carStyle}>
-            <Text style={{ ...valueStyle, fontWeight: "bold" }}>
-              {index + 1}. {conditionLabel(car.condition)} {car.make}{" "}
-              {car.model}
-            </Text>
-            {car.condition === "Used" && (car.yearRange || car.mileage) && (
-              <Text style={valueStyle}>
-                {[car.yearRange, car.mileage].filter(Boolean).join(" · ")}
+        {props.cars.map((car, index) =>
+          car.stock ? (
+            <Section key={`${car.stock.id}-${index}`} style={carStyle}>
+              <Text style={{ ...valueStyle, fontWeight: "bold" }}>
+                {index + 1}. {car.make} {car.model} — from the stock list
               </Text>
-            )}
-            {(car.exteriorColor || car.interiorColor) && (
               <Text style={valueStyle}>
-                {[
-                  car.exteriorColor && `Exterior: ${car.exteriorColor}`,
-                  car.interiorColor && `Interior: ${car.interiorColor}`,
-                ]
+                {[car.exteriorColor, stockCarLine(car.stock)]
                   .filter(Boolean)
                   .join(" · ")}
               </Text>
-            )}
-            <Text style={valueStyle}>
-              Budget: {formatBudget(car.budgetAmount, car.budgetCurrency)} ·
-              Timeline: {car.importTimeline}
-            </Text>
-            {car.specs && <Text style={quoteStyle}>"{car.specs}"</Text>}
-          </Section>
-        ))}
+              <Text style={valueStyle}>Held by {car.stock.memberCode}</Text>
+            </Section>
+          ) : (
+            <Section key={`${car.make}-${car.model}-${index}`} style={carStyle}>
+              <Text style={{ ...valueStyle, fontWeight: "bold" }}>
+                {index + 1}. {conditionLabel(car.condition)} {car.make}{" "}
+                {car.model}
+              </Text>
+              {car.condition === "Used" && (car.yearRange || car.mileage) && (
+                <Text style={valueStyle}>
+                  {[car.yearRange, car.mileage].filter(Boolean).join(" · ")}
+                </Text>
+              )}
+              {(car.exteriorColor || car.interiorColor) && (
+                <Text style={valueStyle}>
+                  {[
+                    car.exteriorColor && `Exterior: ${car.exteriorColor}`,
+                    car.interiorColor && `Interior: ${car.interiorColor}`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </Text>
+              )}
+              <Text style={valueStyle}>
+                Budget: {formatBudget(car.budgetAmount, car.budgetCurrency)} ·
+                Timeline: {car.importTimeline}
+              </Text>
+              {car.specs && <Text style={quoteStyle}>"{car.specs}"</Text>}
+            </Section>
+          ),
+        )}
 
         {props.notes && (
           <>
