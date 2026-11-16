@@ -1,89 +1,88 @@
 "use client";
 
-import { ClipboardCopy, Download, Sheet } from "lucide-react";
+import { Download, FileSpreadsheet, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  buildLeadsCsv,
-  buildLeadsTsv,
-  leadsExportFilename,
-} from "@/lib/leadsExport";
 
-type ExportLeadsButtonProps = {
-  // biome-ignore lint/suspicious/noExplicitAny: leads are the loosely-typed admin payload
-  rows: any[];
-  filenamePrefix?: string;
-};
+type ExportFormat = "xlsx" | "csv";
 
 /**
- * Exports whatever the dashboard filters currently resolve to — what you see is
- * what you get, so "export the leads for Ireland this month" is just a filter
- * away. Runs entirely in the browser: the rows are already in memory, so no
- * server round trip and no second copy of the auth check.
+ * Downloads the lead list as a spreadsheet. Filtering happens in the browser,
+ * so the ids of the leads to export are posted to the server, which reads the
+ * full records back from the database and returns the file. Both `visibleIds`
+ * (the current filtered view) and `allIds` (everything the page holds) are
+ * passed in — the archive vault only ever holds archived leads, so its "all"
+ * option must not reach beyond them. Both formats open directly in Excel and
+ * in Google Sheets (File → Import).
  */
 export default function ExportLeadsButton({
-  rows,
-  filenamePrefix = "providence-leads",
-}: ExportLeadsButtonProps) {
+  visibleIds,
+  allIds,
+  label = "Export",
+}: {
+  visibleIds: string[];
+  allIds: string[];
+  label?: string;
+}) {
   const [busy, setBusy] = useState(false);
-  const count = rows.length;
+  const isFiltered = visibleIds.length !== allIds.length;
 
-  const downloadCsv = () => {
-    if (count === 0) {
-      toast.error("Nothing to export — no leads match the current filters.");
-      return;
-    }
+  async function download(format: ExportFormat, scope: "view" | "all") {
+    if (busy) return;
     setBusy(true);
+    const toastId = toast.loading("Building your export…");
+
     try {
-      const blob = new Blob([buildLeadsCsv(rows)], {
-        type: "text/csv;charset=utf-8;",
+      const res = await fetch("/api/v1/admin/leads/export", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          format,
+          ids: scope === "view" ? visibleIds : allIds,
+        }),
       });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = leadsExportFilename(filenamePrefix);
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      // Revoke on the next tick — revoking synchronously can cancel the
-      // download in Safari before it has read the blob.
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast.success(`Exported ${count} ${count === 1 ? "lead" : "leads"}.`);
-    } catch (error) {
-      console.error("[ExportLeadsButton] CSV export failed:", error);
-      toast.error("Could not build the export file.");
-    } finally {
-      setBusy(false);
-    }
-  };
 
-  const copyForSheets = async () => {
-    if (count === 0) {
-      toast.error("Nothing to export — no leads match the current filters.");
-      return;
-    }
-    setBusy(true);
-    try {
-      await navigator.clipboard.writeText(buildLeadsTsv(rows));
-      toast.success(
-        `${count} ${count === 1 ? "lead" : "leads"} copied — paste into Google Sheets.`,
-      );
+      if (!res.ok) {
+        const detail = await res.json().catch(() => null);
+        throw new Error(detail?.error || `Export failed (${res.status})`);
+      }
+
+      const blob = await res.blob();
+      // Filename comes from the server's Content-Disposition; fall back to a
+      // sensible one if a proxy stripped the header.
+      const disposition = res.headers.get("Content-Disposition") || "";
+      const match = disposition.match(/filename="?([^"]+)"?/);
+      const filename =
+        match?.[1] ||
+        `providence-leads-${new Date().toISOString().slice(0, 10)}.${format}`;
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      toast.success(`Downloaded ${filename}`, { id: toastId });
     } catch (error) {
-      console.error("[ExportLeadsButton] Clipboard copy failed:", error);
       toast.error(
-        "Clipboard blocked by the browser — use Download CSV instead.",
+        error instanceof Error ? error.message : "Could not export the leads.",
+        { id: toastId },
       );
     } finally {
       setBusy(false);
     }
-  };
+  }
 
   return (
     <DropdownMenu>
@@ -91,44 +90,48 @@ export default function ExportLeadsButton({
         <button
           type="button"
           disabled={busy}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-black text-white rounded-xl hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Export the leads currently shown"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-black text-white rounded-xl hover:bg-zinc-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          title="Export leads to Excel or CSV"
         >
-          <Download size={16} />
-          Export
-          <span className="text-white/50 font-medium">({count})</span>
+          {busy ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Download size={16} />
+          )}
+          {label}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="bg-white border-black/5 text-black shadow-xl rounded-xl w-72 p-2"
-      >
-        <DropdownMenuItem
-          onClick={downloadCsv}
-          className="hover:bg-black/5 focus:bg-black/5 cursor-pointer rounded-lg py-2"
-        >
-          <Sheet className="mr-2 h-4 w-4 text-emerald-600" />
-          <div className="flex flex-col">
-            <span className="font-semibold">Download spreadsheet (.csv)</span>
-            <span className="text-[11px] text-zinc-500 font-light">
-              Opens in Excel · import into Google Sheets
-            </span>
-          </div>
+
+      <DropdownMenuContent align="end" className="w-64">
+        {isFiltered && (
+          <>
+            <DropdownMenuLabel className="text-xs uppercase tracking-wider text-zinc-400">
+              Current view ({visibleIds.length})
+            </DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => download("xlsx", "view")}>
+              <FileSpreadsheet size={16} className="mr-2" />
+              Excel (.xlsx)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => download("csv", "view")}>
+              <FileSpreadsheet size={16} className="mr-2" />
+              CSV (Google Sheets)
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
+        <DropdownMenuLabel className="text-xs uppercase tracking-wider text-zinc-400">
+          {isFiltered
+            ? `All leads (${allIds.length})`
+            : `Export (${allIds.length})`}
+        </DropdownMenuLabel>
+        <DropdownMenuItem onClick={() => download("xlsx", "all")}>
+          <FileSpreadsheet size={16} className="mr-2" />
+          Excel (.xlsx)
         </DropdownMenuItem>
-
-        <DropdownMenuSeparator className="bg-black/5 my-1" />
-
-        <DropdownMenuItem
-          onClick={copyForSheets}
-          className="hover:bg-black/5 focus:bg-black/5 cursor-pointer rounded-lg py-2"
-        >
-          <ClipboardCopy className="mr-2 h-4 w-4 text-sky-600" />
-          <div className="flex flex-col">
-            <span className="font-semibold">Copy for Google Sheets</span>
-            <span className="text-[11px] text-zinc-500 font-light">
-              Paste straight into a sheet — no import step
-            </span>
-          </div>
+        <DropdownMenuItem onClick={() => download("csv", "all")}>
+          <FileSpreadsheet size={16} className="mr-2" />
+          CSV (Google Sheets)
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
