@@ -100,6 +100,17 @@ export default function ArchiveDashboardClient({
     sortBy,
   ]);
 
+  // Lead ids for the spreadsheet export — "all" here means all *archived*
+  // leads, never the active pipeline, since that is all this page holds.
+  const visibleIds = useMemo(
+    () => filteredRequests.map((r: any) => String(r._id || r.id)),
+    [filteredRequests],
+  );
+  const allIds = useMemo(
+    () => requests.map((r: any) => String(r._id || r.id)),
+    [requests],
+  );
+
   // Contextual metric cards optimized for analyzing historic performance data
   const stats = [
     {
@@ -267,8 +278,9 @@ export default function ArchiveDashboardClient({
             Archived Records Index ({filteredRequests.length})
           </h3>
           <ExportLeadsButton
-            rows={filteredRequests}
-            filenamePrefix="providence-archived-leads"
+            visibleIds={visibleIds}
+            allIds={allIds}
+            label="Export archive"
           />
         </div>
         <div className="p-2">
