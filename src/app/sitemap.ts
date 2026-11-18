@@ -6,6 +6,7 @@ import {
   getTagsInUse,
   getVehiclesForTag,
 } from "@/actions/spec-actions";
+import { getPublicStock } from "@/actions/stock-actions";
 import { BLOG_BASE_PATH, BLOG_POSTS } from "@/config/blog";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
 import { DEALER_SOURCING_PATH } from "@/config/dealer-sourcing";
@@ -21,6 +22,7 @@ import {
   TAG_BASE_PATH,
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
+import { STOCK_PUBLIC_PATH } from "@/lib/stock";
 import { BIKES_BASE_PATH, isMotorcycle, vehiclePath } from "@/lib/vehicle-type";
 
 /**
@@ -115,6 +117,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date("2026-11-01"),
       changeFrequency: "yearly" as const,
       priority: 0.3,
+    },
+  ];
+
+  // The stock list changes whenever a salesperson saves a car, so its lastmod
+  // is the newest car's — a real date, unlike the request time. If the read
+  // fails the URL is still listed, without a date.
+  const stockUpdated = await getPublicStock()
+    .then((cars) => latest(cars.map((car) => car.updatedAt)))
+    .catch(() => undefined);
+  const stockRoutes = [
+    {
+      url: `${baseUrl}${STOCK_PUBLIC_PATH}`,
+      lastModified: stockUpdated,
+      changeFrequency: "daily" as const,
+      priority: 0.9,
     },
   ];
 
@@ -244,6 +261,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...indexableStatic,
     ...legalRoutes,
+    ...stockRoutes,
     ...countryRoutes,
     ...blogRoutes,
     ...newsRoutes,

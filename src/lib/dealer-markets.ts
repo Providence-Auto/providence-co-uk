@@ -44,6 +44,11 @@ export function marketStatusFor(country: string): MarketStatus | null {
   return "right-traffic";
 }
 
+/** Whether a country is on our destination list, whichever side it drives on. */
+export function isListedDestination(country: string): boolean {
+  return ALL_DESTINATIONS.has(PART_OF[country] ?? country);
+}
+
 /** Every country in the picker, with what the check says about it. */
 export function buildMarketOptions(): MarketOption[] {
   return COUNTRIES.map((c) => {
