@@ -386,6 +386,7 @@ unclassified page is the state this document exists to prevent.
 | `/import-cars-to-ireland` | 1 | **Mixed** | The clearest case on the site. 1,972 lines whose own table of contents reads "The four charges / How the charges stack / Reliefs you can legally claim / The process and its deadlines", with numbered subsections `2.1 Customs duty`, `2.2 VAT — 23%`, `2.3 VRT`, `2.4 The NOx levy`, a "Who this is for" panel and an on-page contents list. That is a guide at a transactional URL; §4 split applies |
 | `/`, `/b2c`, `/b2b`, `/saas` | 4 | Landing | One proposition, two audiences — `brand-position.md` §5 |
 | `/b2c/gallery` + car pages + `[destination]` | dynamic | Landing | Car pages are database rows, not files |
+| `/available-cars` | 1 | **Stock list — a type of its own** | Decided 2026-11-17: not a landing page, so §3 and the `/b2b` keyword ownership do not apply. The sales team’s live stock (`/admin/stock`): each car’s eight fields and the code of the team member who added it; dealers select cars and send one dealer inquiry. Its copy is the strings in `src/lib/stock.ts`, as reworded by the business on 2026-11-17 |
 | `/about-us`, `/team`, `/team/[slug]` | dynamic | Neither — navigational | §5 |
 | `/request`, `/track/[id]`, `/signup`, `/auth/*` | — | Neither — funnel utility | §5 |
 | `/ireland-cost-calculator` | 1 | **Tool** | §1.3 and §3A. Numbers to §2's sourcing standard, selling to §3's gate, and the one page permitted to teach the mechanism it computes |

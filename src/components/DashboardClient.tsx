@@ -227,6 +227,17 @@ export default function DashboardClient({
     normalizeSource,
   ]);
 
+  // Lead ids for the spreadsheet export — the visible (filtered) set and the
+  // full set, so the export can be scoped to either.
+  const visibleIds = useMemo(
+    () => filteredRequests.map((r: any) => String(r._id || r.id)),
+    [filteredRequests],
+  );
+  const allIds = useMemo(
+    () => requests.map((r: any) => String(r._id || r.id)),
+    [requests],
+  );
+
   // Top Level Stats calculated from FILTERED data
   const stats = [
     {
@@ -647,9 +658,7 @@ export default function DashboardClient({
           <h3 className="font-bold text-lg">
             Active Pipeline ({filteredRequests.length})
           </h3>
-          {/* Exports the filtered set, not the raw list — the filter bar above
-              is the query builder for the spreadsheet. */}
-          <ExportLeadsButton rows={filteredRequests} />
+          <ExportLeadsButton visibleIds={visibleIds} allIds={allIds} />
         </div>
         <div className="p-2">
           <RequestTableClient

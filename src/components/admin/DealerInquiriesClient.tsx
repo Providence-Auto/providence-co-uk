@@ -52,6 +52,7 @@ import {
   summariseCars,
 } from "@/lib/dealer-inquiry";
 import { paginate } from "@/lib/pagination";
+import { formatFob } from "@/lib/stock";
 import { conditionLabel } from "@/lib/vehicle-inquiry";
 import { isMotorcycle } from "@/lib/vehicle-type";
 
@@ -699,7 +700,37 @@ function InquiryDetail({
           {inquiry.cars.length === 0 && (
             <Row label="Cars">No particular make or model</Row>
           )}
-          {inquiry.cars.map((car, index) => (
+          {inquiry.cars.map((car, index) =>
+            car.stock ? (
+              <div
+                key={`${car.stock.id}-${index}`}
+                className="rounded-xl border border-sky-200 bg-sky-50/40 p-4 text-sm"
+              >
+                <p className="font-semibold text-zinc-900">
+                  {index + 1}. {car.stock.year} {car.make} {car.model}
+                  <span className="font-normal text-zinc-500">
+                    {" "}
+                    · from the stock list
+                  </span>
+                </p>
+                <dl className="mt-2 grid grid-cols-[7rem_1fr] gap-x-3 gap-y-1 text-zinc-600">
+                  <dt className="text-zinc-400">Colour</dt>
+                  <dd>{car.exteriorColor}</dd>
+                  <dt className="text-zinc-400">Engine</dt>
+                  <dd>{car.stock.engine}</dd>
+                  <dt className="text-zinc-400">LHD/RHD</dt>
+                  <dd>{car.stock.steering}</dd>
+                  <dt className="text-zinc-400">FOB</dt>
+                  <dd>{formatFob(car.stock.fobPrice, car.stock.fobCurrency)}</dd>
+                  <dt className="text-zinc-400">Shipping port</dt>
+                  <dd>{car.stock.shippingPort}</dd>
+                  <dt className="text-zinc-400">Held by</dt>
+                  <dd className="font-mono text-xs font-semibold">
+                    {car.stock.memberCode}
+                  </dd>
+                </dl>
+              </div>
+            ) : (
             <div
               key={`${car.make}-${car.model}-${index}`}
               className="rounded-xl border border-zinc-200 p-4 text-sm"
@@ -748,7 +779,8 @@ function InquiryDetail({
                 </p>
               )}
             </div>
-          ))}
+            ),
+          )}
           {inquiry.notes && (
             <Row label="Note">
               <span className="whitespace-pre-line">{inquiry.notes}</span>

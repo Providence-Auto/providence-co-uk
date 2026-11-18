@@ -14,8 +14,13 @@
  * which would let a mistyped number through.
  */
 import type { CountryCode, NumberType, PhoneNumber } from "libphonenumber-js";
-import { MAX_DEALER_CARS, parseSourceMarkets } from "@/config/dealer-sourcing";
+import {
+  LEFT_TRAFFIC_COUNTRIES,
+  MAX_DEALER_CARS,
+  parseSourceMarkets,
+} from "@/config/dealer-sourcing";
 import { getCurrency } from "@/lib/currencies";
+import { formatFob } from "@/lib/stock";
 import {
   IMPORT_TIMELINES,
   MILEAGE_MAX,
@@ -51,13 +56,32 @@ export type DealerCarInput = {
   importTimeline: string;
 };
 
+/**
+ * A car picked from the stock list at /available-cars, copied onto the inquiry
+ * as it stood when the dealer sent it — so a later price change or removal on
+ * the list never rewrites what the dealer asked about.
+ */
+export type DealerStockRef = {
+  /** The stockcar row it came from. */
+  id: string;
+  year: number;
+  engine: string;
+  steering: string;
+  fobPrice: number;
+  fobCurrency: string;
+  shippingPort: string;
+  /** The team member who holds the car. */
+  memberCode: string;
+};
+
 /** One car as it is stored on the inquiry (jsonb). */
 export type DealerCar = {
   /** Absent on every car stored before motorcycles could be named: a car. */
   vehicleType?: VehicleType;
   make: string;
   model: string;
-  condition: "New" | "Used";
+  /** "Stock" for a car picked from the stock list (see `stock`). */
+  condition: "New" | "Used" | "Stock";
   yearRange: string | null;
   yearFrom: number | null;
   yearTo: number | null;
@@ -68,6 +92,11 @@ export type DealerCar = {
   budgetAmount: number;
   budgetCurrency: string;
   importTimeline: string;
+  /**
+   * Set only on a car picked from the stock list. Its budget fields then hold
+   * the listed FOB price, and the timeline is empty.
+   */
+  stock?: DealerStockRef;
 };
 
 export type DealerInquiryInput = {
@@ -91,6 +120,13 @@ export type DealerInquiryInput = {
   /** Whether the dealer chose to name particular cars. */
   wantsSpecificCars: boolean;
   cars: DealerCarInput[];
+  /**
+   * Cars picked from the stock list (/available-cars), by stockcar id. When
+   * present they are the inquiry's cars: the server reads each one from the
+   * list itself, so nothing about the car is taken from the browser, and
+   * `cars` / `sourceMarket` are ignored.
+   */
+  stockCarIds?: string[];
   notes: string;
   // Attribution, captured the same way as the B2C form.
   source?: string;
@@ -334,6 +370,75 @@ export function regionName(iso: string): string {
 }
 
 /**
+ * COUNTRIES spellings that are not the English region name libphonenumber's
+ * ISO codes resolve to. Null where there is no numbering plan of its own to
+ * check against. dealer-inquiry-iso.test.ts runs every COUNTRIES entry
+ * through `phoneIsoForCountry` and fails on a miss or a calling-code mismatch.
+ */
+const PHONE_ISO_OVERRIDES: Record<string, CountryCode | null> = {
+  Antarctica: null,
+  "Antigua and Barbuda": "AG",
+  "Bosnia and Herzegovina": "BA",
+  Curacao: "CW",
+  "Czech Republic": "CZ",
+  "Democratic Republic of the Congo": "CD",
+  "East Timor (Timor-Leste)": "TL",
+  "Eswatini (Swaziland)": "SZ",
+  "Hong Kong": "HK",
+  "Ivory Coast": "CI",
+  Macau: "MO",
+  Macedonia: "MK",
+  Myanmar: "MM",
+  "Netherlands Antilles": "CW",
+  "Northern Ireland": "GB",
+  Palestine: "PS",
+  "Pitcairn Islands": null,
+  "Republic of the Congo": "CG",
+  Reunion: "RE",
+  "Saint Barthelemy": "BL",
+  "Saint Helena": "SH",
+  "Saint Kitts and Nevis": "KN",
+  "Saint Lucia": "LC",
+  "Saint Martin": "MF",
+  "Saint Pierre and Miquelon": "PM",
+  "Saint Vincent and the Grenadines": "VC",
+  "Sao Tome and Principe": "ST",
+  "Svalbard and Jan Mayen": "SJ",
+  "Trinidad and Tobago": "TT",
+  Turkey: "TR",
+  "Turks and Caicos Islands": "TC",
+  Vatican: "VA",
+  "Wallis and Futuna": "WF",
+};
+
+let regionIndex: Map<string, CountryCode> | null = null;
+
+/**
+ * The ISO code to check a WhatsApp number against for any country in the
+ * picker, left- or right-traffic. Left-traffic countries keep the code the
+ * dealer page has always used (LEFT_TRAFFIC_COUNTRIES); the rest resolve by
+ * name. Never guessed from the dial code, which +1, +7 and +44 share between
+ * countries. Null means there is no plan to check the number against.
+ */
+export function phoneIsoForCountry(
+  lib: PhoneLib,
+  country: string,
+): CountryCode | null {
+  const left = LEFT_TRAFFIC_COUNTRIES[country];
+  if (left) return left;
+  if (Object.hasOwn(PHONE_ISO_OVERRIDES, country)) {
+    const iso = PHONE_ISO_OVERRIDES[country];
+    return iso && lib.isSupportedCountry(iso) ? iso : null;
+  }
+  if (!regionIndex) {
+    regionIndex = new Map(
+      lib.getCountries().map((iso) => [regionName(iso), iso]),
+    );
+  }
+  return regionIndex.get(country) ?? null;
+}
+
+/**
  * Which country the WhatsApp number is checked against. It starts as the
  * import country, and the dealer can change it — a dealer importing into
  * Kenya may well run WhatsApp on a UAE or UK number. An unknown or missing
@@ -544,6 +649,61 @@ export function validateCar(car: DealerCarInput): FieldErrors {
   }
 
   return errors;
+}
+
+/** How many stock-list cars one inquiry may carry. */
+export const MAX_STOCK_CARS = 20;
+
+/** The stored form of a car picked from the stock list. */
+export function stockToDealerCar(car: {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  engine: string;
+  steering: string;
+  fobPrice: number;
+  fobCurrency: string;
+  shippingPort: string;
+  memberCode: string;
+}): DealerCar {
+  return {
+    make: car.make,
+    model: car.model,
+    condition: "Stock",
+    yearRange: String(car.year),
+    yearFrom: car.year,
+    yearTo: car.year,
+    mileage: null,
+    exteriorColor: car.color,
+    interiorColor: null,
+    specs: null,
+    budgetAmount: car.fobPrice,
+    budgetCurrency: car.fobCurrency,
+    importTimeline: "",
+    stock: {
+      id: car.id,
+      year: car.year,
+      engine: car.engine,
+      steering: car.steering,
+      fobPrice: car.fobPrice,
+      fobCurrency: car.fobCurrency,
+      shippingPort: car.shippingPort,
+      memberCode: car.memberCode,
+    },
+  };
+}
+
+/** "2024 · 2.5L Hybrid · RHD · FOB JPY 6,200,000 · Nagoya" for one stock car. */
+export function stockCarLine(stock: DealerStockRef): string {
+  return [
+    stock.year,
+    stock.engine,
+    stock.steering,
+    `FOB ${formatFob(stock.fobPrice, stock.fobCurrency)}`,
+    stock.shippingPort,
+  ].join(" · ");
 }
 
 /** The stored form of a car that has already passed `validateCar`. */
