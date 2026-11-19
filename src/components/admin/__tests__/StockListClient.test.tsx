@@ -7,6 +7,8 @@ const actions = vi.hoisted(() => ({
   createStockCar: vi.fn(),
   updateStockCar: vi.fn(),
   setStockCarRemoved: vi.fn(),
+  previewStockImport: vi.fn(),
+  importStockCars: vi.fn(),
 }));
 vi.mock("@/actions/stock-actions", () => actions);
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
@@ -185,5 +187,87 @@ describe("StockListClient", () => {
     expect(actions.setStockCarRemoved).toHaveBeenCalledWith("c1", true);
     expect(container.textContent).toContain("On the list (0)");
     expect(container.textContent).toContain("Removed (1)");
+  });
+
+  it("imports from a Google Sheet: checks first, then adds only the ready rows", async () => {
+    render([]);
+    act(() => button("Import from CSV, Excel or Google Sheets").click());
+    act(() => button("Google Sheet").click());
+    type(
+      byLabel("Google Sheets link"),
+      "https://docs.google.com/spreadsheets/d/abc/edit#gid=0",
+    );
+
+    const ready = {
+      make: "Nissan",
+      model: "Patrol",
+      year: "2023",
+      color: "White",
+      engine: "5.6L V8",
+      steering: "LHD",
+      fobPrice: "52000",
+      fobCurrency: "USD",
+      shippingPort: "Jebel Ali",
+    };
+    actions.previewStockImport.mockResolvedValue({
+      success: true,
+      source: "Google Sheet",
+      skippedBlank: 0,
+      rows: [
+        { line: 2, input: ready, status: "ready" },
+        {
+          line: 3,
+          input: { ...ready, year: "1890" },
+          status: "invalid",
+          errors: { year: "Year must be between 1950 and 2027" },
+        },
+        {
+          line: 4,
+          input: ready,
+          status: "duplicate",
+          note: "Repeats an earlier row",
+        },
+      ],
+    });
+    await act(async () => {
+      container
+        .querySelectorAll("form")[1]
+        ?.dispatchEvent(
+          new Event("submit", { bubbles: true, cancelable: true }),
+        );
+    });
+
+    const sent = actions.previewStockImport.mock.calls[0][0] as FormData;
+    expect(sent.get("sheetUrl")).toBe(
+      "https://docs.google.com/spreadsheets/d/abc/edit#gid=0",
+    );
+    expect(sent.get("currency")).toBe("USD");
+    expect(container.textContent).toContain("1 ready to add");
+    expect(container.textContent).toContain("1 with problems");
+    expect(container.textContent).toContain("Year must be between 1950");
+
+    actions.importStockCars.mockResolvedValue({
+      success: true,
+      skipped: 0,
+      cars: [
+        {
+          ...CAR,
+          id: "c9",
+          make: "Nissan",
+          model: "Patrol",
+          fobPrice: 52000,
+          fobCurrency: "USD",
+        },
+      ],
+    });
+    await act(async () => button("Add 1 car to my list").click());
+
+    expect(actions.importStockCars).toHaveBeenCalledWith(
+      [ready],
+      "Google Sheet",
+    );
+    expect(container.textContent).toContain("Patrol");
+    expect(container.textContent).toContain("On the list (1)");
+    expect(container.textContent).not.toContain("1 ready to add");
   });
 });
