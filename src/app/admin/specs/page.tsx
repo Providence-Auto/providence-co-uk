@@ -24,9 +24,9 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { generateDossierPdfAction } from "@/actions/pdf-actions";
 // Actions & Components
 import { getSpecDossierById, saveSpecDossier } from "@/actions/spec-actions";
+import { SpecSheetExportDialog } from "@/components/admin/SpecSheetExportDialog";
 import { DestinationEditor } from "@/components/DestinationEditor";
 import { GradeEditor, SteeringOptionsEditor } from "@/components/GradeEditor";
 import { SpecSection } from "@/components/SpecSection";
@@ -51,6 +51,7 @@ import {
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
 import { getPresignedUrls } from "@/lib/file-actions";
+import { B2B_GALLERY_PATH, parseListingAudience } from "@/lib/listing-audience";
 import { CAR_MAKES, getLogoFilename } from "@/lib/logo-utils";
 import {
   galleryPathForDossier,
@@ -329,11 +330,14 @@ interface SpecDataType {
   newsSlug: string;
   customData: CustomDataEntry[];
   valuePoints: ValuePointEntry[];
+  /** "b2c" or "b2b" — B2B also lists the car on /b2b/gallery and exports the dealer PDF. */
+  audience: string;
   /** "car" or "motorcycle" — decides the public URL and which listings it joins. */
   vehicleType: string;
 }
 
 const initialSpecData: SpecDataType = {
+  audience: "b2c",
   vehicleType: "car",
   make: "",
   model: "",
@@ -580,7 +584,7 @@ function SpecBuilderContent() {
     type: "CIF",
   });
 
-  const [isPrinting, setIsPrinting] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -666,6 +670,7 @@ function SpecBuilderContent() {
               expectedAvailability: res.data.expectedAvailability || "",
               newsSlug: res.data.newsSlug || "",
               vehicleType: res.data.vehicleType || "car",
+              audience: parseListingAudience(res.data.audience),
             }));
             setPricing(res.data.pricing || []);
             setFeatures(res.data.features || []);
@@ -766,30 +771,12 @@ function SpecBuilderContent() {
     setPricing(pricing.filter((_, i) => i !== index));
   };
 
-  const handlePrint = async () => {
+  // Export asks first whose contact details go on the sheet
+  // (SpecSheetExportDialog); the sheet's audience is the listing's switch.
+  const handlePrint = () => {
     if (!editId)
       return alert("Please save the dossier first before generating a PDF.");
-    setIsPrinting(true);
-    try {
-      const res = await generateDossierPdfAction(editId);
-      if (res.success && res.pdfBase64) {
-        const byteCharacters = atob(res.pdfBase64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++)
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "application/pdf" });
-        const blobUrl = URL.createObjectURL(blob);
-        window.open(blobUrl, "_blank");
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-      } else {
-        alert(res.message || "Failed to generate PDF.");
-      }
-    } catch (_error) {
-      alert("An error occurred while generating the PDF.");
-    } finally {
-      setIsPrinting(false);
-    }
+    setIsExportOpen(true);
   };
 
   const handleInputChange = (
@@ -1106,16 +1093,19 @@ function SpecBuilderContent() {
           <Button
             variant="outline"
             onClick={handlePrint}
-            disabled={isPrinting}
             className="rounded-2xl h-12 px-6"
           >
-            {isPrinting ? (
-              <Loader2 className="animate-spin mr-2" size={20} />
-            ) : (
-              <Printer size={20} className="mr-2" />
-            )}
-            {isPrinting ? "Generating..." : "Print PDF"}
+            <Printer size={20} className="mr-2" />
+            Export PDF
           </Button>
+          {editId ? (
+            <SpecSheetExportDialog
+              open={isExportOpen}
+              onOpenChange={setIsExportOpen}
+              dossierId={editId}
+              audience={parseListingAudience(specData.audience)}
+            />
+          ) : null}
           <Button
             onClick={handleSave}
             disabled={isSaving}
@@ -1132,6 +1122,54 @@ function SpecBuilderContent() {
         <div className="lg:col-span-4 space-y-8">
           <SpecSection title="Target Market & Origin" icon={Globe}>
             <div className="space-y-4">
+              {/* Who the listing is for. B2B also lists the car on
+                  /b2b/gallery (it stays on the car gallery too) and exports
+                  the dealer PDF: no markets list, no landed-quote box. */}
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase text-zinc-400">
+                  Listing for
+                </Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: "b2c", label: "B2C" },
+                    { value: "b2b", label: "B2B" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={specData.audience === option.value}
+                      onClick={() =>
+                        handleInputChange("audience", option.value)
+                      }
+                      className={`h-11 rounded-xl text-sm font-bold border transition-colors ${
+                        specData.audience === option.value
+                          ? "bg-black text-white border-black"
+                          : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                {specData.audience === "b2b" ? (
+                  <p className="text-xs text-zinc-500">
+                    {specData.vehicleType === "motorcycle"
+                      ? "Exports the B2B PDF. Bikes are not listed on "
+                      : "Also listed on "}
+                    <a
+                      href={B2B_GALLERY_PATH}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline"
+                    >
+                      {B2B_GALLERY_PATH}
+                    </a>
+                    {specData.vehicleType === "motorcycle"
+                      ? "."
+                      : " once Active, and exports the B2B PDF."}
+                  </p>
+                ) : null}
+              </div>
               {/* Car or motorcycle: a motorcycle's page is
                   /import-bikes/<slug>, listed on /import-bikes and kept out of
                   the car gallery. */}
