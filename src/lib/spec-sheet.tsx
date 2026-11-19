@@ -7,6 +7,12 @@
 // description, why the car is worth importing, the specification, the colours,
 // the markets it can be imported to, the equipment and how to ask for a quote.
 //
+// Eight photographs (the hero, then rows of three and four). The admin export
+// also chooses the audience — a B2B sheet drops the markets list and the
+// landed-quote box and ends with a plain contact strip — and whose contact
+// details print (src/lib/spec-sheet-contact.ts). The public download is always
+// the B2C sheet with the general contact details.
+//
 // Two things the old "blueprint" got wrong and this must keep right:
 // - Photographs are re-encoded to JPEG here. @react-pdf/renderer decodes only
 //   JPEG and PNG, and car photos are WebP files under public/ or uploads on R2;
@@ -29,14 +35,14 @@ import {
   View,
 } from "@react-pdf/renderer";
 import sharp from "sharp";
-import {
-  CONTACT_EMAIL,
-  GENERAL_WHATSAPP_NUMBER,
-  HEAD_OFFICE_PHONE,
-} from "@/config/contact";
 import { loadCarImageSource } from "@/lib/car-image-source";
 import type { CarRecord } from "@/lib/car-page";
 import { carSpecRows, type SpecRow } from "@/lib/car-spec-rows";
+import type { ListingAudience } from "@/lib/listing-audience";
+import {
+  GENERAL_SPEC_SHEET_CONTACT,
+  type SpecSheetContact,
+} from "@/lib/spec-sheet-contact";
 import { parseSteeringOptions } from "@/lib/vehicle";
 import {
   colorLabel,
@@ -69,7 +75,18 @@ const PAGE_X = 40;
 const CONTENT_WIDTH = 595.28 - PAGE_X * 2; // A4 width in points
 const HERO_HEIGHT = Math.round((CONTENT_WIDTH * 10) / 16);
 const THUMB_GAP = 8;
-const THUMB_WIDTH = (CONTENT_WIDTH - THUMB_GAP * 2) / 3;
+/**
+ * Eight photographs in all: the hero, then a row of three and a row of four
+ * under it. A car with fewer fills the rows in order, and a short row keeps
+ * the full row's tile size rather than stretching.
+ */
+const PHOTO_COUNT = 8;
+const THUMB_ROWS = [3, 4];
+
+function thumbSize(perRow: number) {
+  const width = (CONTENT_WIDTH - THUMB_GAP * (perRow - 1)) / perRow;
+  return { width, height: Math.round((width * 10) / 16) };
+}
 
 const s = StyleSheet.create({
   page: {
@@ -110,12 +127,7 @@ const s = StyleSheet.create({
     objectFit: "cover",
   },
   thumbs: { flexDirection: "row", marginTop: THUMB_GAP },
-  thumb: {
-    width: THUMB_WIDTH,
-    height: Math.round((THUMB_WIDTH * 10) / 16),
-    borderRadius: 6,
-    objectFit: "cover",
-  },
+  thumb: { borderRadius: 6, objectFit: "cover" },
 
   // Identity
   identity: { marginTop: 22 },
@@ -296,6 +308,29 @@ const s = StyleSheet.create({
     marginTop: 3,
     textDecoration: "none",
   },
+  consultant: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 10,
+    color: "#ffffff",
+    marginTop: 14,
+  },
+
+  // The B2B sheet's closing contact strip: the same details as the dark box,
+  // on paper, with no quote pitch.
+  strip: {
+    marginTop: 30,
+    paddingTop: 14,
+    borderTopWidth: 0.75,
+    borderTopColor: RULE,
+  },
+  stripName: { fontFamily: "Helvetica-Bold", fontSize: 10 },
+  stripContacts: { flexDirection: "row", marginTop: 8 },
+  stripValue: {
+    fontSize: 9.5,
+    color: INK,
+    marginTop: 3,
+    textDecoration: "none",
+  },
 
   // Footer
   footer: {
@@ -422,7 +457,53 @@ function ColourGroup({
 
 // ── Document ────────────────────────────────────────────────────────────────
 
+/** The thumbnails split into the rows of THUMB_ROWS, each with its row's tile count. */
+function thumbRows(
+  thumbs: PdfImage[],
+): { perRow: number; items: PdfImage[] }[] {
+  const rows: { perRow: number; items: PdfImage[] }[] = [];
+  let start = 0;
+  for (const perRow of THUMB_ROWS) {
+    const items = thumbs.slice(start, start + perRow);
+    if (items.length === 0) break;
+    rows.push({ perRow, items });
+    start += perRow;
+  }
+  return rows;
+}
+
+/** Email, WhatsApp and phone, in the dark box (B2C) or on paper (B2B). */
+function ContactList({
+  contact,
+  dark,
+}: {
+  contact: SpecSheetContact;
+  dark: boolean;
+}) {
+  const value = dark ? s.contactValue : s.stripValue;
+  return (
+    <View style={dark ? s.contacts : s.stripContacts}>
+      <View style={s.contact}>
+        <Text style={s.contactLabel}>Email</Text>
+        <Link src={`mailto:${contact.email}`} style={value}>
+          {contact.email}
+        </Link>
+      </View>
+      <View style={s.contact}>
+        <Text style={s.contactLabel}>WhatsApp</Text>
+        <Text style={value}>{contact.whatsapp}</Text>
+      </View>
+      <View style={s.contact}>
+        <Text style={s.contactLabel}>Phone</Text>
+        <Text style={value}>{contact.phone}</Text>
+      </View>
+    </View>
+  );
+}
+
 type SpecSheetData = {
+  audience: ListingAudience;
+  contact: SpecSheetContact;
   car: CarRecord;
   grade: VehicleGrade | undefined;
   rows: SpecRow[];
@@ -472,18 +553,23 @@ function SpecSheet(d: SpecSheetData) {
         </View>
 
         {d.hero ? <Image src={d.hero} style={s.hero} /> : null}
-        {d.thumbs.length > 0 ? (
-          <View style={s.thumbs}>
-            {d.thumbs.map((thumb, i) => (
+        {thumbRows(d.thumbs).map((row, r) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered rows
+          <View key={r} style={s.thumbs} wrap={false}>
+            {row.items.map((thumb, i) => (
               <Image
                 // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
                 key={i}
                 src={thumb}
-                style={[s.thumb, i > 0 ? { marginLeft: THUMB_GAP } : {}]}
+                style={[
+                  s.thumb,
+                  thumbSize(row.perRow),
+                  i > 0 ? { marginLeft: THUMB_GAP } : {},
+                ]}
               />
             ))}
           </View>
-        ) : null}
+        ))}
 
         <View style={s.identity} wrap={false}>
           {car.make ? <Text style={s.make}>{car.make}</Text> : null}
@@ -602,7 +688,9 @@ function SpecSheet(d: SpecSheetData) {
           />
         ) : null}
 
-        {d.markets.length > 0 ? (
+        {/* A dealer's sheet stops at the car: no markets list and no landed-quote
+            box, just who to contact. */}
+        {d.audience === "b2c" && d.markets.length > 0 ? (
           <Section
             title="Markets you can import it to"
             items={[
@@ -617,38 +705,36 @@ function SpecSheet(d: SpecSheetData) {
           />
         ) : null}
 
-        <View style={s.cta} wrap={false}>
-          <Text style={s.ctaTitle}>
-            {car.isUpcoming
-              ? `Register your interest in the ${car.model || "car"} on its page.`
-              : `Get a landed quote for this ${car.model || "car"} before you commit.`}
-          </Text>
-          {car.isUpcoming ? null : (
-            <Text style={s.ctaBody}>
-              Your consultant confirms the car is available and sends the landed
-              cost into your country, itemised, before you commit to anything.
+        {d.audience === "b2c" ? (
+          <View style={s.cta} wrap={false}>
+            <Text style={s.ctaTitle}>
+              {car.isUpcoming
+                ? `Register your interest in the ${car.model || "car"} on its page.`
+                : `Get a landed quote for this ${car.model || "car"} before you commit.`}
             </Text>
-          )}
-          <Link src={d.pageUrl} style={s.ctaLink}>
-            {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
-          </Link>
-          <View style={s.contacts}>
-            <View style={s.contact}>
-              <Text style={s.contactLabel}>Email</Text>
-              <Link src={`mailto:${CONTACT_EMAIL}`} style={s.contactValue}>
-                {CONTACT_EMAIL}
-              </Link>
-            </View>
-            <View style={s.contact}>
-              <Text style={s.contactLabel}>WhatsApp</Text>
-              <Text style={s.contactValue}>{GENERAL_WHATSAPP_NUMBER}</Text>
-            </View>
-            <View style={s.contact}>
-              <Text style={s.contactLabel}>Phone</Text>
-              <Text style={s.contactValue}>{HEAD_OFFICE_PHONE}</Text>
-            </View>
+            {car.isUpcoming ? null : (
+              <Text style={s.ctaBody}>
+                Your consultant confirms the car is available and sends the
+                landed cost into your country, itemised, before you commit to
+                anything.
+              </Text>
+            )}
+            <Link src={d.pageUrl} style={s.ctaLink}>
+              {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
+            </Link>
+            {d.contact.name ? (
+              <Text style={s.consultant}>{d.contact.name}</Text>
+            ) : null}
+            <ContactList contact={d.contact} dark />
           </View>
-        </View>
+        ) : (
+          <View style={s.strip} wrap={false}>
+            <Text style={s.stripName}>
+              {d.contact.name ?? "Providence Auto"}
+            </Text>
+            <ContactList contact={d.contact} dark={false} />
+          </View>
+        )}
 
         <View style={s.footer} fixed>
           <Text style={s.footerText}>
@@ -673,6 +759,14 @@ export type SpecSheetOptions = {
   gradeId?: string | null;
   /** "RHD" / "LHD" from the page's selector; falls back to the primary hand. */
   steering?: string | null;
+  /**
+   * B2B drops the markets list and the landed-quote box. Defaults to B2C:
+   * only the admin export passes it — the public car page's download is
+   * always the retail sheet.
+   */
+  audience?: ListingAudience;
+  /** Already resolved on the server; defaults to the general channels. */
+  contact?: SpecSheetContact;
 };
 
 /** Renders a dossier's spec sheet to PDF bytes. */
@@ -694,7 +788,9 @@ export async function renderSpecSheet(
   const gradeImage =
     grade?.imageIndex !== undefined ? images[grade.imageIndex] : undefined;
   const heroSrc = gradeImage || car.heroImageUrl || images[0];
-  const thumbSrcs = images.filter((src) => src !== heroSrc).slice(0, 3);
+  const thumbSrcs = images
+    .filter((src) => src !== heroSrc)
+    .slice(0, PHOTO_COUNT - 1);
 
   const [hero, mark, ...thumbs] = await Promise.all([
     heroSrc ? photo(heroSrc, 1600) : Promise.resolve(null),
@@ -704,6 +800,8 @@ export async function renderSpecSheet(
 
   const key = car.slug || car._id || car.id;
   const data: SpecSheetData = {
+    audience: options.audience ?? "b2c",
+    contact: options.contact ?? GENERAL_SPEC_SHEET_CONTACT,
     car,
     grade,
     rows: carSpecRows(car, grade, hand),

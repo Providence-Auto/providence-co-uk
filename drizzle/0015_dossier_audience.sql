@@ -1,0 +1,13 @@
+-- Who a listing is for: 'b2c' (retail buyers) or 'b2b' (dealerships).
+--
+-- specdossier."audience"  Set in /admin/specs. A 'b2b' listing is also listed
+--                         on /b2b/gallery and exports the dealer version of the
+--                         PDF spec sheet. Every existing dossier is B2C, so the
+--                         default makes this a no-op for the live site.
+--                         Values and helpers: src/lib/listing-audience.ts.
+--
+-- ADD COLUMN IF NOT EXISTS with a default, so this is safe to apply twice and
+-- safe to apply ahead of the deploy. Apply with
+-- scripts/apply-dossier-audience-column.mjs (the drizzle migrator is
+-- unusable — see 0002_loving_sprite.sql).
+ALTER TABLE "specdossier" ADD COLUMN IF NOT EXISTS "audience" text DEFAULT 'b2c' NOT NULL;
