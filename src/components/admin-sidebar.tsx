@@ -11,6 +11,7 @@ import {
   IdCard,
   Instagram,
   LayoutDashboard,
+  ListChecks, // Stock list
   LogOut,
   Settings,
   ShieldCheck, // Client KYC
@@ -45,6 +46,7 @@ const navItems = [
     icon: Handshake,
   },
   { title: "Client KYC", url: "/admin/kyc", icon: ShieldCheck },
+  { title: "Stock List", url: "/admin/stock", icon: ListChecks },
   { title: "Cars", url: "/admin/dossiers", icon: Car },
   {
     title: "Sourcing Analyzer",

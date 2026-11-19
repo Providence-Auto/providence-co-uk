@@ -116,15 +116,36 @@ export function isHeldOutOfRotations(email: string | null | undefined) {
   return ROTATION_EXCLUDED.some((excluded) => excluded === key);
 }
 
-/** The owner of the page a form was sent from, lower-cased, or null. */
-export function pageLeadOwner(path: string | null | undefined): string | null {
-  const key = (path ?? "")
+/** A pathname as the owner tables key it: no query, hash or trailing slash. */
+function pageKey(path: string | null | undefined): string {
+  return (path ?? "")
     .trim()
     .split(/[?#]/)[0]
     .replace(/\/+$/, "")
     .toLowerCase();
+}
+
+/** The owner of the page a form was sent from, lower-cased, or null. */
+export function pageLeadOwner(path: string | null | undefined): string | null {
+  const key = pageKey(path);
   const email = key ? PAGE_LEAD_OWNERS[key] : undefined;
   return email ? email.trim().toLowerCase() : null;
+}
+
+// ── Pages where a rep link beats the page owner (2026-11-19) ───────────────
+//
+// A page that shows the rep's own name and photo when it is opened through
+// their rep link (RepConsultant in src/components/RepConsultant.tsx). There a
+// valid rep link must win, or the dealer would see one person and be called
+// by another; the page owner keeps every visit without one, and any rep link
+// that matches no one in a sales position. Every other owned page keeps its
+// owner ahead of rep links.
+export const REP_LINK_BEATS_PAGE_OWNER = new Set([
+  "/import-japanese-cars/dealership",
+]);
+
+export function repLinkBeatsPageOwner(path: string | null | undefined) {
+  return REP_LINK_BEATS_PAGE_OWNER.has(pageKey(path));
 }
 
 // ── Country owners ─────────────────────────────────────────────────────────

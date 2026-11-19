@@ -26,7 +26,7 @@ import {
   parseSourceMarkets,
   sourceMarketName,
 } from "@/config/dealer-sourcing";
-import { db, dealerInquiries, users } from "@/db";
+import { db, dealerInquiries, stockCars, users } from "@/db";
 import { getAgentPhotoUrl } from "@/lib/agent-photo";
 import {
   type ConversionLead,
@@ -51,15 +51,18 @@ import {
   type FieldErrors,
   hasErrors,
   LIMITS,
+  MAX_STOCK_CARS,
   normaliseSocial,
   normaliseWebsite,
+  phoneIsoForCountry,
   resolvePhoneCountry,
+  stockToDealerCar,
   toStoredCar,
   validateCarsStep,
   validateContact,
   validateDealership,
 } from "@/lib/dealer-inquiry";
-import { marketStatusFor } from "@/lib/dealer-markets";
+import { isListedDestination, marketStatusFor } from "@/lib/dealer-markets";
 import { emailService } from "@/lib/email";
 import {
   allLeadsOwnerEmail,
@@ -70,6 +73,7 @@ import {
   isHeldOutOfRotations,
   pageLeadOwner,
   pickNextInRotation,
+  repLinkBeatsPageOwner,
   SALES_ROLES,
   takesDealerLeads,
 } from "@/lib/lead-routing";
@@ -178,15 +182,78 @@ export async function submitDealerInquiry(
 
     const country = text(input.country, 100);
     const repCode = normaliseRepCode(input.repCode);
-    const marketStatus = marketStatusFor(country);
-    const iso = LEFT_TRAFFIC_COUNTRIES[country];
-    if (!marketStatus || marketStatus === "right-traffic" || !iso) {
+    const checkedStatus = marketStatusFor(country);
+
+    // Cars picked from the stock list. Only the ids are taken from the
+    // browser; each car is read from the list here, before the market check,
+    // because what the cars are decides which markets may send the inquiry.
+    const stockCarIds = Array.isArray(input.stockCarIds)
+      ? [
+          ...new Set(
+            input.stockCarIds
+              .map((id) => text(id, 100).trim())
+              .filter(Boolean),
+          ),
+        ]
+      : [];
+    const fromStock = stockCarIds.length > 0;
+    let stockRows: (typeof stockCars.$inferSelect)[] = [];
+    let stockError: string | null = null;
+    if (fromStock) {
+      if (stockCarIds.length > MAX_STOCK_CARS) {
+        stockError = `You can send up to ${MAX_STOCK_CARS} cars at a time`;
+      } else {
+        stockRows = await db
+          .select()
+          .from(stockCars)
+          .where(
+            and(
+              inArray(stockCars.id, stockCarIds),
+              eq(stockCars.isRemoved, false),
+            ),
+          );
+        if (stockRows.length !== stockCarIds.length) {
+          stockError =
+            "One of the cars you picked has just come off the list. Refresh the page and pick again.";
+        }
+      }
+    }
+
+    // A market that drives on the right may send an inquiry only for stock
+    // cars that are all left-hand drive (business instruction 2026-11-16).
+    // Decided from the rows just read, never from anything the browser says;
+    // the /b2b-inquiry path, which has no stock cars, is refused as before.
+    const allLhdStock =
+      fromStock &&
+      !stockError &&
+      stockRows.every((row) => row.steering === "LHD");
+    if (checkedStatus === "right-traffic" && fromStock && !allLhdStock) {
+      const message =
+        stockError ??
+        "Dealers in countries that drive on the right can send an inquiry for left-hand-drive cars only. Remove the right-hand-drive cars to continue.";
+      return { success: false, message, errors: { stockCars: message } };
+    }
+    const iso =
+      checkedStatus === "right-traffic"
+        ? allLhdStock
+          ? phoneIsoForCountry(phoneLib, country)
+          : null
+        : LEFT_TRAFFIC_COUNTRIES[country];
+    if (!checkedStatus || !iso) {
       return {
         success: false,
         message: "Choose the country your dealership imports into.",
         errors: { country: "Choose your country" },
       };
     }
+    // Stored as the shipping question the consultant has to answer: one of
+    // our destinations, or not on the list yet. The cars carry the hand.
+    const marketStatus =
+      checkedStatus === "right-traffic"
+        ? isListedDestination(country)
+          ? "destination"
+          : "unlisted"
+        : checkedStatus;
 
     const fields = {
       dealershipName: text(input.dealershipName, 500),
@@ -223,13 +290,22 @@ export async function submitDealerInquiry(
       ...validateContact(fields),
       ...(whatsapp.ok ? {} : { whatsapp: whatsapp.error }),
     };
-    const carsStep = validateCarsStep(fields, isSourceMarket);
-    Object.assign(errors, carsStep.errors);
-    carsStep.carErrors.forEach((carError, index) => {
-      for (const [field, message] of Object.entries(carError)) {
-        errors[`cars.${index}.${field}`] = message;
+    // A stock-list inquiry names its cars by id, so the cars step (a source
+    // market or hand-entered cars) does not apply — only its note limit does.
+    if (fromStock) {
+      if (stockError) errors.stockCars = stockError;
+      if (fields.notes.trim().length > LIMITS.notes) {
+        errors.notes = "Keep your note under 2,000 characters";
       }
-    });
+    } else {
+      const carsStep = validateCarsStep(fields, isSourceMarket);
+      Object.assign(errors, carsStep.errors);
+      carsStep.carErrors.forEach((carError, index) => {
+        for (const [field, message] of Object.entries(carError)) {
+          errors[`cars.${index}.${field}`] = message;
+        }
+      });
+    }
 
     if (hasErrors(errors) || !whatsapp.ok) {
       return {
@@ -253,11 +329,19 @@ export async function submitDealerInquiry(
     }
     if (address) heldHit = { address, at: takenAt };
 
-    const cars: DealerCar[] = fields.wantsSpecificCars
-      ? fields.cars.map(toStoredCar)
-      : [];
-    const sourceMarket =
-      joinSourceMarkets(parseSourceMarkets(fields.sourceMarket)) || null;
+    // Stock cars keep the order the dealer picked them in.
+    const stockById = new Map(stockRows.map((row) => [row.id, row]));
+    const cars: DealerCar[] = fromStock
+      ? stockCarIds.flatMap((id) => {
+          const row = stockById.get(id);
+          return row ? [stockToDealerCar(row)] : [];
+        })
+      : fields.wantsSpecificCars
+        ? fields.cars.map(toStoredCar)
+        : [];
+    const sourceMarket = fromStock
+      ? null
+      : joinSourceMarkets(parseSourceMarkets(fields.sourceMarket)) || null;
     const website = fields.website.trim()
       ? normaliseWebsite(fields.website)
       : null;
@@ -300,12 +384,45 @@ export async function submitDealerInquiry(
         | "country"
         | "round-robin" = "round-robin";
 
+      // A rep link's account — any sales position, unbanned. Looked up once,
+      // whichever step below asks for it first.
+      let repTried = false;
+      const findRep = async () => {
+        repTried = true;
+        if (!repCode) return null;
+        const [rep] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              // Exact, not ilike: a code may hold "_", which ilike reads as a
+              // wildcard.
+              sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
+              inSalesPosition(),
+            ),
+          )
+          .limit(1);
+        return rep ?? null;
+      };
+
+      // -2. On a page that shows the rep's own face (business instruction
+      //     2026-11-19 — /import-japanese-cars/dealership), a valid rep link
+      //     beats the page owner: the dealer gets the person they saw. An
+      //     unknown or departed name falls through to the page owner.
+      if (repCode && repLinkBeatsPageOwner(input.pagePath)) {
+        const rep = await findRep();
+        if (rep) {
+          chosen = rep;
+          method = "rep-link";
+        }
+      }
+
       // -1. A page with its own owner (business instruction 2026-11-12):
       //     every inquiry from /import-japanese-cars/dealership goes to
       //     Ishak, ahead of the hard rule. Only an existing, unbanned
       //     account; otherwise the routing below carries on as usual.
       const pageOwnerEmail = pageLeadOwner(input.pagePath);
-      if (pageOwnerEmail) {
+      if (!chosen && pageOwnerEmail) {
         const [owner] = await tx
           .select()
           .from(users)
@@ -358,19 +475,8 @@ export async function submitDealerInquiry(
       //    position, as for a profile-page lead — DEALER_ROTATION_EXCLUDED
       //    included: the exclusion keeps someone out of the rotation, but a
       //    dealer who came through their own link is theirs (2026-10-16).
-      if (!chosen && repCode) {
-        const [rep] = await tx
-          .select()
-          .from(users)
-          .where(
-            and(
-              // Exact, not ilike: a code may hold "_", which ilike reads as a
-              // wildcard.
-              sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
-              inSalesPosition(),
-            ),
-          )
-          .limit(1);
+      if (!chosen && repCode && !repTried) {
+        const rep = await findRep();
         if (rep) {
           chosen = rep;
           method = "rep-link";
