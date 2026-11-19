@@ -73,6 +73,7 @@ import {
   isHeldOutOfRotations,
   pageLeadOwner,
   pickNextInRotation,
+  repLinkBeatsPageOwner,
   SALES_ROLES,
   takesDealerLeads,
 } from "@/lib/lead-routing";
@@ -383,12 +384,45 @@ export async function submitDealerInquiry(
         | "country"
         | "round-robin" = "round-robin";
 
+      // A rep link's account — any sales position, unbanned. Looked up once,
+      // whichever step below asks for it first.
+      let repTried = false;
+      const findRep = async () => {
+        repTried = true;
+        if (!repCode) return null;
+        const [rep] = await tx
+          .select()
+          .from(users)
+          .where(
+            and(
+              // Exact, not ilike: a code may hold "_", which ilike reads as a
+              // wildcard.
+              sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
+              inSalesPosition(),
+            ),
+          )
+          .limit(1);
+        return rep ?? null;
+      };
+
+      // -2. On a page that shows the rep's own face (business instruction
+      //     2026-11-19 — /import-japanese-cars/dealership), a valid rep link
+      //     beats the page owner: the dealer gets the person they saw. An
+      //     unknown or departed name falls through to the page owner.
+      if (repCode && repLinkBeatsPageOwner(input.pagePath)) {
+        const rep = await findRep();
+        if (rep) {
+          chosen = rep;
+          method = "rep-link";
+        }
+      }
+
       // -1. A page with its own owner (business instruction 2026-11-12):
       //     every inquiry from /import-japanese-cars/dealership goes to
       //     Ishak, ahead of the hard rule. Only an existing, unbanned
       //     account; otherwise the routing below carries on as usual.
       const pageOwnerEmail = pageLeadOwner(input.pagePath);
-      if (pageOwnerEmail) {
+      if (!chosen && pageOwnerEmail) {
         const [owner] = await tx
           .select()
           .from(users)
@@ -441,19 +475,8 @@ export async function submitDealerInquiry(
       //    position, as for a profile-page lead — DEALER_ROTATION_EXCLUDED
       //    included: the exclusion keeps someone out of the rotation, but a
       //    dealer who came through their own link is theirs (2026-10-16).
-      if (!chosen && repCode) {
-        const [rep] = await tx
-          .select()
-          .from(users)
-          .where(
-            and(
-              // Exact, not ilike: a code may hold "_", which ilike reads as a
-              // wildcard.
-              sql`lower(trim(${users.email})) = ${repLinkEmail(repCode)}`,
-              inSalesPosition(),
-            ),
-          )
-          .limit(1);
+      if (!chosen && repCode && !repTried) {
+        const rep = await findRep();
         if (rep) {
           chosen = rep;
           method = "rep-link";

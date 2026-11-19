@@ -1,7 +1,7 @@
 // Adds request."vehicleType" to one environment's database and marks the
 // leads already sent from a bike page as motorcycle leads.
 //
-// The column and backfill from drizzle/0015_request_vehicle_type.sql. Applied
+// The column and backfill from drizzle/0016_request_vehicle_type.sql. Applied
 // with this script rather than scripts/migrate.mjs because the drizzle
 // migrator is currently unusable: migration 0001 is listed in
 // drizzle/meta/_journal.json but its .sql file was never committed, so

@@ -265,6 +265,9 @@ export const specDossiers = pgTable("specdossier", {
   // /import/<tag>. Separate from `searchTags`, which are free-form gallery
   // filter keywords. Registry and parsing: src/config/vehicle-tags.ts.
   tags: text("tags").array().notNull().default([]),
+  // --- Listing audience (drizzle/0015) ------------------------------------
+  /** "b2c" or "b2b" — see src/lib/listing-audience.ts. B2B is also on /b2b/gallery. */
+  audience: text("audience").default("b2c").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });

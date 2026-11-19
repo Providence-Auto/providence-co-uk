@@ -94,7 +94,24 @@ function CardImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
+export default function GalleryClient({
+  dossiers,
+  heading = "The cars you can import.",
+  intro = "A curated selection of globally-sourced vehicle specifications, ready to be commissioned to your exacting standards.",
+  showSupportingSections = true,
+}: {
+  dossiers: Dossier[];
+  /** The page H1. /b2b/gallery passes its own. */
+  heading?: string;
+  /** The line under the H1; null drops it. */
+  intro?: string | null;
+  /**
+   * The retail gallery's "Why import" block and FAQ. Off on /b2b/gallery:
+   * that copy was written for /b2c/gallery and a landing page carries no
+   * section it was not asked for (page-types.md §3).
+   */
+  showSupportingSections?: boolean;
+}) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>("newest");
 
@@ -166,12 +183,13 @@ export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
             className="relative z-10 text-center max-w-4xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter mb-6 text-black leading-[1.1]">
-              The cars you can import.
+              {heading}
             </h1>
-            <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
-              A curated selection of globally-sourced vehicle specifications,
-              ready to be commissioned to your exacting standards.
-            </p>
+            {intro ? (
+              <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
+                {intro}
+              </p>
+            ) : null}
           </Reveal>
 
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-zinc-100 blur-[120px] rounded-full pointer-events-none -z-10" />
@@ -384,66 +402,70 @@ export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
           )}
         </section>
 
-        {/* Value Propositions Section */}
-        <section className="py-32 px-6 bg-[#FAFAFA] border-y border-black/5">
-          <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <Reveal y={30} duration={0.8}>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-16 uppercase leading-tight">
-                Why Import From <br />
-                Providence Auto
-              </h2>
+        {showSupportingSections ? (
+          <>
+            {/* Value Propositions Section */}
+            <section className="py-32 px-6 bg-[#FAFAFA] border-y border-black/5">
+              <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                <Reveal y={30} duration={0.8}>
+                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-16 uppercase leading-tight">
+                    Why Import From <br />
+                    Providence Auto
+                  </h2>
 
-              <div className="space-y-12">
-                {[
-                  {
-                    title: "Unrestricted Market Access",
-                    desc: "Gain direct entry to global wholesale markets in Japan, the UK, and Europe. Stop paying domestic dealership markups and secure vehicles at their true international value.",
-                  },
-                  {
-                    title: "Compliance, Confirmed First",
-                    desc: "Import rules differ on every route and are the usual reason an import goes wrong. We confirm what your country requires — homologation, emissions, age limits — before you commit, and prepare the documentation you need to clear and register it.",
-                  },
-                  {
-                    title: "Insured and Tracked, All the Way",
-                    desc: "From the moment of purchase to the port of arrival, your vehicle is under marine cover and trackable. Enclosed container shipping is available where the car warrants it.",
-                  },
-                  {
-                    title: "Rigorous Quality Assurance",
-                    desc: "We deploy independent inspectors to physically verify every vehicle before purchase. You receive a comprehensive 150-point dossier, ensuring zero surprises.",
-                  },
-                ].map((prop, idx) => (
-                  <div
-                    key={idx}
-                    className="relative pl-8 border-l border-black/10 hover:border-black/50 transition-colors duration-500"
-                  >
-                    <h3 className="text-xl font-bold tracking-tight mb-3 uppercase text-zinc-800">
-                      {prop.title}
-                    </h3>
-                    <p className="text-zinc-500 font-light leading-relaxed">
-                      {prop.desc}
-                    </p>
+                  <div className="space-y-12">
+                    {[
+                      {
+                        title: "Unrestricted Market Access",
+                        desc: "Gain direct entry to global wholesale markets in Japan, the UK, and Europe. Stop paying domestic dealership markups and secure vehicles at their true international value.",
+                      },
+                      {
+                        title: "Compliance, Confirmed First",
+                        desc: "Import rules differ on every route and are the usual reason an import goes wrong. We confirm what your country requires — homologation, emissions, age limits — before you commit, and prepare the documentation you need to clear and register it.",
+                      },
+                      {
+                        title: "Insured and Tracked, All the Way",
+                        desc: "From the moment of purchase to the port of arrival, your vehicle is under marine cover and trackable. Enclosed container shipping is available where the car warrants it.",
+                      },
+                      {
+                        title: "Rigorous Quality Assurance",
+                        desc: "We deploy independent inspectors to physically verify every vehicle before purchase. You receive a comprehensive 150-point dossier, ensuring zero surprises.",
+                      },
+                    ].map((prop, idx) => (
+                      <div
+                        key={idx}
+                        className="relative pl-8 border-l border-black/10 hover:border-black/50 transition-colors duration-500"
+                      >
+                        <h3 className="text-xl font-bold tracking-tight mb-3 uppercase text-zinc-800">
+                          {prop.title}
+                        </h3>
+                        <p className="text-zinc-500 font-light leading-relaxed">
+                          {prop.desc}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </Reveal>
+
+                <Reveal
+                  y={0}
+                  scale={0.95}
+                  duration={1}
+                  className="relative h-[600px] lg:h-[800px] rounded-[2.5rem] overflow-hidden bg-zinc-200"
+                >
+                  <img
+                    src="/gallery_image.webp"
+                    alt="Vehicles being loaded into a shipping container"
+                    className="w-full h-full object-cover"
+                  />
+                </Reveal>
               </div>
-            </Reveal>
+            </section>
 
-            <Reveal
-              y={0}
-              scale={0.95}
-              duration={1}
-              className="relative h-[600px] lg:h-[800px] rounded-[2.5rem] overflow-hidden bg-zinc-200"
-            >
-              <img
-                src="/gallery_image.webp"
-                alt="Vehicles being loaded into a shipping container"
-                className="w-full h-full object-cover"
-              />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* FAQs Section */}
-        <FAQSection />
+            {/* FAQs Section */}
+            <FAQSection />
+          </>
+        ) : null}
 
         <style jsx global>{`
                 .hide-scrollbar::-webkit-scrollbar {
