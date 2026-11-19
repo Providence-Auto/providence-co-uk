@@ -2,7 +2,7 @@
 //
 // Set per car in /admin/specs and stored in specdossier.audience
 // (drizzle/0015). A B2B listing is also listed on /b2b/gallery; every listing,
-// B2B included, stays on the car gallery (business decision 2026-11-19). It
+// B2B included, stays on the car gallery (as instructed 2026-11-19). It
 // decides the PDF the editor exports: a B2B sheet drops the markets list and
 // the landed-quote box and ends with a plain contact strip instead.
 

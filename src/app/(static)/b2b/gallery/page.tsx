@@ -2,8 +2,10 @@
 //
 // The same cards as /b2c/gallery (GalleryClient), filtered to the B2B
 // audience (src/lib/listing-audience.ts). A B2B listing stays on the car
-// gallery too (business decision 2026-11-19); this page is the dealer-facing
-// view of the same car pages, so every card links to the car's own page.
+// gallery too (as instructed 2026-11-19); this page is the dealer-facing view
+// of the same car pages, so every card links to the car's own page. Only the
+// heading and the cards: the retail gallery's "Why import" block and FAQ are
+// left off until the business asks for copy here (page-types.md §3).
 
 import type { Metadata } from "next";
 import { getB2bGalleryDossiers } from "@/actions/spec-actions";
@@ -16,9 +18,11 @@ import { breadcrumbJsonLd, DEFAULT_OG_IMAGE } from "@/lib/seo";
 // Postgres, so a prerendered copy would ship empty.
 export const dynamic = "force-dynamic";
 
-const PAGE_TITLE = "Dealer Stock Gallery: Cars to Import";
+// "Dealer gallery", never "stock": /available-cars is the stock list
+// (page-types.md §8), and these are car pages, not cars held in stock.
+const PAGE_TITLE = "Dealer Gallery: Cars to Import";
 const PAGE_DESCRIPTION =
-  "Browse the cars your dealership can import with Providence Auto, each with its specification, grades and colours. Ask for a landed quote on any of them.";
+  "Browse the cars your dealership can import direct from source with Providence Auto. Open a car for its specification, grades and colours.";
 
 type GalleryDossier = {
   status?: string;
@@ -74,7 +78,7 @@ export default async function B2bGalleryPage() {
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Car Sourcing for Dealers", path: "/b2b" },
-          { name: "Dealer Stock Gallery", path: B2B_GALLERY_PATH },
+          { name: "Dealer Gallery", path: B2B_GALLERY_PATH },
         ])}
       />
       <GalleryClient
@@ -82,6 +86,7 @@ export default async function B2bGalleryPage() {
         dossiers={dossiers as any}
         heading="The cars your dealership can import."
         intro={null}
+        showSupportingSections={false}
       />
     </>
   );
