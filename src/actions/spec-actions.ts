@@ -10,6 +10,7 @@ import {
   type TagCollection,
 } from "@/config/vehicle-tags";
 import { db, specDossiers } from "@/db";
+import { parseListingAudience } from "@/lib/listing-audience";
 import { parseVehicleType, type VehicleType } from "@/lib/vehicle-type";
 import { auth } from "@/utils/auth";
 
@@ -174,6 +175,7 @@ export async function saveSpecDossier(payload: any) {
       "newsSlug",
       "vehicleType",
       "tags",
+      "audience",
     ];
     for (const key of allowedKeys) {
       if (resolvedPayload[key] !== undefined) {
@@ -187,6 +189,9 @@ export async function saveSpecDossier(payload: any) {
     }
     if (dataToSave.vehicleType !== undefined) {
       dataToSave.vehicleType = parseVehicleType(dataToSave.vehicleType);
+    }
+    if (dataToSave.audience !== undefined) {
+      dataToSave.audience = parseListingAudience(dataToSave.audience);
     }
 
     // biome-ignore lint/suspicious/noImplicitAnyLet: dynamic assignment
@@ -247,6 +252,7 @@ export async function saveSpecDossier(payload: any) {
           newsSlug: dataToSave.newsSlug ?? "",
           vehicleType: dataToSave.vehicleType ?? "car",
           tags: dataToSave.tags ?? [],
+          audience: dataToSave.audience ?? "b2c",
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -257,6 +263,7 @@ export async function saveSpecDossier(payload: any) {
     revalidatePath("/admin/dossiers");
     revalidatePath("/admin/specs");
     revalidatePath("/b2c/gallery");
+    revalidatePath("/b2b/gallery");
     revalidatePath("/import-bikes");
     // The news index carries the upcoming-cars rail, so flipping a dossier's
     // coming-soon flag has to invalidate it too.
@@ -399,6 +406,7 @@ export async function updateDossierStatus(id: string, status: string) {
     // Status is what makes a dossier public, so it both adds and removes a
     // sitemap URL — and the gallery listing changes with it.
     revalidatePath("/b2c/gallery");
+    revalidatePath("/b2b/gallery");
     revalidatePath("/latest-news");
     revalidatePath("/sitemap.xml");
     return { success: true, message: `Status updated to ${status}` };
@@ -425,6 +433,7 @@ export async function deleteSpecDossier(id: string) {
     revalidatePath("/admin/dossiers");
     revalidatePath("/admin/specs");
     revalidatePath("/b2c/gallery");
+    revalidatePath("/b2b/gallery");
     // Deleting an upcoming car has to clear it from the news rail too,
     // otherwise the card lingers there and links to a 404.
     revalidatePath("/latest-news");
@@ -688,6 +697,29 @@ export async function getLiveVehicles(vehicleType: VehicleType) {
     };
   } catch (error) {
     console.error(`${actionName} Error:`, error);
+    return { success: false, message: "Error fetching vehicles.", data: [] };
+  }
+}
+
+/**
+ * GET B2B LISTINGS
+ * Active car dossiers set to the B2B audience in /admin/specs, newest first —
+ * the cars on /b2b/gallery. Full rows, because the gallery cards read the same
+ * fields as /b2c/gallery's.
+ */
+export async function getB2bGalleryDossiers() {
+  try {
+    const dossiers = await db.query.specDossiers.findMany({
+      where: and(
+        eq(specDossiers.status, "Active"),
+        eq(specDossiers.vehicleType, "car"),
+        eq(specDossiers.audience, "b2b"),
+      ),
+      orderBy: desc(specDossiers.createdAt),
+    });
+    return { success: true, data: dossiers.map(serializeDossier) };
+  } catch (error) {
+    console.error("[getB2bGalleryDossiers] Error:", error);
     return { success: false, message: "Error fetching vehicles.", data: [] };
   }
 }

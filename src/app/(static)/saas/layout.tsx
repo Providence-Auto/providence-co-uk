@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, DEFAULT_OG_IMAGE, serviceJsonLd } from "@/lib/seo";
 
-// Client component, so it cannot export its own metadata. See ../b2b/layout.tsx.
+// Client component, so it cannot export its own metadata. See ../b2b/(landing)/layout.tsx.
 // Safe as a layout: /saas has no child routes, so nothing can inherit this
 // canonical.
 const PATH = "/saas";

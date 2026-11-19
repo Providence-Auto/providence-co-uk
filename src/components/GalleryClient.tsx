@@ -94,7 +94,17 @@ function CardImage({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
+export default function GalleryClient({
+  dossiers,
+  heading = "The cars you can import.",
+  intro = "A curated selection of globally-sourced vehicle specifications, ready to be commissioned to your exacting standards.",
+}: {
+  dossiers: Dossier[];
+  /** The page H1. /b2b/gallery passes its own. */
+  heading?: string;
+  /** The line under the H1; null drops it. */
+  intro?: string | null;
+}) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>("newest");
 
@@ -166,12 +176,13 @@ export default function GalleryClient({ dossiers }: { dossiers: Dossier[] }) {
             className="relative z-10 text-center max-w-4xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tighter mb-6 text-black leading-[1.1]">
-              The cars you can import.
+              {heading}
             </h1>
-            <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
-              A curated selection of globally-sourced vehicle specifications,
-              ready to be commissioned to your exacting standards.
-            </p>
+            {intro ? (
+              <p className="text-xl md:text-2xl text-zinc-500 font-light max-w-2xl mx-auto">
+                {intro}
+              </p>
+            ) : null}
           </Reveal>
 
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-zinc-100 blur-[120px] rounded-full pointer-events-none -z-10" />
