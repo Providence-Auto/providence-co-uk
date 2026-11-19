@@ -261,7 +261,12 @@ export const JAPAN_UK_PAGES: Record<JapanUkVariant, JapanUkPage> = {
 // ── Dealership page ──────────────────────────────────────────────────────────
 //
 // Rebuilt 2026-11-12 around Ishak's dealer video: every inquiry from this page
-// is his (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts), and the six tiles
+// is his (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts) unless the visitor came
+// through another salesperson's rep link — then the page shows that person's
+// name and photo and the inquiry goes to them (2026-11-19,
+// src/components/RepConsultant.tsx). So the copy names the consultant only as
+// `consultant.name`, which the page swaps, and never uses a pronoun for them
+// (tested). The six tiles
 // answer what the video names — the auctions, the condition, the logistics,
 // the UK side, the payment terms and the London office. For UK dealerships we
 // *arrange* the conversion (speedo, rear fog light), the MOT and the DVLA
@@ -370,7 +375,7 @@ export const JAPAN_UK_DEALER = {
     },
     {
       title: "One consultant, and a London office you can visit.",
-      body: "Ishak runs your account from the first inquiry to each car's arrival at the port, and you're welcome to meet him at our head office in Kingsbury, London.",
+      body: "Ishak runs your account from the first inquiry to each car's arrival at the port, and you're welcome to arrange a visit to our head office in Kingsbury, London.",
     },
   ],
   landed: [
@@ -390,7 +395,7 @@ export const JAPAN_UK_DEALER = {
   faqs: [
     {
       q: "How quickly will I get a quote for Japanese stock?",
-      a: "Your first quote comes back from Ishak within 24 hours of your inquiry, landed per car to a UK port and itemised into what you pay us and what your dealership pays on arrival. Name the exact cars, or just the market, and he starts from there.",
+      a: "Your first quote comes back from Ishak within 24 hours of your inquiry, landed per car to a UK port and itemised into what you pay us and what your dealership pays on arrival. Name the exact cars, or just the market, and Ishak starts from there.",
     },
     {
       q: "How many cars can I ask for in one inquiry?",
@@ -402,7 +407,7 @@ export const JAPAN_UK_DEALER = {
     },
     {
       q: "What payment terms can my dealership have?",
-      a: "Flexible terms, so your funds aren't tied up for the months a car spends being exported and shipped. Ishak talks them through with you when he sends your quote. Whatever the terms, your money is released only once the car has been inspected and cleared for shipment.",
+      a: "Flexible terms, so your funds aren't tied up for the months a car spends being exported and shipped. Ishak talks them through with you alongside your quote. Whatever the terms, your money is released only once the car has been inspected and cleared for shipment.",
     },
     {
       q: "Who clears the cars through UK customs and registers them?",
@@ -414,7 +419,7 @@ export const JAPAN_UK_DEALER = {
     },
     {
       q: "Can I visit your office before my first order?",
-      a: "Yes. Our head office is at 468 Church Lane, Kingsbury, London NW9 8UA, and you're welcome to arrange a visit to talk your stock plan through with Ishak. Our team in Japan can join by video call.",
+      a: "Yes. Our head office is at 468 Church Lane, Kingsbury, London NW9 8UA, and you're welcome to arrange a visit to talk your stock plan through. Our team in Japan can join by video call.",
     },
     {
       q: "Who will my dealership deal with?",
