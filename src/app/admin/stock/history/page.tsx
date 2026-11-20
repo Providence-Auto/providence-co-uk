@@ -29,6 +29,7 @@ const ACTION_LABEL: Record<StockAction, string> = {
   updated: "Edited",
   removed: "Removed",
   restored: "Put back",
+  imported: "Imported",
 };
 
 const ACTION_STYLE: Record<StockAction, string> = {
@@ -36,6 +37,7 @@ const ACTION_STYLE: Record<StockAction, string> = {
   updated: "bg-sky-50 text-sky-700",
   removed: "bg-red-50 text-red-700",
   restored: "bg-amber-50 text-amber-700",
+  imported: "bg-violet-50 text-violet-700",
 };
 
 function carName(entry: StockHistoryEntry) {
@@ -95,7 +97,7 @@ export default async function StockHistoryPage({
           <p className="mt-1 text-zinc-500">
             {car && entries[0]
               ? `Every change to the ${carName(entries[0])}.`
-              : "Every car added, edited, removed or put back, newest first."}
+              : "Every car added, imported, edited, removed or put back, newest first."}
           </p>
         </div>
         <div className="flex gap-2">
@@ -179,7 +181,7 @@ export default async function StockHistoryPage({
                 </ul>
               )}
 
-              {entry.action === "created" && (
+              {(entry.action === "created" || entry.action === "imported") && (
                 <p className="mt-2 text-sm text-zinc-600">
                   {[
                     entry.snapshot.color,
@@ -191,6 +193,7 @@ export default async function StockHistoryPage({
                         String(entry.snapshot.fobCurrency ?? ""),
                       ),
                     entry.snapshot.shippingPort,
+                    entry.snapshot.source && `from ${entry.snapshot.source}`,
                   ]
                     .filter(Boolean)
                     .join(" · ")}

@@ -21,6 +21,7 @@ import {
   validateStockCar,
 } from "@/lib/stock";
 import { CAR_MAKES } from "@/lib/vehicle-inquiry";
+import StockImport from "./StockImport";
 
 const EMPTY: StockCarInput = {
   make: "",
@@ -343,6 +344,13 @@ export default function StockListClient({
 
         <PublicLink link={publicLink} />
       </div>
+
+      <StockImport
+        onImported={(added) => {
+          setCars((list) => [...added, ...list]);
+          setView("live");
+        }}
+      />
 
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-2">
