@@ -216,7 +216,7 @@ export function buildCarMetadata(
         `${headline} The paperwork and one landed cost into ${destination.name}, before you commit.`,
         `Importing a ${vehicle} to ${destination.name}: the rules, the paperwork and one landed cost, confirmed before you commit.`,
       ])
-    : baseDescription(car, vehicle);
+    : baseDescription(car, vehicle, side);
 
   const ogImage = carOgImagePath(car, fallbackId);
   const path = pagePath(car, fallbackId, destination, side);
@@ -263,8 +263,18 @@ const DESCRIPTION_FLOOR = 120;
  * (14 of 21 live car pages were under 120) fall back to a sentence built from
  * the vehicle itself.
  */
-function baseDescription(car: CarRecord, vehicle: string): string {
+function baseDescription(
+  car: CarRecord,
+  vehicle: string,
+  side: AudienceSide = "b2c",
+): string {
   const notes = car.notes?.trim();
+  // The dealer page, like the dealer PDF, makes no landed-quote claim.
+  if (side === "b2b") {
+    return clampDescription([
+      notes || `Import the ${vehicle} for your dealership: its full specification, grades, colours and gallery.`,
+    ]);
+  }
   if (notes) {
     const first = firstSentence(notes);
     const tail = " Get a landed quote to your port.";

@@ -9,6 +9,7 @@
 
 import type { Metadata } from "next";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
+import DealerInquiryForm from "@/components/dealer/DealerInquiryForm";
 import GalleryDetailClient from "@/components/GalleryDetailClient";
 import { DEALER_SOURCE_MARKETS } from "@/config/dealer-sourcing";
 import {
@@ -90,10 +91,19 @@ export default async function DealerCarPage({
       <GalleryDetailClient
         car={car}
         side="b2b"
-        dealerForm={{
-          markets: buildMarketOptions(),
-          sourceMarket: sourceMarketFor(car.countryOfOrigin),
-        }}
+        dealerInquiry={
+          <DealerInquiryForm
+            markets={buildMarketOptions()}
+            initialSourceMarket={sourceMarketFor(car.countryOfOrigin)}
+            initialCar={{
+              vehicleType: "car",
+              make: car.make ?? "",
+              model: car.model ?? "",
+              condition: car.condition === "Used" ? "Used" : "New",
+              specs: [car.year, car.trim].filter(Boolean).join(" "),
+            }}
+          />
+        }
       />
     </>
   );

@@ -17,13 +17,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import {
   DestinationBrief,
   DestinationChips,
   DestinationGuides,
 } from "@/components/CarDestinations";
-import DealerInquiryForm from "@/components/dealer/DealerInquiryForm";
 import FAQSection from "@/components/faqSection";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
@@ -37,7 +36,6 @@ import {
   splitDestinations,
 } from "@/config/destinations";
 import { carSpecRows } from "@/lib/car-spec-rows";
-import type { MarketOption } from "@/config/dealer-sourcing";
 import type { GuideLink } from "@/lib/destination-guides";
 import {
   type AudienceSide,
@@ -187,7 +185,7 @@ export default function GalleryDetailClient({
   initialDestination = null,
   destinationGuides = {},
   side = "b2c",
-  dealerForm,
+  dealerInquiry,
 }: {
   car: Dossier;
   /**
@@ -209,8 +207,11 @@ export default function GalleryDetailClient({
    * inquiry form instead of the retail one, and offers the dealer PDF.
    */
   side?: AudienceSide;
-  /** The dealer form's market list and preselected source market, resolved on the server. */
-  dealerForm?: { markets: MarketOption[]; sourceMarket: string | null };
+  /**
+   * The dealer page's inquiry form, rendered by the page and passed in, so
+   * the retail page's bundle never carries the dealer form.
+   */
+  dealerInquiry?: ReactNode;
 }) {
   const inquiryRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -1003,26 +1004,14 @@ export default function GalleryDetailClient({
           ref={inquiryRef}
           className="mt-16 lg:mt-24 px-6 py-16 bg-zinc-50 border-y border-black/5 scroll-mt-24"
         >
-          {dealer && dealerForm ? (
+          {dealer && dealerInquiry ? (
             <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
               <div className="lg:col-span-4">
                 <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-[0.95]">
                   Import this {car.model || "car"} for your dealership.
                 </h2>
               </div>
-              <div className="lg:col-span-8">
-                <DealerInquiryForm
-                  markets={dealerForm.markets}
-                  initialSourceMarket={dealerForm.sourceMarket}
-                  initialCar={{
-                    vehicleType: "car",
-                    make: car.make ?? "",
-                    model: car.model ?? "",
-                    condition: car.condition === "Used" ? "Used" : "New",
-                    specs: [car.year, car.trim].filter(Boolean).join(" "),
-                  }}
-                />
-              </div>
+              <div className="lg:col-span-8">{dealerInquiry}</div>
             </div>
           ) : (
           <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
