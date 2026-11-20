@@ -26,7 +26,7 @@ import {
   parseSourceMarkets,
   sourceMarketName,
 } from "@/config/dealer-sourcing";
-import { db, dealerInquiries, stockCars, users } from "@/db";
+import { db, dealerInquiries, specDossiers, stockCars, users } from "@/db";
 import { getAgentPhotoUrl } from "@/lib/agent-photo";
 import {
   type ConversionLead,
@@ -57,6 +57,9 @@ import {
   validateDealership,
 } from "@/lib/dealer-inquiry";
 import { isListedDestination, marketStatusFor } from "@/lib/dealer-markets";
+import { onDealer } from "@/lib/listing-audience";
+import { parseSteeringOptions } from "@/lib/vehicle";
+import { isMotorcycle } from "@/lib/vehicle-type";
 import {
   DEALER_LEAD_TYPE,
   DEALER_ONBOARDED_EVENT,
@@ -233,9 +236,38 @@ export async function submitDealerInquiry(
         "Dealers in countries that drive on the right can send an inquiry for left-hand-drive cars only. Remove the right-hand-drive cars to continue.";
       return { success: false, message, errors: { stockCars: message } };
     }
+    // The same rule for a car's dealer page (as instructed 2026-11-21): a
+    // market that drives on the right may send an inquiry for that one car,
+    // when its listing can be exported left-hand drive. Read from the listing
+    // here, never from anything the browser says.
+    const dossierId = fromStock ? "" : text(input.dossierId, 100).trim();
+    let lhdCar: { make: string; model: string } | null = null;
+    if (dossierId && checkedStatus === "right-traffic") {
+      const listing = await db.query.specDossiers.findFirst({
+        columns: {
+          make: true,
+          model: true,
+          steering: true,
+          steeringOptions: true,
+          audience: true,
+          vehicleType: true,
+        },
+        where: eq(specDossiers.id, dossierId),
+      });
+      if (
+        listing &&
+        onDealer(listing.audience) &&
+        !isMotorcycle(listing) &&
+        parseSteeringOptions(listing.steeringOptions, listing.steering).includes(
+          "LHD",
+        )
+      ) {
+        lhdCar = { make: listing.make, model: listing.model };
+      }
+    }
     const iso =
       checkedStatus === "right-traffic"
-        ? allLhdStock
+        ? allLhdStock || lhdCar
           ? phoneIsoForCountry(phoneLib, country)
           : null
         : LEFT_TRAFFIC_COUNTRIES[country];
@@ -298,6 +330,21 @@ export async function submitDealerInquiry(
         errors.notes = "Keep your note under 2,000 characters";
       }
     } else {
+      // An LHD-only inquiry is for the page's car alone, named from the
+      // listing rather than from what was typed.
+      if (lhdCar) {
+        if (fields.cars.length !== 1) {
+          errors.cars =
+            "Dealers in countries that drive on the right can send an inquiry for this left-hand-drive car only.";
+        } else {
+          fields.cars[0] = {
+            ...fields.cars[0],
+            make: lhdCar.make,
+            model: lhdCar.model,
+          };
+        }
+        fields.wantsSpecificCars = true;
+      }
       const carsStep = validateCarsStep(fields, isSourceMarket);
       Object.assign(errors, carsStep.errors);
       carsStep.carErrors.forEach((carError, index) => {
@@ -339,6 +386,15 @@ export async function submitDealerInquiry(
       : fields.wantsSpecificCars
         ? fields.cars.map(toStoredCar)
         : [];
+    // The hand is the reason the inquiry was let through: say it on the car.
+    if (lhdCar && cars[0]) {
+      cars[0] = {
+        ...cars[0],
+        specs: ["Left-hand drive (LHD)", cars[0].specs]
+          .filter(Boolean)
+          .join(". "),
+      };
+    }
     const sourceMarket = fromStock
       ? null
       : joinSourceMarkets(parseSourceMarkets(fields.sourceMarket)) || null;

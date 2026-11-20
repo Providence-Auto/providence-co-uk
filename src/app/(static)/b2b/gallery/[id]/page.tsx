@@ -21,6 +21,7 @@ import { canViewCar, loadCar } from "@/lib/car-page-data";
 import { buildMarketOptions } from "@/lib/dealer-markets";
 import { slugify } from "@/lib/dossier-slug";
 import { dealerCarPath, onDealer } from "@/lib/listing-audience";
+import { parseSteeringOptions } from "@/lib/vehicle";
 import { isMotorcycle } from "@/lib/vehicle-type";
 
 export const revalidate = 60;
@@ -95,6 +96,13 @@ export default async function DealerCarPage({
           <DealerInquiryForm
             markets={buildMarketOptions()}
             initialSourceMarket={sourceMarketFor(car.countryOfOrigin)}
+            dossierId={car._id || car.id}
+            // A dealer in a market that drives on the right may inquire for
+            // this car in LHD; the server checks the listing again.
+            offersLhd={parseSteeringOptions(
+              car.steeringOptions,
+              car.steering,
+            ).includes("LHD")}
             initialCar={{
               vehicleType: "car",
               make: car.make ?? "",

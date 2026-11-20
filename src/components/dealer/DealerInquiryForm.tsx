@@ -49,6 +49,7 @@ import {
   hasErrors,
   type PhoneLib,
   parseSocialLink,
+  phoneIsoForCountry,
   regionName,
   resolvePhoneCountry,
   SOCIAL_PLATFORMS,
@@ -141,6 +142,8 @@ export default function DealerInquiryForm({
   initialCountry = "",
   initialSourceMarket = null,
   initialCar,
+  dossierId,
+  offersLhd = false,
 }: {
   /** Every country in the picker, resolved on the server (src/lib/dealer-markets.ts). */
   markets: MarketOption[];
@@ -158,6 +161,15 @@ export default function DealerInquiryForm({
    * change it, add more or remove it.
    */
   initialCar?: Partial<DealerCarInput>;
+  /** The car page's listing, sent with the inquiry so the server can read the car itself. */
+  dossierId?: string;
+  /**
+   * The listing can be exported left-hand drive. A dealer in a market that
+   * drives on the right may then send an inquiry for this one car, in LHD
+   * (as instructed 2026-11-21, after the stock list's rule of 2026-11-16).
+   * The server decides it again from the listing, never from this flag.
+   */
+  offersLhd?: boolean;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -383,10 +395,16 @@ export default function DealerInquiryForm({
     designationRef.current?.focus();
   }, [designationChoice]);
 
-  // The WhatsApp country: the import country unless the dealer changed it.
-  const phoneIso = phoneCountry ?? market?.iso ?? null;
-  const phoneChanged = Boolean(phoneCountry && phoneCountry !== market?.iso);
   const phoneLib = phoneLibReady ? phoneLibRef.current : null;
+  // A market that drives on the right reaches the phone step only for an LHD
+  // car (offersLhd); its picker entry carries no code, so it resolves by name.
+  const lhdOnly = market?.status === "right-traffic" && offersLhd;
+  const marketIso =
+    market?.iso ??
+    (lhdOnly && phoneLib ? phoneIsoForCountry(phoneLib, country) : null);
+  // The WhatsApp country: the import country unless the dealer changed it.
+  const phoneIso = phoneCountry ?? marketIso ?? null;
+  const phoneChanged = Boolean(phoneCountry && phoneCountry !== marketIso);
   const phoneDial =
     phoneChanged && phoneLib && phoneCountry
       ? `+${phoneLib.getCountryCallingCode(phoneCountry)}`
@@ -408,7 +426,7 @@ export default function DealerInquiryForm({
   const choosePhoneCountry = (iso: string) => {
     const lib = phoneLibRef.current;
     if (!lib?.isSupportedCountry(iso)) return;
-    setPhoneCountry(iso === market?.iso ? null : (iso as CountryCode));
+    setPhoneCountry(iso === marketIso ? null : (iso as CountryCode));
     setErrors(({ whatsapp: _w, ...rest }) => rest);
   };
 
@@ -426,13 +444,17 @@ export default function DealerInquiryForm({
       flagErrors();
       return false;
     }
-    return market.status !== "right-traffic";
+    return market.status !== "right-traffic" || offersLhd;
   };
 
   const checkPhone = async (): Promise<string | null> => {
-    if (!market?.iso) return "Choose your country first";
     const lib = await loadPhoneLib();
-    const phone = resolvePhoneCountry(lib, phoneCountry, market.iso, country);
+    const importIso =
+      market?.iso ??
+      (lhdOnly ? phoneIsoForCountry(lib, country) : null) ??
+      null;
+    if (!importIso) return "Choose your country first";
+    const phone = resolvePhoneCountry(lib, phoneCountry, importIso, country);
     const result = checkWhatsApp(lib, form.whatsapp, phone.iso, phone.name);
     if (!result.ok) return result.error;
     setForm((prev) => ({ ...prev, whatsapp: result.national }));
@@ -547,6 +569,7 @@ export default function DealerInquiryForm({
       // The page itself, which a ?ref= never replaces — a page owner
       // (PAGE_LEAD_OWNERS in src/lib/lead-routing.ts) is keyed on it.
       pagePath: window.location.pathname,
+      ...(dossierId ? { dossierId } : {}),
     };
 
     setBusy(true);
@@ -683,11 +706,12 @@ export default function DealerInquiryForm({
 
   /** A fresh cars step, keeping the market, dealership and contact details. */
   const startAnother = () => {
-    setCars([]);
-    setCarErrors([]);
+    // A car page starts the next inquiry on its own car again.
+    setCars(initialCar ? [{ ...emptyCar(preferredCurrency), ...initialCar }] : []);
+    setCarErrors(initialCar ? [{}] : []);
     setOpenCar(0);
-    setSourceMarket(null);
-    setWantsSpecificCars(null);
+    setSourceMarket(initialCar ? initialSourceMarket : null);
+    setWantsSpecificCars(initialCar ? true : null);
     setForm((prev) => ({ ...prev, notes: "" }));
     setErrors({});
     interacted.current = true;
@@ -809,7 +833,8 @@ export default function DealerInquiryForm({
   }
 
   const isLastStep = step === STEPS.length - 1;
-  const blocked = step === 0 && market?.status === "right-traffic";
+  const blocked =
+    step === 0 && market?.status === "right-traffic" && !offersLhd;
 
   return (
     <div
@@ -976,7 +1001,19 @@ export default function DealerInquiryForm({
                       </div>
                     </div>
                   )}
-                  {market?.status === "right-traffic" && (
+                  {lhdOnly && (
+                    <div className="flex gap-3 rounded-2xl border border-black/10 bg-zinc-50 p-4">
+                      <Info
+                        size={22}
+                        className="mt-0.5 shrink-0 text-zinc-500"
+                      />
+                      <p className="text-sm text-zinc-600">
+                        {country} drives on the right, so you can send an
+                        inquiry for this car in left-hand drive (LHD) only.
+                      </p>
+                    </div>
+                  )}
+                  {market?.status === "right-traffic" && !offersLhd && (
                     <div className="flex gap-3 rounded-2xl border border-black/10 bg-zinc-50 p-4">
                       <Info
                         size={22}
@@ -1299,7 +1336,9 @@ export default function DealerInquiryForm({
                   />
                 </fieldset>
 
-                <fieldset>
+                {/* An LHD-only inquiry is for this car alone, so it is
+                    already the answer. */}
+                <fieldset hidden={lhdOnly}>
                   <legend className="mb-3 text-sm font-medium text-zinc-800">
                     Are you after particular makes or models?
                   </legend>
@@ -1349,7 +1388,7 @@ export default function DealerInquiryForm({
                         onRemove={() => removeCar(index)}
                       />
                     ))}
-                    {cars.length < MAX_DEALER_CARS ? (
+                    {lhdOnly ? null : cars.length < MAX_DEALER_CARS ? (
                       <button
                         type="button"
                         ref={addCarRef}
