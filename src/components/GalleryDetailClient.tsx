@@ -59,11 +59,7 @@ import {
   parseGrades,
   type VehicleGrade,
 } from "@/lib/vehicle-grades";
-import {
-  BIKES_BASE_PATH,
-  isMotorcycle,
-  MOTORCYCLE_MAKES,
-} from "@/lib/vehicle-type";
+import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
 // Updated Type to include Pricing Matrix
 type PriceEntry = {
@@ -1006,7 +1002,7 @@ export default function GalleryDetailClient({
             <div className="lg:col-span-8">
               <RequestForm
                 prefill={prefillData}
-                makeOptions={bike ? MOTORCYCLE_MAKES : undefined}
+                vehicleType={bike ? "motorcycle" : "car"}
                 exteriorColorOptions={exteriorColors}
                 interiorColorOptions={interiorColors}
                 gradeOptions={grades.map((g) => g.name)}

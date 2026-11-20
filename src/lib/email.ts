@@ -19,6 +19,7 @@ import KycSubmittedAlertEmail, {
 } from "@/emails/kyc-submitted-alert";
 import LeadQualifiedAlertEmail from "@/emails/lead-qualified-alert";
 import StaffAlertEmail from "@/emails/staff-alert";
+import { dealerVehicleCount } from "@/lib/dealer-inquiry";
 import type { BreakdownData } from "@/lib/ireland-cost";
 
 interface EmailAttachment {
@@ -134,7 +135,7 @@ export const emailService = {
   sendStaffAlert: async (to: string, data: any, requestId: string) => {
     await sendEmail({
       to,
-      subject: `🚨 New Lead: ${data.make} ${data.vehicle_model} (${data.name})`,
+      subject: `🚨 New ${data.vehicleType === "motorcycle" ? "Motorcycle " : ""}Lead: ${data.make} ${data.vehicle_model} (${data.name})`,
       component: StaffAlertEmail({ data, requestId }),
     });
   },
@@ -182,6 +183,8 @@ export const emailService = {
       contactTimezoneLabel: string;
       /** Destination country — picks which guides go in the email. */
       destinationCountry?: string;
+      /** "car" or "motorcycle" — the noun in the general WhatsApp line. */
+      vehicleType?: string;
     },
   ) => {
     await sendEmail({
@@ -224,11 +227,10 @@ export const emailService = {
    * assigned to (or the general inbox when no one could be).
    */
   sendDealerInquiryAlert: async (to: string, data: DealerInquiryAlertProps) => {
-    const cars = data.cars.length;
     await sendEmail({
       to,
       subject: `New dealer inquiry: ${data.dealershipName || data.contactName} (${data.country}) — ${
-        cars ? `${cars} car${cars > 1 ? "s" : ""}` : "sourcing"
+        data.cars.length ? dealerVehicleCount(data.cars) : "sourcing"
       } · ${data.reference}`,
       component: DealerInquiryAlertEmail(data),
     });

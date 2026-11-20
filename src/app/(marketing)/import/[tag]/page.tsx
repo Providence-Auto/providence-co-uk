@@ -36,7 +36,7 @@ import {
   tagPath,
 } from "@/config/vehicle-tags";
 import { carOgImagePath, clampDescription, pickTitle } from "@/lib/car-page";
-import { MOTORCYCLE_MAKES, vehiclePath } from "@/lib/vehicle-type";
+import { vehiclePath } from "@/lib/vehicle-type";
 
 // DB-backed, so rendered per request (the build container has no database).
 export const dynamic = "force-dynamic";
@@ -258,9 +258,7 @@ export default async function TagLandingPage({
                 </div>
               }
             >
-              <RequestForm
-                makeOptions={onlyBikes ? MOTORCYCLE_MAKES : undefined}
-              />
+              <RequestForm vehicleType={tag.vehicleType ?? "choose"} />
             </Suspense>
           </div>
         </section>

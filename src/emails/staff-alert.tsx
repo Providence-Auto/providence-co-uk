@@ -1,4 +1,5 @@
 import { Link, Section, Text } from "@react-email/components";
+import { vehicleTypeLabel } from "@/lib/vehicle-type";
 import EmailLayout from "./layout";
 
 interface StaffAlertEmailProps {
@@ -34,6 +35,9 @@ export const StaffAlertEmail = ({ data, requestId }: StaffAlertEmailProps) => {
         <div style={{ margin: "20px 0", borderBottom: "1px solid #e4e4e7" }} />
 
         <Text style={labelStyle}>Vehicle Specs</Text>
+        <Text style={valueStyle}>
+          Vehicle: {vehicleTypeLabel(data.vehicleType)}
+        </Text>
         <Text style={valueStyle}>
           {data.condition} {data.make} {data.vehicle_model}
           {data.grade ? ` · ${data.grade}` : ""}
