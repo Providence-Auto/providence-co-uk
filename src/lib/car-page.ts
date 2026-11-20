@@ -12,6 +12,12 @@
 import type { Metadata } from "next";
 import type { DestinationConfig } from "@/config/destinations";
 import { destinationCopy, destinationPath } from "@/config/destinations";
+import {
+  type AudienceSide,
+  B2B_GALLERY_PATH,
+  dealerCarPath,
+  onRetail,
+} from "@/lib/listing-audience";
 import { formatVehicleTitle, parseSteeringOptions } from "@/lib/vehicle";
 import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
@@ -122,9 +128,27 @@ export function carPath(
 ): string {
   const key = car.slug || fallbackId;
   if (isMotorcycle(car)) return `${BIKES_BASE_PATH}/${key}`;
+  // A dealer-only car has no retail page (src/lib/listing-audience.ts).
+  if (!onRetail(car.audience)) return dealerCarPath(key);
   return destination
     ? destinationPath(key, destination.slug)
     : `/b2c/gallery/${key}`;
+}
+
+/**
+ * The URL of the page being rendered: the dealer page when `side` is "b2b",
+ * else carPath. Differs from carPath only on the dealer page of a "both" car,
+ * whose canonical is its retail page.
+ */
+function pagePath(
+  car: CarRecord,
+  fallbackId: string,
+  destination: DestinationConfig | null | undefined,
+  side: AudienceSide,
+): string {
+  return side === "b2b"
+    ? dealerCarPath(car.slug || fallbackId)
+    : carPath(car, fallbackId, destination);
 }
 
 /**
@@ -148,6 +172,7 @@ export function buildCarMetadata(
   car: CarRecord,
   fallbackId: string,
   destination?: DestinationConfig | null,
+  side: AudienceSide = "b2c",
 ): Metadata {
   // De-duped make/model, so the preview reads "2022 Lexus LX500d" rather than
   // "2022 Lexus Lexus LX500d".
@@ -194,7 +219,7 @@ export function buildCarMetadata(
     : baseDescription(car, vehicle);
 
   const ogImage = carOgImagePath(car, fallbackId);
-  const path = carPath(car, fallbackId, destination);
+  const path = pagePath(car, fallbackId, destination, side);
 
   return {
     title,
@@ -279,10 +304,11 @@ export function buildCarJsonLd(
   car: CarRecord,
   fallbackId: string,
   destination?: DestinationConfig | null,
+  side: AudienceSide = "b2c",
 ) {
   const vehicle =
     `${car.year || ""} ${formatVehicleTitle(car.make, car.model)}`.trim();
-  const path = carPath(car, fallbackId, destination);
+  const path = pagePath(car, fallbackId, destination, side);
   const images: string[] = [car.heroImageUrl, ...(car.images ?? [])].filter(
     (src: unknown): src is string => typeof src === "string" && src.length > 0,
   );
@@ -292,8 +318,13 @@ export function buildCarJsonLd(
     { name: "Home", item: SITE_URL },
     bike
       ? { name: "Import Bikes", item: `${SITE_URL}${BIKES_BASE_PATH}` }
-      : { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
-    { name: vehicle, item: `${SITE_URL}${carPath(car, fallbackId)}` },
+      : side === "b2b"
+        ? { name: "Dealer Gallery", item: `${SITE_URL}${B2B_GALLERY_PATH}` }
+        : { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
+    {
+      name: vehicle,
+      item: `${SITE_URL}${side === "b2b" ? path : carPath(car, fallbackId)}`,
+    },
     ...(destination
       ? [{ name: `Import to ${destination.name}`, item: `${SITE_URL}${path}` }]
       : []),

@@ -1,18 +1,19 @@
 "use server";
 
-// The admin builder's "Export PDF". Renders the same spec sheet the public
-// car page links to (src/lib/spec-sheet.tsx), returned as base64 because the
-// builder exports a dossier it is still editing. The public page uses the
-// GET route at /b2c/gallery/<car>/spec-sheet instead, which is always the
-// retail sheet with the general contact details.
+// The admin builder's "Export PDF". Renders the same spec sheet the car pages
+// link to (src/lib/spec-sheet.tsx), returned as base64 because the builder
+// exports a dossier it is still editing. The car pages use the GET routes
+// (src/lib/spec-sheet-route.ts) instead, with the general contact details.
 //
-// The export dialog chooses two things: the audience (B2C, or B2B — no
-// markets list and no landed-quote box) and whose contact details go on it.
-// "Mine" is resolved here from the session, never from the browser.
+// The sheet's side follows the listing's "Listing for" switch as it stands in
+// the editor, saved or not — B2C, B2B (no markets list and no landed-quote
+// box), or for "Both" whichever the dialog picked. The dialog also chooses
+// whose contact details go on it; "Mine" is resolved here from the session,
+// never from the browser.
 
 import { db } from "@/db";
 import { canViewCar } from "@/lib/car-page-data";
-import { parseListingAudience } from "@/lib/listing-audience";
+import { sheetSide } from "@/lib/listing-audience";
 import { renderSpecSheet, specSheetFileName } from "@/lib/spec-sheet";
 import {
   GENERAL_SPEC_SHEET_CONTACT,
@@ -25,7 +26,7 @@ import {
 
 export async function generateDossierPdfAction(
   id: string,
-  options: { audience?: unknown; contact?: unknown } = {},
+  options: { audience?: unknown; sheet?: unknown; contact?: unknown } = {},
 ) {
   try {
     const dossierData = await db.query.specDossiers.findFirst({
@@ -41,7 +42,7 @@ export async function generateDossierPdfAction(
     const buffer = await renderSpecSheet(dossierData, {
       // The editor sends the switch as it stands, saved or not; the saved
       // value is the fallback.
-      audience: parseListingAudience(options.audience ?? dossierData.audience),
+      audience: sheetSide(options.audience ?? dossierData.audience, options.sheet),
       contact: await resolveSpecSheetContact(
         parseContactChoice(options.contact),
       ),

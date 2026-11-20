@@ -8,6 +8,7 @@ import {
 } from "@/lib/car-page";
 import { canViewCar, loadCar } from "@/lib/car-page-data";
 import { guidesByDestination } from "@/lib/destination-guides";
+import { dealerCarPath, onRetail } from "@/lib/listing-audience";
 import { parseDestinations } from "@/lib/vehicle-destinations";
 import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
@@ -40,6 +41,12 @@ export default async function GalleryDetailPage({
   // through the gallery moves there.
   if (isMotorcycle(car)) {
     permanentRedirect(`${BIKES_BASE_PATH}/${car.slug || id}`);
+  }
+
+  // A dealer-only car has no retail page: its page is on /b2b/gallery. A 307,
+  // not a 308 — the listing can be switched back to B2C or Both.
+  if (!onRetail(car.audience)) {
+    redirect(dealerCarPath(car.slug || id));
   }
 
   // Collapse the two URLs for this car into one. The dossier resolves by slug

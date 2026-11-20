@@ -5,6 +5,8 @@
 // has to pick one side: a bike in the car gallery, or a car under /import-bikes,
 // would be a page promising the wrong thing.
 
+import { dealerCarPath, onRetail } from "@/lib/listing-audience";
+
 export const VEHICLE_TYPES = ["car", "motorcycle"] as const;
 export type VehicleType = (typeof VEHICLE_TYPES)[number];
 
@@ -73,17 +75,23 @@ export function leadVehicleType(input: {
     : "car";
 }
 
-/** The public page for a dossier, by its slug (or id when it has none). */
+/**
+ * The public page for a dossier, by its slug (or id when it has none). A car
+ * listed for dealers only has no retail page, so its page is the dealer one
+ * (src/lib/listing-audience.ts); a "both" car's canonical page is the retail one.
+ */
 export function vehiclePath(record: {
   vehicleType?: unknown;
+  audience?: unknown;
   slug?: string | null;
   _id?: string;
   id?: string;
 }): string {
   const key = record.slug || record._id || record.id || "";
-  return isMotorcycle(record)
-    ? `${BIKES_BASE_PATH}/${key}`
-    : `${CARS_GALLERY_PATH}/${key}`;
+  if (isMotorcycle(record)) return `${BIKES_BASE_PATH}/${key}`;
+  return onRetail(record.audience)
+    ? `${CARS_GALLERY_PATH}/${key}`
+    : dealerCarPath(key);
 }
 
 /**
