@@ -2,8 +2,9 @@
 
 // The prompt behind the spec builder's "Export PDF" button: whose contact
 // details go on the sheet — the exporter's own, or the general head-office
-// channels. The sheet's audience (B2C / B2B) comes from the listing's own
-// switch and is shown here so nobody exports the wrong version by surprise.
+// channels. The sheet's side comes from the listing's own switch and is shown
+// here so nobody exports the wrong version by surprise; a "Both" listing asks
+// which of its two sheets to export.
 //
 // The PDF is saved as a download rather than opened with window.open(): the
 // file arrives after an await, outside the click, which is exactly what
@@ -24,7 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { ListingAudience } from "@/lib/listing-audience";
+import type { AudienceSide, ListingAudience } from "@/lib/listing-audience";
 import {
   GENERAL_SPEC_SHEET_CONTACT,
   type SpecSheetContact,
@@ -90,13 +91,18 @@ export function SpecSheetExportDialog({
   onOpenChange,
   dossierId,
   audience,
+  isLive,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   dossierId: string;
   audience: ListingAudience;
+  /** Whether the saved listing is live — the page link prints only then. */
+  isLive: boolean;
 }) {
   const [options, setOptions] = useState<Options | null>(null);
+  const [sheet, setSheet] = useState<AudienceSide>("b2c");
+  const side: AudienceSide = audience === "both" ? sheet : audience;
   const [choice, setChoice] = useState<SpecSheetContactChoice>("mine");
   const [isExporting, setIsExporting] = useState(false);
 
@@ -126,6 +132,7 @@ export function SpecSheetExportDialog({
     try {
       const res = await generateDossierPdfAction(dossierId, {
         audience,
+        sheet: side,
         contact: choice,
       });
       if (!res.success || !res.pdfBase64) {
@@ -159,12 +166,43 @@ export function SpecSheetExportDialog({
         <DialogHeader>
           <DialogTitle>Export the spec sheet</DialogTitle>
           <DialogDescription>
-            {audience === "b2b"
+            {side === "b2b"
               ? "B2B sheet: eight photos and the specification, without the markets list or the landed-quote box."
-              : "B2C sheet: eight photos, the specification, the markets list and the landed-quote box."}{" "}
+              : isLive
+                ? "B2C sheet: eight photos, the specification, the markets list and the landed-quote box with the car's page link."
+                : "B2C sheet: eight photos, the specification, the markets list and the landed-quote box. The page link is left off until the listing is live."}{" "}
             Change it with “Listing for” in the editor.
           </DialogDescription>
         </DialogHeader>
+
+        {audience === "both" ? (
+          <div role="radiogroup" aria-label="Sheet" className="space-y-3">
+            <p className="text-[10px] font-black uppercase text-zinc-400">
+              Which sheet
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {(["b2c", "b2b"] as const).map((value) => (
+                <label
+                  key={value}
+                  className={`block rounded-xl border p-3 text-sm font-bold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-sky-500 cursor-pointer ${
+                    sheet === value
+                      ? "border-black bg-zinc-50 ring-1 ring-black"
+                      : "border-zinc-200 hover:border-zinc-400"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="spec-sheet-side"
+                    className="sr-only"
+                    checked={sheet === value}
+                    onChange={() => setSheet(value)}
+                  />
+                  {value === "b2c" ? "B2C sheet" : "B2B sheet"}
+                </label>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         <div
           role="radiogroup"

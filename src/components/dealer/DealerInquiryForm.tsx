@@ -140,6 +140,7 @@ export default function DealerInquiryForm({
   markets,
   initialCountry = "",
   initialSourceMarket = null,
+  initialCar,
 }: {
   /** Every country in the picker, resolved on the server (src/lib/dealer-markets.ts). */
   markets: MarketOption[];
@@ -151,6 +152,12 @@ export default function DealerInquiryForm({
   initialCountry?: string;
   /** Preselects the source market (a DEALER_SOURCE_MARKETS slug). */
   initialSourceMarket?: string | null;
+  /**
+   * Opens the cars step with this car already named — a car's dealer page
+   * (/b2b/gallery/<slug>) passes its make and model. The dealer can still
+   * change it, add more or remove it.
+   */
+  initialCar?: Partial<DealerCarInput>;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -195,12 +202,26 @@ export default function DealerInquiryForm({
     initialSourceMarket,
   );
   const [wantsSpecificCars, setWantsSpecificCars] = useState<boolean | null>(
-    null,
+    initialCar ? true : null,
   );
-  const [cars, setCars] = useState<DealerCarInput[]>([]);
+  const [cars, setCars] = useState<DealerCarInput[]>(() =>
+    initialCar
+      ? [
+          {
+            ...emptyCar(
+              sourceMarketCurrency(initialSourceMarket) ||
+                currencyForCountry(initialCountry),
+            ),
+            ...initialCar,
+          },
+        ]
+      : [],
+  );
   const [openCar, setOpenCar] = useState(0);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [carErrors, setCarErrors] = useState<FieldErrors[]>([]);
+  const [carErrors, setCarErrors] = useState<FieldErrors[]>(() =>
+    initialCar ? [{}] : [],
+  );
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState<Success | null>(null);
   // Bumped on every failed check, so the effect that brings the first problem
@@ -244,6 +265,22 @@ export default function DealerInquiryForm({
   useEffect(() => {
     if (step >= 1) loadPhoneLib().catch(() => undefined);
   }, [step, loadPhoneLib]);
+
+  // A car named before the dealer picked a country (initialCar) has no budget
+  // currency yet; it takes the default once they reach the cars step.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reaching the cars step is the trigger
+  useEffect(() => {
+    if (step !== STEPS.length - 1 || !preferredCurrency) return;
+    setCars((prev) =>
+      prev.some((car) => !car.budgetCurrency)
+        ? prev.map((car) =>
+            car.budgetCurrency
+              ? car
+              : { ...car, budgetCurrency: preferredCurrency },
+          )
+        : prev,
+    );
+  }, [step]);
 
   // After a step change: bring the top of the form into view if it has
   // scrolled away, and move focus to the new step's heading for keyboard and

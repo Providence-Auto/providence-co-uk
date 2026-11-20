@@ -99,6 +99,7 @@ export default function GalleryClient({
   heading = "The cars you can import.",
   intro = "A curated selection of globally-sourced vehicle specifications, ready to be commissioned to your exacting standards.",
   showSupportingSections = true,
+  basePath = "/b2c/gallery",
 }: {
   dossiers: Dossier[];
   /** The page H1. /b2b/gallery passes its own. */
@@ -111,6 +112,8 @@ export default function GalleryClient({
    * section it was not asked for (page-types.md §3).
    */
   showSupportingSections?: boolean;
+  /** Where a card links: the retail car page, or /b2b/gallery's dealer page. */
+  basePath?: string;
 }) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>("newest");
@@ -287,7 +290,7 @@ export default function GalleryClient({
                   className="group relative flex flex-col rounded-[2rem] bg-white border border-black/5 overflow-hidden hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)] hover:border-black/10 transition-feedback cursor-pointer"
                 >
                   <Link
-                    href={`/b2c/gallery/${car.slug || car._id}`}
+                    href={`${basePath}/${car.slug || car._id}`}
                     className="flex flex-col h-full outline-none"
                   >
                     {/* Image Container */}
