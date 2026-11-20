@@ -19,6 +19,8 @@ const state = vi.hoisted(() => ({
   updated: [] as Record<string, unknown>[],
   transactions: 0,
   executes: 0,
+  // The listing a dealer car page's inquiry names (dossierId).
+  listing: null as Record<string, unknown> | null,
   // What clock_timestamp() answers once the advisory lock is held.
   clock: new Date("2026-09-29T12:00:00.000Z"),
 }));
@@ -59,6 +61,9 @@ vi.mock("@/db", () => {
     state.transactions += 1;
     return fn(chain);
   });
+  chain.query = {
+    specDossiers: { findFirst: vi.fn(async () => state.listing) },
+  };
 
   const column = (name: string) => `dealerinquiry.${name}`;
   return {
@@ -71,6 +76,7 @@ vi.mock("@/db", () => {
       isBanned: "user.isBanned",
     },
     dealerInquiries: new Proxy({}, { get: (_t, key) => column(String(key)) }),
+    specDossiers: { id: "specdossier.id" },
   };
 });
 
@@ -180,6 +186,7 @@ beforeEach(() => {
   state.transactions = 0;
   state.executes = 0;
   routing.owner = null;
+  state.listing = null;
 });
 
 // ── submitDealerInquiry ──────────────────────────────────────────────────────
@@ -557,6 +564,80 @@ describe("submitDealerInquiry", () => {
     if (result.success) return;
     expect(result.errors?.country).toBeTruthy();
     expect(state.transactions).toBe(0);
+  });
+
+  describe("from a car's dealer page, in a market that drives on the right", () => {
+    const LHD_LISTING = {
+      make: "Audi",
+      model: "Q9",
+      steering: "LHD",
+      steeringOptions: ["LHD"],
+      audience: "both",
+      vehicleType: "car",
+    };
+    const german = (patch: Record<string, unknown> = {}) =>
+      validInput({
+        country: "Germany",
+        whatsapp: "01512 3456789",
+        dossierId: "dossier-1",
+        ...patch,
+      }) as Submit;
+
+    it("takes the inquiry for a car that can be exported LHD, named from the listing", async () => {
+      state.listing = LHD_LISTING;
+      state.results.push(
+        [ABDALLAH, DILSHARD],
+        [{ assignedToId: "u-abd", last: new Date("2026-09-29T10:00:00Z") }],
+        [],
+      );
+
+      const result = await submitDealerInquiry(german());
+
+      expect(result.success).toBe(true);
+      const row = state.inserted[0];
+      expect(row).toMatchObject({
+        country: "Germany",
+        marketStatus: "destination",
+        whatsapp: "+4915123456789",
+      });
+      expect(row.cars).toEqual([
+        expect.objectContaining({
+          make: "Audi",
+          model: "Q9",
+          specs: expect.stringMatching(/^Left-hand drive \(LHD\)/),
+        }),
+      ]);
+    });
+
+    it("refuses a car that is right-hand drive only", async () => {
+      state.listing = {
+        ...LHD_LISTING,
+        steering: "RHD",
+        steeringOptions: ["RHD"],
+      };
+      const result = await submitDealerInquiry(german());
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.errors?.country).toBeTruthy();
+      expect(state.transactions).toBe(0);
+    });
+
+    it("refuses a listing with no dealer page", async () => {
+      state.listing = { ...LHD_LISTING, audience: "b2c" };
+      const result = await submitDealerInquiry(german());
+      expect(result.success).toBe(false);
+      expect(state.transactions).toBe(0);
+    });
+
+    it("takes that one car only", async () => {
+      state.listing = LHD_LISTING;
+      const one = validInput().cars[0];
+      const result = await submitDealerInquiry(german({ cars: [one, one] }));
+      expect(result.success).toBe(false);
+      if (result.success) return;
+      expect(result.errors?.cars).toMatch(/this left-hand-drive car only/);
+      expect(state.transactions).toBe(0);
+    });
   });
 
   it("refuses a number from another country", async () => {
