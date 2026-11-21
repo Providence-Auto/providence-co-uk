@@ -6,6 +6,8 @@ import {
   TrackingDemo,
 } from "@/components/tool-demos/demos";
 import {
+  BIKE_LANDED_QUOTE,
+  bikeToolDemoData,
   DOCUMENTS_STAMP,
   INSPECTION_STAMP,
   LANDED_QUOTE,
@@ -25,15 +27,25 @@ export default function ToolDemos({
   cards,
   source,
   background = "bg-[#FAFAFA]",
+  vehicle = "car",
 }: {
-  /** Which demos, in order. */
+  /** Which demos, in order. A motorcycle page never shows the inspection. */
   cards: ToolDemoKind[];
   /** A country page slug, for that country's documents and local check. */
   source?: string;
   /** The section's background, for a page whose neighbouring section is already grey. */
   background?: string;
+  /**
+   * "motorcycle" swaps in the bike quote and the rail without the inspection
+   * pip, and drops any inspection card: no inspection standard is published
+   * for a motorcycle (`business-context.md` §1).
+   */
+  vehicle?: "car" | "motorcycle";
 }) {
+  const isBike = vehicle === "motorcycle";
   const data = toolDemoData(source);
+  const bikeData = isBike ? bikeToolDemoData() : null;
+  const shown = isBike ? cards.filter((kind) => kind !== "inspection") : cards;
 
   const demo = (kind: ToolDemoKind) => {
     switch (kind) {
@@ -42,16 +54,18 @@ export default function ToolDemos({
           <InspectionDemo {...data.inspection} stampLabel={INSPECTION_STAMP} />
         );
       case "landed":
-        return <LandedQuoteDemo quote={LANDED_QUOTE} />;
+        return (
+          <LandedQuoteDemo quote={isBike ? BIKE_LANDED_QUOTE : LANDED_QUOTE} />
+        );
       case "documents":
         return (
           <DocumentPackDemo
-            documents={data.documents}
+            documents={bikeData?.documents ?? data.documents}
             stampLabel={DOCUMENTS_STAMP}
           />
         );
       case "tracking":
-        return <TrackingDemo stages={data.stages} />;
+        return <TrackingDemo stages={bikeData?.stages ?? data.stages} />;
     }
   };
 
@@ -78,10 +92,10 @@ export default function ToolDemos({
             stretching to the tallest and leaving a blank panel of white. */}
         <div
           className={`grid grid-cols-1 items-start gap-6 ${
-            cards.length % 3 === 0 ? "lg:grid-cols-3" : "md:grid-cols-2"
+            shown.length % 3 === 0 ? "lg:grid-cols-3" : "md:grid-cols-2"
           }`}
         >
-          {cards.map((kind, index) => (
+          {shown.map((kind, index) => (
             <Reveal
               key={kind}
               y={24}

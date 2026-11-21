@@ -1,0 +1,66 @@
+{
+  "_sources": "Specification: BMW Motorrad 2022 S 1000 RR technical data (EU figures) as published in Total Motorcycle's 2022 guide, https://www.totalmotorcycle.com/motorcycles/2022/2022-bmw-s1000rr, and Autocar India, https://www.autocarindia.com/bike-news-amp/2022-bmw-s-1000-rr-unveiled-gets-new-colours-m-chassis-kit-421308 (checked 2026-11-21). Model year confirmed from the photographed bike's frame number (10th character N = 2022). Photos: Providence Auto's own, album 'PT4332 - BMW - S1000 RR M Sport' (the frame-number close-up and the rear shot with the placard are not used). No colour palette: the M livery name is not confirmed on BMW's own site, so the form falls back to free-text colour.",
+  "make": "BMW",
+  "model": "S 1000 RR",
+  "year": "2022",
+  "slug": "bmw-s-1000-rr",
+  "vehicleType": "motorcycle",
+  "condition": "Used",
+  "countryOfOrigin": "Germany",
+  "destinations": [],
+  "fuelSystem": "Petrol",
+  "engineConfig": "Water/oil-cooled in-line four, four titanium valves per cylinder, BMW ShiftCam",
+  "displacement": "999 cc",
+  "maxPower": "152 kW (207 hp) @ 13,500 rpm",
+  "maxTorque": "113 Nm @ 11,000 rpm",
+  "transmission": "6-speed constant-mesh gearbox, anti-hopping clutch, chain drive",
+  "emissions": "EU4",
+  "features": [
+    "Bridge-type aluminium frame with the engine as a load-bearing element",
+    "45 mm upside-down fork, fully adjustable",
+    "Full Floater Pro rear suspension, fully adjustable",
+    "Twin 320 mm front discs with four-piston fixed calipers",
+    "BMW Motorrad Race ABS, ABS Pro and Dynamic Traction Control (DTC)",
+    "Riding modes Rain, Road and Dynamic",
+    "TFT display with connectivity",
+    "Full LED lighting",
+    "M Chassis kit, standard from the 2022 model year"
+  ],
+  "valuePoints": [
+    {
+      "title": "Import the exact superbike you want",
+      "description": "Tell us the year, the spec and the packages you are after, and you see the landed figure for that bike before you commit."
+    },
+    {
+      "title": "One figure, in two parts",
+      "description": "The CNF price you pay us covers the bike, the freight and marine cover to your port. The duty and taxes you pay your own customs authority are worked out before you commit."
+    },
+    {
+      "title": "The paperwork, prepared",
+      "description": "Our own office exports the bike and prepares the export file. At your port you receive the document pack, with clearance support."
+    }
+  ],
+  "customData": [
+    { "label": "Bore x stroke", "value": "80 mm x 49.7 mm" },
+    { "label": "Compression ratio", "value": "13.3:1" },
+    { "label": "Top speed", "value": "299 km/h" },
+    { "label": "Road-ready weight, fully fuelled", "value": "197 kg (M Package 193.5 kg)" },
+    { "label": "Fuel tank", "value": "16.5 litres" },
+    { "label": "Seat height", "value": "824 mm" },
+    { "label": "Wheels and tyres", "value": "17-inch, 120/70 ZR17 front, 190/55 ZR17 rear" },
+    { "label": "Fuel consumption (WMTC)", "value": "6.4 l/100 km" }
+  ],
+  "searchTags": ["bmw", "s-1000-rr", "superbike", "sport-bike"],
+  "tags": [],
+  "images": [
+    "/bikes/bmw-s-1000-rr/01-front-three-quarter.webp",
+    "/bikes/bmw-s-1000-rr/02-side.webp",
+    "/bikes/bmw-s-1000-rr/03-front-three-quarter-right.webp",
+    "/bikes/bmw-s-1000-rr/04-rear-three-quarter.webp",
+    "/bikes/bmw-s-1000-rr/05-front.webp",
+    "/bikes/bmw-s-1000-rr/06-fairing-detail.webp",
+    "/bikes/bmw-s-1000-rr/07-exhaust-detail.webp",
+    "/bikes/bmw-s-1000-rr/08-seat-unit.webp"
+  ],
+  "notes": "The BMW S 1000 RR is BMW Motorrad's 999 cc superbike, with ShiftCam variable valve timing and the electronics package BMW developed from its racing programme. The figures on this page are for the 2022 model year, the bike in the photographs. Tell us the year, the packages and the colour you want, and your consultant comes back with a landed figure for that bike before you commit."
+}

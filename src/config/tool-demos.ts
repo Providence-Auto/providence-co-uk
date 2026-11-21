@@ -106,3 +106,50 @@ export function toolDemoData(sourceSlug?: string): ToolDemoData {
     stages: IMPORT_STAGES,
   };
 }
+
+// ── Motorcycles ──────────────────────────────────────────────────────────────
+// The same demos on /import-bikes and its country pages, with two changes and
+// one card fewer. No grade or inspection standard is published for a
+// motorcycle (`business-context.md` §1), so a bike page never shows the
+// inspection card and its tracking rail has no "Inspected" pip. The quote's
+// rows say "bike", and nothing else in them moves.
+
+/** The demo kinds a motorcycle page may show: never the inspection. */
+export type BikeToolDemoKind = Exclude<ToolDemoKind, "inspection">;
+
+export const BIKE_LANDED_QUOTE = {
+  ...LANDED_QUOTE,
+  paidToUs: {
+    ...LANDED_QUOTE.paidToUs,
+    rows: [
+      "The bike, at source",
+      "Freight to your port",
+      "Marine cover for the voyage",
+    ],
+  },
+  paidInYourName: {
+    ...LANDED_QUOTE.paidInYourName,
+    rows: ["Duty and local taxes, for your exact bike"],
+  },
+};
+
+/**
+ * The buyer-side rail for a bike: the car rail less the inspection, with the
+ * export clearance in its place — the one step `/import-bikes` states ("our own
+ * office clears the bike for export").
+ */
+export const BIKE_IMPORT_STAGES: VoyageStage[] = [
+  { label: "You choose", at: 0 },
+  { label: "Export cleared", at: 0.3 },
+  { label: "At sea", at: 0.6 },
+  { label: "At your port", at: 0.84 },
+  { label: "Yours", at: 1 },
+];
+
+/** Every bike page names no source country yet, so the export side is generic. */
+export function bikeToolDemoData(): Omit<ToolDemoData, "inspection"> {
+  return {
+    documents: [...GENERIC_EXPORT_DOCUMENTS, ...SHIPPING_DOCUMENTS],
+    stages: BIKE_IMPORT_STAGES,
+  };
+}

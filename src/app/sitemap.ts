@@ -7,6 +7,7 @@ import {
   getVehiclesForTag,
 } from "@/actions/spec-actions";
 import { getPublicStock } from "@/actions/stock-actions";
+import { bikeSourcePath, bikeSources } from "@/config/bike-routes";
 import { BLOG_BASE_PATH, BLOG_POSTS } from "@/config/blog";
 import { COUNTRY_BASE_PATH, SOURCE_COUNTRY_PAGES } from "@/config/countries";
 import { DEALER_SOURCING_PATH } from "@/config/dealer-sourcing";
@@ -258,11 +259,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       classPageIndexable(liveBikes),
   );
 
+  // /import-bikes-from/<country>: one per motorcycle source country, on the
+  // same indexing rule as /import-bikes. None until the sources are named
+  // (src/config/bike-routes.ts). /import-bikes-to/<country> canonicalises to
+  // /import-bikes, so it is never listed.
+  const bikeSourceRoutes = classPageIndexable(liveBikes)
+    ? bikeSources().map((country) => ({
+        url: `${baseUrl}${bikeSourcePath(country.slug)}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      }))
+    : [];
+
   return [
     ...indexableStatic,
     ...legalRoutes,
     ...stockRoutes,
     ...countryRoutes,
+    ...bikeSourceRoutes,
     ...blogRoutes,
     ...newsRoutes,
     ...newsCategoryRoutes,
