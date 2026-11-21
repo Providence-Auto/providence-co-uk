@@ -13,7 +13,8 @@
 // (business decision 2026-10-27). It exists for ads, sharing and rep links.
 //
 // There is no hand rule for a motorcycle, so a bike is offered into every
-// market on the registry, left- and right-driving alike.
+// market on the registry, left- and right-driving alike. That is an assumption
+// made on 2026-11-21, pending the business's answer on which markets take bikes.
 //
 // Sources are a different case: which countries we export motorcycles from is
 // still unanswered (`business-context.md` §6, `brand-position.md` §11.3), and
