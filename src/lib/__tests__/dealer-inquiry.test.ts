@@ -5,6 +5,8 @@ import {
   checkWhatsApp,
   type DealerCarInput,
   dealerInquiryReference,
+  dealerVehicleCount,
+  dealerVehicleMix,
   emptyCar,
   normaliseSocial,
   normaliseWebsite,
@@ -373,6 +375,52 @@ describe("toStoredCar", () => {
       yearFrom: null,
       mileage: null,
     });
+  });
+
+  it("stores a car as a car, including one sent without a type", () => {
+    expect(toStoredCar(usedCar()).vehicleType).toBe("car");
+    expect(toStoredCar(usedCar({ vehicleType: undefined })).vehicleType).toBe(
+      "car",
+    );
+  });
+
+  it("keeps a motorcycle and drops its interior colour", () => {
+    expect(
+      toStoredCar(
+        usedCar({
+          vehicleType: "motorcycle",
+          make: "Honda",
+          model: "CB650R",
+          exteriorColor: "Matte black",
+          interiorColor: "Black leather",
+        }),
+      ),
+    ).toMatchObject({
+      vehicleType: "motorcycle",
+      exteriorColor: "Matte black",
+      interiorColor: null,
+    });
+  });
+});
+
+describe("dealer vehicle helpers", () => {
+  const car = { vehicleType: "car" };
+  const bike = { vehicleType: "motorcycle" };
+
+  it("says whether an inquiry is cars, motorcycles or both", () => {
+    expect(dealerVehicleMix([])).toBeUndefined();
+    expect(dealerVehicleMix([car, {}])).toBe("car");
+    expect(dealerVehicleMix([bike, bike])).toBe("motorcycle");
+    expect(dealerVehicleMix([car, bike])).toBe("mixed");
+  });
+
+  it("counts them for the alert subject", () => {
+    expect(dealerVehicleCount([car])).toBe("1 car");
+    expect(dealerVehicleCount([car, {}])).toBe("2 cars");
+    expect(dealerVehicleCount([bike])).toBe("1 motorcycle");
+    expect(dealerVehicleCount([car, bike, bike])).toBe(
+      "1 car and 2 motorcycles",
+    );
   });
 });
 

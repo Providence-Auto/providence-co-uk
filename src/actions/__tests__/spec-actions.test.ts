@@ -92,10 +92,29 @@ describe("spec-actions", () => {
       expect(db.insert).not.toHaveBeenCalled();
     });
 
-    it("should fail if live status but slug is missing", async () => {
+    it("should fail if live and no slug can be built", async () => {
       const result = await saveSpecDossier({ status: "Active", slug: "" });
       expect(result.success).toBe(false);
-      expect(result.message).toContain("slug is required");
+      expect(result.message).toContain("needs a URL slug");
+    });
+
+    it("builds the slug from the make and model when none is typed", async () => {
+      vi.mocked(db.query.specDossiers.findFirst).mockResolvedValue(null as any);
+      vi.mocked(db.insert(specDossiers).returning).mockResolvedValue([
+        { id: "new-id", slug: "ferrari-430-scuderia" },
+      ] as any);
+
+      const result = await saveSpecDossier({
+        make: "Ferrari",
+        model: "430 Scuderia",
+        status: "Active",
+        slug: "",
+      });
+
+      expect(result.success).toBe(true);
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ slug: "ferrari-430-scuderia" }),
+      );
     });
 
     it("should insert a new dossier if no _id is provided", async () => {
@@ -143,25 +162,27 @@ describe("spec-actions", () => {
       expect(db.update).toHaveBeenCalled();
     });
 
-    it("should handle slug conflict and suggest alternative slug", async () => {
-      const mockConflict = { id: "spec-other", slug: "toyota-supra" };
-
-      // First findFirst call (conflict check) returns the conflicting dossier
+    it("adds a code from the listing's id when the slug is taken", async () => {
+      // The base slug is owned by another listing; the first coded one is free.
       vi.mocked(db.query.specDossiers.findFirst)
-        .mockResolvedValueOnce(mockConflict as any) // conflict check
-        .mockResolvedValueOnce(mockConflict as any) // findAvailableSlug base check
-        .mockResolvedValueOnce(null as any); // findAvailableSlug base-2 check
+        .mockResolvedValueOnce({ id: "spec-other" } as any)
+        .mockResolvedValueOnce(null as any);
+      vi.mocked(db.update(specDossiers).returning).mockResolvedValue([
+        { id: "5268281b-1d3e", slug: "toyota-supra-5268" },
+      ] as any);
 
       const result = await saveSpecDossier({
+        _id: "5268281b-1d3e",
         make: "Toyota",
         model: "Supra",
         status: "Draft",
         slug: "toyota-supra",
       });
 
-      expect(result.success).toBe(false);
-      expect(result.conflict).toBe(true);
-      expect(result.suggestedSlug).toBe("toyota-supra-2");
+      expect(result.success).toBe(true);
+      expect(db.set).toHaveBeenCalledWith(
+        expect.objectContaining({ slug: "toyota-supra-5268" }),
+      );
     });
   });
 

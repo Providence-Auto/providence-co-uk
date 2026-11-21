@@ -58,17 +58,23 @@ import {
   type VehicleColor,
 } from "@/lib/vehicle-colors";
 import {
-  CAR_MAKES,
   fetchModelsForMake,
   formatMileage,
   IMPORT_TIMELINES,
   MILEAGE_MAX,
   MILEAGE_MIN,
   MILEAGE_STEP,
+  makesFor,
   mileageRangeLabel,
   VEHICLE_CONDITIONS,
   YEAR_PRESETS,
 } from "@/lib/vehicle-inquiry";
+import {
+  VEHICLE_TYPES,
+  type VehicleType,
+  vehicleNoun,
+  vehicleTypeLabel,
+} from "@/lib/vehicle-type";
 
 const CONTACT_METHOD_ICONS: Record<string, any> = {
   WhatsApp: MessageCircle,
@@ -606,7 +612,7 @@ export default function RequestForm({
   steeringOptions = [],
   selectedSteering,
   selectedDestination,
-  makeOptions = CAR_MAKES,
+  vehicleType = "car",
 }: {
   prefill?: Partial<typeof initialFormState>;
   defaultPhoneCountry?: string;
@@ -639,11 +645,14 @@ export default function RequestForm({
    */
   selectedDestination?: string;
   /**
-   * The make dropdown's list. Car makes by default; a bike page passes
-   * MOTORCYCLE_MAKES (src/lib/vehicle-type.ts), because the dropdown can only
-   * show a prefilled make that is one of its options.
+   * Which kind of vehicle the inquiry is for, written onto the lead
+   * (request.vehicleType). A car or bike page fixes it; "choose" shows a
+   * Car | Motorcycle choice instead, for the pages that sell neither in
+   * particular (/request, a profile page, a mixed tag page). It also picks the
+   * make list and the model lookup, because the dropdown can only show a
+   * prefilled make that is one of its options.
    */
-  makeOptions?: readonly string[];
+  vehicleType?: VehicleType | "choose";
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -681,6 +690,24 @@ export default function RequestForm({
     countryCode: ALPHA2_TO_DIAL[defaultPhoneCountry] || "+1",
   }));
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // The kind of vehicle this inquiry is for. Fixed by the page, or chosen here
+  // when the page passes "choose". Kept out of formData on purpose: a prefill
+  // replaces the whole form state, and the page's own type must survive that.
+  const canChooseType = vehicleType === "choose";
+  const [chosenType, setChosenType] = useState<VehicleType>("car");
+  const activeType: VehicleType = canChooseType ? chosenType : vehicleType;
+  const makeOptions = makesFor(activeType);
+  const noun = vehicleNoun(activeType);
+
+  const chooseType = (next: VehicleType) => {
+    if (next === activeType) return;
+    setChosenType(next);
+    // A car make is not a bike make: the make and model start again.
+    setFormData((prev) => ({ ...prev, make: "", vehicle_model: "" }));
+    setApiFailed(false);
+    setErrors((prev) => ({ ...prev, make: "", vehicle_model: "" }));
+  };
 
   // Identity keys for Server-to-Server tracking
   const [trackingData, setTrackingData] = useState({
@@ -834,7 +861,7 @@ export default function RequestForm({
       setApiFailed(false); // Reset before new attempt
 
       try {
-        setAvailableModels(await fetchModelsForMake(formData.make));
+        setAvailableModels(await fetchModelsForMake(formData.make, activeType));
       } catch (err) {
         console.error("Fetch Error:", err);
         setApiFailed(true); // <-- Trigger the manual input fallback
@@ -845,7 +872,7 @@ export default function RequestForm({
 
     const delayDebounceFn = setTimeout(fetchModels, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [formData.make]);
+  }, [formData.make, activeType]);
 
   // If a prefilled model doesn't exist in API results, fall back to manual entry
   useEffect(() => {
@@ -1000,8 +1027,12 @@ export default function RequestForm({
       grade: formData.grade.trim() || undefined,
       steering: formData.steering.trim() || undefined,
       exteriorColor: formData.exteriorColor.trim() || undefined,
-      interiorColor: formData.interiorColor.trim() || undefined,
+      interiorColor:
+        activeType === "motorcycle"
+          ? undefined
+          : formData.interiorColor.trim() || undefined,
       isUpcomingVehicle: formData.isUpcomingVehicle === true,
+      vehicleType: activeType,
       name: formData.name,
       email: formData.email,
       countryCode: formData.countryCode,
@@ -1148,6 +1179,7 @@ export default function RequestForm({
           reference: submittedRequestId,
           formName: "car_request",
           destinationCountry: formData.countryOfImport,
+          vehicleType: activeType,
         });
         setSuggestedGuides(response.suggestedGuides || []);
         setIsSuccess(true);
@@ -1341,6 +1373,26 @@ export default function RequestForm({
           >
             {step === 1 && (
               <>
+                {canChooseType && (
+                  <div className="mb-10 sm:mb-14">
+                    <span className="text-[10px] font-bold text-[#4da8da] uppercase tracking-wider block mb-3">
+                      Vehicle
+                    </span>
+                    <div className="flex gap-4">
+                      {VEHICLE_TYPES.map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          aria-pressed={activeType === type}
+                          onClick={() => chooseType(type)}
+                          className={`flex-1 py-4 rounded-2xl font-bold border transition-feedback ${activeType === type ? "bg-[#4da8da] text-white border-[#4da8da] shadow-md" : "bg-transparent text-zinc-400 hover:border-[#4da8da]/30 border-black/10"}`}
+                        >
+                          {vehicleTypeLabel(type)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className="flex flex-col gap-10 sm:gap-14">
                   <SelectDropdown
                     id="make"
@@ -1358,7 +1410,11 @@ export default function RequestForm({
                         id="vehicle_model"
                         value={formData.vehicle_model}
                         onChange={handleInputChange}
-                        placeholder="Type Vehicle Model (e.g. Aqua, Prius, 911)"
+                        placeholder={
+                          activeType === "motorcycle"
+                            ? "Type Vehicle Model (e.g. CB650R, Ninja 650, Bonneville)"
+                            : "Type Vehicle Model (e.g. Aqua, Prius, 911)"
+                        }
                         className={inputClasses("vehicle_model")}
                       />
                       <div className="flex items-center justify-between">
@@ -1566,24 +1622,33 @@ export default function RequestForm({
 
                 {/* Colours */}
                 <div className="mt-10 space-y-8">
+                  {/* A motorcycle has one colour and no interior. */}
                   <ColorChoiceField
-                    label="Exterior colour"
+                    label={
+                      activeType === "motorcycle" ? "Colour" : "Exterior colour"
+                    }
                     options={exteriorColorOptions}
                     value={formData.exteriorColor}
                     onChange={(v) =>
                       setFormData((prev) => ({ ...prev, exteriorColor: v }))
                     }
-                    placeholder="e.g. Sonic Grey Pearl, or Black with a white roof"
-                  />
-                  <ColorChoiceField
-                    label="Interior colour"
-                    options={interiorColorOptions}
-                    value={formData.interiorColor}
-                    onChange={(v) =>
-                      setFormData((prev) => ({ ...prev, interiorColor: v }))
+                    placeholder={
+                      activeType === "motorcycle"
+                        ? "e.g. Matte black, or red and white"
+                        : "e.g. Sonic Grey Pearl, or Black with a white roof"
                     }
-                    placeholder="e.g. Black leather with tan inserts"
                   />
+                  {activeType !== "motorcycle" && (
+                    <ColorChoiceField
+                      label="Interior colour"
+                      options={interiorColorOptions}
+                      value={formData.interiorColor}
+                      onChange={(v) =>
+                        setFormData((prev) => ({ ...prev, interiorColor: v }))
+                      }
+                      placeholder="e.g. Black leather with tan inserts"
+                    />
+                  )}
                 </div>
 
                 {/* Specs */}
@@ -1595,7 +1660,11 @@ export default function RequestForm({
                     id="specs"
                     value={formData.specs}
                     onChange={handleInputChange}
-                    placeholder="e.g. Carbon Fiber Pack, Magma Red Interior, Night Package..."
+                    placeholder={
+                      activeType === "motorcycle"
+                        ? "e.g. Quickshifter, heated grips, panniers..."
+                        : "e.g. Carbon Fiber Pack, Magma Red Interior, Night Package..."
+                    }
                     className={`${inputClasses("specs")} min-h-[100px] resize-none`}
                   />
                 </div>
@@ -1706,8 +1775,8 @@ export default function RequestForm({
                       className="shrink-0 mt-0.5 text-amber-600"
                     />
                     <span>
-                      Give us the most you're ready to spend on the car. If it
-                      sits well below the market range for the{" "}
+                      Give us the most you're ready to spend on the {noun}. If
+                      it sits well below the market range for the{" "}
                       <strong>{budgetVehicleLabel}</strong>, your inquiry may be
                       disqualified — it can't be found under the range.
                     </span>

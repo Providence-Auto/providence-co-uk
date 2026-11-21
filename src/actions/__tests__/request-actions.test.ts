@@ -502,6 +502,96 @@ describe("request-actions", () => {
       );
     });
 
+    it("stores the vehicle type the form sent", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // staff list
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      await submitCarRequest({
+        make: "Kawasaki",
+        vehicle_model: "Z900",
+        condition: "Used",
+        vehicleType: "motorcycle",
+        name: "Rider",
+        email: "rider@test.com",
+        countryCode: "IE",
+        phone: "+353871234562",
+        countryOfImport: "Ireland",
+        source: "/request",
+      });
+
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ vehicleType: "motorcycle" }),
+      );
+    });
+
+    it("marks a bike-page lead a motorcycle when the browser sent no type", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // staff list
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      await submitCarRequest({
+        make: "Honda",
+        vehicle_model: "CB650R",
+        condition: "New",
+        name: "Cached Page",
+        email: "cached@test.com",
+        countryCode: "IE",
+        phone: "+353871234563",
+        countryOfImport: "Ireland",
+        source: "/import-bikes/honda-cb650r",
+      });
+
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ vehicleType: "motorcycle" }),
+      );
+    });
+
+    it("stores a car when nothing says otherwise", async () => {
+      vi.mocked(db.then)
+        .mockImplementationOnce((onFulfilled) => onFulfilled([])) // staff list
+        .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+
+      await submitCarRequest({
+        make: "Toyota",
+        vehicle_model: "Aqua",
+        condition: "Used",
+        name: "Driver",
+        email: "driver@test.com",
+        countryCode: "IE",
+        phone: "+353871234564",
+        countryOfImport: "Ireland",
+        source: "/b2c/gallery/toyota-aqua",
+      });
+
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({ vehicleType: "car" }),
+      );
+    });
+
+    it("updates the type when the customer goes back and changes it", async () => {
+      vi.mocked(db.then).mockImplementationOnce((onFulfilled) =>
+        onFulfilled([{ id: "req-1" }]),
+      );
+
+      await submitCarRequest({
+        id: "req-1",
+        make: "Yamaha",
+        vehicle_model: "MT-07",
+        condition: "New",
+        vehicleType: "motorcycle",
+        name: "Changed Mind",
+        email: "changed@test.com",
+        countryCode: "IE",
+        phone: "+353871234565",
+        countryOfImport: "Ireland",
+      });
+
+      expect(db.set).toHaveBeenCalledWith(
+        expect.objectContaining({ vehicleType: "motorcycle" }),
+      );
+    });
+
     it("lets a profile-page pin win over a rep link", async () => {
       const mockAgent = { id: "agent-123", name: "John Doe", role: "Sales" };
 

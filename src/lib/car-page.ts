@@ -12,6 +12,12 @@
 import type { Metadata } from "next";
 import type { DestinationConfig } from "@/config/destinations";
 import { destinationCopy, destinationPath } from "@/config/destinations";
+import {
+  type AudienceSide,
+  B2B_GALLERY_PATH,
+  dealerCarPath,
+  onRetail,
+} from "@/lib/listing-audience";
 import { formatVehicleTitle, parseSteeringOptions } from "@/lib/vehicle";
 import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
@@ -122,9 +128,27 @@ export function carPath(
 ): string {
   const key = car.slug || fallbackId;
   if (isMotorcycle(car)) return `${BIKES_BASE_PATH}/${key}`;
+  // A dealer-only car has no retail page (src/lib/listing-audience.ts).
+  if (!onRetail(car.audience)) return dealerCarPath(key);
   return destination
     ? destinationPath(key, destination.slug)
     : `/b2c/gallery/${key}`;
+}
+
+/**
+ * The URL of the page being rendered: the dealer page when `side` is "b2b",
+ * else carPath. Differs from carPath only on the dealer page of a "both" car,
+ * whose canonical is its retail page.
+ */
+function pagePath(
+  car: CarRecord,
+  fallbackId: string,
+  destination: DestinationConfig | null | undefined,
+  side: AudienceSide,
+): string {
+  return side === "b2b"
+    ? dealerCarPath(car.slug || fallbackId)
+    : carPath(car, fallbackId, destination);
 }
 
 /**
@@ -148,6 +172,7 @@ export function buildCarMetadata(
   car: CarRecord,
   fallbackId: string,
   destination?: DestinationConfig | null,
+  side: AudienceSide = "b2c",
 ): Metadata {
   // De-duped make/model, so the preview reads "2022 Lexus LX500d" rather than
   // "2022 Lexus Lexus LX500d".
@@ -191,10 +216,10 @@ export function buildCarMetadata(
         `${headline} The paperwork and one landed cost into ${destination.name}, before you commit.`,
         `Importing a ${vehicle} to ${destination.name}: the rules, the paperwork and one landed cost, confirmed before you commit.`,
       ])
-    : baseDescription(car, vehicle);
+    : baseDescription(car, vehicle, side);
 
   const ogImage = carOgImagePath(car, fallbackId);
-  const path = carPath(car, fallbackId, destination);
+  const path = pagePath(car, fallbackId, destination, side);
 
   return {
     title,
@@ -238,8 +263,18 @@ const DESCRIPTION_FLOOR = 120;
  * (14 of 21 live car pages were under 120) fall back to a sentence built from
  * the vehicle itself.
  */
-function baseDescription(car: CarRecord, vehicle: string): string {
+function baseDescription(
+  car: CarRecord,
+  vehicle: string,
+  side: AudienceSide = "b2c",
+): string {
   const notes = car.notes?.trim();
+  // The dealer page, like the dealer PDF, makes no landed-quote claim.
+  if (side === "b2b") {
+    return clampDescription([
+      notes || `Import the ${vehicle} for your dealership: its full specification, grades, colours and gallery.`,
+    ]);
+  }
   if (notes) {
     const first = firstSentence(notes);
     const tail = " Get a landed quote to your port.";
@@ -279,10 +314,11 @@ export function buildCarJsonLd(
   car: CarRecord,
   fallbackId: string,
   destination?: DestinationConfig | null,
+  side: AudienceSide = "b2c",
 ) {
   const vehicle =
     `${car.year || ""} ${formatVehicleTitle(car.make, car.model)}`.trim();
-  const path = carPath(car, fallbackId, destination);
+  const path = pagePath(car, fallbackId, destination, side);
   const images: string[] = [car.heroImageUrl, ...(car.images ?? [])].filter(
     (src: unknown): src is string => typeof src === "string" && src.length > 0,
   );
@@ -292,8 +328,13 @@ export function buildCarJsonLd(
     { name: "Home", item: SITE_URL },
     bike
       ? { name: "Import Bikes", item: `${SITE_URL}${BIKES_BASE_PATH}` }
-      : { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
-    { name: vehicle, item: `${SITE_URL}${carPath(car, fallbackId)}` },
+      : side === "b2b"
+        ? { name: "Dealer Gallery", item: `${SITE_URL}${B2B_GALLERY_PATH}` }
+        : { name: "Vehicles", item: `${SITE_URL}/b2c/gallery` },
+    {
+      name: vehicle,
+      item: `${SITE_URL}${side === "b2b" ? path : carPath(car, fallbackId)}`,
+    },
     ...(destination
       ? [{ name: `Import to ${destination.name}`, item: `${SITE_URL}${path}` }]
       : []),

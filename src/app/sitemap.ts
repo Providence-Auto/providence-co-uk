@@ -22,6 +22,7 @@ import {
   TAG_BASE_PATH,
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
+import { B2B_GALLERY_PATH, onDealer } from "@/lib/listing-audience";
 import { STOCK_PUBLIC_PATH } from "@/lib/stock";
 import { BIKES_BASE_PATH, isMotorcycle, vehiclePath } from "@/lib/vehicle-type";
 
@@ -193,7 +194,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     throw new Error("[sitemap] Failed to load spec dossiers");
   }
   //
-  // The car page only. Its /import-to-<destination> variants canonicalise to
+  // The car page only — vehiclePath gives a dealer-only car its
+  // /b2b/gallery page, and a "both" car its retail one, which the dealer page
+  // canonicalises to. Its /import-to-<destination> variants canonicalise to
   // it (src/lib/car-page.ts), and a sitemap must list canonical URLs alone —
   // listing them here put 99 near-duplicates in front of 20 car pages, and
   // Google left both "Discovered - currently not indexed".
@@ -252,6 +255,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const liveBikes = dossierResult.data.filter(
     (car: any) => LIVE_DOSSIER_STATUSES.has(car.status) && isMotorcycle(car),
   ).length;
+  // /b2b/gallery is noindex while it has no car, so it is listed only once it
+  // has one (src/app/(static)/b2b/gallery/page.tsx).
+  const dealerListings = dossierResult.data.filter(
+    (car: any) =>
+      LIVE_DOSSIER_STATUSES.has(car.status) &&
+      !isMotorcycle(car) &&
+      onDealer(car.audience),
+  );
+  const dealerGalleryRoutes =
+    dealerListings.length > 0
+      ? [
+          {
+            url: `${baseUrl}${B2B_GALLERY_PATH}`,
+            lastModified: latest(dealerListings.map((c: any) => c.updatedAt)),
+            changeFrequency: "weekly" as const,
+            priority: 0.7,
+          },
+        ]
+      : [];
   const indexableStatic = staticRoutes.filter(
     (route) =>
       route.url !== `${baseUrl}${BIKES_BASE_PATH}` ||
@@ -262,6 +284,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...indexableStatic,
     ...legalRoutes,
     ...stockRoutes,
+    ...dealerGalleryRoutes,
     ...countryRoutes,
     ...blogRoutes,
     ...newsRoutes,

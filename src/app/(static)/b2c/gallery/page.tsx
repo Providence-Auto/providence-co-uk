@@ -3,6 +3,7 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo";
 import { getAllSpecDossiers } from "@/actions/spec-actions";
 import GalleryClient from "@/components/GalleryClient";
+import { onRetail } from "@/lib/listing-audience";
 import { isMotorcycle } from "@/lib/vehicle-type";
 
 export const revalidate = 60; // Optional: Revalidate the page every 60 seconds
@@ -21,9 +22,10 @@ export async function generateMetadata(): Promise<Metadata> {
     heroImageUrl?: string;
     images?: string[];
     vehicleType?: string;
+    audience?: string;
   }>;
   const active = dossiers.filter(
-    (d) => d.status === "Active" && !isMotorcycle(d),
+    (d) => d.status === "Active" && !isMotorcycle(d) && onRetail(d.audience),
   );
 
   const ogImage =
@@ -57,9 +59,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function GalleryPage() {
   const response = await getAllSpecDossiers();
-  // Bikes have their own section at /import-bikes.
+  // Bikes have their own section at /import-bikes, and a dealer-only car is
+  // on /b2b/gallery alone (src/lib/listing-audience.ts).
   const dossiers = (response.success ? response.data : []).filter(
-    (d: { vehicleType?: unknown }) => !isMotorcycle(d),
+    (d: { vehicleType?: unknown; audience?: unknown }) =>
+      !isMotorcycle(d) && onRetail(d.audience),
   );
 
   return (
