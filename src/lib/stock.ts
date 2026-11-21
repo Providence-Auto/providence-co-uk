@@ -149,7 +149,12 @@ export const STOCK_FIELDS: StockField[] = [
   "shippingPort",
 ];
 
-export type StockAction = "created" | "updated" | "removed" | "restored";
+export type StockAction =
+  | "created"
+  | "updated"
+  | "removed"
+  | "restored"
+  | "imported";
 
 export interface StockChange {
   field: StockField;
@@ -162,7 +167,8 @@ export interface StockHistoryEntry {
   carId: string;
   action: StockAction;
   changes: StockChange[];
-  snapshot: Partial<StockCarFields> & { memberCode?: string };
+  /** `source` is set on an import: "CSV", "Excel" or "Google Sheet". */
+  snapshot: Partial<StockCarFields> & { memberCode?: string; source?: string };
   actorName: string | null;
   memberCode: string | null;
   createdAt: string;

@@ -12,6 +12,7 @@ import {
   diffStockCar,
   memberCodeFor,
   STOCK_ADMIN_PATH,
+  STOCK_CURRENCIES,
   STOCK_HISTORY_PATH,
   STOCK_PUBLIC_PATH,
   type StockAction,
@@ -19,11 +20,23 @@ import {
   type StockCarInput,
   type StockCarView,
   type StockChange,
+  type StockCurrency,
   type StockErrors,
   type StockHistoryEntry,
   stockFields,
   validateStockCar,
 } from "@/lib/stock";
+import {
+  googleSheetCsvUrl,
+  parseCsv,
+  rowsToStockImport,
+  STOCK_IMPORT_MAX_BYTES,
+  STOCK_IMPORT_MAX_ROWS,
+  type StockImportRow,
+  type StockImportSource,
+  stockKey,
+} from "@/lib/stock-import";
+import { xlsxToRows } from "@/lib/stock-import-xlsx";
 import { auth } from "@/utils/auth";
 
 export interface StockActor {
@@ -285,6 +298,245 @@ export async function setStockCarRemoved(
   } catch (error) {
     console.error("Stock remove error:", error);
     return { success: false, error: "Could not update the car" };
+  }
+}
+
+// ── Importing from a spreadsheet ────────────────────────────────────────────
+
+export type StockImportPreview =
+  | {
+      success: true;
+      source: StockImportSource;
+      rows: StockImportRow[];
+      skippedBlank: number;
+    }
+  | { success: false; error: string };
+
+export type StockImportResult =
+  | { success: true; cars: StockCarView[]; skipped: number }
+  | { success: false; error: string };
+
+/** Keys of the cars already live on this actor's own list. */
+async function liveKeys(actor: StockActor): Promise<Set<string>> {
+  const rows = await db
+    .select()
+    .from(stockCars)
+    .where(
+      and(eq(stockCars.ownerId, actor.id), eq(stockCars.isRemoved, false)),
+    );
+  return new Set(
+    rows.map((row) => stockKey(stockFields(row as unknown as StockCarFields))),
+  );
+}
+
+/** Reads the sheet a Google link points at, as CSV text. */
+async function fetchGoogleSheet(
+  link: string,
+): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
+  const url = googleSheetCsvUrl(link);
+  if (!url) {
+    return {
+      ok: false,
+      error:
+        "That isn't a Google Sheets link. Copy it from the sheet's address bar.",
+    };
+  }
+  const notShared =
+    'We couldn\'t open that sheet. In Google Sheets, choose Share → General access → "Anyone with the link" (Viewer), then try again.';
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      redirect: "follow",
+      signal: AbortSignal.timeout(15_000),
+    });
+    const type = res.headers.get("content-type") ?? "";
+    // A private sheet answers with Google's sign-in page, not an error code.
+    if (!res.ok || !type.includes("text/csv"))
+      return { ok: false, error: notShared };
+    const text = await res.text();
+    if (text.length > STOCK_IMPORT_MAX_BYTES) {
+      return {
+        ok: false,
+        error: "That sheet is too large to import in one go.",
+      };
+    }
+    return { ok: true, text };
+  } catch (error) {
+    console.error("Stock import: Google Sheet fetch failed:", error);
+    return { ok: false, error: notShared };
+  }
+}
+
+/**
+ * Reads a CSV or Excel file, or a Google Sheet link, and checks every row
+ * without storing anything — the person sees what will be added, what is
+ * wrong and what is already on their list, then confirms.
+ *
+ * FormData: `file` (a .csv/.xlsx) or `sheetUrl`, and `currency` for prices
+ * that name none.
+ */
+export async function previewStockImport(
+  formData: FormData,
+): Promise<StockImportPreview> {
+  try {
+    const actor = await getStockActor();
+    if (!actor) return { success: false, error: "Not allowed" };
+
+    const currencyField = String(formData.get("currency") ?? "USD");
+    const defaultCurrency = STOCK_CURRENCIES.includes(
+      currencyField as StockCurrency,
+    )
+      ? (currencyField as StockCurrency)
+      : "USD";
+
+    let rows: string[][];
+    let source: StockImportSource;
+
+    const file = formData.get("file");
+    const sheetUrl = String(formData.get("sheetUrl") ?? "").trim();
+
+    if (file instanceof File && file.size > 0) {
+      if (file.size > STOCK_IMPORT_MAX_BYTES) {
+        return { success: false, error: "That file is larger than 5 MB." };
+      }
+      const name = file.name.toLowerCase();
+      if (name.endsWith(".xlsx")) {
+        source = "Excel";
+        try {
+          rows = await xlsxToRows(await file.arrayBuffer());
+        } catch {
+          return {
+            success: false,
+            error:
+              "That Excel file couldn't be read. Save it as .xlsx or CSV and try again.",
+          };
+        }
+      } else if (
+        name.endsWith(".csv") ||
+        name.endsWith(".tsv") ||
+        name.endsWith(".txt")
+      ) {
+        source = "CSV";
+        rows = parseCsv(await file.text());
+      } else if (name.endsWith(".xls")) {
+        return {
+          success: false,
+          error:
+            "Older .xls files can't be read. In Excel, choose File → Save As → Excel Workbook (.xlsx) or CSV.",
+        };
+      } else {
+        return {
+          success: false,
+          error: "Choose a .csv or .xlsx file.",
+        };
+      }
+    } else if (sheetUrl) {
+      source = "Google Sheet";
+      const fetched = await fetchGoogleSheet(sheetUrl);
+      if (!fetched.ok) return { success: false, error: fetched.error };
+      rows = parseCsv(fetched.text);
+    } else {
+      return {
+        success: false,
+        error: "Choose a file or paste a Google Sheets link.",
+      };
+    }
+
+    const parsed = rowsToStockImport(rows, {
+      defaultCurrency,
+      existingKeys: await liveKeys(actor),
+    });
+    if (!parsed.ok) return { success: false, error: parsed.error };
+    return {
+      success: true,
+      source,
+      rows: parsed.rows,
+      skippedBlank: parsed.skippedBlank,
+    };
+  } catch (error) {
+    console.error("Stock import preview error:", error);
+    return { success: false, error: "Could not read that sheet" };
+  }
+}
+
+/**
+ * Adds the rows a person confirmed from the preview to their own list. Every
+ * row is checked again here — the browser's copy is never trusted — and a row
+ * that is invalid, or matches a car already on the list, is skipped and
+ * counted. All of it is one transaction, with an "imported" history row per
+ * car.
+ */
+export async function importStockCars(
+  inputs: StockCarInput[],
+  source: StockImportSource,
+): Promise<StockImportResult> {
+  try {
+    const actor = await getStockActor();
+    if (!actor) return { success: false, error: "Not allowed" };
+    if (!Array.isArray(inputs) || inputs.length === 0) {
+      return { success: false, error: "No cars to import" };
+    }
+    if (inputs.length > STOCK_IMPORT_MAX_ROWS) {
+      return {
+        success: false,
+        error: `One import takes up to ${STOCK_IMPORT_MAX_ROWS} cars`,
+      };
+    }
+    const label: StockImportSource = (
+      ["CSV", "Excel", "Google Sheet"] as const
+    ).includes(source)
+      ? source
+      : "CSV";
+
+    const seen = await liveKeys(actor);
+    const values: StockCarFields[] = [];
+    for (const input of inputs) {
+      const checked = validateStockCar(input);
+      if (!checked.ok) continue;
+      const key = stockKey(checked.value);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      values.push(checked.value);
+    }
+    const skipped = inputs.length - values.length;
+    if (values.length === 0) {
+      return { success: true, cars: [], skipped };
+    }
+
+    const created = await db.transaction(async (tx) => {
+      const rows = await tx
+        .insert(stockCars)
+        .values(
+          values.map((value) => ({
+            id: crypto.randomUUID(),
+            ...value,
+            memberCode: actor.memberCode,
+            ownerId: actor.id,
+            ownerName: actor.name,
+          })),
+        )
+        .returning();
+      await tx.insert(stockCarHistory).values(
+        rows.map((row) => {
+          const entry = historyRow(
+            actor,
+            row.id,
+            "imported",
+            [],
+            stockFields(row as unknown as StockCarFields),
+            actor.memberCode,
+          );
+          return { ...entry, snapshot: { ...entry.snapshot, source: label } };
+        }),
+      );
+      return rows;
+    });
+
+    revalidateStock();
+    return { success: true, cars: created.map(toView), skipped };
+  } catch (error) {
+    console.error("Stock import error:", error);
+    return { success: false, error: "Could not import the cars" };
   }
 }
 
