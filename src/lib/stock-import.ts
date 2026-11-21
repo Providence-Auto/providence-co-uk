@@ -206,7 +206,7 @@ export interface StockImportRow {
   input: StockCarInput;
   status: "ready" | "invalid" | "duplicate";
   errors?: StockErrors;
-  /** Why a duplicate is skipped. */
+  /** Why a duplicate is skipped, or what linking does to a ready row. */
   note?: string;
 }
 
@@ -234,8 +234,13 @@ export function stockKey(car: StockCarFields): string {
 /**
  * Turns a sheet's rows into checked stock rows. `defaultCurrency` applies to a
  * price whose cell, column and header all name none. `existingKeys` are the
- * cars already on the list: a row matching one is a duplicate, as is a row
- * repeating an earlier row of the same sheet.
+ * cars already on the list.
+ *
+ * - `mode: "import"` (a one-off file): a row matching a car on the list, or
+ *   repeating an earlier row, is a duplicate and is skipped.
+ * - `mode: "link"` (a linked Google Sheet, kept in sync): every valid row is a
+ *   car — two identical rows are two cars — and a row matching a car already
+ *   on the list is ready, noted as linking that car to the sheet.
  */
 export function rowsToStockImport(
   rows: string[][],
@@ -243,7 +248,9 @@ export function rowsToStockImport(
     defaultCurrency = "USD",
     existingKeys = new Set<string>(),
     now = new Date(),
+    mode = "import",
   }: {
+    mode?: "import" | "link";
     defaultCurrency?: StockCurrency;
     existingKeys?: Set<string>;
     now?: Date;
@@ -307,6 +314,17 @@ export function rowsToStockImport(
       return;
     }
     const key = stockKey(checked.value);
+    if (mode === "link") {
+      out.push({
+        line,
+        input,
+        status: "ready",
+        note: existingKeys.has(key)
+          ? "Already on the list — will be linked to the sheet"
+          : undefined,
+      });
+      return;
+    }
     if (existingKeys.has(key)) {
       out.push({
         line,
@@ -421,6 +439,18 @@ export function googleSheetCsvUrl(link: string): string | null {
   if (!id || id === "e") return null;
   const tab = gid ? `&gid=${gid}` : "";
   return `https://docs.google.com/spreadsheets/d/${id}/export?format=csv${tab}`;
+}
+
+/**
+ * One tab of one sheet, however the link was copied: an edit link with no tab
+ * opens the first tab (gid 0), so it is the same tab as "#gid=0". Null when
+ * the link is not a Google Sheet.
+ */
+export function googleSheetIdentity(link: string): string | null {
+  const url = googleSheetCsvUrl(link);
+  if (!url) return null;
+  const gid = url.match(/[?&]gid=(\d+)/)?.[1] ?? "0";
+  return `${url.replace(/[?&]gid=\d+/, "")}#${gid}`;
 }
 
 /** The template a team member can download and fill in. */

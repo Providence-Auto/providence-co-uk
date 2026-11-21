@@ -1,10 +1,20 @@
 "use client";
 
-import { Check, Copy, Pencil, RotateCcw, Trash2, X } from "lucide-react";
+import {
+  Check,
+  Copy,
+  FileSpreadsheet,
+  Pencil,
+  RotateCcw,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useMemo, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   createStockCar,
+  type StockMember,
+  type StockSheetView,
   setStockCarRemoved,
   updateStockCar,
 } from "@/actions/stock-actions";
@@ -21,6 +31,7 @@ import {
   validateStockCar,
 } from "@/lib/stock";
 import { CAR_MAKES } from "@/lib/vehicle-inquiry";
+import LinkedSheets from "./LinkedSheets";
 import StockImport from "./StockImport";
 
 const EMPTY: StockCarInput = {
@@ -57,13 +68,24 @@ export default function StockListClient({
   isAdmin,
   memberCode,
   publicLink,
+  actorId,
+  initialSheets,
+  stockMembers,
 }: {
   initialCars: StockCarView[];
   isAdmin: boolean;
   memberCode: string;
   publicLink: string;
+  actorId: string;
+  initialSheets: StockSheetView[];
+  stockMembers: StockMember[];
 }) {
   const [cars, setCars] = useState(initialCars);
+  const [sheets, setSheets] = useState(initialSheets);
+  const sheetUrl = useMemo(
+    () => new Map(sheets.map((s) => [s.id, s.sheetUrl])),
+    [sheets],
+  );
   const [form, setForm] = useState<StockCarInput>(EMPTY);
   const [errors, setErrors] = useState<StockErrors>({});
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -345,9 +367,27 @@ export default function StockListClient({
         <PublicLink link={publicLink} />
       </div>
 
+      <LinkedSheets
+        sheets={sheets}
+        isAdmin={isAdmin}
+        onChange={(update, next) => {
+          setSheets(update);
+          setCars(next);
+        }}
+      />
+
       <StockImport
+        isAdmin={isAdmin}
+        actorId={actorId}
+        memberCode={memberCode}
+        members={stockMembers}
         onImported={(added) => {
           setCars((list) => [...added, ...list]);
+          setView("live");
+        }}
+        onLinked={(sheet, next) => {
+          setSheets((list) => [sheet, ...list]);
+          setCars(next);
           setView("live");
         }}
       />
@@ -450,37 +490,53 @@ export default function StockListClient({
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
-                      {!car.isRemoved && (
-                        <button
-                          type="button"
-                          onClick={() => startEdit(car)}
-                          aria-label={`Edit ${car.make} ${car.model}`}
-                          className="rounded-md p-2 text-zinc-500 transition-feedback hover:bg-zinc-100 hover:text-zinc-900"
+                      {car.sheetId ? (
+                        <a
+                          href={sheetUrl.get(car.sheetId) ?? undefined}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="This car comes from a linked Google Sheet. Change it in the sheet."
+                          aria-label={`Edit ${car.make} ${car.model} in its Google Sheet`}
+                          className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-semibold text-emerald-700 transition-feedback hover:bg-emerald-50"
                         >
-                          <Pencil size={15} aria-hidden />
-                        </button>
+                          <FileSpreadsheet size={14} aria-hidden />
+                          In the sheet
+                        </a>
+                      ) : (
+                        <>
+                          {!car.isRemoved && (
+                            <button
+                              type="button"
+                              onClick={() => startEdit(car)}
+                              aria-label={`Edit ${car.make} ${car.model}`}
+                              className="rounded-md p-2 text-zinc-500 transition-feedback hover:bg-zinc-100 hover:text-zinc-900"
+                            >
+                              <Pencil size={15} aria-hidden />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            disabled={pending}
+                            onClick={() => toggleRemoved(car)}
+                            aria-label={
+                              car.isRemoved
+                                ? `Put ${car.make} ${car.model} back on the list`
+                                : `Remove ${car.make} ${car.model}`
+                            }
+                            className={`rounded-md p-2 transition-feedback disabled:opacity-50 ${
+                              car.isRemoved
+                                ? "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+                                : "text-zinc-500 hover:bg-red-50 hover:text-red-600"
+                            }`}
+                          >
+                            {car.isRemoved ? (
+                              <RotateCcw size={15} aria-hidden />
+                            ) : (
+                              <Trash2 size={15} aria-hidden />
+                            )}
+                          </button>
+                        </>
                       )}
-                      <button
-                        type="button"
-                        disabled={pending}
-                        onClick={() => toggleRemoved(car)}
-                        aria-label={
-                          car.isRemoved
-                            ? `Put ${car.make} ${car.model} back on the list`
-                            : `Remove ${car.make} ${car.model}`
-                        }
-                        className={`rounded-md p-2 transition-feedback disabled:opacity-50 ${
-                          car.isRemoved
-                            ? "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
-                            : "text-zinc-500 hover:bg-red-50 hover:text-red-600"
-                        }`}
-                      >
-                        {car.isRemoved ? (
-                          <RotateCcw size={15} aria-hidden />
-                        ) : (
-                          <Trash2 size={15} aria-hidden />
-                        )}
-                      </button>
                     </div>
                   </td>
                 </tr>

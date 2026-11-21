@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { after } from "next/server";
 import { getPublicStock } from "@/actions/stock-actions";
 import AvailableCarsClient from "@/components/stock/AvailableCarsClient";
 import { buildMarketOptions } from "@/lib/dealer-markets";
@@ -10,6 +11,7 @@ import {
   STOCK_SITE,
   stockItemListJsonLd,
 } from "@/lib/stock";
+import { syncStaleSheets } from "@/lib/stock-sync";
 
 // Read on every request, so a change saved on any salesperson's list is on
 // this page at the next load — and never prerendered, because the build
@@ -26,6 +28,9 @@ const updated = (iso: string) =>
 
 export default async function AvailableCarsPage() {
   const cars = await getPublicStock();
+  // Linked Google Sheets due a sync are synced once this page has been sent,
+  // at most once per sheet per interval however many visitors arrive.
+  after(syncStaleSheets);
   const markets = buildMarketOptions();
   const latest = cars.reduce<string | null>(
     (max, c) => (!max || c.updatedAt > max ? c.updatedAt : max),

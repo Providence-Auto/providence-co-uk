@@ -470,6 +470,45 @@ export const kycSubmissions = pgTable(
 // every salesperson, read straight from this table, so an edit on one list is
 // on the shared one the moment it is saved. Shape and validation live in
 // src/lib/stock.ts.
+// A Google Sheet linked to one team member's stock list (business request
+// 2026-11-19). Its cars are kept in step with the sheet — added, updated and
+// removed — by src/lib/stock-sync.ts, on "Sync now" and automatically when a
+// stock page is loaded and the last sync is older than the interval. Only cars
+// carrying this sheet's id are ever changed by it.
+export const stockSheets = pgTable(
+  "stocksheet",
+  {
+    id: text("id").primaryKey(),
+    // The link as pasted. The fetch address is always rebuilt from it by
+    // googleSheetCsvUrl, never fetched as stored.
+    sheetUrl: text("sheetUrl").notNull(),
+    // Whose list the sheet fills, and the code its cars carry.
+    ownerId: text("ownerId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    ownerName: text("ownerName"),
+    memberCode: text("memberCode").notNull(),
+    // For prices that name no currency.
+    defaultCurrency: text("defaultCurrency").default("USD").notNull(),
+    linkedById: text("linkedById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    linkedByName: text("linkedByName"),
+    // Claimed atomically before each sync, so two page loads never sync the
+    // same sheet at once.
+    syncStartedAt: timestamp("syncStartedAt"),
+    // The last sync that read the sheet and applied it.
+    lastSyncedAt: timestamp("lastSyncedAt"),
+    // "ok" or "error", with the message and the counts of the last attempt.
+    lastStatus: text("lastStatus"),
+    lastError: text("lastError"),
+    lastResult: jsonb("lastResult"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [index("stocksheet_owner_idx").on(table.ownerId)],
+);
+
 export const stockCars = pgTable(
   "stockcar",
   {
@@ -494,6 +533,12 @@ export const stockCars = pgTable(
       onDelete: "set null",
     }),
     ownerName: text("ownerName"),
+    // The linked Google Sheet this car comes from, if any. Such a car is
+    // changed only through its sheet; unlinking the sheet leaves it as an
+    // ordinary car.
+    sheetId: text("sheetId").references(() => stockSheets.id, {
+      onDelete: "set null",
+    }),
     // Removed cars leave the lists but are never deleted, so the history
     // below always has the car it describes.
     isRemoved: boolean("isRemoved").default(false).notNull(),
@@ -504,6 +549,7 @@ export const stockCars = pgTable(
   (table) => [
     index("stockcar_owner_idx").on(table.ownerId),
     index("stockcar_live_idx").on(table.isRemoved),
+    index("stockcar_sheet_idx").on(table.sheetId),
   ],
 );
 

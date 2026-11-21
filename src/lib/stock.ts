@@ -117,6 +117,8 @@ export interface StockCarView extends StockCarFields {
   ownerId: string | null;
   ownerName: string | null;
   isRemoved: boolean;
+  /** The linked Google Sheet the car comes from; such a car changes only there. */
+  sheetId: string | null;
   createdAt: string;
   updatedAt: string;
 }
