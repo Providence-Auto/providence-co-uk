@@ -104,13 +104,18 @@ export function planSheetSync(
     const car = take(pool, stockKey, row);
     if (!car) {
       pending.push(row);
-    } else if (car.isRemoved) {
+      continue;
+    }
+    // The match ignores letter case, so "bmw" → "BMW" in the sheet is still
+    // a change to carry over.
+    const changes = diffStockCar(stockFields(car.fields), row);
+    if (car.isRemoved || changes.length > 0) {
       plan.update.push({
         id: car.id,
         before: stockFields(car.fields),
         after: row,
-        changes: [],
-        restore: true,
+        changes,
+        restore: car.isRemoved,
       });
     } else {
       plan.unchanged++;

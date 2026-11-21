@@ -254,7 +254,7 @@ export default function StockImport({
 
           <p className="text-xs text-zinc-500">
             {linking
-              ? "The sheet stays linked: cars added, changed or deleted in it follow on the list every 15 minutes, or at once with Sync now. Its cars are edited in the sheet."
+              ? "The sheet stays linked: cars added, changed or deleted in it follow on the list when the stock pages are next opened (at most every 15 minutes), or at once with Sync now. Its cars are edited in the sheet."
               : "Adds the cars once. Nothing already on the list is changed or removed."}
           </p>
 

@@ -45,6 +45,21 @@ describe("planSheetSync", () => {
     ]);
   });
 
+  it("carries over a change of letter case", () => {
+    const plan = planSheetSync(
+      [car({ make: "TOYOTA" })],
+      [linked("a", car())],
+      [],
+    );
+    expect(plan.unchanged).toBe(0);
+    expect(plan.update).toEqual([
+      expect.objectContaining({
+        id: "a",
+        changes: [{ field: "make", from: "Toyota", to: "TOYOTA" }],
+      }),
+    ]);
+  });
+
   it("adds new rows and removes cars gone from the sheet", () => {
     const plan = planSheetSync(
       [car(), car({ model: "Vellfire" })],

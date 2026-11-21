@@ -215,35 +215,11 @@ export async function runSheetSync(
     );
     if (!read.ok) return await fail(read.error);
 
-    const [linkedRows, manualRows] = await Promise.all([
-      db.select().from(stockCars).where(eq(stockCars.sheetId, sheet.id)),
-      db
-        .select()
-        .from(stockCars)
-        .where(
-          and(
-            eq(stockCars.ownerId, sheet.ownerId),
-            isNull(stockCars.sheetId),
-            eq(stockCars.isRemoved, false),
-          ),
-        ),
-    ]);
-
-    const plan = planSheetSync(
-      read.cars,
-      linkedRows.map(toSyncCar),
-      manualRows.map(toSyncCar),
-      { holdRemovals: read.problems.length > 0 },
-    );
-
     const who = {
       actorId: actor?.id ?? null,
       actorName: actor?.name ?? SHEET_SYNC_ACTOR,
       memberCode: actor?.memberCode ?? sheet.memberCode,
     };
-    const memberCodeOf = new Map(
-      linkedRows.map((row) => [row.id, row.memberCode]),
-    );
     const history = (
       carId: string,
       action: StockAction,
@@ -260,97 +236,126 @@ export async function runSheetSync(
       ...who,
     });
 
-    if (!planIsEmpty(plan)) {
-      await db.transaction(async (tx) => {
-        const now = new Date();
-        const entries: ReturnType<typeof history>[] = [];
+    // Read, plan and write under a lock on the sheet's row: a second sync of
+    // the same sheet (a page load and "Sync now" together) waits here, then
+    // plans from what the first one wrote, so a car is never added twice.
+    const plan = await db.transaction(async (tx) => {
+      await tx.execute(
+        sql`select "id" from "stocksheet" where "id" = ${sheet.id} for update`,
+      );
+      const linkedRows = await tx
+        .select()
+        .from(stockCars)
+        .where(eq(stockCars.sheetId, sheet.id));
+      const manualRows = await tx
+        .select()
+        .from(stockCars)
+        .where(
+          and(
+            eq(stockCars.ownerId, sheet.ownerId),
+            isNull(stockCars.sheetId),
+            eq(stockCars.isRemoved, false),
+          ),
+        );
 
-        if (plan.add.length > 0) {
-          const added = await tx
-            .insert(stockCars)
-            .values(
-              plan.add.map((fields) => ({
-                id: crypto.randomUUID(),
-                ...fields,
-                memberCode: sheet.memberCode,
-                ownerId: sheet.ownerId,
-                ownerName: sheet.ownerName,
-                sheetId: sheet.id,
-              })),
-            )
-            .returning();
-          for (const row of added) {
-            entries.push(
-              history(
-                row.id,
-                "imported",
-                [],
-                stockFields(row as unknown as StockCarFields),
-                row.memberCode,
-                "Google Sheet",
-              ),
-            );
-          }
-        }
+      const plan = planSheetSync(
+        read.cars,
+        linkedRows.map(toSyncCar),
+        manualRows.map(toSyncCar),
+        { holdRemovals: read.problems.length > 0 },
+      );
+      if (planIsEmpty(plan)) return plan;
 
-        for (const change of plan.update) {
-          await tx
-            .update(stockCars)
-            .set({
-              ...change.after,
-              isRemoved: false,
-              removedAt: null,
-              updatedAt: now,
-            })
-            .where(eq(stockCars.id, change.id));
-          const code = memberCodeOf.get(change.id) ?? sheet.memberCode;
-          if (change.restore) {
-            entries.push(
-              history(change.id, "restored", [], change.after, code),
-            );
-          }
-          if (change.changes.length > 0) {
-            entries.push(
-              history(change.id, "updated", change.changes, change.after, code),
-            );
-          }
-        }
+      const memberCodeOf = new Map(
+        linkedRows.map((row) => [row.id, row.memberCode]),
+      );
+      const now = new Date();
+      const entries: ReturnType<typeof history>[] = [];
 
-        if (plan.adopt.length > 0) {
-          await tx
-            .update(stockCars)
-            .set({ sheetId: sheet.id, updatedAt: now })
-            .where(inArray(stockCars.id, plan.adopt));
+      if (plan.add.length > 0) {
+        const added = await tx
+          .insert(stockCars)
+          .values(
+            plan.add.map((fields) => ({
+              id: crypto.randomUUID(),
+              ...fields,
+              memberCode: sheet.memberCode,
+              ownerId: sheet.ownerId,
+              ownerName: sheet.ownerName,
+              sheetId: sheet.id,
+            })),
+          )
+          .returning();
+        for (const row of added) {
+          entries.push(
+            history(
+              row.id,
+              "imported",
+              [],
+              stockFields(row as unknown as StockCarFields),
+              row.memberCode,
+              "Google Sheet",
+            ),
+          );
         }
+      }
 
-        if (plan.remove.length > 0) {
-          await tx
-            .update(stockCars)
-            .set({ isRemoved: true, removedAt: now, updatedAt: now })
-            .where(
-              inArray(
-                stockCars.id,
-                plan.remove.map((r) => r.id),
-              ),
-            );
-          for (const removed of plan.remove) {
-            entries.push(
-              history(
-                removed.id,
-                "removed",
-                [],
-                removed.fields,
-                memberCodeOf.get(removed.id) ?? sheet.memberCode,
-              ),
-            );
-          }
+      for (const change of plan.update) {
+        await tx
+          .update(stockCars)
+          .set({
+            ...change.after,
+            isRemoved: false,
+            removedAt: null,
+            updatedAt: now,
+          })
+          .where(eq(stockCars.id, change.id));
+        const code = memberCodeOf.get(change.id) ?? sheet.memberCode;
+        if (change.restore) {
+          entries.push(history(change.id, "restored", [], change.after, code));
         }
+        if (change.changes.length > 0) {
+          entries.push(
+            history(change.id, "updated", change.changes, change.after, code),
+          );
+        }
+      }
 
-        if (entries.length > 0) {
-          await tx.insert(stockCarHistory).values(entries);
+      if (plan.adopt.length > 0) {
+        await tx
+          .update(stockCars)
+          .set({ sheetId: sheet.id, updatedAt: now })
+          .where(inArray(stockCars.id, plan.adopt));
+      }
+
+      if (plan.remove.length > 0) {
+        await tx
+          .update(stockCars)
+          .set({ isRemoved: true, removedAt: now, updatedAt: now })
+          .where(
+            inArray(
+              stockCars.id,
+              plan.remove.map((r) => r.id),
+            ),
+          );
+        for (const removed of plan.remove) {
+          entries.push(
+            history(
+              removed.id,
+              "removed",
+              [],
+              removed.fields,
+              memberCodeOf.get(removed.id) ?? sheet.memberCode,
+            ),
+          );
         }
-      });
-    }
+      }
+
+      if (entries.length > 0) {
+        await tx.insert(stockCarHistory).values(entries);
+      }
+      return plan;
+    });
 
     const counts: SheetSyncCounts = {
       added: plan.add.length,
