@@ -127,6 +127,12 @@ export type DealerInquiryInput = {
    * `cars` / `sourceMarket` are ignored.
    */
   stockCarIds?: string[];
+  /**
+   * The listing whose dealer car page (/b2b/gallery/<slug>) sent the inquiry.
+   * The server reads it to decide whether a market that drives on the right
+   * may send it — only for a car that can be exported left-hand drive.
+   */
+  dossierId?: string;
   notes: string;
   // Attribution, captured the same way as the B2C form.
   source?: string;

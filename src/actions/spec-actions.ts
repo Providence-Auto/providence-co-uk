@@ -10,7 +10,12 @@ import {
   type TagCollection,
 } from "@/config/vehicle-tags";
 import { db, specDossiers } from "@/db";
-import { parseListingAudience } from "@/lib/listing-audience";
+import { baseSlug, slugCandidates } from "@/lib/dossier-slug";
+import {
+  DEALER_AUDIENCES,
+  parseListingAudience,
+  RETAIL_AUDIENCES,
+} from "@/lib/listing-audience";
 import { parseVehicleType, type VehicleType } from "@/lib/vehicle-type";
 import { auth } from "@/utils/auth";
 
@@ -39,43 +44,28 @@ function serializeDossier(dossier: any) {
   );
 }
 
-/**
- * Normalises a string into a url-safe slug (lowercase, hyphenated).
- */
-function slugify(input: string) {
-  return (input || "")
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-_]/g, "")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
+/** Whether another dossier (not `currentId`) already owns `slug`. */
+async function slugTaken(slug: string, currentId?: string) {
+  const conditions = [eq(specDossiers.slug, slug)];
+  if (currentId) conditions.push(ne(specDossiers.id, currentId));
+  const existing = await db.query.specDossiers.findFirst({
+    columns: { id: true },
+    where: and(...conditions),
+  });
+  return Boolean(existing);
 }
 
 /**
- * Returns the first slug that is not already taken (excluding `currentId`).
- * Tries `base`, then `base-2`, `base-3`, ... until a free one is found.
+ * The slug a dossier is saved under: the one typed, else its make and model,
+ * with a code from its own id after it when another dossier owns that
+ * (src/lib/dossier-slug.ts).
  */
-async function findAvailableSlug(base: string, currentId?: string) {
-  let candidate = base;
-  let counter = 2;
-
-  // Loop until no other dossier owns this slug.
-  while (true) {
-    const conditions = [eq(specDossiers.slug, candidate)];
-    if (currentId) {
-      conditions.push(ne(specDossiers.id, currentId));
-    }
-
-    const existing = await db.query.specDossiers.findFirst({
-      columns: { id: true },
-      where: and(...conditions),
-    });
-    if (!existing) return candidate;
-
-    candidate = `${base}-${counter}`;
-    counter += 1;
+async function resolveSlug(base: string, id: string, currentId?: string) {
+  if (!base || !(await slugTaken(base, currentId))) return base;
+  for (const candidate of slugCandidates(base, id)) {
+    if (!(await slugTaken(candidate, currentId))) return candidate;
   }
+  return `${base}-${id}`;
 }
 
 /**
@@ -89,49 +79,24 @@ export async function saveSpecDossier(payload: any) {
   }
   try {
     // --- Slug handling ---------------------------------------------------
-    // Live (Active/Published) templates MUST have an explicit slug so their
-    // public page is always a clean URL — never a raw Mongo _id. Drafts may
-    // be saved without a slug; they preview via the _id until one is set.
+    // Every dossier is saved with a slug, so its page, its PDF and any link
+    // shared from the admin are a clean URL, never a raw id: the one typed,
+    // else the make and model. A slug another dossier owns takes a short code
+    // from this one's id rather than failing the save (as instructed
+    // 2026-11-20).
+    const id: string = payload._id || crypto.randomUUID();
+    const slug = await resolveSlug(baseSlug(payload), id, payload._id);
+
     const isLive =
       payload.status === "Active" || payload.status === "Published";
-    let slug = slugify(payload.slug || "");
-
     if (isLive && !slug) {
       return {
         success: false,
         message:
-          "A URL slug is required before setting a template to Active. Please add a slug in the URL Slug Configuration field.",
+          "This listing needs a URL slug before it can go Active. Add a make and model, or type a slug.",
       };
     }
 
-    if (slug) {
-      const conditions = [eq(specDossiers.slug, slug)];
-      if (payload._id) {
-        conditions.push(ne(specDossiers.id, payload._id));
-      }
-      const conflict = await db.query.specDossiers.findFirst({
-        columns: { id: true },
-        where: and(...conditions),
-      });
-
-      if (conflict) {
-        // Caller did not opt into auto-numbering — surface the collision.
-        if (!payload.forceSlug) {
-          const suggestedSlug = await findAvailableSlug(slug, payload._id);
-          return {
-            success: false,
-            conflict: true,
-            slug,
-            suggestedSlug,
-            message: `The URL "${slug}" is already in use.`,
-          };
-        }
-        // forceSlug === true: take the next free numbered slug.
-        slug = await findAvailableSlug(slug, payload._id);
-      }
-    }
-
-    // Strip the transient flag and persist the resolved slug.
     const { forceSlug: _, ...rest } = payload;
     const resolvedPayload = { ...rest, slug };
 
@@ -193,6 +158,14 @@ export async function saveSpecDossier(payload: any) {
     if (dataToSave.audience !== undefined) {
       dataToSave.audience = parseListingAudience(dataToSave.audience);
     }
+    // There is no dealer page for a motorcycle (/b2b/gallery is cars), so a
+    // bike is always a retail listing.
+    if (
+      dataToSave.vehicleType !== undefined &&
+      parseVehicleType(dataToSave.vehicleType) === "motorcycle"
+    ) {
+      dataToSave.audience = "b2c";
+    }
 
     // biome-ignore lint/suspicious/noImplicitAnyLet: dynamic assignment
     let savedDossier;
@@ -209,12 +182,12 @@ export async function saveSpecDossier(payload: any) {
         .returning();
       savedDossier = updated;
     } else {
-      // If no ID exists, create a brand new template
-      const newId = crypto.randomUUID();
+      // If no ID exists, create a brand new template (the id the slug code
+      // was taken from above).
       const [created] = await db
         .insert(specDossiers)
         .values({
-          id: newId,
+          id,
           make: dataToSave.make,
           model: dataToSave.model,
           year: dataToSave.year ?? "",
@@ -466,6 +439,7 @@ export async function getSpecDossiersByTags(tags: string[]) {
     const dossiers = await db.query.specDossiers.findMany({
       where: and(
         eq(specDossiers.status, "Active"),
+        inArray(specDossiers.audience, RETAIL_AUDIENCES),
         arrayOverlaps(specDossiers.searchTags, normalizedTags),
       ),
       orderBy: desc(specDossiers.createdAt),
@@ -500,10 +474,12 @@ export async function getSpecDossiersByTags(tags: string[]) {
 export async function getGalleryPreviewCars(tags?: string[], limit = 12) {
   const actionName = "[getGalleryPreviewCars]";
   try {
-    // Cars only: every strip that calls this links into /b2c/gallery.
+    // Cars only: every strip that calls this links into /b2c/gallery — and
+    // so retail listings only.
     const conditions = [
       eq(specDossiers.status, "Active"),
       eq(specDossiers.vehicleType, "car"),
+      inArray(specDossiers.audience, RETAIL_AUDIENCES),
     ];
     if (tags && tags.length > 0) {
       const normalizedTags = tags.map((t) => t.toLowerCase());
@@ -591,7 +567,11 @@ export async function getCarsForNewsArticle(
 
     const dossiers = await db.query.specDossiers.findMany({
       columns,
-      where: and(eq(specDossiers.status, "Active"), or(...matchers)),
+      where: and(
+        eq(specDossiers.status, "Active"),
+        inArray(specDossiers.audience, RETAIL_AUDIENCES),
+        or(...matchers),
+      ),
       orderBy: desc(specDossiers.createdAt),
     });
 
@@ -635,6 +615,7 @@ export async function getUpcomingCars(limit = 12) {
         eq(specDossiers.isUpcoming, true),
         // The rail is "Upcoming cars"; a coming-soon bike lives on /import-bikes.
         eq(specDossiers.vehicleType, "car"),
+        inArray(specDossiers.audience, RETAIL_AUDIENCES),
       ),
       orderBy: desc(specDossiers.createdAt),
       limit,
@@ -703,7 +684,7 @@ export async function getLiveVehicles(vehicleType: VehicleType) {
 
 /**
  * GET B2B LISTINGS
- * Active car dossiers set to the B2B audience in /admin/specs, newest first —
+ * Active car dossiers set to B2B or Both in /admin/specs, newest first —
  * the cars on /b2b/gallery. Full rows, because the gallery cards read the same
  * fields as /b2c/gallery's.
  */
@@ -713,7 +694,7 @@ export async function getB2bGalleryDossiers() {
       where: and(
         eq(specDossiers.status, "Active"),
         eq(specDossiers.vehicleType, "car"),
-        eq(specDossiers.audience, "b2b"),
+        inArray(specDossiers.audience, DEALER_AUDIENCES),
       ),
       orderBy: desc(specDossiers.createdAt),
     });
@@ -734,7 +715,11 @@ export async function getB2bGalleryDossiers() {
 export async function getVehiclesForTag(tag: TagCollection) {
   const actionName = "[getVehiclesForTag]";
   try {
-    const conditions = [eq(specDossiers.status, "Active")];
+    // A tag page is a retail page: a dealer-only car stays off it.
+    const conditions = [
+      eq(specDossiers.status, "Active"),
+      inArray(specDossiers.audience, RETAIL_AUDIENCES),
+    ];
     if (tag.vehicleType) {
       conditions.push(eq(specDossiers.vehicleType, tag.vehicleType));
     }
@@ -778,7 +763,10 @@ export async function getTagsInUse(): Promise<string[]> {
   try {
     const rows = await db.query.specDossiers.findMany({
       columns: { tags: true },
-      where: eq(specDossiers.status, "Active"),
+      where: and(
+        eq(specDossiers.status, "Active"),
+        inArray(specDossiers.audience, RETAIL_AUDIENCES),
+      ),
     });
     return [...new Set(rows.flatMap((r) => parseTags(r.tags)))].sort();
   } catch (error) {

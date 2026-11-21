@@ -2,6 +2,8 @@
 // gallery preview, and the gallery/detail link-preview metadata so titles
 // and prices stay consistent everywhere.
 
+import { vehiclePath } from "@/lib/vehicle-type";
+
 export type PriceEntry = {
   country: string;
   currency: string;
@@ -36,13 +38,12 @@ export function galleryPathForDossier(d: {
   slug?: string;
   status?: string;
   vehicleType?: string;
+  audience?: string;
 }): string | null {
-  // A motorcycle's public page is under /import-bikes (src/lib/vehicle-type.ts).
-  const base =
-    d.vehicleType === "motorcycle" ? "/import-bikes" : "/b2c/gallery";
-  if (d.slug) return `${base}/${d.slug}`;
-  if (d._id) return `${base}/${d._id}`;
-  return null;
+  // A motorcycle's public page is under /import-bikes, a dealer-only car's
+  // under /b2b/gallery (src/lib/vehicle-type.ts).
+  const key = d.slug || d._id;
+  return key ? vehiclePath({ ...d, slug: key }) : null;
 }
 
 /**
