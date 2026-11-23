@@ -11,7 +11,7 @@
 // nationality, address, phone, email, ID type and files, payment country,
 // bank, source of funds, and the two declarations (now answered as the PEP and
 // sanctions questions). Everything new is stored in the jsonb columns added by
-// drizzle/0017_kyc_application.sql, read back through `parseKycProfile`.
+// drizzle/0018_kyc_application.sql, read back through `parseKycProfile`.
 
 import { COUNTRIES } from "@/lib/countries";
 import { ageOn, ID_DOCUMENT_TYPES, LIMITS, needsBack } from "@/lib/kyc";

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   findHeaderRow,
   googleSheetCsvUrl,
+  googleSheetIdentity,
   mapStockHeaders,
   normaliseSteering,
   parseCsv,
@@ -273,6 +274,29 @@ describe("googleSheetCsvUrl", () => {
       googleSheetCsvUrl("https://docs.google.com/document/d/abc/edit"),
     ).toBeNull();
     expect(googleSheetCsvUrl("not a link")).toBeNull();
+  });
+});
+
+describe("googleSheetIdentity", () => {
+  it("treats a link with no tab as the first tab", () => {
+    const a = googleSheetIdentity(
+      "https://docs.google.com/spreadsheets/d/abc/edit#gid=0",
+    );
+    expect(a).not.toBeNull();
+    expect(
+      googleSheetIdentity("https://docs.google.com/spreadsheets/d/abc/edit"),
+    ).toBe(a);
+    expect(
+      googleSheetIdentity(
+        "https://docs.google.com/spreadsheets/d/abc/edit?usp=sharing#gid=0",
+      ),
+    ).toBe(a);
+    expect(
+      googleSheetIdentity(
+        "https://docs.google.com/spreadsheets/d/abc/edit#gid=5",
+      ),
+    ).not.toBe(a);
+    expect(googleSheetIdentity("https://example.com/x")).toBeNull();
   });
 });
 

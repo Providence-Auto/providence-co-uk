@@ -1,4 +1,4 @@
-// Applies drizzle/0017_kyc_application.sql to one environment's database: the
+// Applies drizzle/0018_kyc_application.sql to one environment's database: the
 // full KYC application's columns, the personal KYC link table (kycrequest)
 // and the confirmed-sale table (leadsale).
 //
@@ -29,7 +29,7 @@ const ENVS = {
 };
 
 const STATEMENTS = readFileSync(
-  new URL("../drizzle/0017_kyc_application.sql", import.meta.url),
+  new URL("../drizzle/0018_kyc_application.sql", import.meta.url),
   "utf8",
 )
   .split("--> statement-breakpoint")
