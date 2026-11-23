@@ -38,16 +38,11 @@ export default async function KycPage({
           Your proforma invoice is issued once these details are approved. They
           are seen only by the Providence Auto team.
         </p>
-        {token && !prefill && (
-          <p className="mt-4 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-            This personal link has expired or has already been used. You can
-            still send your details below, or ask your consultant for a new
-            link.
-          </p>
-        )}
-
         <div className="mt-10">
-          <KycForm prefill={prefill} />
+          {/* The notice lives in the form: sending the form uses the link up
+              and re-renders this page, and it must not then appear under the
+              thank-you. */}
+          <KycForm prefill={prefill} expiredLink={Boolean(token && !prefill)} />
         </div>
       </main>
     </div>

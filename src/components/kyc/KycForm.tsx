@@ -147,8 +147,11 @@ const newUid = () =>
 
 export default function KycForm({
   prefill,
+  expiredLink = false,
 }: {
   prefill?: KycFormPrefill | null;
+  /** Opened from a personal link that is no longer open. */
+  expiredLink?: boolean;
 }) {
   const [app, setApp] = useState<KycApplicationInput>(() =>
     mergeKycApplication(prefill?.application),
@@ -238,7 +241,12 @@ export default function KycForm({
 
   const set = useCallback((path: string, value: unknown) => {
     setApp((prev) => {
-      const next = setPath(prev, path, value);
+      // A function value is an update from the latest value at that path.
+      const resolved =
+        typeof value === "function"
+          ? (value as (current: unknown) => unknown)(getPath(prev, path) ?? [])
+          : value;
+      const next = setPath(prev, path, resolved);
       // The country of residence sets the dial code until one is chosen.
       if (path === "country" && !prev.phoneDial) {
         const dial = COUNTRIES.find((c) => c.n === value)?.c;
@@ -609,6 +617,13 @@ export default function KycForm({
 
   return (
     <div ref={topRef} className="scroll-mt-6">
+      {expiredLink && (
+        <p className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          This personal link has expired or has already been used. You can still
+          send your details below, or ask your consultant for a new link.
+        </p>
+      )}
+
       <Progress steps={steps} index={index} />
 
       {prefill && index === 0 && (
@@ -1434,7 +1449,7 @@ function Chips({
   options: readonly string[];
   multi: boolean;
   value: string | string[];
-  onChange: (v: string | string[]) => void;
+  onChange: (v: string | ((list: string[]) => string[])) => void;
   error?: string;
 }) {
   const selected = (o: string) =>
@@ -1457,8 +1472,11 @@ function Chips({
               aria-pressed={on}
               onClick={() => {
                 if (!multi) return onChange(o);
-                const list = value as string[];
-                onChange(on ? list.filter((x) => x !== o) : [...list, o]);
+                // From the latest list, not this render's: two quick taps
+                // must both count.
+                onChange((list: string[]) =>
+                  list.includes(o) ? list.filter((x) => x !== o) : [...list, o],
+                );
               }}
               className={`inline-flex h-10 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-feedback active:scale-[0.97] active:duration-0 ${
                 on
