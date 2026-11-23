@@ -5,8 +5,11 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   importStockCars,
+  linkStockSheet,
   previewStockImport,
   type StockImportPreview,
+  type StockMember,
+  type StockSheetView,
 } from "@/actions/stock-actions";
 import {
   formatFob,
@@ -21,6 +24,7 @@ import {
   type StockImportRow,
   stockImportTemplateCsv,
 } from "@/lib/stock-import";
+import { syncSummary } from "./LinkedSheets";
 
 type Mode = "file" | "sheet";
 type Preview = Extract<StockImportPreview, { success: true }>;
@@ -47,29 +51,51 @@ function fobText(row: StockImportRow) {
     : String(row.input.fobPrice) || "—";
 }
 
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
 /**
- * Adds cars to the signed-in person's list from a CSV or Excel file or a
- * Google Sheet: read and check first, then confirm. Nothing on the list is
- * changed or removed by an import.
+ * Adds cars to a list from a spreadsheet, two ways:
+ *
+ * - a CSV or Excel file, once: read and check, then add the ready rows.
+ *   Nothing already on the list is changed or removed.
+ * - a Google Sheet, linked: read and check, then link it. From then on the
+ *   list follows the sheet (src/lib/stock-sync.ts).
+ *
+ * Admins choose whose list, themselves included.
  */
 export default function StockImport({
+  isAdmin,
+  actorId,
+  memberCode,
+  members,
   onImported,
+  onLinked,
 }: {
+  isAdmin: boolean;
+  actorId: string;
+  memberCode: string;
+  members: StockMember[];
   onImported: (cars: StockCarView[]) => void;
+  onLinked: (sheet: StockSheetView, cars: StockCarView[]) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>("file");
   const [file, setFile] = useState<File | null>(null);
   const [sheetUrl, setSheetUrl] = useState("");
   const [currency, setCurrency] = useState("USD");
+  const [ownerId, setOwnerId] = useState(actorId);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [pending, startTransition] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const linking = mode === "sheet";
   const ready = preview?.rows.filter((r) => r.status === "ready") ?? [];
   const invalid = preview?.rows.filter((r) => r.status === "invalid") ?? [];
   const duplicate = preview?.rows.filter((r) => r.status === "duplicate") ?? [];
+  const owner = members.find((m) => m.id === ownerId);
+  const ownerCode = owner?.memberCode ?? memberCode;
+  const ownList = ownerId === actorId;
 
   const clear = () => {
     setPreview(null);
@@ -83,18 +109,23 @@ export default function StockImport({
     e.preventDefault();
     setError(null);
     setPreview(null);
-    if (mode === "file" && !file) {
+    if (!linking && !file) {
       setError("Choose a .csv or .xlsx file.");
       return;
     }
-    if (mode === "sheet" && !sheetUrl.trim()) {
+    if (linking && !sheetUrl.trim()) {
       setError("Paste the Google Sheets link.");
       return;
     }
     const data = new FormData();
     data.set("currency", currency);
-    if (mode === "file" && file) data.set("file", file);
-    else data.set("sheetUrl", sheetUrl.trim());
+    if (isAdmin) data.set("ownerId", ownerId);
+    if (linking) {
+      data.set("sheetUrl", sheetUrl.trim());
+      data.set("link", "1");
+    } else if (file) {
+      data.set("file", file);
+    }
 
     startTransition(async () => {
       const result = await previewStockImport(data);
@@ -109,21 +140,41 @@ export default function StockImport({
   const confirm = () => {
     if (!preview || ready.length === 0) return;
     startTransition(async () => {
-      const result = await importStockCars(
-        ready.map((r) => r.input),
-        preview.source,
-      );
-      if (!result.success) {
-        toast.error(result.error);
-        return;
+      if (linking) {
+        const result = await linkStockSheet({
+          sheetUrl: sheetUrl.trim(),
+          currency,
+          ownerId: isAdmin ? ownerId : null,
+        });
+        if (!result.success) {
+          toast.error(result.error);
+          return;
+        }
+        onLinked(result.sheet, result.cars);
+        if (result.sync.ok) {
+          toast.success(`Sheet linked · ${syncSummary(result.sync)}`);
+        } else {
+          toast.error(
+            `Sheet linked, but the first sync failed: ${result.sync.error}`,
+          );
+        }
+      } else {
+        const result = await importStockCars(
+          ready.map((r) => r.input),
+          preview.source,
+          isAdmin ? ownerId : null,
+        );
+        if (!result.success) {
+          toast.error(result.error);
+          return;
+        }
+        onImported(result.cars);
+        toast.success(
+          `Added ${plural(result.cars.length, "car")}${
+            result.skipped ? ` · ${result.skipped} skipped` : ""
+          }`,
+        );
       }
-      onImported(result.cars);
-      const added = result.cars.length;
-      toast.success(
-        `Added ${added} car${added === 1 ? "" : "s"}${
-          result.skipped ? ` · ${result.skipped} skipped` : ""
-        }`,
-      );
       clear();
       setOpen(false);
     });
@@ -157,8 +208,7 @@ export default function StockImport({
           </h2>
           <p className="mt-0.5 text-xs text-zinc-500">
             Columns: {STOCK_IMPORT_COLUMNS.join(", ")}. Up to{" "}
-            {STOCK_IMPORT_MAX_ROWS} cars at a time; the cars already on your
-            list stay as they are.
+            {STOCK_IMPORT_MAX_ROWS} cars at a time.
           </p>
         </div>
         <button
@@ -180,7 +230,7 @@ export default function StockImport({
             {(
               [
                 ["file", "CSV or Excel file"],
-                ["sheet", "Google Sheet"],
+                ["sheet", "Link a Google Sheet"],
               ] as const
             ).map(([key, label]) => (
               <button
@@ -202,24 +252,16 @@ export default function StockImport({
             ))}
           </div>
 
-          <div className="grid gap-3 md:grid-cols-[1fr_14rem]">
-            {mode === "file" ? (
-              <label className="block">
-                <span className="mb-1 block text-xs font-semibold text-zinc-600">
-                  File (.csv or .xlsx)
-                </span>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                  onChange={(e) => {
-                    setFile(e.target.files?.[0] ?? null);
-                    setError(null);
-                  }}
-                  className="block w-full text-sm text-zinc-700 file:mr-3 file:h-10 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-4 file:text-sm file:font-semibold file:text-zinc-800 hover:file:bg-zinc-200"
-                />
-              </label>
-            ) : (
+          <p className="text-xs text-zinc-500">
+            {linking
+              ? "The sheet stays linked: cars added, changed or deleted in it follow on the list when the stock pages are next opened (at most every 15 minutes), or at once with Sync now. Its cars are edited in the sheet."
+              : "Adds the cars once. Nothing already on the list is changed or removed."}
+          </p>
+
+          <div
+            className={`grid gap-3 ${isAdmin ? "md:grid-cols-[1fr_14rem_14rem]" : "md:grid-cols-[1fr_14rem]"}`}
+          >
+            {linking ? (
               <label className="block">
                 <span className="mb-1 block text-xs font-semibold text-zinc-600">
                   Google Sheets link
@@ -237,8 +279,24 @@ export default function StockImport({
                 />
                 <span className="mt-1 block text-xs text-zinc-500">
                   Share the sheet as &ldquo;Anyone with the link&rdquo; (Viewer)
-                  first. The tab open in the link is the one imported.
+                  first. The tab open in the link is the one read.
                 </span>
+              </label>
+            ) : (
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold text-zinc-600">
+                  File (.csv or .xlsx)
+                </span>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  onChange={(e) => {
+                    setFile(e.target.files?.[0] ?? null);
+                    setError(null);
+                  }}
+                  className="block w-full text-sm text-zinc-700 file:mr-3 file:h-10 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-4 file:text-sm file:font-semibold file:text-zinc-800 hover:file:bg-zinc-200"
+                />
               </label>
             )}
 
@@ -258,6 +316,30 @@ export default function StockImport({
                 ))}
               </select>
             </label>
+
+            {isAdmin && (
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold text-zinc-600">
+                  Add to the list of
+                </span>
+                <select
+                  value={ownerId}
+                  onChange={(e) => setOwnerId(e.target.value)}
+                  className={inputClass}
+                >
+                  {!members.some((m) => m.id === actorId) && (
+                    <option value={actorId}>Me ({memberCode})</option>
+                  )}
+                  {members.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.id === actorId
+                        ? `Me (${m.memberCode})`
+                        : `${m.name} (${m.memberCode})`}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
           </div>
 
           {error && (
@@ -291,7 +373,7 @@ export default function StockImport({
         <div className="mt-4 space-y-4">
           <p className="text-sm text-zinc-700">
             <span className="font-semibold text-emerald-700">
-              {ready.length} ready to add
+              {ready.length} ready
             </span>
             {invalid.length > 0 && (
               <>
@@ -305,16 +387,21 @@ export default function StockImport({
               <>
                 {" · "}
                 <span className="font-semibold text-zinc-500">
-                  {duplicate.length} already on your list
+                  {duplicate.length} already on the list
                 </span>
               </>
             )}
-            <span className="text-zinc-500"> — from the {preview.source}.</span>
+            <span className="text-zinc-500">
+              {" "}
+              — from the {preview.source}, for{" "}
+              {ownList ? "your" : `${ownerCode}'s`} list.
+            </span>
           </p>
           {invalid.length > 0 && (
             <p className="text-xs text-zinc-500">
-              Rows with problems are left out. Fix them in the sheet and import
-              it again — the rows added now will be recognised and skipped.
+              {linking
+                ? "Rows with problems are skipped, and while any are left the sync removes nothing — fix them in the sheet and they follow on the next sync."
+                : "Rows with problems are left out. Fix them in the sheet and import it again — the rows added now will be recognised and skipped."}
             </p>
           )}
 
@@ -364,7 +451,7 @@ export default function StockImport({
                     <td className="px-3 py-2 text-xs">
                       {row.status === "ready" && (
                         <span className="font-semibold text-emerald-700">
-                          Ready
+                          {row.note ?? "Ready"}
                         </span>
                       )}
                       {row.status === "duplicate" && row.note}
@@ -397,10 +484,14 @@ export default function StockImport({
               className="inline-flex h-10 items-center rounded-lg bg-zinc-900 px-5 text-sm font-semibold text-white transition-feedback hover:bg-zinc-700 active:scale-[0.98] active:duration-0 disabled:opacity-50"
             >
               {pending
-                ? "Adding…"
+                ? linking
+                  ? "Linking…"
+                  : "Adding…"
                 : ready.length === 0
                   ? "Nothing to add"
-                  : `Add ${ready.length} car${ready.length === 1 ? "" : "s"} to my list`}
+                  : linking
+                    ? `Link the sheet (${plural(ready.length, "car")})`
+                    : `Add ${plural(ready.length, "car")} to ${ownList ? "my" : `${ownerCode}'s`} list`}
             </button>
             <button
               type="button"

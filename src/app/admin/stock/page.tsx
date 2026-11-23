@@ -1,7 +1,14 @@
 import Link from "next/link";
-import { getMyStock, getStockActor } from "@/actions/stock-actions";
+import { after } from "next/server";
+import {
+  getMyStock,
+  getStockActor,
+  getStockMembers,
+  getStockSheets,
+} from "@/actions/stock-actions";
 import StockListClient from "@/components/admin/StockListClient";
 import { STOCK_HISTORY_PATH, STOCK_PUBLIC_PATH } from "@/lib/stock";
+import { syncStaleSheets } from "@/lib/stock-sync";
 
 // Reads the database on every request — never prerendered, because the build
 // container cannot reach Postgres and would bake in an empty table.
@@ -25,7 +32,13 @@ export default async function StockAdminPage() {
     );
   }
 
-  const cars = await getMyStock();
+  const [cars, sheets, members] = await Promise.all([
+    getMyStock(),
+    getStockSheets(),
+    actor.isAdmin ? getStockMembers() : Promise.resolve([]),
+  ]);
+  // Linked Google Sheets due a sync are synced once this page has been sent.
+  after(syncStaleSheets);
   const publicLink = `${SITE.replace(/\/$/, "")}${STOCK_PUBLIC_PATH}`;
 
   return (
@@ -55,6 +68,9 @@ export default async function StockAdminPage() {
         initialCars={cars}
         isAdmin={actor.isAdmin}
         memberCode={actor.memberCode}
+        actorId={actor.id}
+        initialSheets={sheets}
+        stockMembers={members}
         publicLink={publicLink}
       />
     </div>
