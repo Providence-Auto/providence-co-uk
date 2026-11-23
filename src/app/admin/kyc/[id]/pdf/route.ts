@@ -9,6 +9,7 @@ import { eq } from "drizzle-orm";
 import { getKycSubmission } from "@/actions/kyc-actions";
 import { db, kycSubmissions, requests } from "@/db";
 import { kycStaff } from "@/lib/kyc-access";
+import { parseStoredDocs } from "@/lib/kyc-application";
 import { kycPdfFileName, renderKycPdf } from "@/lib/kyc-pdf";
 import { getKycDocument } from "@/lib/kyc-storage";
 
@@ -33,6 +34,7 @@ export async function GET(
         frontType: kycSubmissions.idFrontType,
         backKey: kycSubmissions.idBackKey,
         backType: kycSubmissions.idBackType,
+        documents: kycSubmissions.documents,
       })
       .from(kycSubmissions)
       .where(eq(kycSubmissions.id, id))
@@ -42,10 +44,15 @@ export async function GET(
     return new Response("Not found", { status: 404, headers: PRIVATE });
   }
 
+  const signature = parseStoredDocs(keys.documents).find(
+    (d) => d.type === "SIGNATURE",
+  );
+
   try {
-    const [frontBytes, backBytes, [lead]] = await Promise.all([
-      getKycDocument(keys.frontKey),
+    const [frontBytes, backBytes, signatureBytes, [lead]] = await Promise.all([
+      keys.frontKey ? getKycDocument(keys.frontKey) : null,
       keys.backKey ? getKycDocument(keys.backKey) : null,
+      signature ? getKycDocument(signature.key) : null,
       record.requestId
         ? db
             .select({
@@ -61,8 +68,13 @@ export async function GET(
     const pdf = await renderKycPdf(
       record,
       {
-        front: { bytes: frontBytes, type: keys.frontType },
+        front: keys.frontKey
+          ? { bytes: frontBytes, type: keys.frontType }
+          : null,
         back: keys.backKey ? { bytes: backBytes, type: keys.backType } : null,
+        signature: signature
+          ? { bytes: signatureBytes, type: signature.contentType }
+          : null,
       },
       lead
         ? { vehicle: `${lead.make} ${lead.model}`.trim(), status: lead.status }

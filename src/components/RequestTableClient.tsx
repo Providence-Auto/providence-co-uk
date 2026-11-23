@@ -223,6 +223,15 @@ export default function RequestTableClient({
   const getSalesStatusBadge = (status: string) => {
     const current = status || "Action required";
 
+    // A confirmed sale stands apart from every other status.
+    if (current === "Sales Confirmed") {
+      return (
+        <Badge className="bg-gradient-to-r from-sky-500 to-violet-500 text-white border-transparent rounded-full px-3">
+          {current}
+        </Badge>
+      );
+    }
+
     // Combined "Bad" / Lost / Closed statuses in Red
     if (
       ["Action required", "Lead Lost", "Lead Closed", "Not Qualified"].includes(

@@ -10,7 +10,12 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { deleteRequest, updateRequestStatus } from "@/actions/admin-actions";
+import {
+  deleteRequest,
+  type SalesConfirmedResult,
+  updateRequestStatus,
+} from "@/actions/admin-actions";
+import { SalesConfirmedSummary } from "@/components/admin/SalesConfirmed";
 import { getAllSpecDossiers } from "@/actions/spec-actions";
 import DynamicFileUploader, {
   type PendingFile,
@@ -31,7 +36,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getPresignedUrls } from "@/lib/file-actions";
 
-import { PIPELINE_STAGES } from "@/lib/leadConversion";
+import { fireConfetti } from "@/lib/confetti";
+import { isSalesConfirmedStatus, PIPELINE_STAGES } from "@/lib/leadConversion";
 import { vehicleTypeLabel } from "@/lib/vehicle-type";
 
 type HistoryStyle = {
@@ -110,6 +116,7 @@ const getStyles = (action: string | undefined): HistoryStyle => {
     act.includes("Active Conversation") ||
     act.includes("Replied") ||
     act.includes("SQL") ||
+    act.includes("Sales Confirmed") ||
     act.includes("Lead Closed")
   )
     return {
@@ -141,6 +148,13 @@ export default function RequestActionModal({
   const [payload, setPayload] = useState<any>({});
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [dossiers, setDossiers] = useState<any[]>([]);
+  // Set once a save moved the lead to Sales Confirmed: the dialog then shows
+  // where the customer's KYC link went instead of closing.
+  const [confirmed, setConfirmed] = useState<SalesConfirmedResult | null>(null);
+  const confirmingSale =
+    modal.type === "sales_status" &&
+    isSalesConfirmedStatus(payload.leadStatus) &&
+    !isSalesConfirmedStatus(modal.request?.leadStatus);
 
   const inputClasses =
     "bg-zinc-50 border-black/10 text-black placeholder:text-zinc-400 focus-visible:ring-black/5 focus-visible:border-black/30 transition-feedback rounded-xl";
@@ -148,6 +162,7 @@ export default function RequestActionModal({
     "w-full bg-zinc-50 border border-black/10 text-black focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/30 transition-feedback rounded-xl px-4 py-3 appearance-none cursor-pointer";
 
   useEffect(() => {
+    if (modal.isOpen) setConfirmed(null);
     if (modal.isOpen && modal.request) {
       if (modal.type === "details") {
         setPayload({ adminNotes: modal.request.adminNotes || "" });
@@ -292,13 +307,18 @@ export default function RequestActionModal({
               ? payload.salesComment?.trim() || ""
               : "",
         };
-        await withNetworkRetry(() =>
+        const result = await withNetworkRetry(() =>
           updateRequestStatus(
             modal.request._id,
             modal.request.status,
             submitPayload,
           ),
         );
+        if (result?.salesConfirmed) {
+          setConfirmed(result.salesConfirmed);
+          fireConfetti();
+          return;
+        }
       }
       onClose();
     } catch (error) {
@@ -336,8 +356,18 @@ export default function RequestActionModal({
           </DialogDescription>
         </DialogHeader>
 
+        {/* --- SALES CONFIRMED: where the KYC link went --- */}
+        {modal.type === "sales_status" && confirmed && (
+          <div className="py-2">
+            <p className="text-lg font-bold tracking-tight text-zinc-900">
+              Sale confirmed for {modal.request?.name}.
+            </p>
+            <SalesConfirmedSummary {...confirmed} />
+          </div>
+        )}
+
         {/* --- SALES STATUS UPDATE --- */}
-        {modal.type === "sales_status" && (
+        {modal.type === "sales_status" && !confirmed && (
           <div className="py-6 space-y-4">
             <div className="space-y-2">
               <Label className="text-zinc-600 font-bold">
@@ -363,6 +393,27 @@ export default function RequestActionModal({
                 ))}
               </select>
             </div>
+            {confirmingSale && (
+              <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+                <p className="font-semibold">Confirm the sale?</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  <li>
+                    {modal.request?.email ? (
+                      <>
+                        <strong>{modal.request.email}</strong> is emailed a
+                        personal link to complete their KYC (pre-filled if they
+                        have already sent one).
+                      </>
+                    ) : (
+                      "This lead has no email address: you'll get the KYC link to send yourself."
+                    )}
+                  </li>
+                  <li>
+                    A Purchase is sent to Meta and Google Ads, once per lead.
+                  </li>
+                </ul>
+              </div>
+            )}
             <div className="space-y-2 pt-2">
               <Label className="text-zinc-600 font-bold">
                 Sales Status Update Note
@@ -1032,39 +1083,54 @@ export default function RequestActionModal({
           </div>
         )}
 
-        <DialogFooter className="mt-6 border-t border-black/5 pt-6">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            disabled={isProcessing}
-            className="border-black/10 text-zinc-600 hover:bg-zinc-50 rounded-xl px-6"
-          >
-            Cancel
-          </Button>
-          <Button
-            variant={modal.type === "delete" ? "destructive" : "default"}
-            onClick={handleActionSubmit}
-            disabled={isProcessing}
-            className={
-              modal.type !== "delete"
-                ? "bg-black text-white hover:bg-zinc-800 rounded-xl px-8"
-                : "rounded-xl px-8"
-            }
-          >
-            {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {modal.type === "delete"
-              ? "Delete Lead"
-              : modal.type === "revert"
-                ? "Revert Stage"
-                : modal.type === "details"
-                  ? "Save Changes"
-                  : modal.type === "assign"
-                    ? "Confirm Assignment"
-                    : modal.type === "sales_status"
-                      ? "Save Status"
-                      : `Update to ${modal.targetStage}`}
-          </Button>
-        </DialogFooter>
+        {confirmed ? (
+          <DialogFooter className="mt-6 border-t border-black/5 pt-6">
+            <Button
+              onClick={onClose}
+              className="bg-black text-white hover:bg-zinc-800 rounded-xl px-8"
+            >
+              Done
+            </Button>
+          </DialogFooter>
+        ) : (
+          <DialogFooter className="mt-6 border-t border-black/5 pt-6">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              disabled={isProcessing}
+              className="border-black/10 text-zinc-600 hover:bg-zinc-50 rounded-xl px-6"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant={modal.type === "delete" ? "destructive" : "default"}
+              onClick={handleActionSubmit}
+              disabled={isProcessing}
+              className={
+                modal.type !== "delete"
+                  ? "bg-black text-white hover:bg-zinc-800 rounded-xl px-8"
+                  : "rounded-xl px-8"
+              }
+            >
+              {isProcessing && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {modal.type === "delete"
+                ? "Delete Lead"
+                : modal.type === "revert"
+                  ? "Revert Stage"
+                  : modal.type === "details"
+                    ? "Save Changes"
+                    : modal.type === "assign"
+                      ? "Confirm Assignment"
+                      : modal.type === "sales_status"
+                        ? confirmingSale
+                          ? "Confirm sale"
+                          : "Save Status"
+                        : `Update to ${modal.targetStage}`}
+            </Button>
+          </DialogFooter>
+        )}
       </DialogContent>
 
       <style jsx global>{`

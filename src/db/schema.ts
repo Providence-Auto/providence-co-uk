@@ -7,6 +7,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // --- Better-Auth Tables ---
@@ -394,8 +395,9 @@ export const kycSubmissions = pgTable(
   {
     id: text("id").primaryKey(),
     fullName: text("fullName").notNull(),
-    // YYYY-MM-DD, kept as text so no timezone can move the day.
-    dateOfBirth: text("dateOfBirth").notNull(),
+    // YYYY-MM-DD, kept as text so no timezone can move the day. For a
+    // company, the date of incorporation (optional, so nullable since 0018).
+    dateOfBirth: text("dateOfBirth"),
     // Country names, spelled as COUNTRIES spells them.
     nationality: text("nationality").notNull(),
     addressLine1: text("addressLine1").notNull(),
@@ -408,11 +410,12 @@ export const kycSubmissions = pgTable(
     phone: text("phone").notNull(),
     email: text("email").notNull(),
     // "passport", "national-id" or "driving-licence" (ID_DOCUMENT_TYPES).
-    idDocumentType: text("idDocumentType").notNull(),
+    // Null for a company, which sends company documents instead (0018).
+    idDocumentType: text("idDocumentType"),
     // Object keys in the KYC bucket, never public URLs: the files are only
     // ever read through the staff-only route at /admin/kyc/<id>/document/<side>.
-    idFrontKey: text("idFrontKey").notNull(),
-    idFrontType: text("idFrontType").notNull(),
+    idFrontKey: text("idFrontKey"),
+    idFrontType: text("idFrontType"),
     // Null for a passport, which has no back worth photographing.
     idBackKey: text("idBackKey"),
     idBackType: text("idBackType"),
@@ -454,6 +457,13 @@ export const kycSubmissions = pgTable(
     requestId: text("requestId").references(() => requests.id, {
       onDelete: "set null",
     }),
+    // The full application (drizzle/0018_kyc_application.sql). Null on a
+    // record sent from the short form. customerType is "individual" or
+    // "company"; profile is KycProfile and documents is KycStoredDoc[], both
+    // read through src/lib/kyc-application.ts, never directly.
+    customerType: text("customerType"),
+    profile: jsonb("profile"),
+    documents: jsonb("documents"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
@@ -462,6 +472,54 @@ export const kycSubmissions = pgTable(
     index("kycsubmission_request_idx").on(table.requestId),
   ],
 );
+
+// A personal KYC link, sent when a sale is confirmed (0018). Only the hash of
+// the token is kept: the link is shown once, and a resend makes a new one.
+// kycSubmissionId set means the link reopens that record, pre-filled, and the
+// customer's answers update it in place.
+export const kycRequests = pgTable(
+  "kycrequest",
+  {
+    id: text("id").primaryKey(),
+    tokenHash: text("tokenHash").notNull(),
+    requestId: text("requestId").references(() => requests.id, {
+      onDelete: "set null",
+    }),
+    kycSubmissionId: text("kycSubmissionId").references(
+      () => kycSubmissions.id,
+      { onDelete: "set null" },
+    ),
+    customerName: text("customerName"),
+    customerEmail: text("customerEmail").notNull(),
+    createdById: text("createdById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdByName: text("createdByName"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    emailSentAt: timestamp("emailSentAt"),
+    expiresAt: timestamp("expiresAt").notNull(),
+    completedAt: timestamp("completedAt"),
+    completedKycId: text("completedKycId"),
+  },
+  (table) => [
+    uniqueIndex("kycrequest_token_idx").on(table.tokenHash),
+    index("kycrequest_request_idx").on(table.requestId),
+    index("kycrequest_kyc_idx").on(table.kycSubmissionId),
+  ],
+);
+
+// A lead whose sale was confirmed (0018), with the Google Ads Purchase ledger.
+// Kept off "request" so that no lead query names a column that a lagging
+// environment might not have yet.
+export const leadSales = pgTable("leadsale", {
+  requestId: text("requestId")
+    .primaryKey()
+    .references(() => requests.id, { onDelete: "cascade" }),
+  confirmedAt: timestamp("confirmedAt").defaultNow().notNull(),
+  confirmedById: text("confirmedById"),
+  confirmedByName: text("confirmedByName"),
+  googlePurchaseSentAt: timestamp("googlePurchaseSentAt"),
+});
 
 // --- Stock list (drizzle/0014_stock_list_tables.sql) ---
 //

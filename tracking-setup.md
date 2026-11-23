@@ -169,6 +169,12 @@ conversion action**:
    its id. On the Railway production service → **Variables**, set
    `GOOGLE_DEALER_QUALIFIED_ACTION_ID` and `GOOGLE_DEALER_ONBOARDED_ACTION_ID`.
    Until they are set, dealer stages go to Meta only.
+5. **Sales Confirmed (B2C, 2026-11-23).** Same import route, category
+   *Purchase*, name `Sale confirmed`. Set its id as `GOOGLE_PURCHASE_ACTION_ID`.
+   A lead moved to the *Sales Confirmed* sales status uploads it once (ledger:
+   `leadsale.googlePurchaseSentAt`); Meta gets the `Purchase` event through the
+   existing `metaPurchaseSentAt` ledger, shared with Deposit Collected so a
+   deal sends one Purchase whichever comes first. Unset, Google gets nothing.
 
 Offline uploads also need the existing `GOOGLE_ADS_*` keys and a developer
 token that is allowed to upload offline conversions (Google closed that to

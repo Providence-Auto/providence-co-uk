@@ -14,10 +14,12 @@ import {
 import {
   DEAL_CURRENCY,
   hasReachedPurchaseStage,
+  isSalesConfirmedStatus,
   leadOutcome,
   PURCHASE_EVENT,
   QUALIFIED_LEAD_EVENT,
 } from "@/lib/leadConversion";
+import { onLeadSalesConfirmed } from "@/lib/kyc-request";
 import { auth } from "@/utils/auth";
 
 type LeadRow = typeof requests.$inferSelect;
@@ -93,9 +95,15 @@ async function uploadOfflineConversions(before: LeadRow, after: LeadRow) {
   // the customer has paid a deposit. The old code looked for "closed"/"won" in
   // the sales label, which no label contains — so this never fired at all.
   // Same transition rule, for the same reason.
+  //
+  // A confirmed sale (business instruction 2026-11-23) is the same signal from
+  // the sales side, so either transition sends it — and the ledger makes sure
+  // a deal that is both confirmed and later paid still sends one Purchase.
   const reachedPayment =
-    hasReachedPurchaseStage(after.status) &&
-    !hasReachedPurchaseStage(before.status);
+    (hasReachedPurchaseStage(after.status) &&
+      !hasReachedPurchaseStage(before.status)) ||
+    (isSalesConfirmedStatus(after.leadStatus) &&
+      !isSalesConfirmedStatus(before.leadStatus));
 
   if (reachedPayment && !after.metaPurchaseSentAt) {
     const value = after.agreedPrice ?? after.totalAmount ?? null;
@@ -227,11 +235,21 @@ export async function deleteRequest(id: string) {
   }
 }
 
+export type SalesConfirmedResult = {
+  /** Where the KYC link went, and whether the email was accepted. */
+  email: string | null;
+  emailed: boolean;
+  /** The personal link, shown once so it can also be sent on WhatsApp. */
+  link: string | null;
+  prefilled: boolean;
+};
+
 export async function updateRequestStatus(
   id: string,
   targetStage: string,
   payload: any,
-) {
+  options: { kycSubmissionId?: string | null } = {},
+): Promise<{ success: true; salesConfirmed?: SalesConfirmedResult }> {
   try {
     // 1. Get the current user to track WHO made the change
     const session = await requireAuth();
@@ -383,10 +401,53 @@ export async function updateRequestStatus(
       }
     }
 
+    // 7. --- SALES CONFIRMED ---
+    //     The moment a lead becomes Sales Confirmed: record the sale, upload
+    //     the Google Purchase and email the customer their KYC link. On the
+    //     transition only, so saving a confirmed lead again sends nothing.
+    let salesConfirmed: SalesConfirmedResult | undefined;
+    if (
+      updatedRequest &&
+      isSalesConfirmedStatus(updatedRequest.leadStatus) &&
+      !isSalesConfirmedStatus(existingRequest.leadStatus)
+    ) {
+      try {
+        const sent = await onLeadSalesConfirmed(
+          updatedRequest,
+          { id: session.user.id, name: currentUser },
+          {
+            kycSubmissionId:
+              typeof options.kycSubmissionId === "string"
+                ? options.kycSubmissionId
+                : null,
+          },
+        );
+        salesConfirmed = {
+          email: sent?.email ?? null,
+          emailed: sent?.emailed ?? false,
+          link: sent?.link ?? null,
+          prefilled: sent?.prefilled ?? false,
+        };
+      } catch (error) {
+        // The status is saved; say the link was not sent rather than fail.
+        console.error(
+          `[kyc] Sales Confirmed follow-up failed for ${id}`,
+          error,
+        );
+        salesConfirmed = {
+          email: updatedRequest.email || null,
+          emailed: false,
+          link: null,
+          prefilled: false,
+        };
+      }
+    }
+
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin");
+    revalidatePath("/admin/kyc");
 
-    return { success: true };
+    return { success: true, salesConfirmed };
   } catch (error) {
     console.error("Failed to update request status:", error);
     throw new Error(
