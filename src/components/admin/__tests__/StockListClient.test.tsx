@@ -300,12 +300,67 @@ describe("StockListClient", () => {
       currency: "USD",
       ownerId: null,
     });
-    expect(container.textContent).toContain("Linked Google Sheets");
+    expect(container.textContent).toContain("Sources");
+    expect(container.textContent).toContain("Google Sheet …abc · tab 0");
     expect(container.textContent).toContain("1 added, 1 rows with problems");
     expect(container.textContent).toContain("Patrol");
     // A car from the sheet is changed in the sheet, not on the page.
     expect(button("Edit Nissan Patrol")).toBeUndefined();
     expect(container.textContent).toContain("In the sheet");
+  });
+
+  it("shows Sources even with nothing linked, and filters the table to one sheet's cars", () => {
+    act(() => {
+      root.render(
+        <StockListClient
+          initialCars={[
+            CAR,
+            { ...CAR, id: "c2", model: "Vellfire", sheetId: "s1" },
+          ]}
+          isAdmin={false}
+          memberCode="SHAQ"
+          publicLink="https://example.test/available-cars"
+          actorId="u1"
+          initialSheets={[
+            {
+              id: "s1",
+              sheetUrl:
+                "https://docs.google.com/spreadsheets/d/1AbCdEf9x2Kq/edit#gid=7",
+              ownerId: "u1",
+              ownerName: "Shaq",
+              memberCode: "SHAQ",
+              defaultCurrency: "USD",
+              linkedByName: "Shaq",
+              lastSyncedAt: null,
+              lastStatus: null,
+              lastError: null,
+              lastResult: null,
+              createdAt: "2026-11-22T10:00:00.000Z",
+            },
+          ]}
+          stockMembers={[]}
+        />,
+      );
+    });
+    expect(container.textContent).toContain("Google Sheet …f9x2Kq · tab 7");
+    expect(container.textContent).toContain("Added here");
+    expect(container.textContent).toContain("On the list (2)");
+
+    act(() => button("1 car").click());
+    expect(container.textContent).toContain("Vellfire");
+    expect(container.textContent).not.toContain("Alphard");
+
+    act(() =>
+      [...container.querySelectorAll("button")]
+        .find((b) => b.textContent?.startsWith("Only Google Sheet"))
+        ?.click(),
+    );
+    expect(container.textContent).toContain("Alphard");
+  });
+
+  it("names the place to link a sheet when none is linked", () => {
+    render();
+    expect(container.textContent).toContain("No Google Sheet is linked yet");
   });
 
   it("lets an admin import a file onto another member's list", async () => {

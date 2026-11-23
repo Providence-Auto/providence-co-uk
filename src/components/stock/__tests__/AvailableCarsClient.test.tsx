@@ -46,7 +46,6 @@ const CARS: PublicStockCar[] = [
     fobPrice: 6200000,
     fobCurrency: "JPY",
     shippingPort: "Nagoya",
-    memberCode: "SHAQ",
   },
   {
     id: "b",
@@ -59,7 +58,6 @@ const CARS: PublicStockCar[] = [
     fobPrice: 112000,
     fobCurrency: "USD",
     shippingPort: "Jebel Ali",
-    memberCode: "SHIRAZ",
   },
 ];
 
@@ -137,6 +135,11 @@ async function submit() {
 }
 
 describe("AvailableCarsClient", () => {
+  it("never shows a team-member code to the public", () => {
+    expect(container.textContent).not.toMatch(/Code/);
+    expect(container.textContent).not.toContain("SHAQ");
+  });
+
   it("collects picked cars and shows the bar only while the form is off screen", () => {
     expect(bar()).toBeNull();
     tick("2024 Toyota Alphard");

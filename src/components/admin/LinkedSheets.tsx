@@ -43,16 +43,35 @@ function ago(iso: string | null): string {
 }
 
 /**
- * The Google Sheets linked to the lists on this page — admins see every one,
- * everyone else their own — with the last sync, Sync now and Unlink.
+ * A short name for a linked sheet: the end of its id and the tab, since the
+ * CSV export carries no title. "Google Sheet …9x2Kq · tab 0".
+ */
+export function sheetLabel(url: string): string {
+  const id =
+    url.match(/\/spreadsheets\/d\/(?:e\/)?([A-Za-z0-9_-]+)/)?.[1] ?? "";
+  const tab = url.match(/[#&?]gid=(\d+)/)?.[1] ?? "0";
+  return `Google Sheet …${id.slice(-6)} · tab ${tab}`;
+}
+
+/**
+ * Sources: the Google Sheets linked to the lists on this page — admins see
+ * every one, everyone else their own — with how many cars each supplies, the
+ * last sync, Sync now, Unlink, and a button that filters the table to that
+ * sheet's cars. Shown even with nothing linked, so the place is known.
  */
 export default function LinkedSheets({
   sheets,
+  cars,
   isAdmin,
+  activeSheetId,
+  onShowCars,
   onChange,
 }: {
   sheets: StockSheetView[];
+  cars: StockCarView[];
   isAdmin: boolean;
+  activeSheetId: string | null;
+  onShowCars: (sheetId: string | null) => void;
   onChange: (
     sheets: (list: StockSheetView[]) => StockSheetView[],
     cars: StockCarView[],
@@ -60,8 +79,8 @@ export default function LinkedSheets({
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [, startTransition] = useTransition();
-
-  if (sheets.length === 0) return null;
+  const carCount = (sheetId: string) =>
+    cars.filter((c) => c.sheetId === sheetId && !c.isRemoved).length;
 
   const syncNow = (sheet: StockSheetView) => {
     setBusy(sheet.id);
@@ -97,6 +116,7 @@ export default function LinkedSheets({
         toast.error(result.error);
         return;
       }
+      if (activeSheetId === sheet.id) onShowCars(null);
       onChange((list) => list.filter((s) => s.id !== sheet.id), result.cars);
       toast.success("Sheet unlinked. Its cars stay on the list.");
     });
@@ -104,15 +124,25 @@ export default function LinkedSheets({
 
   return (
     <section
-      aria-labelledby="linked-sheets-title"
+      aria-labelledby="stock-sources-title"
       className="rounded-2xl border border-zinc-200 bg-white p-5"
     >
       <h2
-        id="linked-sheets-title"
+        id="stock-sources-title"
         className="text-sm font-semibold text-zinc-900"
       >
-        Linked Google Sheets
+        Sources
       </h2>
+      <p className="mt-0.5 text-xs text-zinc-500">
+        The Google Sheets linked to {isAdmin ? "these lists" : "your list"}.
+        Their cars are kept in step with the sheet and changed there.
+      </p>
+      {sheets.length === 0 && (
+        <p className="mt-3 text-sm text-zinc-500">
+          No Google Sheet is linked yet. Link one under Import from CSV, Excel
+          or Google Sheets → Link a Google Sheet.
+        </p>
+      )}
       <ul className="mt-3 divide-y divide-zinc-100">
         {sheets.map((sheet) => {
           const result = sheet.lastResult;
@@ -128,9 +158,24 @@ export default function LinkedSheets({
                   rel="noreferrer"
                   className="inline-flex items-center gap-1 text-sm font-semibold text-sky-700 hover:underline"
                 >
-                  Open the sheet
+                  {sheetLabel(sheet.sheetUrl)}
                   <ExternalLink size={13} aria-hidden />
                 </a>
+                <button
+                  type="button"
+                  onClick={() =>
+                    onShowCars(activeSheetId === sheet.id ? null : sheet.id)
+                  }
+                  aria-pressed={activeSheetId === sheet.id}
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold transition-feedback ${
+                    activeSheetId === sheet.id
+                      ? "bg-zinc-900 text-white"
+                      : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                  }`}
+                >
+                  {carCount(sheet.id)} car{carCount(sheet.id) === 1 ? "" : "s"}
+                  {activeSheetId === sheet.id ? " · showing" : ""}
+                </button>
                 <span className="text-xs text-zinc-500">
                   Synced {ago(sheet.lastSyncedAt)}
                   {isAdmin && sheet.linkedByName

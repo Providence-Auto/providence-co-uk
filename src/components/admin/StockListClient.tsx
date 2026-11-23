@@ -31,7 +31,7 @@ import {
   validateStockCar,
 } from "@/lib/stock";
 import { CAR_MAKES } from "@/lib/vehicle-inquiry";
-import LinkedSheets from "./LinkedSheets";
+import LinkedSheets, { sheetLabel } from "./LinkedSheets";
 import StockImport from "./StockImport";
 
 const EMPTY: StockCarInput = {
@@ -90,6 +90,8 @@ export default function StockListClient({
   const [errors, setErrors] = useState<StockErrors>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [view, setView] = useState<"live" | "removed">("live");
+  // Sources: show only the cars of one linked sheet.
+  const [sourceSheet, setSourceSheet] = useState<string | null>(null);
   const [member, setMember] = useState("all");
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -108,8 +110,9 @@ export default function StockListClient({
       cars
         .filter((c) => (view === "live" ? !c.isRemoved : c.isRemoved))
         .filter((c) => member === "all" || c.memberCode === member)
+        .filter((c) => !sourceSheet || c.sheetId === sourceSheet)
         .sort(compareStockCars),
-    [cars, view, member],
+    [cars, view, member, sourceSheet],
   );
   const liveCount = cars.filter((c) => !c.isRemoved).length;
   const removedCount = cars.length - liveCount;
@@ -369,7 +372,13 @@ export default function StockListClient({
 
       <LinkedSheets
         sheets={sheets}
+        cars={cars}
         isAdmin={isAdmin}
+        activeSheetId={sourceSheet}
+        onShowCars={(id) => {
+          setSourceSheet(id);
+          if (id) setView("live");
+        }}
         onChange={(update, next) => {
           setSheets(update);
           setCars(next);
@@ -415,6 +424,18 @@ export default function StockListClient({
             </button>
           ))}
 
+          {sourceSheet && (
+            <button
+              type="button"
+              onClick={() => setSourceSheet(null)}
+              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 transition-feedback hover:bg-emerald-100"
+            >
+              Only {sheetLabel(sheetUrl.get(sourceSheet) ?? "")}
+              <X size={14} aria-hidden />
+              <span className="sr-only">(show every car)</span>
+            </button>
+          )}
+
           {isAdmin && members.length > 1 && (
             <select
               aria-label="Filter by team member"
@@ -445,6 +466,7 @@ export default function StockListClient({
                 <th className="px-4 py-3 text-right">FOB</th>
                 <th className="px-4 py-3">Shipping port</th>
                 <th className="px-4 py-3">Code</th>
+                <th className="px-4 py-3">Source</th>
                 <th className="px-4 py-3">
                   <span className="sr-only">Actions</span>
                 </th>
@@ -454,7 +476,7 @@ export default function StockListClient({
               {shown.length === 0 && (
                 <tr>
                   <td
-                    colSpan={10}
+                    colSpan={11}
                     className="px-4 py-10 text-center text-zinc-500"
                   >
                     {view === "live"
@@ -487,6 +509,23 @@ export default function StockListClient({
                     >
                       {car.memberCode}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    {car.sheetId && sheetUrl.get(car.sheetId) ? (
+                      <a
+                        href={sheetUrl.get(car.sheetId)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={sheetLabel(sheetUrl.get(car.sheetId) ?? "")}
+                        className="font-semibold text-emerald-700 hover:underline"
+                      >
+                        Google Sheet
+                      </a>
+                    ) : car.sheetId ? (
+                      <span className="text-zinc-500">Google Sheet</span>
+                    ) : (
+                      <span className="text-zinc-400">Added here</span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">

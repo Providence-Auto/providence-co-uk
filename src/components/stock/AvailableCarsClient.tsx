@@ -22,10 +22,8 @@ import { pushLeadEvent } from "@/lib/lead-events";
 import { currentRepCode } from "@/lib/rep-link";
 import { formatFob, type StockCarFields } from "@/lib/stock";
 
-export type PublicStockCar = StockCarFields & {
-  id: string;
-  memberCode: string;
-};
+/** A car as the public list shows it. No team-member code (business, 2026-11-23). */
+export type PublicStockCar = StockCarFields & { id: string };
 
 const FORM_ID = "stock-inquiry";
 
@@ -300,9 +298,6 @@ export default function AvailableCarsClient({
                     <p className="flex-1 font-semibold text-zinc-900">
                       {carName(car)}
                     </p>
-                    <span className="shrink-0 font-mono text-xs font-semibold text-zinc-500">
-                      {car.memberCode}
-                    </span>
                   </div>
                   <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 pl-8 text-sm">
                     <div>
@@ -365,9 +360,6 @@ export default function AvailableCarsClient({
                   <th scope="col" className="px-4 py-3">
                     Shipping port
                   </th>
-                  <th scope="col" className="px-4 py-3">
-                    Code
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
@@ -399,9 +391,6 @@ export default function AvailableCarsClient({
                       {formatFob(car.fobPrice, car.fobCurrency)}
                     </td>
                     <td className="px-4 py-3">{car.shippingPort}</td>
-                    <td className="px-4 py-3 font-mono text-xs font-semibold text-zinc-500">
-                      {car.memberCode}
-                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -802,10 +802,11 @@ export async function getStockHistory(
 
 /**
  * Every live car from every salesperson — the public list. Only the eight
- * fields and the member code leave the server; who owns the row does not.
+ * fields leave the server: not who owns the row, and not the team-member code
+ * (business instruction 2026-11-23).
  */
 export async function getPublicStock(): Promise<
-  (StockCarFields & { id: string; memberCode: string; updatedAt: string })[]
+  (StockCarFields & { id: string; updatedAt: string })[]
 > {
   const rows = await db
     .select()
@@ -816,7 +817,6 @@ export async function getPublicStock(): Promise<
     .map((row) => ({
       id: row.id,
       ...stockFields(row as unknown as StockCarFields),
-      memberCode: row.memberCode,
       updatedAt: row.updatedAt.toISOString(),
     }))
     .sort(compareStockCars);
