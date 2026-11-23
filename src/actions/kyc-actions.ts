@@ -301,7 +301,11 @@ export async function submitKyc(
           ...(back
             ? { idBackKey: back.key, idBackType: back.contentType }
             : {}),
+          // New answers (owners, bank, documents) have not been screened, so
+          // the office checks start again rather than carry over.
           status: "Submitted",
+          idVerified: false,
+          sanctionsScreened: false,
         })
         .where(eq(kycSubmissions.id, id));
     } else {

@@ -471,9 +471,8 @@ export default function KycForm({
           <span className="rounded-md bg-zinc-100 px-2 py-0.5 font-mono text-sm font-semibold text-zinc-800">
             {reference}
           </span>
-          . Our compliance team reviews it, usually within 1–2 working days, and
-          your consultant confirms once it is approved. Your proforma invoice
-          follows.
+          . Your consultant will confirm once your details are approved, and
+          your proforma invoice follows.
         </p>
       </div>
     );
