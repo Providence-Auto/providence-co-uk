@@ -11,9 +11,26 @@
 // of the dealer KYC form; nothing about the order or the company is asked.
 
 import { COUNTRIES } from "@/lib/countries";
+import type {
+  KycCustomerType,
+  KycDocType,
+  KycProfile,
+} from "@/lib/kyc-application";
+
+/** A stored file as the admin panel lists it: `index` addresses it in the route. */
+export interface KycViewDoc {
+  index: number;
+  type: KycDocType;
+  contentType: string;
+  name: string;
+  ownerIndex?: number;
+}
 
 export const KYC_PATH = "/kyc";
 export const KYC_ADMIN_PATH = "/admin/kyc";
+
+/** How long a personal KYC link (sent on Sales Confirmed) stays open. */
+export const KYC_LINK_DAYS = 30;
 
 export const ID_DOCUMENT_TYPES = [
   { value: "passport", label: "Passport", hasBack: false },
@@ -313,7 +330,8 @@ export interface KycView {
   id: string;
   reference: string;
   fullName: string;
-  dateOfBirth: string;
+  /** Null only for a company that gave no date of incorporation. */
+  dateOfBirth: string | null;
   nationality: string;
   addressLine1: string;
   addressLine2: string | null;
@@ -323,9 +341,15 @@ export interface KycView {
   country: string;
   phone: string;
   email: string;
-  idDocumentType: string;
-  idFrontType: string;
+  /** Null for a company. */
+  idDocumentType: string | null;
+  idFrontType: string | null;
   idBackType: string | null;
+  /** Null for a record sent from the short form (before 2026-11-23). */
+  customerType: KycCustomerType | null;
+  profile: KycProfile | null;
+  /** Every file beyond the ID's two sides, without its storage key. */
+  documents: KycViewDoc[];
   paymentCountry: string;
   bankName: string;
   sourceOfFunds: string;

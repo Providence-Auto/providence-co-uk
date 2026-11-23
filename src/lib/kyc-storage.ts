@@ -20,9 +20,14 @@ import { BUCKET_NAME, r2 } from "@/lib/r2";
 
 const KYC_BUCKET = process.env.R2_KYC_BUCKET_NAME || BUCKET_NAME;
 
+/**
+ * Stores one file under kyc/<folder>/. `side` names the file: "front" and
+ * "back" for the ID, or a document type in lower case ("proof_of_address",
+ * "owner_passport", "signature") for the full application's files.
+ */
 export async function putKycDocument(
   submissionId: string,
-  side: "front" | "back",
+  side: string,
   bytes: Buffer,
   kind: IdFileKind,
 ): Promise<{ key: string; contentType: string }> {

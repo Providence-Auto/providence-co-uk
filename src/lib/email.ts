@@ -14,6 +14,9 @@ import DealerInquiryAlertEmail, {
 import DealerInquiryConfirmationEmail, {
   type DealerInquiryConfirmationProps,
 } from "@/emails/dealer-inquiry-confirmation";
+import KycRequestEmail, {
+  type KycRequestEmailProps,
+} from "@/emails/kyc-request";
 import KycSubmittedAlertEmail, {
   type KycSubmittedAlertProps,
 } from "@/emails/kyc-submitted-alert";
@@ -278,5 +281,28 @@ export const emailService = {
       subject: `New KYC submission · ${data.reference}`,
       component: KycSubmittedAlertEmail(data),
     });
+  },
+
+  /**
+   * The customer's personal KYC link, sent when their sale is confirmed.
+   * Returns false when the email could not be handed to Resend, so the admin
+   * can be told to send the link another way.
+   */
+  sendKycRequest: async (
+    to: string,
+    data: KycRequestEmailProps & { consultantEmail?: string | null },
+  ): Promise<boolean> => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn(`[EMAIL MOCK] To: ${to} | KYC link: ${data.link}`);
+      return true;
+    }
+    const sent = await sendEmail({
+      to,
+      subject: "Your sale is confirmed — complete your KYC details",
+      from: agentFrom(data.consultant?.name),
+      replyTo: data.consultantEmail || CONTACT_EMAIL,
+      component: KycRequestEmail(data),
+    });
+    return Boolean(sent);
   },
 };
