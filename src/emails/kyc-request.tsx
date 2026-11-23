@@ -61,9 +61,8 @@ export const KycRequestEmail = ({
       </Link>
     </Section>
     <Text style={smallStyle}>
-      This link is personal to you and works for {validDays} days. Please don't
-      forward it. If the button doesn't work, copy this address into your
-      browser: <Link href={link}>{link}</Link>
+      {`This link is personal to you and works for ${validDays} days. Please don't forward it. If the button doesn't work, copy this address into your browser: `}
+      <Link href={link}>{link}</Link>
     </Text>
   </EmailLayout>
 );

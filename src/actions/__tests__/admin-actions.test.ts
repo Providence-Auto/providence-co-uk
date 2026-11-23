@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { accounts, db as dbClient, requests, sessions, users } from "@/db";
 import { sendGoogleConversion, sendMetaConversion } from "@/lib/conversions";
 import { emailService } from "@/lib/email";
+import { kycStaff } from "@/lib/kyc-access";
 import { onLeadSalesConfirmed } from "@/lib/kyc-request";
 import {
   clearFollowUpTimer,
@@ -85,6 +86,12 @@ vi.mock("@/lib/kyc-request", () => ({
     emailed: true,
     prefilled: false,
   }),
+}));
+
+vi.mock("@/lib/kyc-access", () => ({
+  kycStaff: vi
+    .fn()
+    .mockResolvedValue({ id: "admin-1", name: "Admin User", email: "a@b.c" }),
 }));
 
 // Mock email service
@@ -479,6 +486,23 @@ describe("admin-actions", () => {
             emailed: true,
           }),
         );
+      });
+
+      it("sends no KYC link when the account is not a KYC role", async () => {
+        vi.mocked(kycStaff).mockResolvedValueOnce(null);
+        primeDb(
+          { ...baseLead, leadStatus: SQL_STATUS },
+          { ...baseLead, leadStatus: "Sales Confirmed" },
+        );
+
+        const result = await updateRequestStatus("req-1", "New", {
+          leadStatus: "Sales Confirmed",
+          salesComment: "",
+          dossierIds: [],
+        });
+
+        expect(onLeadSalesConfirmed).not.toHaveBeenCalled();
+        expect(result.salesConfirmed?.link).toBeNull();
       });
 
       it("sends nothing new when a confirmed lead is saved again", async () => {

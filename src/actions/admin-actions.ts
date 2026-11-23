@@ -19,6 +19,7 @@ import {
   PURCHASE_EVENT,
   QUALIFIED_LEAD_EVENT,
 } from "@/lib/leadConversion";
+import { kycStaff } from "@/lib/kyc-access";
 import { onLeadSalesConfirmed } from "@/lib/kyc-request";
 import { auth } from "@/utils/auth";
 
@@ -412,9 +413,14 @@ export async function updateRequestStatus(
       !isSalesConfirmedStatus(existingRequest.leadStatus)
     ) {
       try {
+        // The follow-up hands back a link that opens the customer's KYC
+        // pre-filled, so only the KYC roles (admin, staff, sales) set it off;
+        // any other signed-in account only moves the status.
+        const staff = await kycStaff();
+        if (!staff) throw new Error("not a KYC role");
         const sent = await onLeadSalesConfirmed(
           updatedRequest,
-          { id: session.user.id, name: currentUser },
+          { id: staff.id, name: staff.name },
           {
             kycSubmissionId:
               typeof options.kycSubmissionId === "string"
