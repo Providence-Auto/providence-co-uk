@@ -55,14 +55,23 @@ function identityKey(car: StockCarFields): string {
     .join("|");
 }
 
+function modelKey(car: StockCarFields): string {
+  return [car.make, car.model, car.year]
+    .map((v) => String(v).trim().toLowerCase())
+    .join("|");
+}
+
 /**
  * Matches the sheet's rows to the cars it brought in before.
  *
  * 1. A row identical to a linked car: unchanged (or put back, if removed).
  * 2. A row that is a linked car at a new price or currency: updated.
  * 3. A row identical to a live car added by hand: adopted into the sheet.
- * 4. Any other row: added.
- * 5. A live linked car no row matched: removed — unless `holdRemovals`, set
+ * 4. A row that shares a live linked car's make, model and year: that car,
+ *    changed — so an edited colour, engine or port keeps the car's id, its
+ *    history and the car page it is linked to. Not while removals are held.
+ * 5. Any other row: added.
+ * 6. A live linked car no row matched: removed — unless `holdRemovals`, set
  *    when the sheet has rows with problems, because the unmatched car is
  *    most likely the row with the typo.
  *
@@ -98,6 +107,18 @@ export function planSheetSync(
     if (car) used.add(car.id);
     return car;
   };
+
+  /** The live linked car of this make, model and year with the fewest differences. */
+  const closest = (row: StockCarFields) =>
+    pool
+      .filter(
+        (c) =>
+          !used.has(c.id) &&
+          !c.isRemoved &&
+          modelKey(c.fields) === modelKey(row),
+      )
+      .map((c) => ({ c, n: diffStockCar(c.fields, row).length }))
+      .sort((a, b) => a.n - b.n)[0]?.c;
 
   let pending: StockCarFields[] = [];
   for (const row of rows) {
@@ -140,10 +161,27 @@ export function planSheetSync(
   pending = unmatched;
 
   const liveManual = manual.filter((c) => !c.isRemoved);
+  const fresh: StockCarFields[] = [];
   for (const row of pending) {
     const car = take(liveManual, stockKey, row);
     if (car) plan.adopt.push(car.id);
-    else plan.add.push(row);
+    else fresh.push(row);
+  }
+
+  for (const row of fresh) {
+    const car = holdRemovals ? undefined : closest(row);
+    if (!car) {
+      plan.add.push(row);
+      continue;
+    }
+    used.add(car.id);
+    plan.update.push({
+      id: car.id,
+      before: stockFields(car.fields),
+      after: row,
+      changes: diffStockCar(stockFields(car.fields), row),
+      restore: false,
+    });
   }
 
   for (const car of pool) {

@@ -597,6 +597,12 @@ export const stockCars = pgTable(
     sheetId: text("sheetId").references(() => stockSheets.id, {
       onDelete: "set null",
     }),
+    // The car page a team member linked this car to, if any: its hero image is
+    // the thumbnail on the stock list. Never one of the eight fields — a sheet
+    // sync leaves it alone.
+    dossierId: text("dossierId").references(() => specDossiers.id, {
+      onDelete: "set null",
+    }),
     // Removed cars leave the lists but are never deleted, so the history
     // below always has the car it describes.
     isRemoved: boolean("isRemoved").default(false).notNull(),
@@ -608,6 +614,7 @@ export const stockCars = pgTable(
     index("stockcar_owner_idx").on(table.ownerId),
     index("stockcar_live_idx").on(table.isRemoved),
     index("stockcar_sheet_idx").on(table.sheetId),
+    index("stockcar_dossier_idx").on(table.dossierId),
   ],
 );
 

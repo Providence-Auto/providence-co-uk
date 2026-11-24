@@ -12,6 +12,9 @@ const actions = vi.hoisted(() => ({
   linkStockSheet: vi.fn(),
   syncStockSheetNow: vi.fn(),
   unlinkStockSheet: vi.fn(),
+  getCarPages: vi.fn(),
+  setStockCarPage: vi.fn(),
+  createStockCarPage: vi.fn(),
 }));
 vi.mock("@/actions/stock-actions", () => actions);
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
@@ -38,6 +41,7 @@ const CAR: StockCarView = {
   ownerName: "Shaq",
   isRemoved: false,
   sheetId: null,
+  page: null,
   createdAt: "2026-11-16T10:00:00.000Z",
   updatedAt: "2026-11-16T10:00:00.000Z",
 };
@@ -84,6 +88,19 @@ const button = (text: string) =>
       b.textContent?.trim() === text || b.getAttribute("aria-label") === text,
   ) as HTMLButtonElement;
 
+/** Opens the palette if it is shut, and presses one colour. */
+function pickColour(name: string) {
+  if (!container.querySelector('[aria-label="Another colour"]'))
+    act(() => button("Choose colours").click());
+  act(() =>
+    (
+      [...container.querySelectorAll(".absolute button")].find(
+        (b) => b.textContent === name,
+      ) as HTMLButtonElement
+    ).click(),
+  );
+}
+
 async function submit() {
   await act(async () => {
     container
@@ -125,7 +142,7 @@ describe("StockListClient", () => {
     type(byLabel("Make"), "Lexus");
     type(byLabel("Model"), "LX 600");
     type(byLabel("Year"), "2024");
-    type(byLabel("Colour"), "White");
+    pickColour("White");
     type(byLabel("Engine"), "3.5L V6");
     type(
       container.querySelector(
@@ -166,7 +183,8 @@ describe("StockListClient", () => {
     expect(container.textContent).toContain("Edit car");
     expect(byLabel("Model").value).toBe("Alphard");
 
-    type(byLabel("Colour"), "Pearl White");
+    pickColour("Black");
+    pickColour("Pearl White");
     actions.updateStockCar.mockResolvedValue({
       success: true,
       car: { ...CAR, color: "Pearl White" },
@@ -356,6 +374,51 @@ describe("StockListClient", () => {
         ?.click(),
     );
     expect(container.textContent).toContain("Alphard");
+  });
+
+  it("links a car from a sheet to a car page, and shows its thumbnail", async () => {
+    const page = {
+      id: "d1",
+      title: "Toyota Alphard",
+      year: "2024",
+      path: "/b2c/gallery/toyota-alphard",
+      image: "/cars/alphard.webp",
+      live: true,
+    };
+    const other = { ...page, id: "d2", title: "Audi Q9", live: false };
+    actions.getCarPages.mockResolvedValue([other, page]);
+    render([{ ...CAR, sheetId: "s1" }]);
+    await act(async () => button("Link a car page to Toyota Alphard").click());
+
+    // The dialog is drawn outside the container.
+    const items = [...document.querySelectorAll('[role="dialog"] li button')];
+    expect(items.map((b) => b.textContent)).toEqual([
+      expect.stringContaining("Looks like this car"),
+      expect.stringContaining("Draft"),
+    ]);
+    actions.setStockCarPage.mockResolvedValue({
+      success: true,
+      car: { ...CAR, sheetId: "s1", page },
+    });
+    await act(async () => (items[0] as HTMLButtonElement).click());
+    expect(actions.setStockCarPage).toHaveBeenCalledWith("c1", "d1");
+    expect(container.querySelector("tbody img")).not.toBeNull();
+  });
+
+  it("searches and filters the list", () => {
+    render([
+      CAR,
+      { ...CAR, id: "c2", model: "Hilux GX 4 x4", color: "Red, Blue" },
+    ]);
+    type(
+      container.querySelector('input[type="search"]') as HTMLInputElement,
+      "hilux 4x4",
+    );
+    expect(container.querySelector("tbody")?.textContent).toContain("Hilux");
+    expect(container.querySelector("tbody")?.textContent).not.toContain(
+      "Alphard",
+    );
+    expect(container.textContent).toContain("1 of 2 cars");
   });
 
   it("names the place to link a sheet when none is linked", () => {

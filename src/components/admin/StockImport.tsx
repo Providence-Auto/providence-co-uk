@@ -11,6 +11,7 @@ import {
   type StockMember,
   type StockSheetView,
 } from "@/actions/stock-actions";
+import { StockColorList } from "@/components/stock/StockColors";
 import {
   formatFob,
   STOCK_CURRENCIES,
@@ -439,7 +440,13 @@ export default function StockImport({
                         .filter((v) => String(v).trim())
                         .join(" ") || "—"}
                     </td>
-                    <td className="px-3 py-2">{row.input.color || "—"}</td>
+                    <td className="px-3 py-2">
+                      {row.input.color ? (
+                        <StockColorList color={row.input.color} />
+                      ) : (
+                        "—"
+                      )}
+                    </td>
                     <td className="px-3 py-2">{row.input.engine || "—"}</td>
                     <td className="px-3 py-2">{row.input.steering || "—"}</td>
                     <td className="px-3 py-2 text-right tabular-nums">

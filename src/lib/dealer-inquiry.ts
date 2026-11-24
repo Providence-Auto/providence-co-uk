@@ -21,6 +21,7 @@ import {
 } from "@/config/dealer-sourcing";
 import { getCurrency } from "@/lib/currencies";
 import { formatFob } from "@/lib/stock";
+import { parseStockColors } from "@/lib/stock-colors";
 import {
   IMPORT_TIMELINES,
   MILEAGE_MAX,
@@ -72,6 +73,10 @@ export type DealerStockRef = {
   shippingPort: string;
   /** The team member who holds the car. */
   memberCode: string;
+  /** Every colour the list gave for the car, as written: "Red, Blue, White". */
+  listedColors?: string;
+  /** The colours the dealer picked from them; empty when none was picked. */
+  pickedColors?: string[];
 };
 
 /** One car as it is stored on the inquiry (jsonb). */
@@ -127,6 +132,11 @@ export type DealerInquiryInput = {
    * `cars` / `sourceMarket` are ignored.
    */
   stockCarIds?: string[];
+  /**
+   * The colours picked for each of those cars, by stockcar id. Checked against
+   * the car's own colours on the server; a car with no entry is any of them.
+   */
+  stockColors?: Record<string, string[]>;
   /**
    * The listing whose dealer car page (/b2b/gallery/<slug>) sent the inquiry.
    * The server reads it to decide whether a market that drives on the right
@@ -660,20 +670,27 @@ export function validateCar(car: DealerCarInput): FieldErrors {
 /** How many stock-list cars one inquiry may carry. */
 export const MAX_STOCK_CARS = 20;
 
-/** The stored form of a car picked from the stock list. */
-export function stockToDealerCar(car: {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  color: string;
-  engine: string;
-  steering: string;
-  fobPrice: number;
-  fobCurrency: string;
-  shippingPort: string;
-  memberCode: string;
-}): DealerCar {
+/**
+ * The stored form of a car picked from the stock list. `picked` is the colours
+ * the dealer chose from the car's own; the car's exterior colour is then those,
+ * and otherwise everything the list gave.
+ */
+export function stockToDealerCar(
+  car: {
+    id: string;
+    make: string;
+    model: string;
+    year: number;
+    color: string;
+    engine: string;
+    steering: string;
+    fobPrice: number;
+    fobCurrency: string;
+    shippingPort: string;
+    memberCode: string;
+  },
+  picked: string[] = [],
+): DealerCar {
   return {
     make: car.make,
     model: car.model,
@@ -682,7 +699,7 @@ export function stockToDealerCar(car: {
     yearFrom: car.year,
     yearTo: car.year,
     mileage: null,
-    exteriorColor: car.color,
+    exteriorColor: picked.length > 0 ? picked.join(", ") : car.color,
     interiorColor: null,
     specs: null,
     budgetAmount: car.fobPrice,
@@ -697,8 +714,28 @@ export function stockToDealerCar(car: {
       fobCurrency: car.fobCurrency,
       shippingPort: car.shippingPort,
       memberCode: car.memberCode,
+      listedColors: car.color,
+      pickedColors: picked,
     },
   };
+}
+
+/**
+ * The colour line for a stock car on an inquiry. An inquiry stored before
+ * colours could be picked reads as it did.
+ */
+export function stockColorText(car: {
+  exteriorColor: string | null;
+  stock?: DealerStockRef;
+}): string {
+  const listed = car.stock?.listedColors;
+  const picked = car.stock?.pickedColors ?? [];
+  if (!listed || parseStockColors(listed).length < 2) {
+    return car.exteriorColor ?? "";
+  }
+  return picked.length > 0
+    ? `${picked.join(", ")} (listed in ${listed})`
+    : `No colour picked (listed in ${listed})`;
 }
 
 /** "2024 · 2.5L Hybrid · RHD · FOB JPY 6,200,000 · Nagoya" for one stock car. */

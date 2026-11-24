@@ -56,6 +56,7 @@ import {
   validateContact,
   validateDealership,
 } from "@/lib/dealer-inquiry";
+import { pickedStockColors } from "@/lib/stock-colors";
 import { isListedDestination, marketStatusFor } from "@/lib/dealer-markets";
 import { onDealer } from "@/lib/listing-audience";
 import { parseSteeringOptions } from "@/lib/vehicle";
@@ -221,6 +222,27 @@ export async function submitDealerInquiry(
         }
       }
     }
+    // The colours picked for them, each one checked against the car's own.
+    const stockPicks = new Map<string, string[]>();
+    if (fromStock && !stockError) {
+      const sent =
+        input.stockColors && typeof input.stockColors === "object"
+          ? input.stockColors
+          : {};
+      for (const row of stockRows) {
+        const raw = Object.hasOwn(sent, row.id) ? sent[row.id] : [];
+        const names = (Array.isArray(raw) ? raw : [])
+          .slice(0, 40)
+          .map((name) => text(name, 80).trim())
+          .filter(Boolean);
+        const picked = pickedStockColors(row.color, names);
+        if (!picked) {
+          stockError = `The colours of the ${row.year} ${row.make} ${row.model} have just changed. Refresh the page and pick again.`;
+          break;
+        }
+        stockPicks.set(row.id, picked);
+      }
+    }
 
     // A market that drives on the right may send an inquiry only for stock
     // cars that are all left-hand drive (business instruction 2026-11-16).
@@ -381,7 +403,7 @@ export async function submitDealerInquiry(
     const cars: DealerCar[] = fromStock
       ? stockCarIds.flatMap((id) => {
           const row = stockById.get(id);
-          return row ? [stockToDealerCar(row)] : [];
+          return row ? [stockToDealerCar(row, stockPicks.get(id))] : [];
         })
       : fields.wantsSpecificCars
         ? fields.cars.map(toStoredCar)

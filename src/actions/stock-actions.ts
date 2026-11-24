@@ -2,10 +2,18 @@
 "use server";
 
 import crypto from "node:crypto";
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { db, stockCarHistory, stockCars, stockSheets, users } from "@/db";
+import { saveSpecDossier } from "@/actions/spec-actions";
+import {
+  db,
+  specDossiers,
+  stockCarHistory,
+  stockCars,
+  stockSheets,
+  users,
+} from "@/db";
 import { isSalesRole, normaliseRole } from "@/lib/lead-routing";
 import {
   compareStockCars,
@@ -26,6 +34,7 @@ import {
   stockFields,
   validateStockCar,
 } from "@/lib/stock";
+import { parseStockColors } from "@/lib/stock-colors";
 import {
   googleSheetIdentity,
   parseCsv,
@@ -37,6 +46,7 @@ import {
   stockKey,
 } from "@/lib/stock-import";
 import { xlsxToRows } from "@/lib/stock-import-xlsx";
+import { type StockPage, toStockPage } from "@/lib/stock-page";
 import {
   fetchGoogleSheet,
   runSheetSync,
@@ -102,7 +112,43 @@ function mayKeepStock(user: {
 const SHEET_CAR_ERROR =
   "This car comes from a linked Google Sheet. Change it in the sheet, or unlink the sheet first.";
 
-function toView(row: StockRow): StockCarView {
+/** The columns a StockPage is built from. */
+const PAGE_COLUMNS = {
+  id: specDossiers.id,
+  make: specDossiers.make,
+  model: specDossiers.model,
+  year: specDossiers.year,
+  slug: specDossiers.slug,
+  status: specDossiers.status,
+  audience: specDossiers.audience,
+  vehicleType: specDossiers.vehicleType,
+  heroImageUrl: specDossiers.heroImageUrl,
+  images: specDossiers.images,
+};
+
+/** The car pages these rows are linked to, by id. */
+async function pagesFor(rows: StockRow[]): Promise<Map<string, StockPage>> {
+  const ids = [...new Set(rows.flatMap((r) => r.dossierId ?? []))];
+  if (ids.length === 0) return new Map();
+  const found = await db
+    .select(PAGE_COLUMNS)
+    .from(specDossiers)
+    .where(inArray(specDossiers.id, ids));
+  return new Map(found.map((d) => [d.id, toStockPage(d)]));
+}
+
+async function toViews(rows: StockRow[]): Promise<StockCarView[]> {
+  const pages = await pagesFor(rows);
+  return rows.map((row) =>
+    toView(row, row.dossierId ? pages.get(row.dossierId) : undefined),
+  );
+}
+
+async function viewOf(row: StockRow): Promise<StockCarView> {
+  return (await toViews([row]))[0];
+}
+
+function toView(row: StockRow, page?: StockPage): StockCarView {
   return {
     id: row.id,
     ...stockFields(row as unknown as StockCarFields),
@@ -111,6 +157,7 @@ function toView(row: StockRow): StockCarView {
     ownerName: row.ownerName,
     isRemoved: row.isRemoved,
     sheetId: row.sheetId,
+    page: page ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -132,7 +179,7 @@ export async function getMyStock(): Promise<StockCarView[]> {
     .from(stockCars)
     .where(actor.isAdmin ? undefined : eq(stockCars.ownerId, actor.id))
     .orderBy(desc(stockCars.updatedAt));
-  return rows.map(toView);
+  return toViews(rows);
 }
 
 /** The car, if this actor may change it. */
@@ -206,7 +253,7 @@ export async function createStockCar(
     });
 
     revalidateStock();
-    return { success: true, car: toView(created) };
+    return { success: true, car: await viewOf(created) };
   } catch (error) {
     console.error("Stock create error:", error);
     return { success: false, error: "Could not save the car" };
@@ -238,7 +285,8 @@ export async function updateStockCar(
       stockFields(current as unknown as StockCarFields),
       checked.value,
     );
-    if (changes.length === 0) return { success: true, car: toView(current) };
+    if (changes.length === 0)
+      return { success: true, car: await viewOf(current) };
 
     const updated = await db.transaction(async (tx) => {
       const [row] = await tx
@@ -262,7 +310,7 @@ export async function updateStockCar(
     });
 
     revalidateStock();
-    return { success: true, car: toView(updated) };
+    return { success: true, car: await viewOf(updated) };
   } catch (error) {
     console.error("Stock update error:", error);
     return { success: false, error: "Could not save the car" };
@@ -282,7 +330,7 @@ export async function setStockCarRemoved(
     if (!current) return { success: false, error: "Car not found" };
     if (current.sheetId) return { success: false, error: SHEET_CAR_ERROR };
     if (current.isRemoved === removed) {
-      return { success: true, car: toView(current) };
+      return { success: true, car: await viewOf(current) };
     }
 
     const updated = await db.transaction(async (tx) => {
@@ -312,10 +360,154 @@ export async function setStockCarRemoved(
     });
 
     revalidateStock();
-    return { success: true, car: toView(updated) };
+    return { success: true, car: await viewOf(updated) };
   } catch (error) {
     console.error("Stock remove error:", error);
     return { success: false, error: "Could not update the car" };
+  }
+}
+
+// ── The car page a stock car is linked to ───────────────────────────────────
+
+/** Every car page a stock car can be linked to, A–Z. Motorcycles are not cars. */
+export async function getCarPages(): Promise<StockPage[]> {
+  const actor = await getStockActor();
+  if (!actor) return [];
+  const rows = await db
+    .select(PAGE_COLUMNS)
+    .from(specDossiers)
+    .where(eq(specDossiers.vehicleType, "car"))
+    .orderBy(asc(specDossiers.make), asc(specDossiers.model));
+  return rows.filter((r) => r.status !== "Archived").map(toStockPage);
+}
+
+/** Sets (or clears) the car page in one transaction with its history row. */
+async function writeCarPage(
+  actor: StockActor,
+  current: StockRow,
+  page: StockPage | null,
+): Promise<StockCarView> {
+  const before = current.dossierId
+    ? ((await pagesFor([current])).get(current.dossierId)?.title ?? null)
+    : null;
+  const updated = await db.transaction(async (tx) => {
+    const [row] = await tx
+      .update(stockCars)
+      .set({ dossierId: page?.id ?? null, updatedAt: new Date() })
+      .where(eq(stockCars.id, current.id))
+      .returning();
+    await tx
+      .insert(stockCarHistory)
+      .values(
+        historyRow(
+          actor,
+          current.id,
+          "updated",
+          [{ field: "carPage", from: before, to: page?.title ?? null }],
+          stockFields(current as unknown as StockCarFields),
+          current.memberCode,
+        ),
+      );
+    return row;
+  });
+  revalidateStock();
+  return toView(updated, page ?? undefined);
+}
+
+/**
+ * Links a car to a car page, or unlinks it (null). Allowed on a car from a
+ * linked Google Sheet too: the page isn't a column of the sheet, and a sync
+ * never touches it.
+ */
+export async function setStockCarPage(
+  id: string,
+  dossierId: string | null,
+): Promise<StockResult> {
+  try {
+    const actor = await getStockActor();
+    if (!actor) return { success: false, error: "Not allowed" };
+    const current = await editableCar(actor, id);
+    if (!current) return { success: false, error: "Car not found" };
+    if ((current.dossierId ?? null) === (dossierId || null)) {
+      return { success: true, car: await viewOf(current) };
+    }
+
+    let page: StockPage | null = null;
+    if (dossierId) {
+      const [record] = await db
+        .select(PAGE_COLUMNS)
+        .from(specDossiers)
+        .where(
+          and(
+            eq(specDossiers.id, dossierId),
+            eq(specDossiers.vehicleType, "car"),
+          ),
+        )
+        .limit(1);
+      if (!record) return { success: false, error: "Car page not found" };
+      page = toStockPage(record);
+    }
+    return { success: true, car: await writeCarPage(actor, current, page) };
+  } catch (error) {
+    console.error("Stock car page error:", error);
+    return { success: false, error: "Could not link the car page" };
+  }
+}
+
+/**
+ * Creates a draft car page from a stock car and links the two. Saved through
+ * saveSpecDossier, so the slug rules hold; always a draft, with no country of
+ * origin assumed, for someone to finish in the builder before it goes live.
+ */
+export async function createStockCarPage(
+  id: string,
+): Promise<
+  | { success: true; car: StockCarView; editPath: string }
+  | { success: false; error: string }
+> {
+  try {
+    const actor = await getStockActor();
+    if (!actor) return { success: false, error: "Not allowed" };
+    const current = await editableCar(actor, id);
+    if (!current) return { success: false, error: "Car not found" };
+    if (current.dossierId) {
+      return { success: false, error: "This car already has a car page" };
+    }
+
+    const saved = await saveSpecDossier({
+      make: current.make,
+      model: current.model,
+      year: String(current.year),
+      displacement: current.engine,
+      countryOfOrigin: "",
+      fuelSystem: "",
+      steering: current.steering,
+      steeringOptions: [current.steering],
+      exteriorColors: parseStockColors(current.color).flatMap((p) =>
+        p.hex ? [{ name: p.name, hex: p.hex }] : [],
+      ),
+      status: "Draft",
+      vehicleType: "car",
+    });
+    const newId = saved.success
+      ? (saved.data as { _id?: string } | null)?._id
+      : undefined;
+    if (!newId) {
+      return {
+        success: false,
+        error: saved.message || "Could not create the car page",
+      };
+    }
+    const linked = await setStockCarPage(id, newId);
+    if (!linked.success) return { success: false, error: linked.error };
+    return {
+      success: true,
+      car: linked.car,
+      editPath: `/admin/specs?editId=${newId}`,
+    };
+  } catch (error) {
+    console.error("Stock car page create error:", error);
+    return { success: false, error: "Could not create the car page" };
   }
 }
 
@@ -583,7 +775,7 @@ export async function importStockCars(
     });
 
     revalidateStock();
-    return { success: true, cars: created.map(toView), skipped };
+    return { success: true, cars: await toViews(created), skipped };
   } catch (error) {
     console.error("Stock import error:", error);
     return { success: false, error: "Could not import the cars" };
@@ -806,18 +998,30 @@ export async function getStockHistory(
  * (business instruction 2026-11-23).
  */
 export async function getPublicStock(): Promise<
-  (StockCarFields & { id: string; updatedAt: string })[]
+  (StockCarFields & {
+    id: string;
+    updatedAt: string;
+    /** Only a live car page: a draft's photo and link stay internal. */
+    page: { title: string; path: string; image: string | null } | null;
+  })[]
 > {
   const rows = await db
     .select()
     .from(stockCars)
     .where(eq(stockCars.isRemoved, false));
+  const pages = await pagesFor(rows);
 
   return rows
-    .map((row) => ({
-      id: row.id,
-      ...stockFields(row as unknown as StockCarFields),
-      updatedAt: row.updatedAt.toISOString(),
-    }))
+    .map((row) => {
+      const page = row.dossierId ? pages.get(row.dossierId) : undefined;
+      return {
+        id: row.id,
+        ...stockFields(row as unknown as StockCarFields),
+        updatedAt: row.updatedAt.toISOString(),
+        page: page?.live
+          ? { title: page.title, path: page.path, image: page.image }
+          : null,
+      };
+    })
     .sort(compareStockCars);
 }

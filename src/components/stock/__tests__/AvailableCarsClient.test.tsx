@@ -134,9 +134,129 @@ async function submit() {
   });
 }
 
+describe("search, filters, colours and car pages", () => {
+  const rows = () =>
+    [...container.querySelectorAll("tbody tr")].map(
+      (r) => r.querySelector("input")?.getAttribute("aria-label") ?? "",
+    );
+  const press = (scope: string, text: string) =>
+    act(() =>
+      (
+        [...container.querySelectorAll(`${scope} button`)].find((b) =>
+          b.textContent?.trim().startsWith(text),
+        ) as HTMLButtonElement
+      ).click(),
+    );
+  const FLEET: PublicStockCar[] = [
+    {
+      ...CARS[0],
+      color: "Red, Blue, White",
+      page: {
+        title: "Toyota Alphard",
+        path: "/b2c/gallery/toyota-alphard",
+        image: "/cars/alphard.webp",
+      },
+    },
+    CARS[1],
+  ];
+  beforeEach(() => {
+    act(() =>
+      root.render(<AvailableCarsClient cars={FLEET} markets={MARKETS} />),
+    );
+  });
+
+  it("searches, filters by colour and make, says when nothing matches, and clears", () => {
+    const search = container.querySelector(
+      'input[type="search"]',
+    ) as HTMLInputElement;
+    type(search, "jebel lx600");
+    expect(rows()).toEqual(["Select the 2024 Lexus LX 600"]);
+    expect(container.textContent).toContain("1 of 2 cars");
+
+    type(search, "nothing like this");
+    expect(rows()).toEqual([]);
+    expect(container.textContent).toContain("No cars match.");
+    expect(container.textContent).not.toContain("No cars are listed");
+
+    press("search", "Clear all");
+    expect(rows()).toHaveLength(2);
+
+    press("search", "Blue");
+    expect(rows()).toEqual(["Select the 2024 Toyota Alphard"]);
+    // White is on both cars.
+    press("search", "White");
+    expect(rows()).toHaveLength(2);
+  });
+
+  it("keeps a picked car while a filter hides it", () => {
+    tick("2024 Lexus LX 600");
+    press("search", "Blue");
+    expect(rows()).toEqual(["Select the 2024 Toyota Alphard"]);
+    expect(container.querySelector("#stock-inquiry")?.textContent).toContain(
+      "2024 Lexus LX 600",
+    );
+  });
+
+  it("shows real colours; picking one picks the car and goes on the inquiry", async () => {
+    const dots = [
+      ...container.querySelectorAll("tbody tr"),
+    ][0].querySelectorAll('span[aria-hidden="true"], span[aria-hidden]');
+    expect(dots.length).toBeGreaterThanOrEqual(3);
+
+    press("tbody", "Blue");
+    expect(container.querySelector("#stock-inquiry")?.textContent).toContain(
+      "2024 Toyota Alphard· Blue",
+    );
+    // One colour only: nothing to pick, so no buttons in that row.
+    expect(
+      [...container.querySelectorAll("tbody tr")][1].querySelectorAll("button"),
+    ).toHaveLength(0);
+
+    type(input("Country your dealership"), "Kenya");
+    type(input("Full name"), "Amina Odhiambo");
+    type(input("Your role"), "Owner");
+    type(input("Email"), "amina@example.com");
+    type(input("WhatsApp number"), "712345678");
+    mocks.submitDealerInquiry.mockResolvedValue({
+      success: true,
+      reference: "PA-1",
+      consultant: null,
+      receiptSent: false,
+    });
+    await submit();
+    await vi.waitFor(() =>
+      expect(mocks.submitDealerInquiry).toHaveBeenCalled(),
+    );
+    expect(mocks.submitDealerInquiry.mock.calls[0][0]).toMatchObject({
+      stockCarIds: ["a"],
+      stockColors: { a: ["Blue"] },
+    });
+  });
+
+  it("drops a car's colours when the car is taken off", () => {
+    press("tbody", "Blue");
+    tick("2024 Toyota Alphard");
+    tick("2024 Toyota Alphard");
+    expect(
+      container.querySelector("#stock-inquiry")?.textContent,
+    ).not.toContain("· Blue");
+  });
+
+  it("links a car with a page, with its thumbnail, and leaves the rest plain", () => {
+    const [first, second] = [...container.querySelectorAll("tbody tr")];
+    expect(first.querySelector("img")?.getAttribute("alt")).toBe(
+      "Toyota Alphard",
+    );
+    expect(
+      first.querySelector('a[href="/b2c/gallery/toyota-alphard"]'),
+    ).not.toBeNull();
+    expect(second.querySelector("img, a")).toBeNull();
+  });
+});
+
 describe("AvailableCarsClient", () => {
   it("never shows a team-member code to the public", () => {
-    expect(container.textContent).not.toMatch(/Code/);
+    expect(container.textContent).not.toMatch(/\bCode\b/);
     expect(container.textContent).not.toContain("SHAQ");
   });
 

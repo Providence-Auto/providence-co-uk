@@ -70,6 +70,47 @@ describe("planSheetSync", () => {
     expect(plan.remove.map((r) => r.id)).toEqual(["b"]);
   });
 
+  it("keeps the car, and so its car page, when its colours or port change", () => {
+    const plan = planSheetSync(
+      [car({ color: "Red, Blue", shippingPort: "Kobe" })],
+      [linked("a", car())],
+      [],
+    );
+    expect(plan.add).toEqual([]);
+    expect(plan.remove).toEqual([]);
+    expect(plan.update[0]).toMatchObject({ id: "a", restore: false });
+    expect(plan.update[0].changes.map((c) => c.field)).toEqual([
+      "color",
+      "shippingPort",
+    ]);
+  });
+
+  it("gives a changed row to the closest car of that model, and never a removed one", () => {
+    const plan = planSheetSync(
+      [car({ color: "Red" }), car({ color: "Grey", steering: "LHD" })],
+      [
+        linked("rhd", car()),
+        linked("lhd", car({ steering: "LHD" })),
+        linked("gone", car({ color: "Pink" }), true),
+      ],
+      [],
+    );
+    expect(plan.update.map((u) => u.id)).toEqual(["rhd", "lhd"]);
+    expect(plan.add).toEqual([]);
+  });
+
+  it("adds rather than overwrites while a row has problems", () => {
+    const plan = planSheetSync(
+      [car({ color: "Red" })],
+      [linked("a", car())],
+      [],
+      { holdRemovals: true },
+    );
+    expect(plan.update).toEqual([]);
+    expect(plan.add).toHaveLength(1);
+    expect(plan.removalsHeld).toBe(1);
+  });
+
   it("holds removals while the sheet has rows with problems", () => {
     const plan = planSheetSync(
       [car()],
