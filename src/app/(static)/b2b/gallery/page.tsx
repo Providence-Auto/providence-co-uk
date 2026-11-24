@@ -1,11 +1,10 @@
-// /b2b/gallery — the listings set to "B2B" in /admin/specs.
+// /b2b/gallery — the listings set to "B2B" or "Both" in /admin/specs.
 //
-// The same cards as /b2c/gallery (GalleryClient), filtered to the B2B
-// audience (src/lib/listing-audience.ts). A B2B listing stays on the car
-// gallery too (as instructed 2026-11-19); this page is the dealer-facing view
-// of the same car pages, so every card links to the car's own page. Only the
-// heading and the cards: the retail gallery's "Why import" block and FAQ are
-// left off until the business asks for copy here (page-types.md §3).
+// The same cards as /b2c/gallery (GalleryClient), filtered to the dealer side
+// (src/lib/listing-audience.ts). Every card opens the car's dealer page,
+// /b2b/gallery/<slug>, which takes the dealer inquiry form. Only the heading
+// and the cards: the retail gallery's "Why import" block and FAQ are left off
+// until the business asks for copy here (page-types.md §3).
 
 import type { Metadata } from "next";
 import { getB2bGalleryDossiers } from "@/actions/spec-actions";
@@ -87,6 +86,7 @@ export default async function B2bGalleryPage() {
         heading="The cars your dealership can import."
         intro={null}
         showSupportingSections={false}
+        basePath={B2B_GALLERY_PATH}
       />
     </>
   );

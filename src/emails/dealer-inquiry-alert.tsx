@@ -1,14 +1,21 @@
 import { Link, Section, Text } from "@react-email/components";
 import { whatsappLink } from "@/config/contact";
 import { formatBudget } from "@/lib/currencies";
-import { type DealerStockRef, stockCarLine } from "@/lib/dealer-inquiry";
+import {
+  type DealerStockRef,
+  dealerVehicleCount,
+  stockCarLine,
+} from "@/lib/dealer-inquiry";
 import { conditionLabel } from "@/lib/vehicle-inquiry";
+import { isMotorcycle } from "@/lib/vehicle-type";
 import EmailLayout from "./layout";
 
 // Internal alert to the consultant a dealer inquiry was assigned to. Carries
 // everything they need to make the first call without opening the admin panel.
 
 export interface DealerInquiryAlertCar {
+  /** Absent on a car: only a motorcycle is labelled. */
+  vehicleType?: string;
   make: string;
   model: string;
   condition: string;
@@ -54,7 +61,7 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
   return (
     <EmailLayout
       preview={`${who} (${props.country}) — ${
-        carCount ? `${carCount} car${carCount > 1 ? "s" : ""}` : "sourcing"
+        carCount ? dealerVehicleCount(props.cars) : "sourcing"
       } request ${props.reference}`}
       heading="New Dealer Inquiry"
     >
@@ -136,6 +143,7 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
               <Text style={{ ...valueStyle, fontWeight: "bold" }}>
                 {index + 1}. {conditionLabel(car.condition)} {car.make}{" "}
                 {car.model}
+                {isMotorcycle(car) ? " (motorcycle)" : ""}
               </Text>
               {car.condition === "Used" && (car.yearRange || car.mileage) && (
                 <Text style={valueStyle}>

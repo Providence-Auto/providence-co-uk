@@ -51,7 +51,14 @@ import {
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
 import { getPresignedUrls } from "@/lib/file-actions";
-import { B2B_GALLERY_PATH, parseListingAudience } from "@/lib/listing-audience";
+import { autoSlug } from "@/lib/dossier-slug";
+import {
+  B2B_GALLERY_PATH,
+  dealerCarPath,
+  onDealer,
+  onRetail,
+  parseListingAudience,
+} from "@/lib/listing-audience";
 import { CAR_MAKES, getLogoFilename } from "@/lib/logo-utils";
 import {
   galleryPathForDossier,
@@ -661,7 +668,9 @@ function SpecBuilderContent() {
             setSpecData((_prev) => ({
               ...res.data,
               heroImageUrl: res.data.heroImageUrl || "",
-              slug: res.data.slug || "",
+              // An older listing saved without a slug gets one from its make
+              // and model, which is what the server would save anyway.
+              slug: res.data.slug || autoSlug(res.data.make, res.data.model),
               condition: res.data.condition || "New",
               mileage: res.data.mileage || "",
               customData: res.data.customData || [],
@@ -785,10 +794,19 @@ function SpecBuilderContent() {
   ) => {
     setIsDirty(true);
 
-    setSpecData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setSpecData((prev) => {
+      const next = { ...prev, [field]: value };
+      // The slug follows the make and model while it is still the one built
+      // from them — never on a live listing, whose URL is out there.
+      if (
+        (field === "make" || field === "model") &&
+        !isLiveStatus(prev.status) &&
+        (!prev.slug || prev.slug === autoSlug(prev.make, prev.model))
+      ) {
+        next.slug = autoSlug(next.make, next.model);
+      }
+      return next;
+    });
   };
 
   // --- Colour palette helpers -------------------------------------------
@@ -909,12 +927,6 @@ function SpecBuilderContent() {
   const handleSave = async () => {
     if (!specData.make || !specData.model)
       return alert("Make and Model are required.");
-    // Live templates must have a clean slug so their public URL is never a raw _id.
-    if (isLiveStatus(specData.status) && !specData.slug.trim()) {
-      return alert(
-        "A URL slug is required before setting this template to Active. Please fill the URL Slug Configuration field.",
-      );
-    }
     setIsSaving(true);
     isSavingRef.current = true;
 
@@ -994,49 +1006,36 @@ function SpecBuilderContent() {
         // and anything else reading `steering` keeps working unchanged.
         steering: steeringOptions[0] || "RHD",
       };
-      let result = await saveSpecDossier(payload);
-
-      // Slug collision: offer to publish under the next free numbered slug.
-      if (!result.success && (result as any).conflict) {
-        const suggestedSlug = (result as any).suggestedSlug;
-        const useSuggested = window.confirm(
-          `The URL "${(result as any).slug}" is already in use.\n\n` +
-            `Publish as "${suggestedSlug}" instead? (Cancel to edit the slug yourself.)`,
-        );
-
-        if (!useSuggested) {
-          // Let the admin pick a different slug.
-          return;
-        }
-
-        setSpecData((prev) => ({ ...prev, slug: suggestedSlug }));
-        result = await saveSpecDossier({
-          ...payload,
-          slug: suggestedSlug,
-          forceSlug: true,
-        });
-      }
+      const result = await saveSpecDossier(payload);
 
       if (result.success) {
-        alert(
-          editId
-            ? "Dossier Template Updated!"
-            : "New Dossier Template Created!",
-        );
-
+        // The server builds the slug from the make and model when none was
+        // typed, and adds a code when another listing has it — show the one
+        // it saved.
+        const saved = (result as any).data as
+          | { _id?: string; slug?: string }
+          | undefined;
+        const typed = specData.slug.trim();
+        if (saved?.slug !== undefined) {
+          setSpecData((prev) => ({ ...prev, slug: saved.slug ?? "" }));
+        }
         setIsDirty(false);
 
-        if (!editId && (result as any).id) {
-          router.replace(
-            `/admin/dossiers/builder?editId=${(result as any).id}`,
-          );
-        }
-
+        const renamed =
+          typed && saved?.slug && saved.slug !== typed
+            ? `\n\nThe URL "${typed}" is used by another listing, so this one was saved as "${saved.slug}".`
+            : "";
         alert(
-          editId
+          (editId
             ? "Dossier Template Updated!"
-            : "New Dossier Template Created!",
+            : "New Dossier Template Created!") + renamed,
         );
+
+        // A new listing opens as itself, so the next save updates it rather
+        // than creating a second one, and Export can find it.
+        if (!editId && saved?._id) {
+          router.replace(`/admin/specs?editId=${saved._id}`);
+        }
       } else {
         alert(result.message);
       }
@@ -1059,7 +1058,17 @@ function SpecBuilderContent() {
           slug: specData.slug,
           status: specData.status,
           vehicleType: specData.vehicleType,
+          audience: specData.audience,
         })
+      : null;
+  // A "both" listing has a second page, for dealers.
+  const dealerPath =
+    editId &&
+    specData.slug &&
+    specData.vehicleType !== "motorcycle" &&
+    onDealer(specData.audience) &&
+    onRetail(specData.audience)
+      ? dealerCarPath(specData.slug)
       : null;
 
   if (isLoading)
@@ -1104,6 +1113,7 @@ function SpecBuilderContent() {
               onOpenChange={setIsExportOpen}
               dossierId={editId}
               audience={parseListingAudience(specData.audience)}
+              isLive={isLiveStatus(specData.status)}
             />
           ) : null}
           <Button
@@ -1122,18 +1132,27 @@ function SpecBuilderContent() {
         <div className="lg:col-span-4 space-y-8">
           <SpecSection title="Target Market & Origin" icon={Globe}>
             <div className="space-y-4">
-              {/* Who the listing is for. B2B also lists the car on
-                  /b2b/gallery (it stays on the car gallery too) and exports
+              {/* Who the listing is for (src/lib/listing-audience.ts): B2C is
+                  the retail page, B2B the dealer page on /b2b/gallery (off
+                  the retail site), Both is two pages. The B2B side exports
                   the dealer PDF: no markets list, no landed-quote box. */}
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase text-zinc-400">
                   Listing for
                 </Label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {[
                     { value: "b2c", label: "B2C" },
                     { value: "b2b", label: "B2B" },
-                  ].map((option) => (
+                    { value: "both", label: "Both" },
+                  ]
+                    .filter(
+                      // There is no dealer page for a bike.
+                      (option) =>
+                        specData.vehicleType !== "motorcycle" ||
+                        option.value === "b2c",
+                    )
+                    .map((option) => (
                     <button
                       key={option.value}
                       type="button"
@@ -1151,11 +1170,15 @@ function SpecBuilderContent() {
                     </button>
                   ))}
                 </div>
-                {specData.audience === "b2b" ? (
+                {specData.vehicleType === "motorcycle" ? (
                   <p className="text-xs text-zinc-500">
-                    {specData.vehicleType === "motorcycle"
-                      ? "Exports the B2B PDF. Bikes are not listed on "
-                      : "Also listed on "}
+                    Bikes are listed for retail buyers only.
+                  </p>
+                ) : specData.audience !== "b2c" ? (
+                  <p className="text-xs text-zinc-500">
+                    {specData.audience === "both"
+                      ? "Two pages: the retail one, and a dealer page on "
+                      : "A dealer page on "}
                     <a
                       href={B2B_GALLERY_PATH}
                       target="_blank"
@@ -1164,9 +1187,9 @@ function SpecBuilderContent() {
                     >
                       {B2B_GALLERY_PATH}
                     </a>
-                    {specData.vehicleType === "motorcycle"
-                      ? "."
-                      : " once Active, and exports the B2B PDF."}
+                    {specData.audience === "both"
+                      ? " with the dealer form. Export asks which PDF."
+                      : " with the dealer form, kept off the retail site. Exports the B2B PDF."}
                   </p>
                 ) : null}
               </div>
@@ -1434,17 +1457,20 @@ function SpecBuilderContent() {
                   className="h-11 rounded-xl bg-zinc-50 border-transparent focus:bg-white transition-feedback font-mono text-sm text-zinc-800"
                 />
                 <p className="text-[10px] text-zinc-400 pl-1 font-medium">
-                  Used for building clean routing addresses. Spaces
-                  automatically convert to hyphens.
+                  Built from the make and model when left blank. If another
+                  listing already has it, a short code is added on save.
                 </p>
               </div>
 
               {/* Live requirement notice + the exact URL that will be created. */}
-              {isLive && !specData.slug.trim() ? (
+              {isLive &&
+              !specData.slug.trim() &&
+              !autoSlug(specData.make, specData.model) ? (
                 <div className="p-3 bg-red-50 rounded-xl border border-red-100">
                   <p className="text-[10px] text-red-600 font-bold leading-tight flex gap-2 items-center">
-                    <ShieldCheck size={13} className="shrink-0" />A slug is
-                    required to save this template as Active.
+                    <ShieldCheck size={13} className="shrink-0" />
+                    Add a make and model, or type a slug, to save this listing
+                    as Active.
                   </p>
                 </div>
               ) : specData.slug.trim() ? (
@@ -1465,9 +1491,24 @@ function SpecBuilderContent() {
                     </a>
                   ) : (
                     <p className="text-[11px] text-zinc-600 font-mono break-all leading-snug">
-                      {`/b2c/gallery/${specData.slug}`}
+                      {galleryPathForDossier({
+                        slug: specData.slug,
+                        vehicleType: specData.vehicleType,
+                        audience: specData.audience,
+                      })}
                     </p>
                   )}
+                  {dealerPath ? (
+                    <a
+                      href={dealerPath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-sky-600 hover:text-sky-700 font-mono break-all leading-snug flex items-start gap-1"
+                    >
+                      {dealerPath}
+                      <ExternalLink size={11} className="shrink-0 mt-0.5" />
+                    </a>
+                  ) : null}
                 </div>
               ) : null}
             </div>

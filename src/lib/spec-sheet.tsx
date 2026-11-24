@@ -1,17 +1,19 @@
 // The PDF spec sheet behind the "Spec sheet" button on a car page.
 //
-// Served by src/app/(static)/b2c/gallery/[id]/spec-sheet/route.ts, and by
-// generateDossierPdfAction for the admin builder's preview. It says what the
+// Served by both car pages' spec-sheet routes (src/lib/spec-sheet-route.ts),
+// and by generateDossierPdfAction for the admin builder's export. It says what the
 // car page says — the specification table comes from carSpecRows, the same
 // function the page renders — laid out for print: the photographs, the
 // description, why the car is worth importing, the specification, the colours,
 // the markets it can be imported to, the equipment and how to ask for a quote.
 //
-// Eight photographs (the hero, then rows of three and four). The admin export
-// also chooses the audience — a B2B sheet drops the markets list and the
-// landed-quote box and ends with a plain contact strip — and whose contact
-// details print (src/lib/spec-sheet-contact.ts). The public download is always
-// the B2C sheet with the general contact details.
+// Eight photographs (the hero, then rows of three and four). The side decides
+// the ending: a B2B sheet drops the markets list and the landed-quote box and
+// ends with a plain contact strip. The retail page's download is the B2C
+// sheet, the dealer page's the B2B one; the admin export also chooses whose
+// contact details print (src/lib/spec-sheet-contact.ts). The link to the car's
+// page prints only once the car is live — a sheet exported from a draft would
+// otherwise send its reader to a page that bounces them to the home page.
 //
 // Two things the old "blueprint" got wrong and this must keep right:
 // - Photographs are re-encoded to JPEG here. @react-pdf/renderer decodes only
@@ -38,7 +40,7 @@ import sharp from "sharp";
 import { loadCarImageSource } from "@/lib/car-image-source";
 import type { CarRecord } from "@/lib/car-page";
 import { carSpecRows, type SpecRow } from "@/lib/car-spec-rows";
-import type { ListingAudience } from "@/lib/listing-audience";
+import { type AudienceSide, dealerCarPath } from "@/lib/listing-audience";
 import {
   GENERAL_SPEC_SHEET_CONTACT,
   type SpecSheetContact,
@@ -58,6 +60,8 @@ import {
 } from "@/lib/vehicle-grades";
 
 const SITE_URL = "https://www.providenceauto.co.uk";
+/** Statuses whose page a logged-out reader can open. */
+const LIVE_STATUSES = new Set(["Active", "Published"]);
 
 // Whole words only. The default hyphenator split "audio" into "au-dio" and
 // "Target Market" into "TARGET MAR-KET" inside the label column.
@@ -502,7 +506,7 @@ function ContactList({
 }
 
 type SpecSheetData = {
-  audience: ListingAudience;
+  audience: AudienceSide;
   contact: SpecSheetContact;
   car: CarRecord;
   grade: VehicleGrade | undefined;
@@ -514,7 +518,8 @@ type SpecSheetData = {
   hero: PdfImage | null;
   thumbs: PdfImage[];
   mark: PdfImage | null;
-  pageUrl: string;
+  /** The live car page, or null while the car is not live. */
+  pageUrl: string | null;
   generatedOn: string;
 };
 
@@ -709,7 +714,7 @@ function SpecSheet(d: SpecSheetData) {
           <View style={s.cta} wrap={false}>
             <Text style={s.ctaTitle}>
               {car.isUpcoming
-                ? `Register your interest in the ${car.model || "car"} on its page.`
+                ? `Register your interest in the ${car.model || "car"}${d.pageUrl ? " on its page" : ""}.`
                 : `Get a landed quote for this ${car.model || "car"} before you commit.`}
             </Text>
             {car.isUpcoming ? null : (
@@ -719,9 +724,11 @@ function SpecSheet(d: SpecSheetData) {
                 anything.
               </Text>
             )}
-            <Link src={d.pageUrl} style={s.ctaLink}>
-              {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
-            </Link>
+            {d.pageUrl ? (
+              <Link src={d.pageUrl} style={s.ctaLink}>
+                {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
+              </Link>
+            ) : null}
             {d.contact.name ? (
               <Text style={s.consultant}>{d.contact.name}</Text>
             ) : null}
@@ -759,12 +766,8 @@ export type SpecSheetOptions = {
   gradeId?: string | null;
   /** "RHD" / "LHD" from the page's selector; falls back to the primary hand. */
   steering?: string | null;
-  /**
-   * B2B drops the markets list and the landed-quote box. Defaults to B2C:
-   * only the admin export passes it — the public car page's download is
-   * always the retail sheet.
-   */
-  audience?: ListingAudience;
+  /** B2B drops the markets list and the landed-quote box. Defaults to B2C. */
+  audience?: AudienceSide;
   /** Already resolved on the server; defaults to the general channels. */
   contact?: SpecSheetContact;
 };
@@ -799,8 +802,11 @@ export async function renderSpecSheet(
   ]);
 
   const key = car.slug || car._id || car.id;
+  const audience = options.audience ?? "b2c";
+  const pagePath =
+    audience === "b2b" ? dealerCarPath(key) : `/b2c/gallery/${key}`;
   const data: SpecSheetData = {
-    audience: options.audience ?? "b2c",
+    audience,
     contact: options.contact ?? GENERAL_SPEC_SHEET_CONTACT,
     car,
     grade,
@@ -812,7 +818,7 @@ export async function renderSpecSheet(
     hero,
     thumbs: thumbs.filter((t): t is PdfImage => t !== null),
     mark,
-    pageUrl: `${SITE_URL}/b2c/gallery/${key}`,
+    pageUrl: LIVE_STATUSES.has(car.status) ? `${SITE_URL}${pagePath}` : null,
     generatedOn: new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
       month: "long",

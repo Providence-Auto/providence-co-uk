@@ -18,7 +18,11 @@ dataset (1783158525559180) and the code on 2026-11-01.
 
 Every `generate_lead` push carries `lead_type`, `lead_reference` (our id, not
 personal data), `form_name` and `destination_country`; the dealer push also
-carries `car_count`. Nothing personal goes into the `dataLayer`.
+carries `car_count`. Both carry `vehicle_type` — `car` or `motorcycle`, or
+`mixed` for a dealer inquiry naming both (left out when a dealer named no
+vehicle) — and B2C server events to Meta carry it in `custom_data`. It is
+additive: `lead_type` stays the form split, so no existing trigger changes.
+Nothing personal goes into the `dataLayer`.
 
 Server uploads fire **on the status change only** and are recorded in a
 ledger (`request.*SentAt`, `dealerinquiry.*SentAt`), so nothing is sent twice

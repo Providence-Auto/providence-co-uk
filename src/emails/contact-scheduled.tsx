@@ -12,6 +12,7 @@ import {
   Text,
 } from "@react-email/components";
 import { GENERAL_WHATSAPP_NUMBER, whatsappLink } from "@/config/contact";
+import { vehicleNoun } from "@/lib/vehicle-type";
 import { BlogSuggestionsSection, type EmailBlogPost } from "./blog-suggestions";
 import { EmailAvatar, EmailBrandHeader } from "./brand";
 
@@ -34,6 +35,8 @@ interface ContactScheduledEmailProps {
   suggestedPosts?: EmailBlogPost[];
   /** Where the car is going — used to frame the suggested reading. */
   destinationCountry?: string;
+  /** "car" or "motorcycle" — the noun in the general WhatsApp line. */
+  vehicleType?: string;
 }
 
 export const ContactScheduledEmail = ({
@@ -48,6 +51,7 @@ export const ContactScheduledEmail = ({
   contactTimezoneLabel,
   suggestedPosts = [],
   destinationCountry,
+  vehicleType,
 }: ContactScheduledEmailProps) => {
   const trackingUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/track/${requestId}`;
   const firstName = userName?.split(" ")[0] || "there";
@@ -196,7 +200,7 @@ export const ContactScheduledEmail = ({
             General enquiries on WhatsApp:{" "}
             <Link
               href={whatsappLink(
-                "Hi Providence Auto, I'd like to ask about importing a car.",
+                `Hi Providence Auto, I'd like to ask about importing a ${vehicleNoun(vehicleType)}.`,
               )}
               style={footerLinkStyle}
             >

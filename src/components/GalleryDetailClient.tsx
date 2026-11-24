@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import {
   DestinationBrief,
   DestinationChips,
@@ -37,6 +37,11 @@ import {
 } from "@/config/destinations";
 import { carSpecRows } from "@/lib/car-spec-rows";
 import type { GuideLink } from "@/lib/destination-guides";
+import {
+  type AudienceSide,
+  B2B_GALLERY_PATH,
+  dealerCarPath,
+} from "@/lib/listing-audience";
 import { scrollBehavior } from "@/lib/fluid";
 import { getLogoFilename } from "@/lib/logo-utils";
 import { repSearch } from "@/lib/rep-link";
@@ -59,11 +64,7 @@ import {
   parseGrades,
   type VehicleGrade,
 } from "@/lib/vehicle-grades";
-import {
-  BIKES_BASE_PATH,
-  isMotorcycle,
-  MOTORCYCLE_MAKES,
-} from "@/lib/vehicle-type";
+import { BIKES_BASE_PATH, isMotorcycle } from "@/lib/vehicle-type";
 
 // Updated Type to include Pricing Matrix
 type PriceEntry = {
@@ -183,6 +184,8 @@ export default function GalleryDetailClient({
   car,
   initialDestination = null,
   destinationGuides = {},
+  side = "b2c",
+  dealerInquiry,
 }: {
   car: Dossier;
   /**
@@ -197,10 +200,23 @@ export default function GalleryDetailClient({
    * this page's JavaScript bundle.
    */
   destinationGuides?: Record<string, GuideLink[]>;
+  /**
+   * Which of the car's pages this is (src/lib/listing-audience.ts). The
+   * dealer page, /b2b/gallery/<slug>, drops what the dealer PDF drops — the
+   * destination selector and the landed-quote framing — takes the dealer
+   * inquiry form instead of the retail one, and offers the dealer PDF.
+   */
+  side?: AudienceSide;
+  /**
+   * The dealer page's inquiry form, rendered by the page and passed in, so
+   * the retail page's bundle never carries the dealer form.
+   */
+  dealerInquiry?: ReactNode;
 }) {
   const inquiryRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const bike = isMotorcycle(car);
+  const dealer = side === "b2b" && !bike;
 
   const [specsOpen, setSpecsOpen] = useState(false);
   const [featuresOpen, setFeaturesOpen] = useState(false);
@@ -242,8 +258,8 @@ export default function GalleryDetailClient({
   // A bike offers no destination selector: every brief in the registry states
   // a car's rules (age limits, duty, drive side), which do not carry over.
   const destinations = useMemo(
-    () => (bike ? [] : parseDestinations(car.destinations)),
-    [bike, car.destinations],
+    () => (bike || dealer ? [] : parseDestinations(car.destinations)),
+    [bike, dealer, car.destinations],
   );
   const { featured, more } = useMemo(
     () => splitDestinations(destinations),
@@ -408,7 +424,10 @@ export default function GalleryDetailClient({
     if (selectedGrade) query.set("grade", selectedGrade.id);
     if (steeringOptions.length > 1) query.set("steering", activeSteering);
     const qs = query.toString();
-    return `/b2c/gallery/${car.slug || car._id}/spec-sheet${qs ? `?${qs}` : ""}`;
+    const page = dealer
+      ? dealerCarPath(car.slug || car._id || "")
+      : `/b2c/gallery/${car.slug || car._id}`;
+    return `${page}/spec-sheet${qs ? `?${qs}` : ""}`;
   })();
 
   // Base spec rows and the dossier's custom rows share one table and one
@@ -440,7 +459,9 @@ export default function GalleryDetailClient({
 
         <section className="pt-28 px-6 max-w-[1400px] mx-auto">
           <Link
-            href={bike ? BIKES_BASE_PATH : "/b2c/gallery"}
+            href={
+              bike ? BIKES_BASE_PATH : dealer ? B2B_GALLERY_PATH : "/b2c/gallery"
+            }
             className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-black transition-colors mb-6"
           >
             <ArrowLeft size={16} /> {bike ? "Back to Bikes" : "Back to Gallery"}
@@ -502,9 +523,10 @@ export default function GalleryDetailClient({
               {car.isUpcoming && (
                 <div className="mt-3 rounded-2xl border border-sky-200 bg-sky-50/60 p-4">
                   <p className="text-sm text-zinc-600 font-light leading-relaxed">
-                    Announced but not yet available to import. Register your
-                    interest and we&rsquo;ll come back with a landed cost for
-                    your country once specification and pricing are confirmed.
+                    Announced but not yet available to import.
+                    {dealer
+                      ? null
+                      : " Register your interest and we’ll come back with a landed cost for your country once specification and pricing are confirmed."}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
                     {car.expectedAvailability && (
@@ -816,7 +838,9 @@ export default function GalleryDetailClient({
         <section className="mt-16 lg:mt-24 px-6 max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             <div className="lg:col-span-6 flex flex-col">
-              {pricing.length > 0 && (
+              {/* Retail landed estimates; the dealer page, like the dealer
+                PDF, carries none. */}
+              {!dealer && pricing.length > 0 && (
                 <div className="mb-8">
                   <h3 className="text-lg font-bold text-black mb-4 flex items-center gap-2">
                     <Globe size={18} className="text-[#4da8da]" /> Landed
@@ -980,6 +1004,16 @@ export default function GalleryDetailClient({
           ref={inquiryRef}
           className="mt-16 lg:mt-24 px-6 py-16 bg-zinc-50 border-y border-black/5 scroll-mt-24"
         >
+          {dealer && dealerInquiry ? (
+            <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+              <div className="lg:col-span-4">
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tighter leading-[0.95]">
+                  Import this {car.model || "car"} for your dealership.
+                </h2>
+              </div>
+              <div className="lg:col-span-8">{dealerInquiry}</div>
+            </div>
+          ) : (
           <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
             <div className="lg:col-span-4">
               <h2 className="text-3xl md:text-5xl font-bold tracking-tighter uppercase leading-[0.85] mb-4">
@@ -1006,7 +1040,7 @@ export default function GalleryDetailClient({
             <div className="lg:col-span-8">
               <RequestForm
                 prefill={prefillData}
-                makeOptions={bike ? MOTORCYCLE_MAKES : undefined}
+                vehicleType={bike ? "motorcycle" : "car"}
                 exteriorColorOptions={exteriorColors}
                 interiorColorOptions={interiorColors}
                 gradeOptions={grades.map((g) => g.name)}
@@ -1017,6 +1051,7 @@ export default function GalleryDetailClient({
               />
             </div>
           </div>
+          )}
         </section>
 
         {/* The page's one secondary CTA, and it sits here — below the inquiry
@@ -1030,8 +1065,8 @@ export default function GalleryDetailClient({
           />
         )}
 
-        {/* The shared FAQ answers questions about cars. */}
-        {!bike && <FAQSection />}
+        {/* The shared FAQ answers a retail buyer's questions about cars. */}
+        {!bike && !dealer && <FAQSection />}
       </div>
     </main>
   );
