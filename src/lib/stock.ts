@@ -3,6 +3,7 @@
 // errors and by src/actions/stock-actions.ts again before anything is stored.
 
 import { REP_LINK_ALIASES } from "@/lib/rep-link";
+import type { StockPage } from "@/lib/stock-page";
 
 /** The public, shareable list of every live car. */
 export const STOCK_PUBLIC_PATH = "/available-cars";
@@ -119,6 +120,8 @@ export interface StockCarView extends StockCarFields {
   isRemoved: boolean;
   /** The linked Google Sheet the car comes from; such a car changes only there. */
   sheetId: string | null;
+  /** The car page it is linked to, live or not; its hero is the thumbnail. */
+  page: StockPage | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -136,6 +139,12 @@ export const STOCK_FIELD_LABELS: Record<StockField, string> = {
   fobPrice: "FOB",
   fobCurrency: "FOB currency",
   shippingPort: "Shipping port",
+};
+
+/** Labels for everything a history row can record. */
+export const STOCK_CHANGE_LABELS: Record<StockChange["field"], string> = {
+  ...STOCK_FIELD_LABELS,
+  carPage: "Car page",
 };
 
 /** The order fields are compared and listed in. */
@@ -159,7 +168,8 @@ export type StockAction =
   | "imported";
 
 export interface StockChange {
-  field: StockField;
+  /** "carPage" is the car page it is linked to — not one of the eight fields. */
+  field: StockField | "carPage";
   from: string | number | null;
   to: string | number | null;
 }

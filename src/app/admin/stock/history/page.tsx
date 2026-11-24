@@ -3,7 +3,7 @@ import { getStockActor, getStockHistory } from "@/actions/stock-actions";
 import {
   formatFob,
   STOCK_ADMIN_PATH,
-  STOCK_FIELD_LABELS,
+  STOCK_CHANGE_LABELS,
   STOCK_HISTORY_PATH,
   type StockAction,
   type StockChange,
@@ -167,7 +167,7 @@ export default async function StockHistoryPage({
                     .map((change) => (
                       <li key={change.field}>
                         <span className="font-medium text-zinc-800">
-                          {STOCK_FIELD_LABELS[change.field]}:
+                          {STOCK_CHANGE_LABELS[change.field]}:
                         </span>{" "}
                         <span className="text-zinc-500 line-through decoration-zinc-300">
                           {changeValue(change, change.from, entry)}

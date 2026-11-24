@@ -5,6 +5,7 @@ import {
   type DealerStockRef,
   dealerVehicleCount,
   stockCarLine,
+  stockColorText,
 } from "@/lib/dealer-inquiry";
 import { conditionLabel } from "@/lib/vehicle-inquiry";
 import { isMotorcycle } from "@/lib/vehicle-type";
@@ -132,7 +133,7 @@ export const DealerInquiryAlertEmail = (props: DealerInquiryAlertProps) => {
                 {index + 1}. {car.make} {car.model} — from the stock list
               </Text>
               <Text style={valueStyle}>
-                {[car.exteriorColor, stockCarLine(car.stock)]
+                {[stockColorText(car), stockCarLine(car.stock)]
                   .filter(Boolean)
                   .join(" · ")}
               </Text>

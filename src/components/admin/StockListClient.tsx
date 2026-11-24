@@ -4,6 +4,7 @@ import {
   Check,
   Copy,
   FileSpreadsheet,
+  Link2,
   Pencil,
   RotateCcw,
   Trash2,
@@ -18,6 +19,9 @@ import {
   setStockCarRemoved,
   updateStockCar,
 } from "@/actions/stock-actions";
+import { StockColorList } from "@/components/stock/StockColors";
+import StockFilterBar from "@/components/stock/StockFilterBar";
+import { StockThumb } from "@/components/stock/StockThumb";
 import {
   compareStockCars,
   formatFob,
@@ -30,8 +34,15 @@ import {
   type StockErrors,
   validateStockCar,
 } from "@/lib/stock";
+import {
+  filterStock,
+  NO_FILTERS,
+  type StockFilters,
+} from "@/lib/stock-filters";
 import { CAR_MAKES } from "@/lib/vehicle-inquiry";
+import CarPagePicker from "./CarPagePicker";
 import LinkedSheets, { sheetLabel } from "./LinkedSheets";
+import StockColorPicker from "./StockColorPicker";
 import StockImport from "./StockImport";
 
 const EMPTY: StockCarInput = {
@@ -93,6 +104,9 @@ export default function StockListClient({
   // Sources: show only the cars of one linked sheet.
   const [sourceSheet, setSourceSheet] = useState<string | null>(null);
   const [member, setMember] = useState("all");
+  const [filters, setFilters] = useState<StockFilters>(NO_FILTERS);
+  // The car whose car page is being chosen.
+  const [pageCar, setPageCar] = useState<StockCarView | null>(null);
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -105,7 +119,8 @@ export default function StockListClient({
     [cars],
   );
 
-  const shown = useMemo(
+  // The cars in view, then the ones the search and filters leave.
+  const inView = useMemo(
     () =>
       cars
         .filter((c) => (view === "live" ? !c.isRemoved : c.isRemoved))
@@ -114,6 +129,7 @@ export default function StockListClient({
         .sort(compareStockCars),
     [cars, view, member, sourceSheet],
   );
+  const shown = useMemo(() => filterStock(inView, filters), [inView, filters]);
   const liveCount = cars.filter((c) => !c.isRemoved).length;
   const removedCount = cars.length - liveCount;
 
@@ -257,10 +273,11 @@ export default function StockListClient({
               min: MIN_YEAR,
               max: maxYear(),
             })}
-            {field("color", "Colour", {
-              placeholder: "Pearl White",
-              autoComplete: "off",
-            })}
+            <StockColorPicker
+              value={String(form.color)}
+              onChange={(value) => set("color", value)}
+              error={errors.color}
+            />
             {field("engine", "Engine", {
               placeholder: "3.3L V6 Diesel",
               autoComplete: "off",
@@ -453,10 +470,20 @@ export default function StockListClient({
           )}
         </div>
 
+        {inView.length > 0 && (
+          <StockFilterBar
+            cars={inView}
+            filters={filters}
+            onChange={setFilters}
+            shown={shown.length}
+          />
+        )}
+
         <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white">
-          <table className="w-full min-w-[960px] text-left text-sm">
+          <table className="w-full min-w-[1100px] text-left text-sm">
             <thead className="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
               <tr>
+                <th className="px-4 py-3">Car page</th>
                 <th className="px-4 py-3">Make</th>
                 <th className="px-4 py-3">Model</th>
                 <th className="px-4 py-3">Year</th>
@@ -476,12 +503,14 @@ export default function StockListClient({
               {shown.length === 0 && (
                 <tr>
                   <td
-                    colSpan={11}
+                    colSpan={12}
                     className="px-4 py-10 text-center text-zinc-500"
                   >
-                    {view === "live"
-                      ? "No cars on the list yet."
-                      : "No removed cars."}
+                    {inView.length > 0
+                      ? "No cars match."
+                      : view === "live"
+                        ? "No cars on the list yet."
+                        : "No removed cars."}
                   </td>
                 </tr>
               )}
@@ -490,15 +519,52 @@ export default function StockListClient({
                   key={car.id}
                   className={editingId === car.id ? "bg-sky-50" : undefined}
                 >
+                  <td className="px-4 py-2">
+                    <button
+                      type="button"
+                      onClick={() => setPageCar(car)}
+                      aria-label={
+                        car.page
+                          ? `Car page for ${car.make} ${car.model}: ${car.page.title}`
+                          : `Link a car page to ${car.make} ${car.model}`
+                      }
+                      title={car.page?.title}
+                      className="flex items-center gap-2 rounded-md text-xs font-semibold text-sky-700 transition-feedback hover:underline"
+                    >
+                      {car.page ? (
+                        <>
+                          <StockThumb src={car.page.image} alt="" />
+                          {(!car.page.image || !car.page.live) && (
+                            <span
+                              className={
+                                car.page.live
+                                  ? "text-zinc-600"
+                                  : "whitespace-nowrap rounded-full bg-amber-50 px-2 py-0.5 text-amber-700"
+                              }
+                            >
+                              {car.page.live ? car.page.title : "Not live"}
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                          <Link2 size={14} aria-hidden />
+                          Link page
+                        </span>
+                      )}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 font-medium text-zinc-900">
                     {car.make}
                   </td>
                   <td className="px-4 py-3">{car.model}</td>
                   <td className="px-4 py-3 tabular-nums">{car.year}</td>
-                  <td className="px-4 py-3">{car.color}</td>
+                  <td className="min-w-52 px-4 py-3">
+                    <StockColorList color={car.color} />
+                  </td>
                   <td className="px-4 py-3">{car.engine}</td>
                   <td className="px-4 py-3">{car.steering}</td>
-                  <td className="px-4 py-3 text-right tabular-nums">
+                  <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
                     {formatFob(car.fobPrice, car.fobCurrency)}
                   </td>
                   <td className="px-4 py-3">{car.shippingPort}</td>
@@ -584,6 +650,14 @@ export default function StockListClient({
           </table>
         </div>
       </div>
+
+      {pageCar && (
+        <CarPagePicker
+          car={pageCar}
+          onClose={() => setPageCar(null)}
+          onSaved={replace}
+        />
+      )}
     </div>
   );
 }
