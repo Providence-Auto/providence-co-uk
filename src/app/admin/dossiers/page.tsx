@@ -39,6 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { isAuctionListing } from "@/lib/listing-audience";
 import { galleryPathForDossier, isLiveStatus } from "@/lib/vehicle";
 
 export default function InventoryPage() {
@@ -253,6 +254,12 @@ export default function InventoryPage() {
                           <p className="text-xs text-zinc-500 font-medium mt-0.5">
                             {d.trim || "Base Trim"}
                           </p>
+                          {isAuctionListing(d.audience) ? (
+                            <span className="mt-1.5 inline-block rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-800">
+                              Auction
+                              {d.auction?.date ? ` · ${d.auction.date}` : ""}
+                            </span>
+                          ) : null}
                         </div>
                       </div>
                     </TableCell>

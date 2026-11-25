@@ -5,7 +5,12 @@
 // has to pick one side: a bike in the car gallery, or a car under /import-bikes,
 // would be a page promising the wrong thing.
 
-import { dealerCarPath, onRetail } from "@/lib/listing-audience";
+import {
+  auctionCarPath,
+  dealerCarPath,
+  isAuctionListing,
+  onRetail,
+} from "@/lib/listing-audience";
 
 export const VEHICLE_TYPES = ["car", "motorcycle"] as const;
 export type VehicleType = (typeof VEHICLE_TYPES)[number];
@@ -89,6 +94,7 @@ export function vehiclePath(record: {
 }): string {
   const key = record.slug || record._id || record.id || "";
   if (isMotorcycle(record)) return `${BIKES_BASE_PATH}/${key}`;
+  if (isAuctionListing(record.audience)) return auctionCarPath(key);
   return onRetail(record.audience)
     ? `${CARS_GALLERY_PATH}/${key}`
     : dealerCarPath(key);

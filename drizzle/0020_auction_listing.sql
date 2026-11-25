@@ -1,0 +1,14 @@
+-- A car coming up at a Japanese auction (business request 2026-11-25).
+--
+-- specdossier."auction"  The auction date, starting price, grades and the
+--                        translated auction sheet of a listing whose
+--                        "audience" is 'auction'. Empty on every other row.
+--                        Shape and rules: src/lib/auction-listing.ts.
+--
+-- ADD COLUMN IF NOT EXISTS with a default, so this is safe to apply twice and
+-- safe to apply ahead of the deploy. Apply it BEFORE deploying the branch:
+-- every dossier query names the column, so without it no car page loads.
+--
+-- Apply with scripts/apply-auction-column.mjs (the drizzle migrator is
+-- unusable while migration 0001 is listed without its .sql file).
+ALTER TABLE "specdossier" ADD COLUMN IF NOT EXISTS "auction" jsonb DEFAULT '{}'::jsonb NOT NULL;
