@@ -81,8 +81,26 @@ export function stockItemListJsonLd(
 export const STOCK_STEERING = ["RHD", "LHD"] as const;
 export type StockSteering = (typeof STOCK_STEERING)[number];
 
-/** Currencies an FOB price may be quoted in. USD is the default. */
-export const STOCK_CURRENCIES = ["USD", "JPY", "GBP", "EUR", "AED"] as const;
+/**
+ * Currencies an FOB price may be quoted in: every source market's own and the
+ * ones the trade prices in. USD is the default.
+ */
+export const STOCK_CURRENCIES = [
+  "USD",
+  "JPY",
+  "GBP",
+  "EUR",
+  "AED",
+  "AUD",
+  "NZD",
+  "SGD",
+  "HKD",
+  "CNY",
+  "INR",
+  "THB",
+  "ZAR",
+  "CAD",
+] as const;
 export type StockCurrency = (typeof STOCK_CURRENCIES)[number];
 
 /** The eight fields a salesperson fills in. */
@@ -246,7 +264,7 @@ export function validateStockCar(
 
   const fobCurrency = clean(input.fobCurrency).toUpperCase() || "USD";
   if (!STOCK_CURRENCIES.includes(fobCurrency as StockCurrency))
-    errors.fobCurrency = "Choose a currency";
+    errors.fobCurrency = `${fobCurrency} is not a currency on the list`;
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 

@@ -3,6 +3,7 @@
 // CSV). Pure — the server actions in src/actions/stock-actions.ts run it, and
 // every row still goes through validateStockCar before anything is stored.
 
+import { CURRENCIES } from "@/lib/currencies";
 import {
   STOCK_CURRENCIES,
   type StockCarFields,
@@ -102,12 +103,38 @@ const FIELD_NAMES: Record<ImportField, string> = {
   shippingPort: "Shipping port",
 };
 
-const SYMBOLS: Record<string, StockCurrency> = {
-  $: "USD",
-  "¥": "JPY",
+// Symbols and names that mean one currency.
+const EXACT: Record<string, StockCurrency> = {
+  US$: "USD",
+  A$: "AUD",
+  AU$: "AUD",
+  NZ$: "NZD",
+  S$: "SGD",
+  SG$: "SGD",
+  HK$: "HKD",
+  C$: "CAD",
+  CA$: "CAD",
+  "CN¥": "CNY",
+  "JP¥": "JPY",
+  RMB: "CNY",
+  YEN: "JPY",
   "£": "GBP",
   "€": "EUR",
+  "₹": "INR",
+  "฿": "THB",
 };
+
+// Symbols several currencies share. Which one is meant comes from the column
+// header, then the default the person picked, then the first listed here.
+const SHARED: Record<string, StockCurrency[]> = {
+  $: ["USD", "AUD", "NZD", "SGD", "HKD", "CAD"],
+  "¥": ["JPY", "CNY"],
+};
+
+// Written in a price cell, but not a currency the list takes (or not one we
+// can be sure of): named back in the error rather than read as another.
+const UNSURE = new Set(["RS", "R", "KSH", "TSH", "USH"]);
+const ISO_CODES = new Set(CURRENCIES.map((c) => c.code));
 
 function headerKey(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -180,24 +207,53 @@ export function normaliseSteering(text: string): string {
 }
 
 /**
- * A price cell as typed: "USD 12,500", "$12,500", "¥1,200,000", "12500 JPY",
- * "12,500.00". Returns the number as text (validateStockCar parses it) and the
- * currency the cell names, if it names one.
+ * A price cell as typed: "USD 12,500", "A$12,500", "¥1,200,000", "12500 JPY",
+ * "FOB 12,500.00". Returns the number as text (validateStockCar parses it) and
+ * the currency the cell names, if it names one.
+ *
+ * - `currency` is what the cell says outright. It may be one the list doesn't
+ *   take ("KES"), which then fails validation by name.
+ * - `shared` is a bare "$" or "¥": the currencies it could be.
  */
 export function parsePriceCell(text: string): {
   amount: string;
-  currency?: StockCurrency;
+  currency?: string;
+  shared?: StockCurrency[];
 } {
   const raw = text.trim();
-  let currency: StockCurrency | undefined;
-  const code = raw.toUpperCase().match(/[A-Z]{3}/)?.[0];
-  if (code && isCurrency(code)) currency = code;
-  else {
-    const symbol = Object.keys(SYMBOLS).find((s) => raw.includes(s));
-    if (symbol) currency = SYMBOLS[symbol];
-  }
+  const upper = raw.toUpperCase();
   const amount = raw.replace(/[^0-9.,\s-]/g, "").trim();
-  return { amount, currency };
+
+  // "A$", "¥", "USD", "FOB" — runs of letters, with the symbol they lead into.
+  const marks = upper.match(/[A-Z]*[$¥£€₹฿]|[A-Z]+/g) ?? [];
+  for (const mark of marks) {
+    if (EXACT[mark]) return { amount, currency: EXACT[mark] };
+    if (isCurrency(mark)) return { amount, currency: mark };
+    // "USD$12,500", "AUD $30,000": the code decides.
+    const code = mark.replace(/[^A-Z]/g, "");
+    if (code !== mark && isCurrency(code)) return { amount, currency: code };
+  }
+  const unknown = marks.find(
+    (mark) =>
+      UNSURE.has(mark) ||
+      ISO_CODES.has(mark) ||
+      (mark.length > 1 && /[$¥]$/.test(mark)),
+  );
+  if (unknown) return { amount, currency: unknown };
+
+  const symbol = marks.find((mark) => SHARED[mark]);
+  return symbol ? { amount, shared: SHARED[symbol] } : { amount };
+}
+
+/** The currency of a bare "$" or "¥", or of a price that names none. */
+function assumedCurrency(
+  shared: StockCurrency[] | undefined,
+  header: StockCurrency | undefined,
+  fallback: StockCurrency,
+): StockCurrency {
+  if (!shared) return header ?? fallback;
+  if (header && shared.includes(header)) return header;
+  return shared.includes(fallback) ? fallback : shared[0];
 }
 
 export interface StockImportRow {
@@ -303,8 +359,7 @@ export function rowsToStockImport(
       fobCurrency:
         currencyCell ||
         price.currency ||
-        columns.priceCurrency ||
-        defaultCurrency,
+        assumedCurrency(price.shared, columns.priceCurrency, defaultCurrency),
       shippingPort: cell(row, "shippingPort"),
     };
 
