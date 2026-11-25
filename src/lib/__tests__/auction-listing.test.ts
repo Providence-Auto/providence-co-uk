@@ -86,7 +86,10 @@ describe("going live", () => {
     expect(problem({ startPrice: 0 })).toMatch(/starting price/);
     expect(problem({ grade: "" })).toMatch(/auction grade/);
     expect(problem({ grade: "3.5" })).toMatch(/4\.0 and above/);
-    expect(problem({ translation: { checked: false } })).toMatch(/translation/);
+    expect(problem({ translation: { checked: true } })).toMatch(/Translate/);
+    expect(
+      problem({ translation: { inspectorNotes: ["x"], checked: false } }),
+    ).toMatch(/tick the box/);
   });
 
   it("reads grades the way sheets print them", () => {

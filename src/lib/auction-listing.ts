@@ -150,7 +150,17 @@ export function auctionLiveProblem(auction: AuctionListing): string | null {
   if (!meetsGradeFloor(auction.grade)) {
     return `Grade ${auction.grade} can't go live: we export cars graded 4.0 and above from Japan.`;
   }
-  if (!auction.translation.checked) {
+  const t = auction.translation;
+  if (
+    t.inspectorNotes.length +
+      t.marks.length +
+      t.sellingPoints.length +
+      t.equipment.length ===
+    0
+  ) {
+    return "Translate the auction sheet before this car goes live.";
+  }
+  if (!t.checked) {
     return "Check the auction sheet's translation and tick the box before this car goes live.";
   }
   return null;
