@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheckBig, Info, UserRound, X } from "lucide-react";
+import { ArrowUpRight, CircleCheckBig, Info, UserRound, X } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { submitDealerInquiry } from "@/actions/dealer-inquiry-actions";
@@ -101,7 +101,7 @@ export default function AvailableCarsClient({
   // Filtering only changes what is drawn: a picked car stays picked, and
   // stays in the form's chips, while a filter hides its row.
   const shown = useMemo(() => filterStock(cars, filters), [cars, filters]);
-  const hasThumbs = cars.some((c) => c.page?.image);
+  const hasPages = cars.some((c) => c.page);
   const picked = selected.flatMap((id) => {
     const car = byId.get(id);
     return car ? [car] : [];
@@ -295,15 +295,25 @@ export default function AvailableCarsClient({
     );
   };
 
+  // The photo and the words under it are one link. The words are always
+  // there: a phone has no hover to hint that the photo opens.
   const thumb = (car: PublicStockCar) =>
-    car.page?.image && (
+    car.page && (
       <Link
         href={car.page.path}
         target="_blank"
-        className="shrink-0"
-        aria-label={`Open the ${car.page.title} page`}
+        className="group/page flex w-fit shrink-0 flex-col items-center gap-1 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+        aria-label={`View more: ${car.page.title} (opens in a new tab)`}
       >
-        <StockThumb src={car.page.image} alt={car.page.title} />
+        {car.page.image && (
+          <span className="block overflow-hidden rounded-md ring-1 ring-black/10 transition-colors group-hover/page:ring-2 group-hover/page:ring-sky-600">
+            <StockThumb src={car.page.image} alt="" />
+          </span>
+        )}
+        <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2 group-hover/page:decoration-sky-700">
+          View more
+          <ArrowUpRight size={13} aria-hidden />
+        </span>
       </Link>
     );
 
@@ -312,7 +322,7 @@ export default function AvailableCarsClient({
       <Link
         href={car.page.path}
         target="_blank"
-        className="underline decoration-zinc-300 underline-offset-4 hover:decoration-zinc-900"
+        className="text-sky-700 underline decoration-sky-300 underline-offset-4 hover:decoration-sky-700"
       >
         {text}
       </Link>
@@ -447,9 +457,9 @@ export default function AvailableCarsClient({
                   <th scope="col" className="w-12 px-4 py-3">
                     <span className="sr-only">Select</span>
                   </th>
-                  {hasThumbs && (
-                    <th scope="col" className="w-20 py-3 pr-2">
-                      <span className="sr-only">Photo</span>
+                  {hasPages && (
+                    <th scope="col" className="w-24 py-3 pr-2">
+                      <span className="sr-only">Car page</span>
                     </th>
                   )}
                   <th scope="col" className="px-4 py-3">
@@ -490,7 +500,7 @@ export default function AvailableCarsClient({
                     }`}
                   >
                     <td className="px-4 py-3">{checkbox(car)}</td>
-                    {hasThumbs && <td className="py-2 pr-2">{thumb(car)}</td>}
+                    {hasPages && <td className="py-2.5 pr-2">{thumb(car)}</td>}
                     <td className="px-4 py-3 font-medium text-zinc-900">
                       {car.make}
                     </td>
