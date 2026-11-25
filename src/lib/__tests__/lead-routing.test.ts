@@ -11,10 +11,12 @@ import {
   dealerCountryLeadOwner,
   isExcludedFromDealerRotation,
   isHeldOutOfRotations,
+  lastRotationTurns,
   PAGE_LEAD_OWNERS,
   pageLeadOwner,
   pagePathFromUrl,
   pickNextInRotation,
+  rotationTurnOwner,
 } from "@/lib/lead-routing";
 import { LHD_LANDING_PATH } from "@/lib/leadSource";
 import { JAPAN_UK_PATHS } from "@/config/japan-uk";
@@ -85,6 +87,69 @@ describe("pickNextInRotation", () => {
     ]);
     const withoutChloe = pool.filter((m) => m.id !== "c");
     expect(pickNextInRotation(withoutChloe, history)?.name).toBe("Beqir");
+  });
+});
+
+describe("whose rotation turn a lead used", () => {
+  const handover = (previousOwnerId?: string | null) => ({
+    action: "Reassigned: A → B",
+    ...(previousOwnerId === undefined ? {} : { previousOwnerId }),
+  });
+
+  it("is the current owner's when the lead never changed hands", () => {
+    for (const statusHistory of [
+      [],
+      null,
+      "not a list",
+      [null, { action: "Contact preferences submitted" }],
+    ]) {
+      expect(rotationTurnOwner({ assignedToId: "c", statusHistory })).toBe("c");
+    }
+  });
+
+  it("stays with the first owner however often the lead is reassigned", () => {
+    expect(
+      rotationTurnOwner({
+        assignedToId: "z",
+        statusHistory: [{ action: "Note" }, handover("c"), handover("k")],
+      }),
+    ).toBe("c");
+  });
+
+  it("is nobody's when the lead started out unassigned", () => {
+    expect(
+      rotationTurnOwner({ assignedToId: "z", statusHistory: [handover(null)] }),
+    ).toBeNull();
+  });
+
+  it("falls back to the current owner when the first entry predates the id", () => {
+    expect(
+      rotationTurnOwner({
+        assignedToId: "z",
+        statusHistory: [handover(), handover("k")],
+      }),
+    ).toBe("z");
+  });
+
+  it("keeps each member's latest turn, in any order of leads", () => {
+    const lead = (assignedToId: string | null, minute: number) => ({
+      assignedToId,
+      statusHistory: [],
+      createdAt: new Date(Date.UTC(2026, 10, 25, 9, minute)),
+    });
+    const turns = lastRotationTurns([
+      lead("c", 1),
+      lead("c", 5),
+      lead("k", 3),
+      lead("k", 2),
+      lead(null, 9),
+    ]);
+    expect(turns).toEqual(
+      new Map([
+        ["c", lead("c", 5).createdAt],
+        ["k", lead("k", 3).createdAt],
+      ]),
+    );
   });
 });
 

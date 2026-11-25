@@ -10,7 +10,6 @@ import {
   ilike,
   inArray,
   ne,
-  notInArray,
   sql,
 } from "drizzle-orm";
 import { BLOG_BASE_PATH, getSuggestedPosts } from "@/config/blog";
@@ -31,8 +30,10 @@ import {
   b2cCountryLeadOwner,
   COUNTRY_OWNER_EMAILS,
   isHeldOutOfRotations,
+  lastRotationTurns,
   pageLeadOwner,
   pagePathFromUrl,
+  pickNextInRotation,
   SALES_ROLES,
 } from "@/lib/lead-routing";
 import { LEAD_EVENT } from "@/lib/leadConversion";
@@ -60,6 +61,12 @@ const holdsRole = (roles: string[]) =>
 
 /** A B2C lead goes to B2C Sales or Sales (business instruction 2026-10-14). */
 const takesB2cLeads = () => holdsRole(B2C_LEAD_ROLES);
+
+/**
+ * How many recent rotation leads decide whose turn is next. A member with no
+ * turn among them is treated as never having had one and comes up next.
+ */
+const ROTATION_LOOKBACK = 100;
 
 export async function submitCarRequest(data: {
   // When present, update the existing lead instead of creating a new one
@@ -182,8 +189,8 @@ export async function submitCarRequest(data: {
     //                    link; it beats a country owner (business
     //                    instruction 2026-10-16). Any sales position.
     //      country     — the destination market has a named B2C owner.
-    //      round-robin — everything else rotates through B2C Sales and
-    //                    Sales alphabetically.
+    //      round-robin — everything else goes to whoever in B2C Sales and
+    //                    Sales has waited longest for a turn.
     let assignedAgent = null;
     let assignmentMethod:
       | "page-owner"
@@ -317,8 +324,7 @@ export async function submitCarRequest(data: {
     }
 
     if (!assignedAgent) {
-      // The rotation pool: active B2C Sales and Sales members,
-      // alphabetically by name.
+      // The rotation pool: active B2C Sales and Sales members.
       const staffMembers = await db
         .select()
         .from(users)
@@ -347,43 +353,27 @@ export async function submitCarRequest(data: {
       }));
 
       if (mappedStaffMembers.length > 0) {
-        // Fetch the most recently created round-robin lead. Directly
-        // pinned and country-routed leads are excluded so assigning a lead
-        // to one member doesn't advance the shared rotation past them.
-        const [lastRequest] = await db
-          .select()
+        // The recent rotation leads, and only those: a page-owner, hard-rule,
+        // direct, rep-link or country lead, or one a consultant created from
+        // a KYC ("manual"), is nobody's turn. Each counts for whoever the
+        // rotation gave it to, even if it has since been reassigned by hand
+        // (rotationTurnOwner); a discarded draft or a deleted lead leaves no
+        // row, so that turn goes back to the person who lost it.
+        const rotationLeads = await db
+          .select({
+            assignedToId: requests.assignedToId,
+            statusHistory: requests.statusHistory,
+            createdAt: requests.createdAt,
+          })
           .from(requests)
-          .where(
-            notInArray(requests.assignmentMethod, [
-              "page-owner",
-              "hard-rule",
-              "direct",
-              "rep-link",
-              "country",
-            ]),
-          )
+          .where(eq(requests.assignmentMethod, "round-robin"))
           .orderBy(desc(requests.createdAt))
-          .limit(1);
+          .limit(ROTATION_LOOKBACK);
 
-        if (!lastRequest || !lastRequest.assignedToId) {
-          // If there are no existing leads, start with the first person on the list
-          assignedAgent = mappedStaffMembers[0];
-        } else {
-          // Find where the last assigned agent sits in our alphabetical list
-          const lastAgentIndex = mappedStaffMembers.findIndex(
-            (staff) =>
-              staff.id === lastRequest.assignedToId ||
-              staff._id === lastRequest.assignedToId,
-          );
-
-          // Calculate the next index. If the last agent isn't found, start at 0.
-          const nextIndex =
-            lastAgentIndex >= 0
-              ? (lastAgentIndex + 1) % mappedStaffMembers.length
-              : 0;
-
-          assignedAgent = mappedStaffMembers[nextIndex];
-        }
+        assignedAgent = pickNextInRotation(
+          mappedStaffMembers,
+          lastRotationTurns(rotationLeads),
+        );
       }
       // No else: with no Sales member to take it the lead stays unassigned and
       // falls to the Providence Support inbox below. The previous fallback
