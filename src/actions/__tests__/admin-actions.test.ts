@@ -223,6 +223,8 @@ describe("admin-actions", () => {
         expect(saved.statusHistory[1]).toMatchObject({
           action: "Reassigned: Abdallah → Chathuranga Pitigala",
           performedBy: "Admin User",
+          // Whose rotation turn the lead was (rotationTurnOwner).
+          previousOwnerId: "u-abd",
         });
       });
 
@@ -252,6 +254,9 @@ describe("admin-actions", () => {
         expect(vi.mocked(db.set).mock.calls[0][0].statusHistory[1].action).toBe(
           "Reassigned: Unassigned → Abdallah",
         );
+        expect(
+          vi.mocked(db.set).mock.calls[0][0].statusHistory[1].previousOwnerId,
+        ).toBeNull();
       });
     });
 

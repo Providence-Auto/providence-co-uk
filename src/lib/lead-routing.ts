@@ -220,11 +220,10 @@ export function isExcludedFromDealerRotation(user: {
  *
  * Least-recently-assigned rather than "the one after whoever got the last
  * lead": over a stable pool the two produce the same cycle, but this version
- * cannot be knocked back to the start of the list. The anchor-based rotation
- * in request-actions resets to the first person whenever the last assignee
- * has since been banned or re-roled (`findIndex` returns -1), and skips
- * nobody when someone new joins; here a newcomer simply has no history and
- * comes up next, and a departed member drops out without disturbing anyone.
+ * cannot be knocked back to the start of the list by a last assignee who has
+ * since been banned or re-roled. A newcomer simply has no history and comes up
+ * next, and a departed member drops out without disturbing anyone. Both
+ * rotations use it (the B2C one since 2026-11-25).
  *
  * `lastAssignedAt` holds each member's most recent rotation assignment; a
  * member with no entry has never had one. Ties go alphabetically by name,
@@ -250,4 +249,56 @@ export function pickNextInRotation<T extends { id: string; name: string }>(
     if (when.getTime() < best.getTime()) next = member;
   }
   return next;
+}
+
+// ── Whose turn a B2C lead used (2026-11-25) ────────────────────────────────
+//
+// B2C leads are shared between the B2C Sales team by turn, and a turn belongs
+// to whoever the rotation gave the lead to. A lead reassigned by hand later
+// must not hand that turn to its new owner, or the first owner is simply given
+// the next lead as well. The row holds only the current owner, so the first
+// "Reassigned" entry in its history says who had it before.
+
+/** How a reassignment reads in a lead's history ("Reassigned: A → B"). */
+export const REASSIGNED_PREFIX = "Reassigned: ";
+
+/**
+ * The member whose rotation turn this lead used, or null if it had none.
+ * Entries written before `previousOwnerId` existed cannot say, so those leads
+ * count for their current owner, as they always did.
+ */
+export function rotationTurnOwner(lead: {
+  assignedToId: string | null;
+  statusHistory: unknown;
+}): string | null {
+  const history: unknown[] = Array.isArray(lead.statusHistory)
+    ? lead.statusHistory
+    : [];
+  const firstHandover = history.find(
+    (entry): entry is { action: string; previousOwnerId?: string | null } => {
+      const action = (entry as { action?: unknown } | null)?.action;
+      return typeof action === "string" && action.startsWith(REASSIGNED_PREFIX);
+    },
+  );
+  return firstHandover?.previousOwnerId !== undefined
+    ? firstHandover.previousOwnerId
+    : lead.assignedToId;
+}
+
+/** When each member last had a rotation turn, from any order of leads. */
+export function lastRotationTurns(
+  leads: {
+    assignedToId: string | null;
+    statusHistory: unknown;
+    createdAt: Date;
+  }[],
+): Map<string, Date> {
+  const turns = new Map<string, Date>();
+  for (const lead of leads) {
+    const owner = rotationTurnOwner(lead);
+    if (!owner) continue;
+    const known = turns.get(owner);
+    if (!known || known < lead.createdAt) turns.set(owner, lead.createdAt);
+  }
+  return turns;
 }

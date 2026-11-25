@@ -20,6 +20,7 @@ import {
   QUALIFIED_LEAD_EVENT,
 } from "@/lib/leadConversion";
 import { kycStaff } from "@/lib/kyc-access";
+import { REASSIGNED_PREFIX } from "@/lib/lead-routing";
 import { onLeadSalesConfirmed } from "@/lib/kyc-request";
 import { auth } from "@/utils/auth";
 
@@ -303,10 +304,12 @@ export async function updateRequestStatus(
         : "Unassigned";
 
       historyLogs.push({
-        action: `Reassigned: ${from} → ${to}`,
+        action: `${REASSIGNED_PREFIX}${from} → ${to}`,
         performedBy: currentUser,
         date: new Date(),
         comment: "",
+        // Who the rotation's turn stays with (rotationTurnOwner).
+        previousOwnerId: existingRequest.assignedToId || null,
       });
     }
 

@@ -417,7 +417,7 @@ The short version:
 ### Server Actions
 
 All mutations go through server actions in `src/actions/`, not API routes. Key actions:
-- `submitCarRequest` — creates Request, assigns agent (profile-page pin to that person whatever their position, then a rep link, else round-robin across **B2C Sales** and **Sales**), sends email alerts
+- `submitCarRequest` — creates Request, assigns agent (profile-page pin to that person whatever their position, then a rep link, else round-robin across **B2C Sales** and **Sales**), sends email alerts. B2C leads are shared between **Kisal and Chathuranga** (business instruction 2026-11-25), by role: those two are to hold B2C Sales. A turn belongs to whoever the rotation gave the lead to, read back from the first `Reassigned` history entry's `previousOwnerId` (`rotationTurnOwner`), so reassigning a lead by hand, or creating one from a KYC, never uses or frees a turn
 
 **Hard rule — one account takes every lead** (`ALL_LEADS_OWNER_EMAIL` in `src/lib/lead-routing.ts`): while set, every B2C lead *and* every dealer inquiry goes to that account ahead of everything below except a page owner, recorded as `assignmentMethod: "hard-rule"`. **Off (`null`) since 2026-11-12** — it held Amy for one day (2026-11-11); she now takes only her page and her rep link (below). The machinery stays for the next time it is asked for.
 
