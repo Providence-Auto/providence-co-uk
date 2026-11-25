@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import { describe, expect, it } from "vitest";
+import { STOCK_CURRENCIES, validateStockCar } from "../stock";
 import {
   findHeaderRow,
   googleSheetCsvUrl,
@@ -15,7 +16,6 @@ import {
   stockKey,
 } from "../stock-import";
 import { xlsxToRows } from "../stock-import-xlsx";
-import { validateStockCar } from "../stock";
 
 const NOW = new Date("2026-11-19T12:00:00Z");
 const HEADER = [...STOCK_IMPORT_COLUMNS];
@@ -105,7 +105,7 @@ describe("cells", () => {
     });
     expect(parsePriceCell("¥1,200,000")).toEqual({
       amount: "1,200,000",
-      currency: "JPY",
+      shared: ["JPY", "CNY"],
     });
     expect(parsePriceCell("£30,000")).toMatchObject({ currency: "GBP" });
     expect(parsePriceCell("9500 AED")).toEqual({
@@ -113,6 +113,68 @@ describe("cells", () => {
       currency: "AED",
     });
     expect(parsePriceCell("41000")).toEqual({ amount: "41000" });
+  });
+
+  it("never reads one dollar as another", () => {
+    const currency = (text: string) => parsePriceCell(text).currency;
+    expect(currency("A$30,000")).toBe("AUD");
+    expect(currency("AU$ 30,000")).toBe("AUD");
+    expect(currency("AUD $30,000")).toBe("AUD");
+    expect(currency("AUD30,000")).toBe("AUD");
+    expect(currency("US$30,000")).toBe("USD");
+    expect(currency("USD$30,000")).toBe("USD");
+    expect(currency("NZ$30,000")).toBe("NZD");
+    expect(currency("S$30,000")).toBe("SGD");
+    expect(currency("HK$30,000")).toBe("HKD");
+    expect(currency("₹15,40,000")).toBe("INR");
+    expect(currency("RMB 200,000")).toBe("CNY");
+    expect(currency("FOB USD 15,400")).toBe("USD");
+    expect(parsePriceCell("$30,000").currency).toBeUndefined();
+    expect(parsePriceCell("FOB 15400")).toEqual({ amount: "15400" });
+  });
+
+  it("names a currency the list doesn't take, instead of reading it as another", () => {
+    expect(parsePriceCell("KES 2,500,000").currency).toBe("KES");
+    expect(parsePriceCell("R$ 90,000").currency).toBe("R$");
+    expect(parsePriceCell("Rs. 1,500,000").currency).toBe("RS");
+    const header = HEADER.filter((h) => h !== "Currency");
+    const row = ROW.filter((_, i) => i !== 7);
+    row[6] = "KES 2,500,000";
+    const result = rowsToStockImport([header, row], { now: NOW });
+    expect(result.ok && result.rows[0].errors).toEqual({
+      fobCurrency: "KES is not a currency on the list",
+    });
+  });
+
+  it("takes a bare $ from the header, then the default, then USD", () => {
+    const of = (fob: string, cell: string, defaultCurrency?: "AUD" | "GBP") => {
+      const header = HEADER.filter((h) => h !== "Currency").map((h) =>
+        h === "FOB" ? fob : h,
+      );
+      const row = ROW.filter((_, i) => i !== 7);
+      row[6] = cell;
+      const result = rowsToStockImport([header, row], {
+        now: NOW,
+        defaultCurrency,
+      });
+      return result.ok && result.rows[0].input.fobCurrency;
+    };
+    expect(of("FOB (AUD)", "$30,000")).toBe("AUD");
+    expect(of("FOB", "$30,000", "AUD")).toBe("AUD");
+    expect(of("FOB", "$30,000", "GBP")).toBe("USD");
+    expect(of("FOB", "$30,000")).toBe("USD");
+    // A header in another family doesn't turn a dollar into yen.
+    expect(of("FOB (JPY)", "$30,000")).toBe("USD");
+    expect(of("FOB (CNY)", "¥200,000")).toBe("CNY");
+    expect(of("FOB", "¥1,200,000", "GBP")).toBe("JPY");
+  });
+
+  it("reads a price header in every currency the list takes", () => {
+    for (const code of STOCK_CURRENCIES) {
+      const { index, priceCurrency } = mapStockHeaders([`FOB (${code})`]);
+      expect(index.fobPrice).toBe(0);
+      expect(priceCurrency).toBe(code);
+    }
   });
 });
 

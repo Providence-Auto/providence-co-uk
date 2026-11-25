@@ -244,9 +244,13 @@ describe("search, filters, colours and car pages", () => {
 
   it("links a car with a page, with its thumbnail, and leaves the rest plain", () => {
     const [first, second] = [...container.querySelectorAll("tbody tr")];
-    expect(first.querySelector("img")?.getAttribute("alt")).toBe(
-      "Toyota Alphard",
+    expect(first.querySelector("img")).not.toBeNull();
+    // The photo says in words that it opens, and is part of the same link.
+    const view = first.querySelector(
+      'a[aria-label^="View more: Toyota Alphard"]',
     );
+    expect(view?.textContent).toContain("View more");
+    expect(view?.querySelector("img")).not.toBeNull();
     expect(
       first.querySelector('a[href="/b2c/gallery/toyota-alphard"]'),
     ).not.toBeNull();
