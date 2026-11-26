@@ -2,6 +2,9 @@
 //   /b2c/gallery/<car>/spec-sheet  — the retail sheet
 //   /b2b/gallery/<car>/spec-sheet  — the dealer sheet (no markets list, no
 //                                    landed-quote box)
+//   /import-cars-from/japan/auction-cars/<car>/spec-sheet — an auction car's
+//                                    sheet (auction date, starting price, the
+//                                    translated auction sheet)
 //
 // A plain GET link rather than a server action: the action returned the PDF as
 // base64 and the page opened it with window.open() once the reply arrived —
@@ -14,7 +17,12 @@
 // the sheet shows the grade they were looking at.
 
 import { canViewCar, loadCar } from "@/lib/car-page-data";
-import { type AudienceSide, onDealer, sheetSide } from "@/lib/listing-audience";
+import {
+  type AudienceSide,
+  isAuctionListing,
+  onDealer,
+  sheetSide,
+} from "@/lib/listing-audience";
 import { renderSpecSheet, specSheetFileName } from "@/lib/spec-sheet";
 
 /** Statuses whose page a logged-out visitor may see — and so may be cached. */
@@ -23,7 +31,7 @@ const PUBLIC_STATUSES = new Set(["Active", "Published"]);
 export async function specSheetResponse(
   request: Request,
   id: string,
-  side: AudienceSide,
+  side: AudienceSide | "auction",
 ): Promise<Response> {
   const car = await loadCar(id);
 
@@ -33,6 +41,7 @@ export async function specSheetResponse(
   if (
     !car ||
     (side === "b2b" && !onDealer(car.audience)) ||
+    (side === "auction" && !isAuctionListing(car.audience)) ||
     !(await canViewCar(car))
   ) {
     return new Response("Not found", { status: 404 });
@@ -45,7 +54,7 @@ export async function specSheetResponse(
       steering: searchParams.get("steering"),
       // A dealer-only car has no retail sheet: its old /b2c link still
       // downloads, and gets the dealer one.
-      audience: sheetSide(car.audience, side),
+      audience: sheetSide(car.audience, side === "auction" ? "b2c" : side),
     });
 
     return new Response(new Uint8Array(pdf), {

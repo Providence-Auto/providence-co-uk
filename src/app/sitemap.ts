@@ -4,6 +4,7 @@ import { listPublishedProfileSlugs } from "@/actions/sales-profile-actions";
 import {
   getAllSpecDossiers,
   getTagsInUse,
+  getUpcomingAuctionCars,
   getVehiclesForTag,
 } from "@/actions/spec-actions";
 import { getPublicStock } from "@/actions/stock-actions";
@@ -23,7 +24,13 @@ import {
   TAG_BASE_PATH,
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
-import { B2B_GALLERY_PATH, onDealer } from "@/lib/listing-audience";
+import {
+  AUCTION_CARS_PATH,
+  auctionCarPath,
+  B2B_GALLERY_PATH,
+  isAuctionListing,
+  onDealer,
+} from "@/lib/listing-audience";
 import { STOCK_PUBLIC_PATH } from "@/lib/stock";
 import { BIKES_BASE_PATH, isMotorcycle, vehiclePath } from "@/lib/vehicle-type";
 
@@ -144,6 +151,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
+  // 1a-i. The Japanese auction cars list, and each car on it: a car is
+  // indexed until its auction day, then noindex, so only the upcoming ones
+  // are listed (getUpcomingAuctionCars drops the rest).
+  const auctionCars = await getUpcomingAuctionCars();
+  const auctionRoutes = [
+    {
+      url: `${baseUrl}${AUCTION_CARS_PATH}`,
+      lastModified: latest(auctionCars.data.map((car) => car.updatedAt)),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+    ...auctionCars.data.map((car) => ({
+      url: `${baseUrl}${auctionCarPath(car.slug || car.id)}`,
+      lastModified: latest([car.updatedAt]),
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+    })),
+  ];
+
   // 1b. Blog posts (import-to-Ireland content cluster)
   const blogRoutes = BLOG_POSTS.map((post) => ({
     url: `${baseUrl}${BLOG_BASE_PATH}/${post.slug}`,
@@ -202,7 +228,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // listing them here put 99 near-duplicates in front of 20 car pages, and
   // Google left both "Discovered - currently not indexed".
   const carRoutes = dossierResult.data
-    .filter((car: any) => LIVE_DOSSIER_STATUSES.has(car.status))
+    // A car coming up at auction is listed with the auction cars above, and
+    // only while its auction is still to come.
+    .filter(
+      (car: any) =>
+        LIVE_DOSSIER_STATUSES.has(car.status) &&
+        !isAuctionListing(car.audience),
+    )
     .map((car: any) => ({
       // A motorcycle's page is /import-bikes/<slug>, a car's /b2c/gallery/<slug>.
       url: `${baseUrl}${vehiclePath(car)}`,
@@ -299,6 +331,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...stockRoutes,
     ...dealerGalleryRoutes,
     ...countryRoutes,
+    ...auctionRoutes,
     ...bikeSourceRoutes,
     ...blogRoutes,
     ...newsRoutes,

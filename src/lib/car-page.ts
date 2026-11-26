@@ -14,8 +14,10 @@ import type { DestinationConfig } from "@/config/destinations";
 import { destinationCopy, destinationPath } from "@/config/destinations";
 import {
   type AudienceSide,
+  auctionCarPath,
   B2B_GALLERY_PATH,
   dealerCarPath,
+  isAuctionListing,
   onRetail,
 } from "@/lib/listing-audience";
 import { formatVehicleTitle, parseSteeringOptions } from "@/lib/vehicle";
@@ -128,6 +130,7 @@ export function carPath(
 ): string {
   const key = car.slug || fallbackId;
   if (isMotorcycle(car)) return `${BIKES_BASE_PATH}/${key}`;
+  if (isAuctionListing(car.audience)) return auctionCarPath(key);
   // A dealer-only car has no retail page (src/lib/listing-audience.ts).
   if (!onRetail(car.audience)) return dealerCarPath(key);
   return destination

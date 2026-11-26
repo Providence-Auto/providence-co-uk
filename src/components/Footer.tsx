@@ -127,6 +127,12 @@ export default function Footer() {
               Import Japanese Cars
             </Link>
             <Link
+              href="/import-cars-from/japan/auction-cars"
+              className="hover:text-white transition-colors"
+            >
+              Japanese Auction Cars
+            </Link>
+            <Link
               href="/japanese-luxury-cars-lhd"
               className="hover:text-white transition-colors"
             >

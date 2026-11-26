@@ -267,8 +267,13 @@ export const specDossiers = pgTable("specdossier", {
   // filter keywords. Registry and parsing: src/config/vehicle-tags.ts.
   tags: text("tags").array().notNull().default([]),
   // --- Listing audience (drizzle/0015) ------------------------------------
-  /** "b2c" or "b2b" — see src/lib/listing-audience.ts. B2B is also on /b2b/gallery. */
+  /** "b2c", "b2b", "both" or "auction" — see src/lib/listing-audience.ts. */
   audience: text("audience").default("b2c").notNull(),
+  // --- Japanese auction cars (drizzle/0020) --------------------------------
+  // The auction date, starting price, grades and translated sheet of an
+  // "auction" listing; {} on every other row. Read it through
+  // parseAuctionListing / publicAuction (src/lib/auction-listing.ts).
+  auction: jsonb("auction").notNull().default({}),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });

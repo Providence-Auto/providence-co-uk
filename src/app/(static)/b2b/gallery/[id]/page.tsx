@@ -22,7 +22,7 @@ import { buildMarketOptions } from "@/lib/dealer-markets";
 import { slugify } from "@/lib/dossier-slug";
 import { dealerCarPath, onDealer } from "@/lib/listing-audience";
 import { parseSteeringOptions } from "@/lib/vehicle";
-import { isMotorcycle } from "@/lib/vehicle-type";
+import { isMotorcycle, vehiclePath } from "@/lib/vehicle-type";
 
 export const revalidate = 60;
 
@@ -68,7 +68,7 @@ export default async function DealerCarPage({
   // A retail-only car has no dealer page: send the link to the one it has.
   // A 307 — the listing can be switched to B2B or Both.
   if (!onDealer(car.audience)) {
-    redirect(`/b2c/gallery/${car.slug || id}`);
+    redirect(vehiclePath({ ...car, slug: car.slug || id }));
   }
 
   // One URL per car, as on the retail side: the id form moves to the slug.
