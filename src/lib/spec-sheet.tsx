@@ -590,16 +590,21 @@ function ContactList({
 }
 
 /** An auction sheet image for print, at most a page tall; null for a PDF or a failure. */
-async function sheetPhoto(src: string): Promise<PdfImage | null> {
+type SheetImage = { image: PdfImage; ratio: number };
+
+async function sheetPhoto(src: string): Promise<SheetImage | null> {
   if (/\.pdf(\?|$)/i.test(src)) return null;
   try {
-    const data = await sharp(await loadCarImageSource(src))
+    const { data, info } = await sharp(await loadCarImageSource(src))
       .rotate()
       .resize({ width: 1400, height: 1900, fit: "inside" })
       .flatten({ background: "#ffffff" })
       .jpeg({ quality: 85, mozjpeg: true })
-      .toBuffer();
-    return { data, format: "jpg" };
+      .toBuffer({ resolveWithObject: true });
+    return {
+      image: { data, format: "jpg" },
+      ratio: info.height / info.width,
+    };
   } catch (error) {
     console.error("[spec-sheet] auction sheet", src, error);
     return null;
@@ -709,7 +714,7 @@ type SpecSheetData = {
   /** Set for a car coming up at a Japanese auction: the page's public view of it. */
   auction: PublicAuction | null;
   /** The original auction sheet, when staff chose to show it. */
-  auctionSheet: PdfImage | null;
+  auctionSheet: SheetImage | null;
   contact: SpecSheetContact;
   car: CarRecord;
   grade: VehicleGrade | undefined;
@@ -732,8 +737,10 @@ type SpecSheetData = {
 // split the marks table across pages and left the call to action alone on a
 // near-empty last page (feedback 2026-11-26):
 //   1. Cover — the photographs, the car's name, the four auction tiles.
-//   2. The car — the specification beside the inspector's notes and the
-//      marks on the car diagram, then two more photographs.
+//   2. With the auction sheet: the original beside its translation, and the
+//      specification in two columns under it. Without one: the
+//      specification beside the inspector's notes and the marks on the car
+//      diagram, then two more photographs.
 //   3. Any further photographs, the selling points beside the equipment,
 //      and the call to action.
 
@@ -795,7 +802,19 @@ const a = StyleSheet.create({
   },
   grid: { flexDirection: "row", flexWrap: "wrap" },
   photo: { borderRadius: 6, objectFit: "cover", marginBottom: THUMB_GAP },
+  sheet: {
+    width: (CONTENT_WIDTH - 24) / 2,
+    objectFit: "contain",
+    objectPosition: "top",
+    borderRadius: 6,
+    borderWidth: 0.75,
+    borderColor: RULE,
+  },
+  sheetCaption: { fontSize: 7.5, color: SOFT, marginTop: 5 },
 });
+
+/** The sheet beside its translation is never taller than this. */
+const SHEET_MAX_HEIGHT = 360;
 
 function PageHead({ name, day }: { name: string; day: string }) {
   return (
@@ -909,6 +928,10 @@ function AuctionSheetDocument({
   const cover = d.thumbs.slice(0, 3);
   const more = d.thumbs.slice(3);
   const half = thumbSize(2);
+  // Two more photographs fit under page 2's content, unless page 2 is the
+  // sheet; the rest (never more than two) open page 3.
+  const page2Photos = d.auctionSheet ? [] : more.slice(0, 2);
+  const page3Photos = d.auctionSheet ? more.slice(0, 2) : more.slice(2, 4);
   const notes = sheet?.inspectorNotes ?? [];
   const marks = sheet?.marks ?? [];
   const points = sheet?.sellingPoints ?? [];
@@ -981,83 +1004,174 @@ function AuctionSheetDocument({
         <SheetFooter vehicle={vehicle} />
       </Page>
 
-      {/* 2. The car and its auction sheet */}
-      <Page size="A4" style={s.page}>
-        <PageHead name={name} day={day} />
-
-        <View style={a.cols}>
-          <View style={a.col}>
-            <Block title="Specification">
-              {specRows.map((row, i) => (
-                <View
-                  key={row.label}
-                  style={i === 0 ? [a.row, a.rowFirst] : a.row}
-                >
-                  <Text style={a.label}>{row.label}</Text>
-                  <Text style={a.value}>{row.value}</Text>
-                </View>
-              ))}
-            </Block>
-          </View>
-          <View style={a.colGap} />
-          <View style={a.col}>
-            {notes.length > 0 ? (
-              <Block title="Inspector's notes, in English">
-                <Items items={notes} />
-              </Block>
-            ) : null}
-            {marks.length > 0 ? (
-              <Block title="Marks on the car diagram" last>
-                <View style={[a.row, a.rowFirst]}>
-                  <Text style={[a.markCode, a.markHead]}>Code</Text>
-                  <Text style={[a.markWhere, a.markHead]}>Where</Text>
-                  <Text style={[a.markMeaning, a.markHead]}>Meaning</Text>
-                </View>
-                {marks.map((mark, i) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
-                  <View key={i} style={a.row}>
-                    <Text style={a.markCode}>{latinOnly(mark.code)}</Text>
-                    <Text style={a.markWhere}>{latinOnly(mark.location)}</Text>
-                    <Text style={a.markMeaning}>{latinOnly(mark.meaning)}</Text>
+      {/* 2. With the sheet: the original beside its translation, then the
+          specification in two columns. */}
+      {d.auctionSheet ? (
+        <Page size="A4" style={s.page}>
+          <PageHead name={name} day={day} />
+          <View style={a.rule} />
+          <Text style={a.heading}>
+            The auction sheet, translated into English
+          </Text>
+          <View style={[a.cols, { marginTop: 4 }]}>
+            <View style={a.col}>
+              <Image
+                src={d.auctionSheet.image}
+                style={[
+                  a.sheet,
+                  {
+                    height: Math.min(
+                      a.col.width * d.auctionSheet.ratio,
+                      SHEET_MAX_HEIGHT,
+                    ),
+                  },
+                ]}
+              />
+              <Text style={a.sheetCaption}>
+                The original sheet, in Japanese.
+              </Text>
+            </View>
+            <View style={a.colGap} />
+            <View style={a.col}>
+              {notes.length > 0 ? (
+                <Block title="Inspector's notes, in English">
+                  <Items items={notes} />
+                </Block>
+              ) : null}
+              {marks.length > 0 ? (
+                <Block title="Marks on the car diagram" last>
+                  <View style={[a.row, a.rowFirst]}>
+                    <Text style={[a.markCode, a.markHead]}>Code</Text>
+                    <Text style={[a.markWhere, a.markHead]}>Where</Text>
+                    <Text style={[a.markMeaning, a.markHead]}>Meaning</Text>
                   </View>
-                ))}
-              </Block>
-            ) : null}
+                  {marks.map((mark, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
+                    <View key={i} style={a.row}>
+                      <Text style={a.markCode}>{latinOnly(mark.code)}</Text>
+                      <Text style={a.markWhere}>
+                        {latinOnly(mark.location)}
+                      </Text>
+                      <Text style={a.markMeaning}>
+                        {latinOnly(mark.meaning)}
+                      </Text>
+                    </View>
+                  ))}
+                </Block>
+              ) : null}
+            </View>
           </View>
-        </View>
 
-        {more.length > 0 ? (
           <View style={{ marginTop: 22 }} wrap={false}>
             <View style={a.rule} />
-            <Text style={a.heading}>More photographs</Text>
-            <View style={a.grid}>
-              {more.slice(0, 2).map((thumb, i) => (
-                <Image
-                  // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
-                  key={i}
-                  src={thumb}
-                  style={[
-                    a.photo,
-                    half,
-                    { marginLeft: i % 2 === 0 ? 0 : THUMB_GAP },
-                  ]}
-                />
+            <Text style={a.heading}>Specification</Text>
+            <View style={a.cols}>
+              {[
+                specRows.slice(0, Math.ceil(specRows.length / 2)),
+                specRows.slice(Math.ceil(specRows.length / 2)),
+              ].map((half, h) => (
+                <View
+                  // biome-ignore lint/suspicious/noArrayIndexKey: the two fixed halves
+                  key={h}
+                  style={[a.col, h === 1 ? { marginLeft: 24 } : {}]}
+                >
+                  {half.map((row, i) => (
+                    <View
+                      key={row.label}
+                      style={i === 0 ? [a.row, a.rowFirst] : a.row}
+                    >
+                      <Text style={a.label}>{row.label}</Text>
+                      <Text style={a.value}>{row.value}</Text>
+                    </View>
+                  ))}
+                </View>
               ))}
             </View>
           </View>
-        ) : null}
-        <SheetFooter vehicle={vehicle} />
-      </Page>
+          <SheetFooter vehicle={vehicle} />
+        </Page>
+      ) : (
+        <Page size="A4" style={s.page}>
+          <PageHead name={name} day={day} />
+
+          <View style={a.cols}>
+            <View style={a.col}>
+              <Block title="Specification">
+                {specRows.map((row, i) => (
+                  <View
+                    key={row.label}
+                    style={i === 0 ? [a.row, a.rowFirst] : a.row}
+                  >
+                    <Text style={a.label}>{row.label}</Text>
+                    <Text style={a.value}>{row.value}</Text>
+                  </View>
+                ))}
+              </Block>
+            </View>
+            <View style={a.colGap} />
+            <View style={a.col}>
+              {notes.length > 0 ? (
+                <Block title="Inspector's notes, in English">
+                  <Items items={notes} />
+                </Block>
+              ) : null}
+              {marks.length > 0 ? (
+                <Block title="Marks on the car diagram" last>
+                  <View style={[a.row, a.rowFirst]}>
+                    <Text style={[a.markCode, a.markHead]}>Code</Text>
+                    <Text style={[a.markWhere, a.markHead]}>Where</Text>
+                    <Text style={[a.markMeaning, a.markHead]}>Meaning</Text>
+                  </View>
+                  {marks.map((mark, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
+                    <View key={i} style={a.row}>
+                      <Text style={a.markCode}>{latinOnly(mark.code)}</Text>
+                      <Text style={a.markWhere}>
+                        {latinOnly(mark.location)}
+                      </Text>
+                      <Text style={a.markMeaning}>
+                        {latinOnly(mark.meaning)}
+                      </Text>
+                    </View>
+                  ))}
+                </Block>
+              ) : null}
+            </View>
+          </View>
+
+          {page2Photos.length > 0 ? (
+            <View style={{ marginTop: 22 }} wrap={false}>
+              <View style={a.rule} />
+              <Text style={a.heading}>More photographs</Text>
+              <View style={a.grid}>
+                {page2Photos.map((thumb, i) => (
+                  <Image
+                    // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                    key={i}
+                    src={thumb}
+                    style={[
+                      a.photo,
+                      half,
+                      { marginLeft: i % 2 === 0 ? 0 : THUMB_GAP },
+                    ]}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
+          <SheetFooter vehicle={vehicle} />
+        </Page>
+      )}
 
       {/* 3. Any further photographs, the selling points, the call to action */}
       <Page size="A4" style={s.page}>
         <PageHead name={name} day={day} />
-        {more.length > 2 ? (
+        {page3Photos.length > 0 ? (
           <View style={{ marginBottom: 22 }} wrap={false}>
             <View style={a.rule} />
             <Text style={a.heading}>More photographs</Text>
             <View style={a.grid}>
-              {more.slice(2, 6).map((thumb, i) => (
+              {page3Photos.map((thumb, i) => (
                 <Image
                   // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
                   key={i}
@@ -1098,16 +1212,6 @@ function AuctionSheetDocument({
         </View>
         <SheetFooter vehicle={vehicle} />
       </Page>
-
-      {d.auctionSheet ? (
-        <Page size="A4" style={s.page}>
-          <PageHead name={name} day={day} />
-          <View style={a.rule} />
-          <Text style={a.heading}>The original auction sheet</Text>
-          <Image src={d.auctionSheet} style={s.sheetImage} />
-          <SheetFooter vehicle={vehicle} />
-        </Page>
-      ) : null}
     </Document>
   );
 }
