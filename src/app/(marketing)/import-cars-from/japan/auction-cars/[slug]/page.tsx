@@ -117,6 +117,12 @@ export default async function AuctionCarPage({
   const auction = publicAuction(car.auction);
   const sheet = auction.translation;
   const price = formatStartPrice(auction);
+  // A sheet uploaded as a PDF is linked; a photo or scan is shown beside the
+  // translation.
+  const sheetImage =
+    auction.sheetUrl && !/\.pdf(\?|$)/i.test(auction.sheetUrl)
+      ? auction.sheetUrl
+      : null;
   const day = formatAuctionDate(auction.date);
   const path = auctionCarPath(car.slug || slug);
   const images: string[] = [
@@ -302,58 +308,90 @@ export default async function AuctionCarPage({
 
         {sheet || auction.sheetUrl ? (
           <section className="py-16 md:py-24 px-6 bg-[#FAFAFA] border-t border-black/5">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <h2 className="mb-8 text-3xl md:text-4xl font-bold tracking-tighter text-black">
                 The auction sheet, translated into English
               </h2>
-              {sheet ? (
-                <div className="space-y-8">
-                  <SheetList
-                    title="Inspector's notes"
-                    items={sheet.inspectorNotes}
-                  />
-                  {sheet.marks.length > 0 ? (
-                    <div>
-                      <h3 className="mb-3 text-lg font-bold tracking-tight text-black">
-                        Marks on the car diagram
-                      </h3>
-                      <table className="w-full overflow-hidden rounded-[1.25rem] border border-black/5 bg-white text-left text-sm">
-                        <thead>
-                          <tr>
-                            {["Code", "Where", "Meaning"].map((heading) => (
-                              <th
-                                key={heading}
-                                scope="col"
-                                className="px-5 py-3 font-bold text-black"
-                              >
-                                {heading}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-black/5">
-                          {sheet.marks.map((mark, index) => (
-                            // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
-                            <tr key={index} className="text-zinc-600">
-                              <td className="px-5 py-3 font-medium text-black">
-                                {mark.code}
-                              </td>
-                              <td className="px-5 py-3">{mark.location}</td>
-                              <td className="px-5 py-3">{mark.meaning}</td>
+              <div
+                className={
+                  sheetImage && sheet
+                    ? "grid gap-10 lg:grid-cols-2 lg:items-start"
+                    : "max-w-4xl"
+                }
+              >
+                {/* The original beside its translation, so a reader can check
+                  one against the other. */}
+                {sheetImage ? (
+                  <figure className="lg:sticky lg:top-24">
+                    <a
+                      href={sheetImage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block overflow-hidden rounded-[1.25rem] border border-black/10 bg-white"
+                    >
+                      {/* biome-ignore lint/performance/noImgElement: dossier images are served as they are, per site convention */}
+                      <img
+                        src={sheetImage}
+                        alt={`The Japanese auction sheet for this ${name}`}
+                        loading="lazy"
+                        className="h-auto w-full"
+                      />
+                    </a>
+                    <figcaption className="mt-3 text-sm text-zinc-500">
+                      The original sheet, in Japanese. Select it to open full
+                      size.
+                    </figcaption>
+                  </figure>
+                ) : null}
+                {sheet ? (
+                  <div className="space-y-8">
+                    <SheetList
+                      title="Inspector's notes"
+                      items={sheet.inspectorNotes}
+                    />
+                    {sheet.marks.length > 0 ? (
+                      <div>
+                        <h3 className="mb-3 text-lg font-bold tracking-tight text-black">
+                          Marks on the car diagram
+                        </h3>
+                        <table className="w-full overflow-hidden rounded-[1.25rem] border border-black/5 bg-white text-left text-sm">
+                          <thead>
+                            <tr>
+                              {["Code", "Where", "Meaning"].map((heading) => (
+                                <th
+                                  key={heading}
+                                  scope="col"
+                                  className="px-5 py-3 font-bold text-black"
+                                >
+                                  {heading}
+                                </th>
+                              ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : null}
-                  <SheetList
-                    title="Selling points"
-                    items={sheet.sellingPoints}
-                  />
-                  <SheetList title="Equipment" items={sheet.equipment} />
-                </div>
-              ) : null}
-              {auction.sheetUrl ? (
+                          </thead>
+                          <tbody className="divide-y divide-black/5">
+                            {sheet.marks.map((mark, index) => (
+                              // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
+                              <tr key={index} className="text-zinc-600">
+                                <td className="px-5 py-3 font-medium text-black">
+                                  {mark.code}
+                                </td>
+                                <td className="px-5 py-3">{mark.location}</td>
+                                <td className="px-5 py-3">{mark.meaning}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : null}
+                    <SheetList
+                      title="Selling points"
+                      items={sheet.sellingPoints}
+                    />
+                    <SheetList title="Equipment" items={sheet.equipment} />
+                  </div>
+                ) : null}
+              </div>
+              {auction.sheetUrl && !sheetImage ? (
                 <p className="mt-8">
                   <a
                     href={auction.sheetUrl}
