@@ -284,6 +284,38 @@ export default async function AuctionCarPage({
           </div>
         </section>
 
+        {auction.view360Url ? (
+          <section className="py-16 md:py-24 px-6 border-t border-black/5">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="mb-6 text-3xl md:text-4xl font-bold tracking-tighter text-black">
+                See this {car.model || "car"}'s interior in 360°
+              </h2>
+              <div className="relative aspect-[4/3] md:aspect-[16/9] overflow-hidden rounded-[1.5rem] border border-black/[0.07] bg-zinc-100">
+                <iframe
+                  src={auction.view360Url}
+                  title={`${name} interior, 360° view`}
+                  loading="lazy"
+                  allow="fullscreen; accelerometer; gyroscope"
+                  allowFullScreen
+                  referrerPolicy="no-referrer"
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
+              <p className="mt-3 text-sm text-zinc-500">
+                Drag to look around. 360° view from the auction house.{" "}
+                <a
+                  href={auction.view360Url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-black underline underline-offset-4"
+                >
+                  Open it full screen
+                </a>
+              </p>
+            </div>
+          </section>
+        ) : null}
+
         {sheet || auction.sheetUrl ? (
           <section className="py-16 md:py-24 px-6 bg-[#FAFAFA] border-t border-black/5">
             <div className="max-w-4xl mx-auto">

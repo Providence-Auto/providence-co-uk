@@ -50,8 +50,32 @@ export type AuctionListing = {
   sheetUrl: string;
   /** Also show the original sheet on the page. */
   showSheet: boolean;
+  /** The auction's own 360° interior view, embedded on the car's page. */
+  view360Url: string;
   translation: AuctionTranslation;
 };
+
+/**
+ * The 360° viewers a car page may embed. Each is framed on our page, so only
+ * a host we have checked is allowed: it must serve over https and let other
+ * sites frame it. USS sends the link with some cars (checked 2026-11-26).
+ */
+export const VIEW_360_HOSTS = ["uss.360.car"] as const;
+
+/** The link, if it is an https link to a known 360° viewer; "" otherwise. */
+export function parseView360Url(value: unknown): string {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (!raw) return "";
+  try {
+    const url = new URL(raw);
+    return url.protocol === "https:" &&
+      (VIEW_360_HOSTS as readonly string[]).includes(url.hostname)
+      ? url.toString()
+      : "";
+  } catch {
+    return "";
+  }
+}
 
 const text = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
@@ -95,6 +119,7 @@ export function parseAuctionListing(value: unknown): AuctionListing {
     interiorGrade: text(raw.interiorGrade),
     sheetUrl: text(raw.sheetUrl),
     showSheet: raw.showSheet === true,
+    view360Url: parseView360Url(raw.view360Url),
     translation: {
       chassisCode: text(t.chassisCode),
       firstRegistration: text(t.firstRegistration),
@@ -210,10 +235,11 @@ export function auctionSlug(car: {
 /** What the page may show: no lot number, and nothing unchecked. */
 export type PublicAuction = Omit<
   AuctionListing,
-  "lotNumber" | "showSheet" | "translation" | "sheetUrl"
+  "lotNumber" | "showSheet" | "translation" | "sheetUrl" | "view360Url"
 > & {
   upcoming: boolean;
   sheetUrl: string | null;
+  view360Url: string | null;
   translation: Omit<AuctionTranslation, "checked"> | null;
 };
 
@@ -233,6 +259,7 @@ export function publicAuction(
     interiorGrade: a.interiorGrade,
     upcoming: isUpcomingAuction(a, now),
     sheetUrl: a.showSheet && a.sheetUrl ? a.sheetUrl : null,
+    view360Url: a.view360Url || null,
     translation: checked ? content : null,
   };
 }
@@ -261,7 +288,15 @@ export function auctionCarMeta(
   const name = auctionCarName(car);
   const bare = formatVehicleTitle(car.make ?? "", car.model ?? "");
   const auction = publicAuction(value, now);
-  const day = formatAuctionDate(auction.date);
+  // "10 Dec 2026": short enough to leave room for the grade and price.
+  const day = auction.date
+    ? new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC",
+      }).format(new Date(`${auction.date}T00:00:00Z`))
+    : "";
   const price = formatStartPrice(auction);
   const grade = auction.grade ? `Grade ${auction.grade}` : "";
   const facts = [grade, price ? `starting price ${price}` : ""]
