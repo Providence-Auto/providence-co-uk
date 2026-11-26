@@ -1,13 +1,27 @@
 "use client";
 
-import { Check, Copy, Pencil, RotateCcw, Trash2, X } from "lucide-react";
+import {
+  Check,
+  Copy,
+  FileSpreadsheet,
+  Link2,
+  Pencil,
+  RotateCcw,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useMemo, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   createStockCar,
+  type StockMember,
+  type StockSheetView,
   setStockCarRemoved,
   updateStockCar,
 } from "@/actions/stock-actions";
+import { StockColorList } from "@/components/stock/StockColors";
+import StockFilterBar from "@/components/stock/StockFilterBar";
+import { StockThumb } from "@/components/stock/StockThumb";
 import {
   compareStockCars,
   formatFob,
@@ -20,7 +34,16 @@ import {
   type StockErrors,
   validateStockCar,
 } from "@/lib/stock";
+import {
+  filterStock,
+  NO_FILTERS,
+  type StockFilters,
+} from "@/lib/stock-filters";
 import { CAR_MAKES } from "@/lib/vehicle-inquiry";
+import CarPagePicker from "./CarPagePicker";
+import LinkedSheets, { sheetLabel } from "./LinkedSheets";
+import StockColorPicker from "./StockColorPicker";
+import StockImport from "./StockImport";
 
 const EMPTY: StockCarInput = {
   make: "",
@@ -56,18 +79,34 @@ export default function StockListClient({
   isAdmin,
   memberCode,
   publicLink,
+  actorId,
+  initialSheets,
+  stockMembers,
 }: {
   initialCars: StockCarView[];
   isAdmin: boolean;
   memberCode: string;
   publicLink: string;
+  actorId: string;
+  initialSheets: StockSheetView[];
+  stockMembers: StockMember[];
 }) {
   const [cars, setCars] = useState(initialCars);
+  const [sheets, setSheets] = useState(initialSheets);
+  const sheetUrl = useMemo(
+    () => new Map(sheets.map((s) => [s.id, s.sheetUrl])),
+    [sheets],
+  );
   const [form, setForm] = useState<StockCarInput>(EMPTY);
   const [errors, setErrors] = useState<StockErrors>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [view, setView] = useState<"live" | "removed">("live");
+  // Sources: show only the cars of one linked sheet.
+  const [sourceSheet, setSourceSheet] = useState<string | null>(null);
   const [member, setMember] = useState("all");
+  const [filters, setFilters] = useState<StockFilters>(NO_FILTERS);
+  // The car whose car page is being chosen.
+  const [pageCar, setPageCar] = useState<StockCarView | null>(null);
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -80,14 +119,17 @@ export default function StockListClient({
     [cars],
   );
 
-  const shown = useMemo(
+  // The cars in view, then the ones the search and filters leave.
+  const inView = useMemo(
     () =>
       cars
         .filter((c) => (view === "live" ? !c.isRemoved : c.isRemoved))
         .filter((c) => member === "all" || c.memberCode === member)
+        .filter((c) => !sourceSheet || c.sheetId === sourceSheet)
         .sort(compareStockCars),
-    [cars, view, member],
+    [cars, view, member, sourceSheet],
   );
+  const shown = useMemo(() => filterStock(inView, filters), [inView, filters]);
   const liveCount = cars.filter((c) => !c.isRemoved).length;
   const removedCount = cars.length - liveCount;
 
@@ -231,10 +273,11 @@ export default function StockListClient({
               min: MIN_YEAR,
               max: maxYear(),
             })}
-            {field("color", "Colour", {
-              placeholder: "Pearl White",
-              autoComplete: "off",
-            })}
+            <StockColorPicker
+              value={String(form.color)}
+              onChange={(value) => set("color", value)}
+              error={errors.color}
+            />
             {field("engine", "Engine", {
               placeholder: "3.3L V6 Diesel",
               autoComplete: "off",
@@ -344,6 +387,37 @@ export default function StockListClient({
         <PublicLink link={publicLink} />
       </div>
 
+      <LinkedSheets
+        sheets={sheets}
+        cars={cars}
+        isAdmin={isAdmin}
+        activeSheetId={sourceSheet}
+        onShowCars={(id) => {
+          setSourceSheet(id);
+          if (id) setView("live");
+        }}
+        onChange={(update, next) => {
+          setSheets(update);
+          setCars(next);
+        }}
+      />
+
+      <StockImport
+        isAdmin={isAdmin}
+        actorId={actorId}
+        memberCode={memberCode}
+        members={stockMembers}
+        onImported={(added) => {
+          setCars((list) => [...added, ...list]);
+          setView("live");
+        }}
+        onLinked={(sheet, next) => {
+          setSheets((list) => [sheet, ...list]);
+          setCars(next);
+          setView("live");
+        }}
+      />
+
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           {(
@@ -367,6 +441,18 @@ export default function StockListClient({
             </button>
           ))}
 
+          {sourceSheet && (
+            <button
+              type="button"
+              onClick={() => setSourceSheet(null)}
+              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 transition-feedback hover:bg-emerald-100"
+            >
+              Only {sheetLabel(sheetUrl.get(sourceSheet) ?? "")}
+              <X size={14} aria-hidden />
+              <span className="sr-only">(show every car)</span>
+            </button>
+          )}
+
           {isAdmin && members.length > 1 && (
             <select
               aria-label="Filter by team member"
@@ -384,10 +470,20 @@ export default function StockListClient({
           )}
         </div>
 
+        {inView.length > 0 && (
+          <StockFilterBar
+            cars={inView}
+            filters={filters}
+            onChange={setFilters}
+            shown={shown.length}
+          />
+        )}
+
         <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white">
-          <table className="w-full min-w-[960px] text-left text-sm">
+          <table className="w-full min-w-[1100px] text-left text-sm">
             <thead className="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
               <tr>
+                <th className="px-4 py-3">Car page</th>
                 <th className="px-4 py-3">Make</th>
                 <th className="px-4 py-3">Model</th>
                 <th className="px-4 py-3">Year</th>
@@ -397,6 +493,7 @@ export default function StockListClient({
                 <th className="px-4 py-3 text-right">FOB</th>
                 <th className="px-4 py-3">Shipping port</th>
                 <th className="px-4 py-3">Code</th>
+                <th className="px-4 py-3">Source</th>
                 <th className="px-4 py-3">
                   <span className="sr-only">Actions</span>
                 </th>
@@ -406,12 +503,14 @@ export default function StockListClient({
               {shown.length === 0 && (
                 <tr>
                   <td
-                    colSpan={10}
+                    colSpan={12}
                     className="px-4 py-10 text-center text-zinc-500"
                   >
-                    {view === "live"
-                      ? "No cars on the list yet."
-                      : "No removed cars."}
+                    {inView.length > 0
+                      ? "No cars match."
+                      : view === "live"
+                        ? "No cars on the list yet."
+                        : "No removed cars."}
                   </td>
                 </tr>
               )}
@@ -420,15 +519,52 @@ export default function StockListClient({
                   key={car.id}
                   className={editingId === car.id ? "bg-sky-50" : undefined}
                 >
+                  <td className="px-4 py-2">
+                    <button
+                      type="button"
+                      onClick={() => setPageCar(car)}
+                      aria-label={
+                        car.page
+                          ? `Car page for ${car.make} ${car.model}: ${car.page.title}`
+                          : `Link a car page to ${car.make} ${car.model}`
+                      }
+                      title={car.page?.title}
+                      className="flex items-center gap-2 rounded-md text-xs font-semibold text-sky-700 transition-feedback hover:underline"
+                    >
+                      {car.page ? (
+                        <>
+                          <StockThumb src={car.page.image} alt="" />
+                          {(!car.page.image || !car.page.live) && (
+                            <span
+                              className={
+                                car.page.live
+                                  ? "text-zinc-600"
+                                  : "whitespace-nowrap rounded-full bg-amber-50 px-2 py-0.5 text-amber-700"
+                              }
+                            >
+                              {car.page.live ? car.page.title : "Not live"}
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                          <Link2 size={14} aria-hidden />
+                          Link page
+                        </span>
+                      )}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 font-medium text-zinc-900">
                     {car.make}
                   </td>
                   <td className="px-4 py-3">{car.model}</td>
                   <td className="px-4 py-3 tabular-nums">{car.year}</td>
-                  <td className="px-4 py-3">{car.color}</td>
+                  <td className="min-w-52 px-4 py-3">
+                    <StockColorList color={car.color} />
+                  </td>
                   <td className="px-4 py-3">{car.engine}</td>
                   <td className="px-4 py-3">{car.steering}</td>
-                  <td className="px-4 py-3 text-right tabular-nums">
+                  <td className="whitespace-nowrap px-4 py-3 text-right tabular-nums">
                     {formatFob(car.fobPrice, car.fobCurrency)}
                   </td>
                   <td className="px-4 py-3">{car.shippingPort}</td>
@@ -440,39 +576,72 @@ export default function StockListClient({
                       {car.memberCode}
                     </span>
                   </td>
+                  <td className="px-4 py-3 text-xs">
+                    {car.sheetId && sheetUrl.get(car.sheetId) ? (
+                      <a
+                        href={sheetUrl.get(car.sheetId)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={sheetLabel(sheetUrl.get(car.sheetId) ?? "")}
+                        className="font-semibold text-emerald-700 hover:underline"
+                      >
+                        Google Sheet
+                      </a>
+                    ) : car.sheetId ? (
+                      <span className="text-zinc-500">Google Sheet</span>
+                    ) : (
+                      <span className="text-zinc-400">Added here</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
-                      {!car.isRemoved && (
-                        <button
-                          type="button"
-                          onClick={() => startEdit(car)}
-                          aria-label={`Edit ${car.make} ${car.model}`}
-                          className="rounded-md p-2 text-zinc-500 transition-feedback hover:bg-zinc-100 hover:text-zinc-900"
+                      {car.sheetId ? (
+                        <a
+                          href={sheetUrl.get(car.sheetId) ?? undefined}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="This car comes from a linked Google Sheet. Change it in the sheet."
+                          aria-label={`Edit ${car.make} ${car.model} in its Google Sheet`}
+                          className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-xs font-semibold text-emerald-700 transition-feedback hover:bg-emerald-50"
                         >
-                          <Pencil size={15} aria-hidden />
-                        </button>
+                          <FileSpreadsheet size={14} aria-hidden />
+                          In the sheet
+                        </a>
+                      ) : (
+                        <>
+                          {!car.isRemoved && (
+                            <button
+                              type="button"
+                              onClick={() => startEdit(car)}
+                              aria-label={`Edit ${car.make} ${car.model}`}
+                              className="rounded-md p-2 text-zinc-500 transition-feedback hover:bg-zinc-100 hover:text-zinc-900"
+                            >
+                              <Pencil size={15} aria-hidden />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            disabled={pending}
+                            onClick={() => toggleRemoved(car)}
+                            aria-label={
+                              car.isRemoved
+                                ? `Put ${car.make} ${car.model} back on the list`
+                                : `Remove ${car.make} ${car.model}`
+                            }
+                            className={`rounded-md p-2 transition-feedback disabled:opacity-50 ${
+                              car.isRemoved
+                                ? "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+                                : "text-zinc-500 hover:bg-red-50 hover:text-red-600"
+                            }`}
+                          >
+                            {car.isRemoved ? (
+                              <RotateCcw size={15} aria-hidden />
+                            ) : (
+                              <Trash2 size={15} aria-hidden />
+                            )}
+                          </button>
+                        </>
                       )}
-                      <button
-                        type="button"
-                        disabled={pending}
-                        onClick={() => toggleRemoved(car)}
-                        aria-label={
-                          car.isRemoved
-                            ? `Put ${car.make} ${car.model} back on the list`
-                            : `Remove ${car.make} ${car.model}`
-                        }
-                        className={`rounded-md p-2 transition-feedback disabled:opacity-50 ${
-                          car.isRemoved
-                            ? "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
-                            : "text-zinc-500 hover:bg-red-50 hover:text-red-600"
-                        }`}
-                      >
-                        {car.isRemoved ? (
-                          <RotateCcw size={15} aria-hidden />
-                        ) : (
-                          <Trash2 size={15} aria-hidden />
-                        )}
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -481,6 +650,14 @@ export default function StockListClient({
           </table>
         </div>
       </div>
+
+      {pageCar && (
+        <CarPagePicker
+          car={pageCar}
+          onClose={() => setPageCar(null)}
+          onSaved={replace}
+        />
+      )}
     </div>
   );
 }

@@ -24,6 +24,8 @@ export interface DealerInquiryConfirmationProps {
     condition: string;
     /** The model year, for a car picked from the stock list. */
     yearRange?: string | null;
+    /** Set on a car from the stock list: the colours the dealer picked. */
+    stock?: { pickedColors?: string[] };
   }[];
   /** Null when no one could be assigned — the email then signs off as the company. */
   agent: {
@@ -118,6 +120,9 @@ export const DealerInquiryConfirmationEmail = ({
                 ]
                   .filter(Boolean)
                   .join(" ")}
+                {car.stock?.pickedColors?.length
+                  ? ` in ${car.stock.pickedColors.join(", ")}`
+                  : ""}
                 {isMotorcycle(car) ? " (motorcycle)" : ""}
               </Text>
             ))}

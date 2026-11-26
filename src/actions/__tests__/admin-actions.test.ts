@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { accounts, db as dbClient, requests, sessions, users } from "@/db";
 import { sendGoogleConversion, sendMetaConversion } from "@/lib/conversions";
 import { emailService } from "@/lib/email";
+import { kycStaff } from "@/lib/kyc-access";
+import { onLeadSalesConfirmed } from "@/lib/kyc-request";
 import {
   clearFollowUpTimer,
   createAdminUser,
@@ -72,6 +74,24 @@ vi.mock("@/lib/conversions", () => ({
   sendMetaConversion: vi
     .fn()
     .mockResolvedValue({ ok: true, eventsReceived: 1, fbtraceId: null }),
+}));
+
+// Sales Confirmed's follow-up (the leadsale row, the Google Purchase and the
+// customer's KYC email) is its own module; here only whether it is called.
+vi.mock("@/lib/kyc-request", () => ({
+  onLeadSalesConfirmed: vi.fn().mockResolvedValue({
+    id: "kycreq-1",
+    link: "https://example.test/kyc?t=abc",
+    email: "buyer@example.com",
+    emailed: true,
+    prefilled: false,
+  }),
+}));
+
+vi.mock("@/lib/kyc-access", () => ({
+  kycStaff: vi
+    .fn()
+    .mockResolvedValue({ id: "admin-1", name: "Admin User", email: "a@b.c" }),
 }));
 
 // Mock email service
@@ -203,6 +223,8 @@ describe("admin-actions", () => {
         expect(saved.statusHistory[1]).toMatchObject({
           action: "Reassigned: Abdallah → Chathuranga Pitigala",
           performedBy: "Admin User",
+          // Whose rotation turn the lead was (rotationTurnOwner).
+          previousOwnerId: "u-abd",
         });
       });
 
@@ -232,6 +254,9 @@ describe("admin-actions", () => {
         expect(vi.mocked(db.set).mock.calls[0][0].statusHistory[1].action).toBe(
           "Reassigned: Unassigned → Abdallah",
         );
+        expect(
+          vi.mocked(db.set).mock.calls[0][0].statusHistory[1].previousOwnerId,
+        ).toBeNull();
       });
     });
 
@@ -432,6 +457,82 @@ describe("admin-actions", () => {
           "Purchase",
           expect.objectContaining({ value: 42000, currency: "USD" }),
         );
+      });
+
+      // Business instruction 2026-11-23: a confirmed sale is the Purchase
+      // signal from the sales side, and emails the customer their KYC link.
+      it("uploads Purchase and sends the KYC link when a lead becomes Sales Confirmed", async () => {
+        primeDb(
+          { ...baseLead, leadStatus: SQL_STATUS },
+          { ...baseLead, leadStatus: "Sales Confirmed", agreedPrice: 30000 },
+        );
+
+        const result = await updateRequestStatus("req-1", "New", {
+          leadStatus: "Sales Confirmed",
+          salesComment: "",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "req-1" }),
+          "Purchase",
+          expect.objectContaining({ eventId: "req-1:purchase", value: 30000 }),
+        );
+        // Already qualified at SQL: no second QualifiedLead.
+        expect(sendMetaConversion).not.toHaveBeenCalledWith(
+          expect.anything(),
+          "QualifiedLead",
+          expect.anything(),
+        );
+        expect(onLeadSalesConfirmed).toHaveBeenCalledTimes(1);
+        expect(result.salesConfirmed).toEqual(
+          expect.objectContaining({
+            email: "buyer@example.com",
+            emailed: true,
+          }),
+        );
+      });
+
+      it("sends no KYC link when the account is not a KYC role", async () => {
+        vi.mocked(kycStaff).mockResolvedValueOnce(null);
+        primeDb(
+          { ...baseLead, leadStatus: SQL_STATUS },
+          { ...baseLead, leadStatus: "Sales Confirmed" },
+        );
+
+        const result = await updateRequestStatus("req-1", "New", {
+          leadStatus: "Sales Confirmed",
+          salesComment: "",
+          dossierIds: [],
+        });
+
+        expect(onLeadSalesConfirmed).not.toHaveBeenCalled();
+        expect(result.salesConfirmed?.link).toBeNull();
+      });
+
+      it("sends nothing new when a confirmed lead is saved again", async () => {
+        primeDb(
+          {
+            ...baseLead,
+            leadStatus: "Sales Confirmed",
+            metaPurchaseSentAt: new Date(),
+          },
+          {
+            ...baseLead,
+            leadStatus: "Sales Confirmed",
+            metaPurchaseSentAt: new Date(),
+          },
+        );
+
+        const result = await updateRequestStatus("req-1", "New", {
+          leadStatus: "Sales Confirmed",
+          salesComment: "Called the customer.",
+          dossierIds: [],
+        });
+
+        expect(sendMetaConversion).not.toHaveBeenCalled();
+        expect(onLeadSalesConfirmed).not.toHaveBeenCalled();
+        expect(result.salesConfirmed).toBeUndefined();
       });
     });
   });

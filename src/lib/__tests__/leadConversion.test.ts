@@ -1,17 +1,34 @@
 import { describe, expect, it } from "vitest";
 import {
   isKnownLeadStatus,
+  isSalesConfirmedStatus,
   isTeamDecidedStatus,
   leadOutcome,
+  SALES_CONFIRMED_STATUS,
   SALES_STATUSES,
 } from "@/lib/leadConversion";
 
 describe("leadOutcome", () => {
-  it("treats the SQL status as the only qualifying label in the dropdown", () => {
+  // Sales Confirmed (2026-11-23) qualifies too: a lead that skips SQL straight
+  // to a confirmed sale is still a qualified lead.
+  it("treats SQL and Sales Confirmed as the only qualifying labels in the dropdown", () => {
     const qualifying = SALES_STATUSES.filter(
       (s) => leadOutcome(s) === "qualified",
     );
-    expect(qualifying).toEqual(["SQL: Moved to vehicle offering stage"]);
+    expect(qualifying).toEqual([
+      "SQL: Moved to vehicle offering stage",
+      "Sales Confirmed",
+    ]);
+  });
+
+  it("recognises Sales Confirmed whatever its casing", () => {
+    expect(isSalesConfirmedStatus("Sales Confirmed")).toBe(true);
+    expect(isSalesConfirmedStatus("  sales   confirmed ")).toBe(true);
+    expect(isSalesConfirmedStatus("SQL: Moved to vehicle offering stage")).toBe(
+      false,
+    );
+    expect(isSalesConfirmedStatus(null)).toBe(false);
+    expect(SALES_STATUSES).toContain(SALES_CONFIRMED_STATUS);
   });
 
   // The whole reason this module exists. "Not Qualified" contains the

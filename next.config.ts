@@ -6,6 +6,21 @@ const NON_PROD_HOSTS = "(staging|dev)\\.providenceauto\\.co\\.uk";
 const APEX_HOST = "providenceauto\\.co\\.uk";
 
 const nextConfig: NextConfig = {
+  // Car-page heroes live in our R2 buckets; the stock list shows them as
+  // thumbnails, resized. Keep in step with THUMBNAIL_HOSTS
+  // (src/lib/stock-page.ts) — a test compares them.
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pub-0c6552f09f244121ac51914a1f782578.r2.dev",
+      },
+      {
+        protocol: "https",
+        hostname: "pub-0b9082b8ccc84944a2dd6677a33eb072.r2.dev",
+      },
+    ],
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "32mb",

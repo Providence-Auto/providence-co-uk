@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getKycSubmissions } from "@/actions/kyc-actions";
 import KycLinkCopy from "@/components/admin/KycLinkCopy";
+import SalesConfirmed from "@/components/admin/SalesConfirmed";
 import { KYC_ADMIN_PATH, KYC_PATH } from "@/lib/kyc";
 import { kycStaff } from "@/lib/kyc-access";
 import KycStatusBadge from "./KycStatusBadge";
@@ -53,7 +54,10 @@ export default async function KycAdminPage() {
             Identity, address and payment details sent from the KYC form.
           </p>
         </div>
-        <KycLinkCopy link={link} />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <SalesConfirmed mode="new" />
+          <KycLinkCopy link={link} />
+        </div>
       </div>
 
       {records.length === 0 ? (
@@ -85,6 +89,11 @@ export default async function KycAdminPage() {
                   <td className="px-5 py-4">
                     <div className="font-semibold text-zinc-900">
                       {r.fullName}
+                      {r.customerType === "company" && (
+                        <span className="ml-2 rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">
+                          Company
+                        </span>
+                      )}
                     </div>
                     <div className="text-zinc-500">{r.email}</div>
                   </td>

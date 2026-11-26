@@ -38,6 +38,11 @@ import {
   KYC_DECLARATIONS,
   type KycView,
 } from "@/lib/kyc";
+import {
+  COMPLIANCE_QUESTIONS,
+  KYC_APPLICATION_DECLARATIONS,
+  kycDocLabel,
+} from "@/lib/kyc-application";
 
 Font.registerHyphenationCallback((word) => [word]);
 
@@ -449,18 +454,32 @@ function KycDocument({
   mark,
   front,
   back,
+  signature,
   generatedOn,
 }: {
   r: KycView;
   lead: KycPdfLead | null;
   mark: PdfImage | null;
-  front: Evidence;
+  front: Evidence | null;
   back: Evidence | null;
+  signature: Evidence | null;
   generatedOn: string;
 }) {
   const tone = STATUS_TONES[r.status] ?? STATUS_TONES.Submitted;
-  const docLabel = idDocumentLabel(r.idDocumentType);
+  const company = r.customerType === "company";
+  const p = r.profile;
+  const docLabel = company
+    ? "Company documents"
+    : idDocumentLabel(r.idDocumentType);
   const half = span(2);
+  // Sections are numbered in the order they appear, which depends on what
+  // the record holds (a short-form record has no profile; a company has
+  // owners).
+  let sectionNo = 0;
+  const no = () => String(++sectionNo).padStart(2, "0");
+  const list = (values: (string | null | undefined)[]) =>
+    values.filter(Boolean).join(", ") || "—";
+  const files = r.documents.filter((d) => d.type !== "SIGNATURE");
 
   const masthead = (
     <View style={s.masthead}>
@@ -514,24 +533,66 @@ function KycDocument({
           </View>
         </View>
 
-        <Section number="01" title="Identity">
+        <Section number={no()} title={company ? "Company" : "Identity"}>
           <Grid
             cells={[
-              { label: "Full legal name", value: r.fullName, span: 2 },
               {
-                label: "Date of birth",
-                value: formatDateOfBirth(r.dateOfBirth),
+                label: company ? "Company name" : "Full legal name",
+                value: r.fullName,
+                span: 2,
               },
-              { label: "Nationality", value: r.nationality },
+              {
+                label: company ? "Incorporated" : "Date of birth",
+                value: r.dateOfBirth ? formatDateOfBirth(r.dateOfBirth) : "—",
+              },
+              {
+                label: company ? "Country of incorporation" : "Nationality",
+                value: r.nationality,
+              },
             ]}
           />
+          {p ? (
+            <Grid
+              cells={[
+                {
+                  label: company ? "Registration no." : `${docLabel} no.`,
+                  value: p.documentNumber || "—",
+                },
+                {
+                  label: company ? "Tax ID / VAT" : "Expiry",
+                  value: company
+                    ? p.nationalIdOrTaxNo || "—"
+                    : p.documentExpiry
+                      ? formatDateOfBirth(p.documentExpiry)
+                      : "—",
+                },
+                {
+                  label: company ? "Nature of business" : "Occupation",
+                  value: p.occupationOrBusiness || "—",
+                },
+                {
+                  label: company ? "Customer ref." : "National ID / tax no.",
+                  value: (company ? p.customerRef : p.nationalIdOrTaxNo) || "—",
+                },
+              ]}
+            />
+          ) : null}
         </Section>
 
-        <Section number="02" title="Residential address and contact">
+        <Section
+          number={no()}
+          title={
+            company
+              ? "Registered address and contact"
+              : "Residential address and contact"
+          }
+        >
           <Grid
             cells={[
               {
-                label: "Current residential address",
+                label: company
+                  ? "Registered address"
+                  : "Current residential address",
                 value: formatAddress(r).join(", "),
                 span: 4,
               },
@@ -539,16 +600,128 @@ function KycDocument({
           />
           <Grid
             cells={[
+              ...(p?.contactPerson
+                ? [{ label: "Contact person", value: p.contactPerson }]
+                : []),
               { label: "Mobile", value: r.phone },
-              { label: "Email", value: r.email, span: 3 },
+              {
+                label: "Email",
+                value: r.email,
+                span: (p?.contactPerson ? 2 : 3) as 2 | 3,
+              },
             ]}
           />
+          {p?.website ? (
+            <Grid cells={[{ label: "Website", value: p.website, span: 4 }]} />
+          ) : null}
         </Section>
 
-        <Section number="03" title="Payment information">
+        {company && p && p.owners.length > 0 ? (
+          <Section number={no()} title="Directors and beneficial owners">
+            {p.owners.map((o, i) => (
+              <Grid
+                // biome-ignore lint/suspicious/noArrayIndexKey: stored order is the identity
+                key={i}
+                cells={[
+                  { label: `${o.role}`, value: o.fullName, span: 2 },
+                  { label: "Nationality", value: o.nationality },
+                  {
+                    label: "Passport · owned · PEP",
+                    value: `${o.idNumber} · ${o.ownershipPercent ?? "—"}% · ${o.isPep ? "PEP" : "Not PEP"}`,
+                  },
+                ]}
+              />
+            ))}
+          </Section>
+        ) : null}
+
+        {p ? (
+          <Section number={no()} title="Vehicles and shipping">
+            <Grid
+              cells={[
+                {
+                  label: "Sourcing markets",
+                  value: list([
+                    ...p.trade.sourcingMarkets.filter((m) => m !== "Other"),
+                    p.trade.sourcingMarketOther,
+                  ]),
+                },
+                {
+                  label: "Vehicle types",
+                  value: p.trade.vehicleTypes || "—",
+                  span: 2,
+                },
+                { label: "Condition", value: list(p.trade.condition) },
+              ]}
+            />
+            <Grid
+              cells={[
+                {
+                  label: "Units / year",
+                  value: p.trade.expectedUnitsPerYear?.toString() ?? "—",
+                },
+                {
+                  label: "Annual value (USD)",
+                  value:
+                    p.trade.estimatedAnnualValueUsd?.toLocaleString("en-GB") ??
+                    "—",
+                },
+                { label: "Purpose", value: list(p.trade.purpose) },
+                {
+                  label: "Method · terms",
+                  value: list([
+                    ...p.trade.shippingMethod,
+                    ...p.trade.preferredTerms,
+                  ]),
+                },
+              ]}
+            />
+            <Grid
+              cells={[
+                {
+                  label: "Destination",
+                  value: list([
+                    p.trade.portOfDischarge,
+                    p.trade.destinationCountry,
+                  ]),
+                  span: 2,
+                },
+                {
+                  label: "Consignee",
+                  value: list([
+                    p.trade.consigneeName,
+                    p.trade.consigneeAddress,
+                  ]),
+                  span: 2,
+                },
+              ]}
+            />
+          </Section>
+        ) : null}
+
+        <Section number={no()} title="Payment information">
+          {p ? (
+            <Grid
+              cells={[
+                {
+                  label: "Method",
+                  value:
+                    p.payment.method === "Other"
+                      ? `Other: ${p.payment.methodOther}`
+                      : p.payment.method,
+                },
+                { label: "Account holder", value: p.payment.accountHolderName },
+                { label: "Account no. / IBAN", value: p.payment.accountNumber },
+                { label: "SWIFT / BIC", value: p.payment.swiftCode },
+              ]}
+            />
+          ) : null}
           <Grid
             cells={[
-              { label: "Payment country", value: r.paymentCountry },
+              {
+                label: p ? "Bank country" : "Payment country",
+                value: r.paymentCountry,
+              },
               { label: "Bank", value: r.bankName },
               {
                 label: "Source of funds",
@@ -558,30 +731,122 @@ function KycDocument({
               },
             ]}
           />
+          {p ? (
+            <Grid
+              cells={[
+                {
+                  label: "Third-party payer",
+                  value: p.payment.thirdParty
+                    ? `Yes: ${p.payment.thirdPartyName} (${p.payment.thirdPartyRelationship})`
+                    : "No",
+                  span: 4,
+                },
+              ]}
+            />
+          ) : null}
         </Section>
 
-        <Section number="04" title="Declarations">
-          <View style={s.tickRow}>
-            <Tick
-              on={r.sanctionsDeclared}
-              text={KYC_DECLARATIONS.sanctions}
-              width={CONTENT_WIDTH}
-            />
-          </View>
-          <View style={s.tickRow}>
-            <Tick
-              on={r.pepDeclared}
-              text={KYC_DECLARATIONS.pep}
-              width={CONTENT_WIDTH}
-            />
-          </View>
+        {p ? (
+          <Section number={no()} title="Compliance questions">
+            {COMPLIANCE_QUESTIONS.map((q) => {
+              const a = p.compliance[q.key];
+              return (
+                <View key={q.key} style={s.tickRow}>
+                  <Text
+                    style={{
+                      width: 30,
+                      fontFamily: "Helvetica-Bold",
+                      fontSize: 8,
+                      color: a?.answer ? "#b45309" : "#047857",
+                    }}
+                  >
+                    {a?.answer ? "YES" : "NO"}
+                  </Text>
+                  <Text style={[s.tickText, { width: CONTENT_WIDTH - 30 }]}>
+                    {q.text}
+                    {a?.details ? `\nDetails: ${pdfSafe(a.details)}` : ""}
+                  </Text>
+                </View>
+              );
+            })}
+          </Section>
+        ) : null}
+
+        <Section number={no()} title="Declarations">
+          {p ? (
+            <>
+              {KYC_APPLICATION_DECLARATIONS.map((d) => (
+                <View key={d} style={s.tickRow}>
+                  <Tick on text={d} width={CONTENT_WIDTH} />
+                </View>
+              ))}
+              <View
+                style={[s.signRow, { marginTop: 10, alignItems: "flex-end" }]}
+              >
+                <View style={{ width: span(2) }}>
+                  {signature?.kind === "image" ? (
+                    <Image
+                      src={signature.image}
+                      style={{
+                        width: signature.width,
+                        height: signature.height,
+                      }}
+                    />
+                  ) : null}
+                  <View style={s.signLine} />
+                  <Text style={s.signLabel}>
+                    Signed by {pdfSafe(p.signatoryName)}
+                  </Text>
+                </View>
+              </View>
+            </>
+          ) : (
+            <>
+              <View style={s.tickRow}>
+                <Tick
+                  on={r.sanctionsDeclared}
+                  text={KYC_DECLARATIONS.sanctions}
+                  width={CONTENT_WIDTH}
+                />
+              </View>
+              <View style={s.tickRow}>
+                <Tick
+                  on={r.pepDeclared}
+                  text={KYC_DECLARATIONS.pep}
+                  width={CONTENT_WIDTH}
+                />
+              </View>
+            </>
+          )}
           <Text style={s.declaredMeta}>
             Declared online by the customer on {londonDate(r.declaredAt, true)}
             {r.submittedIp ? `, from ${r.submittedIp}` : ""}.
           </Text>
         </Section>
 
-        <Section number="05" title="Office use">
+        {files.length > 0 ? (
+          <Section number={no()} title="Documents received">
+            <Grid
+              cells={[
+                {
+                  label: `${files.length} file${files.length === 1 ? "" : "s"}, open from ${r.reference} in the admin panel`,
+                  value: files
+                    .map((d) => {
+                      const owner =
+                        typeof d.ownerIndex === "number"
+                          ? p?.owners[d.ownerIndex]?.fullName
+                          : null;
+                      return `${kycDocLabel(d.type)}${owner ? ` (${owner})` : ""}`;
+                    })
+                    .join(" · "),
+                  span: 4,
+                },
+              ]}
+            />
+          </Section>
+        ) : null}
+
+        <Section number={no()} title="Office use">
           <View style={s.tickRow}>
             <Tick
               on={r.idVerified}
@@ -632,39 +897,54 @@ function KycDocument({
         {footer}
       </Page>
 
-      <Page size="A4" style={s.page}>
-        {masthead}
-        <Section number="06" title={`Verification evidence · ${docLabel}`}>
-          <EvidenceBlock
-            caption={r.idDocumentType === "passport" ? "Photo page" : "Front"}
-            item={front}
-            reference={r.reference}
-          />
-          {back ? (
-            <EvidenceBlock caption="Back" item={back} reference={r.reference} />
-          ) : null}
-        </Section>
-        {footer}
-      </Page>
+      {front ? (
+        <Page size="A4" style={s.page}>
+          {masthead}
+          <Section number={no()} title={`Verification evidence · ${docLabel}`}>
+            <EvidenceBlock
+              caption={r.idDocumentType === "passport" ? "Photo page" : "Front"}
+              item={front}
+              reference={r.reference}
+            />
+            {back ? (
+              <EvidenceBlock
+                caption="Back"
+                item={back}
+                reference={r.reference}
+              />
+            ) : null}
+          </Section>
+          {footer}
+        </Page>
+      ) : null}
     </Document>
   );
 }
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
+type PdfFile = { bytes: Buffer | null; type: string | null };
+
 export async function renderKycPdf(
   record: KycView,
   files: {
-    front: { bytes: Buffer | null; type: string | null };
-    back: { bytes: Buffer | null; type: string | null } | null;
+    /** Null for a company, which has no personal ID on the record. */
+    front: PdfFile | null;
+    back: PdfFile | null;
+    signature?: PdfFile | null;
   },
   lead: KycPdfLead | null = null,
 ): Promise<Buffer> {
   const maxHeight = files.back ? EVIDENCE_PAIR_HEIGHT : EVIDENCE_SINGLE_HEIGHT;
-  const [mark, front, back] = await Promise.all([
+  const [mark, front, back, signature] = await Promise.all([
     brandMark(),
-    evidence(files.front.bytes, files.front.type, maxHeight),
+    files.front
+      ? evidence(files.front.bytes, files.front.type, maxHeight)
+      : null,
     files.back ? evidence(files.back.bytes, files.back.type, maxHeight) : null,
+    files.signature
+      ? evidence(files.signature.bytes, files.signature.type, 50)
+      : null,
   ]);
 
   return renderToBuffer(
@@ -674,6 +954,7 @@ export async function renderKycPdf(
       mark={mark}
       front={front}
       back={back}
+      signature={signature}
       generatedOn={londonDate(new Date().toISOString(), true)}
     />,
   );

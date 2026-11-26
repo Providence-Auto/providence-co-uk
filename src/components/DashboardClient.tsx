@@ -265,6 +265,7 @@ export default function DashboardClient({
           "Replied (Both)",
           "Active Conversation",
           "SQL: Moved to vehicle offering stage",
+          "Sales Confirmed",
         ].includes(r.leadStatus),
       ).length,
       icon: MessageSquareText,

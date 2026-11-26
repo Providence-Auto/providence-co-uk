@@ -102,7 +102,8 @@ export function SpecSheetExportDialog({
 }) {
   const [options, setOptions] = useState<Options | null>(null);
   const [sheet, setSheet] = useState<AudienceSide>("b2c");
-  const side: AudienceSide = audience === "both" ? sheet : audience;
+  const side: AudienceSide =
+    audience === "both" ? sheet : audience === "b2b" ? "b2b" : "b2c";
   const [choice, setChoice] = useState<SpecSheetContactChoice>("mine");
   const [isExporting, setIsExporting] = useState(false);
 
