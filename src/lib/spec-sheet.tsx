@@ -833,7 +833,7 @@ function SpecSheet(d: SpecSheetData) {
         {auction ? <AuctionTiles auction={auction} /> : null}
         {auction?.view360Url ? (
           <Link src={auction.view360Url} style={s.view360}>
-            See the interior in 360° →
+            See the interior in 360°
           </Link>
         ) : null}
 
