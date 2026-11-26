@@ -21,7 +21,15 @@
 //   handed a "/cars/…" path it went looking at the filesystem root and printed
 //   three grey boxes. loadCarImageSource reads both kinds.
 // - No price. A car page carries one only when the business sets it, and a PDF
-//   outlives the page it was downloaded from, so it never prints one.
+//   outlives the page it was downloaded from, so it never prints one. The one
+//   figure an auction car's sheet prints is the auction's starting price — the
+//   bid the auction opens at, dated by its auction day — never ours.
+//
+// An auction car (src/lib/auction-listing.ts) gets its own sheet from the same
+// pieces: the auction date, starting price and grades as four tiles under the
+// name, the translated auction sheet, and a call to set a maximum before the
+// auction day. Its lot number never prints, and its translation prints only
+// once staff have checked it — the page's own rule (publicAuction).
 
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -37,10 +45,22 @@ import {
   View,
 } from "@react-pdf/renderer";
 import sharp from "sharp";
+import {
+  auctionCarName,
+  formatAuctionDate,
+  formatStartPrice,
+  type PublicAuction,
+  publicAuction,
+} from "@/lib/auction-listing";
 import { loadCarImageSource } from "@/lib/car-image-source";
 import type { CarRecord } from "@/lib/car-page";
 import { carSpecRows, type SpecRow } from "@/lib/car-spec-rows";
-import { type AudienceSide, dealerCarPath } from "@/lib/listing-audience";
+import {
+  type AudienceSide,
+  auctionCarPath,
+  dealerCarPath,
+  isAuctionListing,
+} from "@/lib/listing-audience";
 import {
   GENERAL_SPEC_SHEET_CONTACT,
   type SpecSheetContact,
@@ -336,6 +356,70 @@ const s = StyleSheet.create({
     textDecoration: "none",
   },
 
+  // Auction: the four facts a bidder needs, as tiles under the name
+  tiles: { flexDirection: "row", marginTop: 18 },
+  tile: {
+    backgroundColor: WASH,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    minHeight: 62,
+  },
+  tileLead: { backgroundColor: INK },
+  tileLabel: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 6.5,
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
+    color: MUTED,
+  },
+  tileValue: { fontFamily: "Helvetica-Bold", fontSize: 13, marginTop: 4 },
+  tileValueLead: { color: "#ffffff", fontSize: 16 },
+  view360: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 9.5,
+    color: ACCENT,
+    marginTop: 10,
+    textDecoration: "none",
+  },
+  tileNote: { fontSize: 7.5, color: SOFT, marginTop: 3, lineHeight: 1.35 },
+
+  // Auction sheet
+  subTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 8,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+    color: MUTED,
+    marginTop: 12,
+    marginBottom: 6,
+  },
+  note: { flexDirection: "row", marginBottom: 5 },
+  markRow: {
+    flexDirection: "row",
+    paddingVertical: 5,
+    borderBottomWidth: 0.75,
+    borderBottomColor: RULE,
+  },
+  markHead: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 7,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+    color: MUTED,
+  },
+  markCode: { width: "16%", fontFamily: "Helvetica-Bold", fontSize: 9.5 },
+  markWhere: { width: "44%", fontSize: 9.5, paddingRight: 8 },
+  markMeaning: { width: "40%", fontSize: 9.5, color: "#3f3f46" },
+  sheetImage: {
+    width: CONTENT_WIDTH,
+    height: 640,
+    objectFit: "contain",
+    borderRadius: 6,
+    borderWidth: 0.75,
+    borderColor: RULE,
+  },
+
   // Footer
   footer: {
     position: "absolute",
@@ -505,8 +589,132 @@ function ContactList({
   );
 }
 
+/** An auction sheet image for print, at most a page tall; null for a PDF or a failure. */
+type SheetImage = { image: PdfImage; ratio: number };
+
+async function sheetPhoto(src: string): Promise<SheetImage | null> {
+  if (/\.pdf(\?|$)/i.test(src)) return null;
+  try {
+    const { data, info } = await sharp(await loadCarImageSource(src))
+      .rotate()
+      .resize({ width: 1400, height: 1900, fit: "inside" })
+      .flatten({ background: "#ffffff" })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toBuffer({ resolveWithObject: true });
+    return {
+      image: { data, format: "jpg" },
+      ratio: info.height / info.width,
+    };
+  } catch (error) {
+    console.error("[spec-sheet] auction sheet", src, error);
+    return null;
+  }
+}
+
+const TILE_GAP = 8;
+
+/** "10 Dec 2026", the day in Japan. */
+function shortDate(date: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T00:00:00Z`));
+}
+
+/**
+ * Helvetica has no Japanese glyphs, so a code read off the sheet as "トビA"
+ * would print as mojibake: keep its Latin part, or a dash.
+ */
+function latinOnly(text: string): string {
+  return (
+    text.replace(/[^\u0020-\u00ff\u2013\u2014\u2018-\u201d]/g, "").trim() || "–"
+  );
+}
+
+function Tile({
+  label,
+  value,
+  note,
+  lead,
+  width,
+  first,
+}: {
+  label: string;
+  value: string;
+  note?: string;
+  lead?: boolean;
+  width: number;
+  first: boolean;
+}) {
+  return (
+    <View
+      style={[
+        s.tile,
+        lead ? s.tileLead : {},
+        { width, marginLeft: first ? 0 : TILE_GAP },
+      ]}
+    >
+      <Text style={s.tileLabel}>{label}</Text>
+      <Text style={lead ? [s.tileValue, s.tileValueLead] : s.tileValue}>
+        {value}
+      </Text>
+      {note ? <Text style={s.tileNote}>{note}</Text> : null}
+    </View>
+  );
+}
+
+/** The auction's four facts: the starting price leads, in the ink box. */
+function AuctionTiles({ auction }: { auction: PublicAuction }) {
+  const price = formatStartPrice(auction);
+  const tiles = [
+    price
+      ? {
+          label: "Starting price",
+          value: price,
+          note: "The bid the auction opens at",
+          lead: true,
+        }
+      : null,
+    auction.date
+      ? {
+          label: "Auction day",
+          value: shortDate(auction.date),
+          note: auction.house ? `${auction.house}, Japan` : "In Japan",
+        }
+      : null,
+    auction.grade ? { label: "Auction grade", value: auction.grade } : null,
+    auction.interiorGrade || auction.exteriorGrade
+      ? {
+          label: auction.interiorGrade ? "Interior grade" : "Exterior grade",
+          value: auction.interiorGrade || auction.exteriorGrade,
+        }
+      : null,
+  ].filter((t): t is NonNullable<typeof t> => t !== null);
+  // The lead tile takes a third more room than each of the others.
+  const units = tiles.reduce((sum, t) => sum + (t.lead ? 4 : 3), 0);
+  const unit = (CONTENT_WIDTH - TILE_GAP * (tiles.length - 1)) / units;
+  return (
+    <View style={s.tiles} wrap={false}>
+      {tiles.map((tile, i) => (
+        <Tile
+          key={tile.label}
+          {...tile}
+          width={unit * (tile.lead ? 4 : 3)}
+          first={i === 0}
+        />
+      ))}
+    </View>
+  );
+}
+
 type SpecSheetData = {
   audience: AudienceSide;
+  /** Set for a car coming up at a Japanese auction: the page's public view of it. */
+  auction: PublicAuction | null;
+  /** The original auction sheet, when staff chose to show it. */
+  auctionSheet: SheetImage | null;
   contact: SpecSheetContact;
   car: CarRecord;
   grade: VehicleGrade | undefined;
@@ -523,7 +731,495 @@ type SpecSheetData = {
   generatedOn: string;
 };
 
+// ── The auction car's sheet ────────────────────────────────────────────────
+//
+// Laid out page by page rather than left to flow, because a flowing sheet
+// split the marks table across pages and left the call to action alone on a
+// near-empty last page (feedback 2026-11-26):
+//   1. Cover — the photographs, the car's name, the four auction tiles.
+//   2. With the auction sheet: the original beside its translation, and the
+//      specification in two columns under it. Without one: the
+//      specification beside the inspector's notes and the marks on the car
+//      diagram, then two more photographs.
+//   3. Any further photographs, the selling points beside the equipment,
+//      and the call to action.
+
+const a = StyleSheet.create({
+  pageHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 10,
+    marginBottom: 18,
+    borderBottomWidth: 0.75,
+    borderBottomColor: RULE,
+  },
+  pageHeadName: { fontFamily: "Helvetica-Bold", fontSize: 11 },
+  pageHeadMeta: { fontSize: 8, color: MUTED },
+  cols: { flexDirection: "row" },
+  col: { width: (CONTENT_WIDTH - 24) / 2 },
+  colGap: { width: 24 },
+  block: { marginBottom: 18 },
+  heading: { fontFamily: "Helvetica-Bold", fontSize: 12, marginBottom: 8 },
+  rule: { width: 24, height: 2, backgroundColor: ACCENT, marginBottom: 7 },
+  row: {
+    flexDirection: "row",
+    paddingVertical: 4.5,
+    borderBottomWidth: 0.75,
+    borderBottomColor: RULE,
+  },
+  rowFirst: { borderTopWidth: 0.75, borderTopColor: RULE },
+  label: {
+    width: "42%",
+    paddingRight: 8,
+    fontFamily: "Helvetica-Bold",
+    fontSize: 7,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    color: MUTED,
+    paddingTop: 1.5,
+  },
+  value: { width: "58%", fontSize: 9, lineHeight: 1.35 },
+  item: { flexDirection: "row", marginBottom: 4 },
+  dot: {
+    width: 3.5,
+    height: 3.5,
+    borderRadius: 1.75,
+    backgroundColor: ACCENT,
+    marginTop: 4,
+    marginRight: 7,
+  },
+  itemText: { flex: 1, fontSize: 9, lineHeight: 1.4, color: "#27272a" },
+  markCode: { width: "18%", fontFamily: "Helvetica-Bold", fontSize: 8.5 },
+  markWhere: { width: "44%", fontSize: 8.5, paddingRight: 6 },
+  markMeaning: { width: "38%", fontSize: 8.5, color: "#3f3f46" },
+  markHead: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 6.5,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    color: MUTED,
+  },
+  grid: { flexDirection: "row", flexWrap: "wrap" },
+  photo: { borderRadius: 6, objectFit: "cover", marginBottom: THUMB_GAP },
+  sheet: {
+    width: (CONTENT_WIDTH - 24) / 2,
+    objectFit: "contain",
+    objectPosition: "top",
+    borderRadius: 6,
+    borderWidth: 0.75,
+    borderColor: RULE,
+  },
+  sheetCaption: { fontSize: 7.5, color: SOFT, marginTop: 5 },
+});
+
+/** The sheet beside its translation is never taller than this. */
+const SHEET_MAX_HEIGHT = 360;
+
+function PageHead({ name, day }: { name: string; day: string }) {
+  return (
+    <View style={a.pageHead}>
+      <Text style={a.pageHeadName}>{name}</Text>
+      <Text style={a.pageHeadMeta}>Japanese auction car · {day}</Text>
+    </View>
+  );
+}
+
+function Block({
+  title,
+  children,
+  last,
+}: {
+  title: string;
+  children: React.ReactNode;
+  last?: boolean;
+}) {
+  return (
+    <View style={last ? {} : a.block} wrap={false}>
+      <View style={a.rule} />
+      <Text style={a.heading}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function Items({ items }: { items: string[] }) {
+  return (
+    <>
+      {items.map((item, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two lines can read the same
+        <View key={i} style={a.item}>
+          <View style={a.dot} />
+          <Text style={a.itemText}>{latinOnly(item)}</Text>
+        </View>
+      ))}
+    </>
+  );
+}
+
+function SheetFooter({ vehicle }: { vehicle: string }) {
+  return (
+    <View style={s.footer} fixed>
+      <Text style={s.footerText}>
+        Providence Auto · {vehicle} · Japanese auction car ·
+        providenceauto.co.uk
+      </Text>
+      <Text
+        style={s.footerText}
+        render={({ pageNumber, totalPages }) =>
+          `Page ${pageNumber} of ${totalPages}`
+        }
+      />
+    </View>
+  );
+}
+
+function AuctionCta({
+  d,
+  auction,
+}: {
+  d: SpecSheetData;
+  auction: PublicAuction;
+}) {
+  const model = d.car.model || "car";
+  const day = formatAuctionDate(auction.date);
+  return (
+    <View style={[s.cta, { marginTop: 8 }]} wrap={false}>
+      <Text style={s.ctaTitle}>
+        {auction.upcoming
+          ? `Set your maximum for this ${model} before ${day}.`
+          : `This ${model} was at auction on ${day}. Ask us for a similar one.`}
+      </Text>
+      <Text style={s.ctaBody}>
+        The bidding decides the final price, and we bid only up to the maximum
+        you approve. Your consultant sends the landed cost into your country,
+        itemised, before you commit.
+      </Text>
+      {d.pageUrl ? (
+        <Link src={d.pageUrl} style={s.ctaLink}>
+          {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
+        </Link>
+      ) : null}
+      {d.contact.name ? (
+        <Text style={s.consultant}>{d.contact.name}</Text>
+      ) : null}
+      <ContactList contact={d.contact} dark />
+    </View>
+  );
+}
+
+function AuctionSheetDocument({
+  d,
+  auction,
+}: {
+  d: SpecSheetData;
+  auction: PublicAuction;
+}) {
+  const { car } = d;
+  const vehicle = [car.make, car.model].filter(Boolean).join(" ");
+  const name = auctionCarName(car);
+  const day = formatAuctionDate(auction.date);
+  const steering = parseSteeringOptions(car.steeringOptions, car.steering);
+  const sheet = auction.translation;
+  const colour = d.exterior[0] ? colorLabel(d.exterior[0]) : "";
+  const specRows = colour
+    ? [...d.rows, { label: "Colour", value: colour }]
+    : d.rows;
+  const cover = d.thumbs.slice(0, 3);
+  const more = d.thumbs.slice(3);
+  const half = thumbSize(2);
+  // Two more photographs fit under page 2's content, unless page 2 is the
+  // sheet; the rest (never more than two) open page 3.
+  const page2Photos = d.auctionSheet ? [] : more.slice(0, 2);
+  const page3Photos = d.auctionSheet ? more.slice(0, 2) : more.slice(2, 4);
+  const notes = sheet?.inspectorNotes ?? [];
+  const marks = sheet?.marks ?? [];
+  const points = sheet?.sellingPoints ?? [];
+
+  return (
+    <Document
+      title={`${name} — Japanese auction car`}
+      author="Providence Auto"
+      subject={`${name} at auction in Japan`}
+      creator="Providence Auto"
+      producer="Providence Auto"
+    >
+      {/* 1. Cover */}
+      <Page size="A4" style={s.page}>
+        <View style={s.masthead}>
+          <View style={s.brand}>
+            {d.mark ? <Image src={d.mark} style={s.brandMark} /> : null}
+            <Text style={s.brandName}>Providence Auto</Text>
+          </View>
+          <View style={s.mastRight}>
+            <Text style={s.docLabel}>Japanese auction car</Text>
+            <Text style={s.docDate}>{d.generatedOn}</Text>
+          </View>
+        </View>
+
+        {d.hero ? <Image src={d.hero} style={s.hero} /> : null}
+        {cover.length > 0 ? (
+          <View style={s.thumbs}>
+            {cover.map((thumb, i) => (
+              <Image
+                // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                key={i}
+                src={thumb}
+                style={[
+                  s.thumb,
+                  thumbSize(3),
+                  i > 0 ? { marginLeft: THUMB_GAP } : {},
+                ]}
+              />
+            ))}
+          </View>
+        ) : null}
+
+        <View style={s.identity}>
+          {car.make ? <Text style={s.make}>{car.make}</Text> : null}
+          <Text style={s.model}>
+            {[car.year, car.model].filter(Boolean).join(" ") || vehicle}
+          </Text>
+          {car.trim ? <Text style={s.trim}>{car.trim}</Text> : null}
+          <View style={s.badges}>
+            <Text style={[s.badge, s.badgeAccent]}>
+              {auction.upcoming ? `At auction · ${day}` : `Auctioned · ${day}`}
+            </Text>
+            {steering.map((hand) => (
+              <Text key={hand} style={s.badge}>
+                {hand}
+              </Text>
+            ))}
+            {car.mileage ? <Text style={s.badge}>{car.mileage}</Text> : null}
+          </View>
+        </View>
+
+        <AuctionTiles auction={auction} />
+        {auction.view360Url ? (
+          <Link src={auction.view360Url} style={s.view360}>
+            See the interior in 360°
+          </Link>
+        ) : null}
+
+        <SheetFooter vehicle={vehicle} />
+      </Page>
+
+      {/* 2. With the sheet: the original beside its translation, then the
+          specification in two columns. */}
+      {d.auctionSheet ? (
+        <Page size="A4" style={s.page}>
+          <PageHead name={name} day={day} />
+          <View style={a.rule} />
+          <Text style={a.heading}>
+            The auction sheet, translated into English
+          </Text>
+          <View style={[a.cols, { marginTop: 4 }]}>
+            <View style={a.col}>
+              <Image
+                src={d.auctionSheet.image}
+                style={[
+                  a.sheet,
+                  {
+                    height: Math.min(
+                      a.col.width * d.auctionSheet.ratio,
+                      SHEET_MAX_HEIGHT,
+                    ),
+                  },
+                ]}
+              />
+              <Text style={a.sheetCaption}>
+                The original sheet, in Japanese.
+              </Text>
+            </View>
+            <View style={a.colGap} />
+            <View style={a.col}>
+              {notes.length > 0 ? (
+                <Block title="Inspector's notes, in English">
+                  <Items items={notes} />
+                </Block>
+              ) : null}
+              {marks.length > 0 ? (
+                <Block title="Marks on the car diagram" last>
+                  <View style={[a.row, a.rowFirst]}>
+                    <Text style={[a.markCode, a.markHead]}>Code</Text>
+                    <Text style={[a.markWhere, a.markHead]}>Where</Text>
+                    <Text style={[a.markMeaning, a.markHead]}>Meaning</Text>
+                  </View>
+                  {marks.map((mark, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
+                    <View key={i} style={a.row}>
+                      <Text style={a.markCode}>{latinOnly(mark.code)}</Text>
+                      <Text style={a.markWhere}>
+                        {latinOnly(mark.location)}
+                      </Text>
+                      <Text style={a.markMeaning}>
+                        {latinOnly(mark.meaning)}
+                      </Text>
+                    </View>
+                  ))}
+                </Block>
+              ) : null}
+            </View>
+          </View>
+
+          <View style={{ marginTop: 22 }} wrap={false}>
+            <View style={a.rule} />
+            <Text style={a.heading}>Specification</Text>
+            <View style={a.cols}>
+              {[
+                specRows.slice(0, Math.ceil(specRows.length / 2)),
+                specRows.slice(Math.ceil(specRows.length / 2)),
+              ].map((half, h) => (
+                <View
+                  // biome-ignore lint/suspicious/noArrayIndexKey: the two fixed halves
+                  key={h}
+                  style={[a.col, h === 1 ? { marginLeft: 24 } : {}]}
+                >
+                  {half.map((row, i) => (
+                    <View
+                      key={row.label}
+                      style={i === 0 ? [a.row, a.rowFirst] : a.row}
+                    >
+                      <Text style={a.label}>{row.label}</Text>
+                      <Text style={a.value}>{row.value}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+          </View>
+          <SheetFooter vehicle={vehicle} />
+        </Page>
+      ) : (
+        <Page size="A4" style={s.page}>
+          <PageHead name={name} day={day} />
+
+          <View style={a.cols}>
+            <View style={a.col}>
+              <Block title="Specification">
+                {specRows.map((row, i) => (
+                  <View
+                    key={row.label}
+                    style={i === 0 ? [a.row, a.rowFirst] : a.row}
+                  >
+                    <Text style={a.label}>{row.label}</Text>
+                    <Text style={a.value}>{row.value}</Text>
+                  </View>
+                ))}
+              </Block>
+            </View>
+            <View style={a.colGap} />
+            <View style={a.col}>
+              {notes.length > 0 ? (
+                <Block title="Inspector's notes, in English">
+                  <Items items={notes} />
+                </Block>
+              ) : null}
+              {marks.length > 0 ? (
+                <Block title="Marks on the car diagram" last>
+                  <View style={[a.row, a.rowFirst]}>
+                    <Text style={[a.markCode, a.markHead]}>Code</Text>
+                    <Text style={[a.markWhere, a.markHead]}>Where</Text>
+                    <Text style={[a.markMeaning, a.markHead]}>Meaning</Text>
+                  </View>
+                  {marks.map((mark, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
+                    <View key={i} style={a.row}>
+                      <Text style={a.markCode}>{latinOnly(mark.code)}</Text>
+                      <Text style={a.markWhere}>
+                        {latinOnly(mark.location)}
+                      </Text>
+                      <Text style={a.markMeaning}>
+                        {latinOnly(mark.meaning)}
+                      </Text>
+                    </View>
+                  ))}
+                </Block>
+              ) : null}
+            </View>
+          </View>
+
+          {page2Photos.length > 0 ? (
+            <View style={{ marginTop: 22 }} wrap={false}>
+              <View style={a.rule} />
+              <Text style={a.heading}>More photographs</Text>
+              <View style={a.grid}>
+                {page2Photos.map((thumb, i) => (
+                  <Image
+                    // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                    key={i}
+                    src={thumb}
+                    style={[
+                      a.photo,
+                      half,
+                      { marginLeft: i % 2 === 0 ? 0 : THUMB_GAP },
+                    ]}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
+          <SheetFooter vehicle={vehicle} />
+        </Page>
+      )}
+
+      {/* 3. Any further photographs, the selling points, the call to action */}
+      <Page size="A4" style={s.page}>
+        <PageHead name={name} day={day} />
+        {page3Photos.length > 0 ? (
+          <View style={{ marginBottom: 22 }} wrap={false}>
+            <View style={a.rule} />
+            <Text style={a.heading}>More photographs</Text>
+            <View style={a.grid}>
+              {page3Photos.map((thumb, i) => (
+                <Image
+                  // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                  key={i}
+                  src={thumb}
+                  style={[
+                    a.photo,
+                    half,
+                    { marginLeft: i % 2 === 0 ? 0 : THUMB_GAP },
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+        ) : null}
+        {points.length > 0 || d.features.length > 0 ? (
+          <View style={a.cols}>
+            <View style={a.col}>
+              {points.length > 0 ? (
+                <Block title="Selling points" last>
+                  <Items items={points} />
+                </Block>
+              ) : null}
+            </View>
+            <View style={a.colGap} />
+            <View style={a.col}>
+              {d.features.length > 0 ? (
+                <Block title="Equipment" last>
+                  <Items items={d.features} />
+                </Block>
+              ) : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Anchored to the foot of the last page. */}
+        <View style={{ marginTop: "auto", paddingTop: 22 }}>
+          <AuctionCta d={d} auction={auction} />
+        </View>
+        <SheetFooter vehicle={vehicle} />
+      </Page>
+    </Document>
+  );
+}
+
 function SpecSheet(d: SpecSheetData) {
+  // An auction car has its own page-by-page layout.
+  if (d.auction) return <AuctionSheetDocument d={d} auction={d.auction} />;
+
   const { car, grade } = d;
   const vehicle = [car.make, car.model].filter(Boolean).join(" ");
   const heading = [car.year, car.model].filter(Boolean).join(" ");
@@ -795,23 +1491,51 @@ export async function renderSpecSheet(
     .filter((src) => src !== heroSrc)
     .slice(0, PHOTO_COUNT - 1);
 
-  const [hero, mark, ...thumbs] = await Promise.all([
+  const auction = isAuctionListing(car.audience)
+    ? publicAuction(car.auction)
+    : null;
+
+  const [hero, mark, auctionSheet, ...thumbs] = await Promise.all([
     heroSrc ? photo(heroSrc, 1600) : Promise.resolve(null),
     brandMark(),
+    auction?.sheetUrl ? sheetPhoto(auction.sheetUrl) : Promise.resolve(null),
     ...thumbSrcs.map((src) => photo(src, 640)),
   ]);
 
   const key = car.slug || car._id || car.id;
-  const audience = options.audience ?? "b2c";
-  const pagePath =
-    audience === "b2b" ? dealerCarPath(key) : `/b2c/gallery/${key}`;
+  const audience = auction ? "b2c" : (options.audience ?? "b2c");
+  const pagePath = auction
+    ? auctionCarPath(key)
+    : audience === "b2b"
+      ? dealerCarPath(key)
+      : `/b2c/gallery/${key}`;
   const data: SpecSheetData = {
     audience,
+    auction,
+    auctionSheet,
     contact: options.contact ?? GENERAL_SPEC_SHEET_CONTACT,
     car,
     grade,
-    rows: carSpecRows(car, grade, hand),
-    features: gradeFeatures(car.features, grade),
+    rows: [
+      ...(auction
+        ? [
+            { label: "Year", value: car.year },
+            { label: "Mileage", value: car.mileage },
+            {
+              label: "First registration",
+              value: auction.translation?.firstRegistration,
+            },
+            { label: "Model code", value: auction.translation?.chassisCode },
+          ].filter((row): row is SpecRow => Boolean(row.value))
+        : []),
+      ...carSpecRows(car, grade, hand),
+    ],
+    features: [
+      ...new Set([
+        ...gradeFeatures(car.features, grade),
+        ...(auction?.translation?.equipment ?? []).map(latinOnly),
+      ]),
+    ],
     exterior: parseColors(car.exteriorColors),
     interior: parseColors(car.interiorColors),
     markets: parseDestinations(car.destinations).map((m) => m.name),
@@ -832,7 +1556,10 @@ export async function renderSpecSheet(
 
 /** "Providence-Auto-Lexus-LX-500d-Sports-Luxury.pdf" */
 export function specSheetFileName(car: CarRecord): string {
-  const name = ["Providence Auto", car.make, car.model, car.trim]
+  const parts = isAuctionListing(car.audience)
+    ? ["Providence Auto", "Auction", car.year, car.make, car.model]
+    : ["Providence Auto", car.make, car.model, car.trim];
+  const name = parts
     .filter(Boolean)
     .join(" ")
     .replace(/[^A-Za-z0-9]+/g, "-")

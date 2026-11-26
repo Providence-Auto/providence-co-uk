@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleCheckBig, Info, UserRound, X } from "lucide-react";
+import { ArrowUpRight, CircleCheckBig, Info, UserRound, X } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { submitDealerInquiry } from "@/actions/dealer-inquiry-actions";
@@ -21,10 +21,20 @@ import { scrollBehavior } from "@/lib/fluid";
 import { pushLeadEvent } from "@/lib/lead-events";
 import { currentRepCode } from "@/lib/rep-link";
 import { formatFob, type StockCarFields } from "@/lib/stock";
+import {
+  filterStock,
+  NO_FILTERS,
+  type StockFilters,
+} from "@/lib/stock-filters";
+import { StockColorChoice } from "./StockColors";
+import StockFilterBar from "./StockFilterBar";
+import { StockThumb } from "./StockThumb";
 
+/** A car as the public list shows it. No team-member code (business, 2026-11-23). */
 export type PublicStockCar = StockCarFields & {
   id: string;
-  memberCode: string;
+  /** Its live car page, when a team member has linked one. */
+  page?: { title: string; path: string; image: string | null } | null;
 };
 
 const FORM_ID = "stock-inquiry";
@@ -60,6 +70,9 @@ export default function AvailableCarsClient({
   markets: MarketOption[];
 }) {
   const [selected, setSelected] = useState<string[]>([]);
+  // The colours picked for each car, by id.
+  const [colors, setColors] = useState<Record<string, string[]>>({});
+  const [filters, setFilters] = useState<StockFilters>(NO_FILTERS);
   const [country, setCountry] = useState("");
   const [form, setForm] = useState({
     contactName: "",
@@ -85,6 +98,10 @@ export default function AvailableCarsClient({
 
   const market = markets.find((m) => m.name === country) ?? null;
   const byId = useMemo(() => new Map(cars.map((c) => [c.id, c])), [cars]);
+  // Filtering only changes what is drawn: a picked car stays picked, and
+  // stays in the form's chips, while a filter hides its row.
+  const shown = useMemo(() => filterStock(cars, filters), [cars, filters]);
+  const hasPages = cars.some((c) => c.page);
   const picked = selected.flatMap((id) => {
     const car = byId.get(id);
     return car ? [car] : [];
@@ -136,6 +153,8 @@ export default function AvailableCarsClient({
   }, []);
 
   const toggle = (id: string) => {
+    // A car taken off the inquiry takes its colours with it.
+    if (selected.includes(id)) setColors(({ [id]: _, ...rest }) => rest);
     setSelected((list) =>
       list.includes(id)
         ? list.filter((x) => x !== id)
@@ -144,6 +163,24 @@ export default function AvailableCarsClient({
           : [...list, id],
     );
     if (errors.stockCars) setErrors(({ stockCars: _, ...rest }) => rest);
+  };
+
+  // Picking a colour picks the car.
+  const toggleColor = (id: string, name: string) => {
+    if (!selected.includes(id) && full) return;
+    setSelected((list) =>
+      list.includes(id) || list.length >= MAX_STOCK_CARS ? list : [...list, id],
+    );
+    if (errors.stockCars) setErrors(({ stockCars: _, ...rest }) => rest);
+    setColors((all) => {
+      const own = all[id] ?? [];
+      return {
+        ...all,
+        [id]: own.includes(name)
+          ? own.filter((n) => n !== name)
+          : [...own, name],
+      };
+    });
   };
 
   const set = (field: keyof typeof form, value: string) => {
@@ -202,6 +239,11 @@ export default function AvailableCarsClient({
         wantsSpecificCars: false,
         cars: [],
         stockCarIds: picked.map((c) => c.id),
+        stockColors: Object.fromEntries(
+          picked.flatMap((c) =>
+            colors[c.id]?.length ? [[c.id, colors[c.id]]] : [],
+          ),
+        ),
         notes: form.notes,
         faxNumber: form.faxNumber,
         ...tracking.current,
@@ -225,6 +267,7 @@ export default function AvailableCarsClient({
           email: form.email.trim(),
         });
         setSelected([]);
+        setColors({});
         return;
       }
       setErrors({ ...(result.errors ?? {}), submit: result.message });
@@ -250,6 +293,55 @@ export default function AvailableCarsClient({
         className="h-5 w-5 shrink-0 cursor-pointer rounded border-zinc-300 accent-zinc-900 disabled:cursor-not-allowed"
       />
     );
+  };
+
+  // The photo and the words under it are one link. The words are always
+  // there: a phone has no hover to hint that the photo opens.
+  const thumb = (car: PublicStockCar) =>
+    car.page && (
+      <Link
+        href={car.page.path}
+        target="_blank"
+        className="group/page flex w-fit shrink-0 flex-col items-center gap-1 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+        aria-label={`View more: ${car.page.title} (opens in a new tab)`}
+      >
+        {car.page.image && (
+          <span className="block overflow-hidden rounded-md ring-1 ring-black/10 transition-colors group-hover/page:ring-2 group-hover/page:ring-sky-600">
+            <StockThumb src={car.page.image} alt="" />
+          </span>
+        )}
+        <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2 group-hover/page:decoration-sky-700">
+          View more
+          <ArrowUpRight size={13} aria-hidden />
+        </span>
+      </Link>
+    );
+
+  const pageLink = (car: PublicStockCar, text: string) =>
+    car.page ? (
+      <Link
+        href={car.page.path}
+        target="_blank"
+        className="text-sky-700 underline decoration-sky-300 underline-offset-4 hover:decoration-sky-700"
+      >
+        {text}
+      </Link>
+    ) : (
+      text
+    );
+
+  const choice = (car: PublicStockCar) => (
+    <StockColorChoice
+      color={car.color}
+      picked={colors[car.id] ?? []}
+      onToggle={(name) => toggleColor(car.id, name)}
+      carName={carName(car)}
+    />
+  );
+
+  /** A click on the car's own control does its own thing. */
+  const pickByRow = (e: React.MouseEvent, id: string) => {
+    if (!(e.target as HTMLElement).closest("input, button, a")) toggle(id);
   };
 
   const field = (
@@ -283,12 +375,36 @@ export default function AvailableCarsClient({
         </p>
       ) : (
         <>
+          <div className="mt-8">
+            <StockFilterBar
+              cars={cars}
+              filters={filters}
+              onChange={setFilters}
+              shown={shown.length}
+            />
+          </div>
+
+          {shown.length === 0 && (
+            <p className="mt-4 rounded-2xl border border-zinc-200 bg-white px-6 py-10 text-center text-zinc-500">
+              No cars match.{" "}
+              <button
+                type="button"
+                onClick={() => setFilters(NO_FILTERS)}
+                className="font-semibold text-sky-700 underline decoration-sky-300 underline-offset-4"
+              >
+                Show every car
+              </button>
+            </p>
+          )}
+
           {/* Phones: one card per car. */}
-          <ul className="mt-8 space-y-3 md:hidden">
-            {cars.map((car) => (
+          <ul className="mt-4 space-y-3 md:hidden">
+            {shown.map((car) => (
               <li key={car.id}>
-                {/* biome-ignore lint/a11y/noLabelWithoutControl: the checkbox is inside, rendered by checkbox() */}
-                <label
+                {/* biome-ignore lint/a11y/noStaticElementInteractions: a larger target for the checkbox inside, which carries the keyboard and the name */}
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: see above */}
+                <div
+                  onClick={(e) => pickByRow(e, car.id)}
                   className={`block cursor-pointer rounded-2xl border bg-white p-4 ${
                     selected.includes(car.id)
                       ? "border-zinc-900 ring-1 ring-zinc-900"
@@ -298,16 +414,14 @@ export default function AvailableCarsClient({
                   <div className="flex items-start gap-3">
                     {checkbox(car)}
                     <p className="flex-1 font-semibold text-zinc-900">
-                      {carName(car)}
+                      {pageLink(car, carName(car))}
                     </p>
-                    <span className="shrink-0 font-mono text-xs font-semibold text-zinc-500">
-                      {car.memberCode}
-                    </span>
+                    {thumb(car)}
                   </div>
                   <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 pl-8 text-sm">
-                    <div>
-                      <dt className="text-xs text-zinc-500">Colour</dt>
-                      <dd className="text-zinc-900">{car.color}</dd>
+                    <div className="col-span-2">
+                      <dt className="mb-1 text-xs text-zinc-500">Colour</dt>
+                      <dd className="text-zinc-900">{choice(car)}</dd>
                     </div>
                     <div>
                       <dt className="text-xs text-zinc-500">Engine</dt>
@@ -328,19 +442,26 @@ export default function AvailableCarsClient({
                       </dd>
                     </div>
                   </dl>
-                </label>
+                </div>
               </li>
             ))}
           </ul>
 
           {/* Tablet and up: one table. */}
-          <div className="mt-8 hidden overflow-hidden rounded-2xl border border-zinc-200 bg-white md:block">
-            <table className="w-full text-left text-sm">
+          <div
+            className={`mt-4 hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-white ${shown.length > 0 ? "md:block" : ""}`}
+          >
+            <table className="w-full min-w-[60rem] text-left text-sm">
               <thead className="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 <tr>
                   <th scope="col" className="w-12 px-4 py-3">
                     <span className="sr-only">Select</span>
                   </th>
+                  {hasPages && (
+                    <th scope="col" className="w-24 py-3 pr-2">
+                      <span className="sr-only">Car page</span>
+                    </th>
+                  )}
                   <th scope="col" className="px-4 py-3">
                     Make
                   </th>
@@ -365,21 +486,13 @@ export default function AvailableCarsClient({
                   <th scope="col" className="px-4 py-3">
                     Shipping port
                   </th>
-                  <th scope="col" className="px-4 py-3">
-                    Code
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
-                {cars.map((car) => (
+                {shown.map((car) => (
                   <tr
                     key={car.id}
-                    onClick={(e) => {
-                      // The checkbox handles its own click.
-                      if ((e.target as HTMLElement).tagName !== "INPUT") {
-                        toggle(car.id);
-                      }
-                    }}
+                    onClick={(e) => pickByRow(e, car.id)}
                     className={`cursor-pointer ${
                       selected.includes(car.id)
                         ? "bg-sky-50"
@@ -387,21 +500,19 @@ export default function AvailableCarsClient({
                     }`}
                   >
                     <td className="px-4 py-3">{checkbox(car)}</td>
+                    {hasPages && <td className="py-2.5 pr-2">{thumb(car)}</td>}
                     <td className="px-4 py-3 font-medium text-zinc-900">
                       {car.make}
                     </td>
-                    <td className="px-4 py-3">{car.model}</td>
+                    <td className="px-4 py-3">{pageLink(car, car.model)}</td>
                     <td className="px-4 py-3 tabular-nums">{car.year}</td>
-                    <td className="px-4 py-3">{car.color}</td>
+                    <td className="min-w-64 px-4 py-3">{choice(car)}</td>
                     <td className="px-4 py-3">{car.engine}</td>
                     <td className="px-4 py-3">{car.steering}</td>
                     <td className="whitespace-nowrap px-4 py-3 text-right font-semibold tabular-nums">
                       {formatFob(car.fobPrice, car.fobCurrency)}
                     </td>
                     <td className="px-4 py-3">{car.shippingPort}</td>
-                    <td className="px-4 py-3 font-mono text-xs font-semibold text-zinc-500">
-                      {car.memberCode}
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -508,6 +619,11 @@ export default function AvailableCarsClient({
                       className="flex items-center gap-1.5 rounded-full bg-zinc-900 py-1.5 pl-3.5 pr-1.5 text-sm font-medium text-white"
                     >
                       {carName(car)}
+                      {(colors[car.id] ?? []).length > 0 && (
+                        <span className="text-white/80">
+                          · {colors[car.id].join(", ")}
+                        </span>
+                      )}
                       <span className="text-white/60">
                         · {formatFob(car.fobPrice, car.fobCurrency)}
                       </span>

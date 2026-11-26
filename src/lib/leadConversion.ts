@@ -31,9 +31,23 @@ export const SALES_STATUSES = [
   "Replied (Both)",
   "Active Conversation",
   "SQL: Moved to vehicle offering stage",
+  "Sales Confirmed",
   "Not Qualified",
   "Lead Lost",
 ] as const;
+
+/**
+ * The customer has agreed the deal (business instruction 2026-11-23). Setting
+ * it emails the customer their personal KYC link, and uploads a Purchase to
+ * Meta and Google Ads — once, guarded by each platform's ledger.
+ */
+export const SALES_CONFIRMED_STATUS = "Sales Confirmed";
+
+export function isSalesConfirmedStatus(
+  status: string | null | undefined,
+): boolean {
+  return !!status && normalise(status) === normalise(SALES_CONFIRMED_STATUS);
+}
 
 export type SalesStatus = (typeof SALES_STATUSES)[number];
 
@@ -78,6 +92,9 @@ const LEAD_OUTCOMES: Record<string, LeadOutcome> = {
   "replied (both)": "neutral",
   "active conversation": "neutral",
   "sql: moved to vehicle offering stage": "qualified",
+  // A confirmed sale is a qualified lead too: one that skips SQL still sends
+  // QualifiedLead, and one coming from SQL sends nothing new for it.
+  "sales confirmed": "qualified",
   "not qualified": "disqualified",
   "lead lost": "disqualified",
 

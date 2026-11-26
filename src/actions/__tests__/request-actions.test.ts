@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { db as dbClient, requests, users } from "@/db";
 import { emailService } from "@/lib/email";
@@ -423,6 +424,110 @@ describe("request-actions", () => {
       });
 
       expect(result.agent?.id).toBe("agent-123");
+    });
+
+    describe("shared between Chathuranga and Kisal", () => {
+      const chathuranga = {
+        id: "chat-1",
+        name: "Chathuranga",
+        email: "chathuranga@providenceauto.uk.com",
+        role: "B2C Sales",
+      };
+      const kisal = {
+        id: "kisal-1",
+        name: "Kisal",
+        email: "kisal@example.com",
+        role: "B2C Sales",
+      };
+      const lead = {
+        make: "Toyota",
+        vehicle_model: "Alphard",
+        condition: "Used",
+        name: "Shared Customer",
+        email: "shared@test.com",
+        countryCode: "GB",
+        phone: "+447000000000",
+        countryOfImport: "United Kingdom",
+      };
+      type Row = {
+        assignedToId: string | null;
+        statusHistory: unknown[];
+        createdAt: Date;
+      };
+      const row = (assignedToId: string, minute: number): Row => ({
+        assignedToId,
+        statusHistory: [],
+        createdAt: new Date(Date.UTC(2026, 10, 25, 9, minute)),
+      });
+      const next = async (rows: Row[]) => {
+        vi.mocked(db.then)
+          .mockImplementationOnce((onFulfilled) =>
+            onFulfilled([chathuranga, kisal]),
+          )
+          .mockImplementationOnce((onFulfilled) => onFulfilled(rows))
+          .mockImplementationOnce((onFulfilled) => onFulfilled([{ id: "r" }]));
+        return (await submitCarRequest(lead)).agent?.id ?? "";
+      };
+
+      it("splits a run of leads evenly, Kisal first as the newcomer", async () => {
+        const rows = [row("chat-1", 0)];
+        const order: string[] = [];
+        for (let i = 1; i <= 6; i++) {
+          const id = await next([...rows]);
+          order.push(id);
+          rows.unshift(row(id, i));
+        }
+        expect(order).toEqual([
+          "kisal-1",
+          "chat-1",
+          "kisal-1",
+          "chat-1",
+          "kisal-1",
+          "chat-1",
+        ]);
+      });
+
+      it("leaves Chathuranga's turn used when that lead is reassigned", async () => {
+        const moved: Row = {
+          ...row("shaq-1", 2),
+          statusHistory: [
+            {
+              action: "Reassigned: Chathuranga → Shaqeeq Shahiq",
+              previousOwnerId: "chat-1",
+            },
+          ],
+        };
+        expect(await next([moved, row("kisal-1", 1)])).toBe("kisal-1");
+      });
+
+      it("leaves Kisal's turn used when that lead moves to Chathuranga", async () => {
+        const moved: Row = {
+          ...row("chat-1", 2),
+          statusHistory: [
+            {
+              action: "Reassigned: Kisal → Chathuranga",
+              previousOwnerId: "kisal-1",
+            },
+          ],
+        };
+        expect(await next([moved, row("chat-1", 1)])).toBe("chat-1");
+      });
+
+      it("is not knocked back to the first name by someone outside the pair", async () => {
+        // Reassigned before the history recorded ids. Kisal is the one who
+        // has waited longest, wherever the newest lead now sits.
+        expect(
+          await next([row("shaq-1", 3), row("chat-1", 2), row("kisal-1", 1)]),
+        ).toBe("kisal-1");
+      });
+
+      it("counts only rotation leads, so a KYC-made lead is nobody's turn", async () => {
+        await next([]);
+        const wheres = vi.mocked(db.where).mock.calls.map(([w]) => w);
+        expect(wheres).toContainEqual(
+          eq(requests.assignmentMethod, "round-robin"),
+        );
+      });
     });
 
     it("gives a rep-link lead to the salesperson who shared it", async () => {

@@ -10,12 +10,21 @@ import {
   type TagCollection,
 } from "@/config/vehicle-tags";
 import { db, specDossiers } from "@/db";
-import { baseSlug, slugCandidates } from "@/lib/dossier-slug";
 import {
+  auctionLiveProblem,
+  auctionSlug,
+  parseAuctionListing,
+  publicAuction,
+} from "@/lib/auction-listing";
+import { autoSlug, baseSlug, slugCandidates } from "@/lib/dossier-slug";
+import {
+  AUCTION_CARS_PATH,
   DEALER_AUDIENCES,
+  isAuctionListing,
   parseListingAudience,
   RETAIL_AUDIENCES,
 } from "@/lib/listing-audience";
+import { isLiveStatus } from "@/lib/vehicle";
 import { parseVehicleType, type VehicleType } from "@/lib/vehicle-type";
 import { auth } from "@/utils/auth";
 
@@ -85,7 +94,18 @@ export async function saveSpecDossier(payload: any) {
     // from this one's id rather than failing the save (as instructed
     // 2026-11-20).
     const id: string = payload._id || crypto.randomUUID();
-    const slug = await resolveSlug(baseSlug(payload), id, payload._id);
+    const isAuction =
+      isAuctionListing(payload.audience) &&
+      parseVehicleType(payload.vehicleType) === "car";
+    // An auction car never takes the clean make-and-model slug: that belongs
+    // to the model's own car page.
+    const wanted =
+      isAuction &&
+      (!payload._id || !isLiveStatus(payload.status)) &&
+      (!payload.slug || payload.slug === autoSlug(payload.make, payload.model))
+        ? auctionSlug(payload)
+        : baseSlug(payload);
+    const slug = await resolveSlug(wanted, id, payload._id);
 
     const isLive =
       payload.status === "Active" || payload.status === "Published";
@@ -95,6 +115,11 @@ export async function saveSpecDossier(payload: any) {
         message:
           "This listing needs a URL slug before it can go Active. Add a make and model, or type a slug.",
       };
+    }
+
+    if (isLive && isAuction) {
+      const problem = auctionLiveProblem(parseAuctionListing(payload.auction));
+      if (problem) return { success: false, message: problem };
     }
 
     const { forceSlug: _, ...rest } = payload;
@@ -141,6 +166,7 @@ export async function saveSpecDossier(payload: any) {
       "vehicleType",
       "tags",
       "audience",
+      "auction",
     ];
     for (const key of allowedKeys) {
       if (resolvedPayload[key] !== undefined) {
@@ -157,6 +183,9 @@ export async function saveSpecDossier(payload: any) {
     }
     if (dataToSave.audience !== undefined) {
       dataToSave.audience = parseListingAudience(dataToSave.audience);
+    }
+    if (dataToSave.auction !== undefined) {
+      dataToSave.auction = parseAuctionListing(dataToSave.auction);
     }
     // There is no dealer page for a motorcycle (/b2b/gallery is cars), so a
     // bike is always a retail listing.
@@ -226,6 +255,7 @@ export async function saveSpecDossier(payload: any) {
           vehicleType: dataToSave.vehicleType ?? "car",
           tags: dataToSave.tags ?? [],
           audience: dataToSave.audience ?? "b2c",
+          auction: dataToSave.auction ?? {},
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -237,6 +267,7 @@ export async function saveSpecDossier(payload: any) {
     revalidatePath("/admin/specs");
     revalidatePath("/b2c/gallery");
     revalidatePath("/b2b/gallery");
+    revalidatePath(AUCTION_CARS_PATH);
     revalidatePath("/import-bikes");
     // The news index carries the upcoming-cars rail, so flipping a dossier's
     // coming-soon flag has to invalidate it too.
@@ -370,6 +401,20 @@ export async function updateDossierStatus(id: string, status: string) {
     return { success: false, message: "Unauthorized. Please sign in." };
   }
   try {
+    // The quick switch answers to the same auction rules as a full save.
+    if (isLiveStatus(status)) {
+      const current = await db.query.specDossiers.findFirst({
+        columns: { audience: true, auction: true },
+        where: eq(specDossiers.id, id),
+      });
+      if (current && isAuctionListing(current.audience)) {
+        const problem = auctionLiveProblem(
+          parseAuctionListing(current.auction),
+        );
+        if (problem) return { success: false, message: problem };
+      }
+    }
+
     await db
       .update(specDossiers)
       .set({ status, updatedAt: new Date() })
@@ -702,6 +747,44 @@ export async function getB2bGalleryDossiers() {
   } catch (error) {
     console.error("[getB2bGalleryDossiers] Error:", error);
     return { success: false, message: "Error fetching vehicles.", data: [] };
+  }
+}
+
+/**
+ * GET UPCOMING AUCTION CARS
+ * Active listings set to Auction in /admin/specs whose auction day (in Japan)
+ * has not passed, soonest first — the cars on
+ * /import-cars-from/japan/auction-cars.
+ */
+export async function getUpcomingAuctionCars() {
+  try {
+    const dossiers = await db.query.specDossiers.findMany({
+      columns: {
+        ...LISTING_COLUMNS,
+        mileage: true,
+        transmission: true,
+        fuelSystem: true,
+        auction: true,
+      },
+      where: and(
+        eq(specDossiers.status, "Active"),
+        eq(specDossiers.vehicleType, "car"),
+        eq(specDossiers.audience, "auction"),
+      ),
+      orderBy: desc(specDossiers.createdAt),
+    });
+    const upcoming = dossiers
+      .map((d) => ({ ...d, auction: publicAuction(d.auction) }))
+      .filter((d) => d.auction.upcoming)
+      .sort((a, b) => a.auction.date.localeCompare(b.auction.date));
+    return { success: true, data: upcoming };
+  } catch (error) {
+    console.error("[getUpcomingAuctionCars] Error:", error);
+    return {
+      success: false,
+      message: "Error fetching auction cars.",
+      data: [],
+    };
   }
 }
 

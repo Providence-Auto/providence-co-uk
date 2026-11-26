@@ -96,6 +96,8 @@ export type CountryPageConfig = {
   blogSlugs: string[];
   /** Optional existing campaign page to cross-link. */
   relatedCampaign?: { href: string; label: string };
+  /** A list of live cars in this country, linked beside the campaign page. */
+  relatedListing?: { href: string; label: string };
 };
 
 const HERO = (name: string) => `/source-cars/${name}-hero.webp`;
@@ -213,6 +215,10 @@ const japan: CountryPageConfig = {
     "cost-to-import-a-car-from-japan",
     "japan-car-export-documents-explained",
   ],
+  relatedListing: {
+    href: "/import-cars-from/japan/auction-cars",
+    label: "Japanese auction cars coming up for sale",
+  },
   relatedCampaign: {
     href: "/import-japanese-cars",
     label: "Browse Japanese cars by destination",

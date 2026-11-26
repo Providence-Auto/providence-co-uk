@@ -421,8 +421,19 @@ export default function CountryLanding({ slug }: { slug: string }) {
               ))}
             </ul>
 
-            {config.relatedCampaign && (
+            {config.relatedListing && (
               <div className="text-center mt-10">
+                <Link
+                  href={config.relatedListing.href}
+                  className="inline-flex items-center gap-2 text-black font-medium underline decoration-1 underline-offset-4 hover:decoration-2"
+                >
+                  {config.relatedListing.label}
+                  <ArrowRight size={15} />
+                </Link>
+              </div>
+            )}
+            {config.relatedCampaign && (
+              <div className="text-center mt-6">
                 <Link
                   href={config.relatedCampaign.href}
                   className="inline-flex items-center gap-2 text-black font-medium underline decoration-1 underline-offset-4 hover:decoration-2"

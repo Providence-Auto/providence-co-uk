@@ -7,6 +7,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // --- Better-Auth Tables ---
@@ -266,8 +267,13 @@ export const specDossiers = pgTable("specdossier", {
   // filter keywords. Registry and parsing: src/config/vehicle-tags.ts.
   tags: text("tags").array().notNull().default([]),
   // --- Listing audience (drizzle/0015) ------------------------------------
-  /** "b2c" or "b2b" — see src/lib/listing-audience.ts. B2B is also on /b2b/gallery. */
+  /** "b2c", "b2b", "both" or "auction" — see src/lib/listing-audience.ts. */
   audience: text("audience").default("b2c").notNull(),
+  // --- Japanese auction cars (drizzle/0020) --------------------------------
+  // The auction date, starting price, grades and translated sheet of an
+  // "auction" listing; {} on every other row. Read it through
+  // parseAuctionListing / publicAuction (src/lib/auction-listing.ts).
+  auction: jsonb("auction").notNull().default({}),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -394,8 +400,9 @@ export const kycSubmissions = pgTable(
   {
     id: text("id").primaryKey(),
     fullName: text("fullName").notNull(),
-    // YYYY-MM-DD, kept as text so no timezone can move the day.
-    dateOfBirth: text("dateOfBirth").notNull(),
+    // YYYY-MM-DD, kept as text so no timezone can move the day. For a
+    // company, the date of incorporation (optional, so nullable since 0018).
+    dateOfBirth: text("dateOfBirth"),
     // Country names, spelled as COUNTRIES spells them.
     nationality: text("nationality").notNull(),
     addressLine1: text("addressLine1").notNull(),
@@ -408,11 +415,12 @@ export const kycSubmissions = pgTable(
     phone: text("phone").notNull(),
     email: text("email").notNull(),
     // "passport", "national-id" or "driving-licence" (ID_DOCUMENT_TYPES).
-    idDocumentType: text("idDocumentType").notNull(),
+    // Null for a company, which sends company documents instead (0018).
+    idDocumentType: text("idDocumentType"),
     // Object keys in the KYC bucket, never public URLs: the files are only
     // ever read through the staff-only route at /admin/kyc/<id>/document/<side>.
-    idFrontKey: text("idFrontKey").notNull(),
-    idFrontType: text("idFrontType").notNull(),
+    idFrontKey: text("idFrontKey"),
+    idFrontType: text("idFrontType"),
     // Null for a passport, which has no back worth photographing.
     idBackKey: text("idBackKey"),
     idBackType: text("idBackType"),
@@ -454,6 +462,13 @@ export const kycSubmissions = pgTable(
     requestId: text("requestId").references(() => requests.id, {
       onDelete: "set null",
     }),
+    // The full application (drizzle/0018_kyc_application.sql). Null on a
+    // record sent from the short form. customerType is "individual" or
+    // "company"; profile is KycProfile and documents is KycStoredDoc[], both
+    // read through src/lib/kyc-application.ts, never directly.
+    customerType: text("customerType"),
+    profile: jsonb("profile"),
+    documents: jsonb("documents"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
@@ -463,6 +478,54 @@ export const kycSubmissions = pgTable(
   ],
 );
 
+// A personal KYC link, sent when a sale is confirmed (0018). Only the hash of
+// the token is kept: the link is shown once, and a resend makes a new one.
+// kycSubmissionId set means the link reopens that record, pre-filled, and the
+// customer's answers update it in place.
+export const kycRequests = pgTable(
+  "kycrequest",
+  {
+    id: text("id").primaryKey(),
+    tokenHash: text("tokenHash").notNull(),
+    requestId: text("requestId").references(() => requests.id, {
+      onDelete: "set null",
+    }),
+    kycSubmissionId: text("kycSubmissionId").references(
+      () => kycSubmissions.id,
+      { onDelete: "set null" },
+    ),
+    customerName: text("customerName"),
+    customerEmail: text("customerEmail").notNull(),
+    createdById: text("createdById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdByName: text("createdByName"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    emailSentAt: timestamp("emailSentAt"),
+    expiresAt: timestamp("expiresAt").notNull(),
+    completedAt: timestamp("completedAt"),
+    completedKycId: text("completedKycId"),
+  },
+  (table) => [
+    uniqueIndex("kycrequest_token_idx").on(table.tokenHash),
+    index("kycrequest_request_idx").on(table.requestId),
+    index("kycrequest_kyc_idx").on(table.kycSubmissionId),
+  ],
+);
+
+// A lead whose sale was confirmed (0018), with the Google Ads Purchase ledger.
+// Kept off "request" so that no lead query names a column that a lagging
+// environment might not have yet.
+export const leadSales = pgTable("leadsale", {
+  requestId: text("requestId")
+    .primaryKey()
+    .references(() => requests.id, { onDelete: "cascade" }),
+  confirmedAt: timestamp("confirmedAt").defaultNow().notNull(),
+  confirmedById: text("confirmedById"),
+  confirmedByName: text("confirmedByName"),
+  googlePurchaseSentAt: timestamp("googlePurchaseSentAt"),
+});
+
 // --- Stock list (drizzle/0014_stock_list_tables.sql) ---
 //
 // The cars the sales team has on offer. Each salesperson keeps their own rows
@@ -470,6 +533,45 @@ export const kycSubmissions = pgTable(
 // every salesperson, read straight from this table, so an edit on one list is
 // on the shared one the moment it is saved. Shape and validation live in
 // src/lib/stock.ts.
+// A Google Sheet linked to one team member's stock list (business request
+// 2026-11-19). Its cars are kept in step with the sheet — added, updated and
+// removed — by src/lib/stock-sync.ts, on "Sync now" and automatically when a
+// stock page is loaded and the last sync is older than the interval. Only cars
+// carrying this sheet's id are ever changed by it.
+export const stockSheets = pgTable(
+  "stocksheet",
+  {
+    id: text("id").primaryKey(),
+    // The link as pasted. The fetch address is always rebuilt from it by
+    // googleSheetCsvUrl, never fetched as stored.
+    sheetUrl: text("sheetUrl").notNull(),
+    // Whose list the sheet fills, and the code its cars carry.
+    ownerId: text("ownerId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    ownerName: text("ownerName"),
+    memberCode: text("memberCode").notNull(),
+    // For prices that name no currency.
+    defaultCurrency: text("defaultCurrency").default("USD").notNull(),
+    linkedById: text("linkedById").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    linkedByName: text("linkedByName"),
+    // Claimed atomically before each sync, so two page loads never sync the
+    // same sheet at once.
+    syncStartedAt: timestamp("syncStartedAt"),
+    // The last sync that read the sheet and applied it.
+    lastSyncedAt: timestamp("lastSyncedAt"),
+    // "ok" or "error", with the message and the counts of the last attempt.
+    lastStatus: text("lastStatus"),
+    lastError: text("lastError"),
+    lastResult: jsonb("lastResult"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => [index("stocksheet_owner_idx").on(table.ownerId)],
+);
+
 export const stockCars = pgTable(
   "stockcar",
   {
@@ -494,6 +596,18 @@ export const stockCars = pgTable(
       onDelete: "set null",
     }),
     ownerName: text("ownerName"),
+    // The linked Google Sheet this car comes from, if any. Such a car is
+    // changed only through its sheet; unlinking the sheet leaves it as an
+    // ordinary car.
+    sheetId: text("sheetId").references(() => stockSheets.id, {
+      onDelete: "set null",
+    }),
+    // The car page a team member linked this car to, if any: its hero image is
+    // the thumbnail on the stock list. Never one of the eight fields — a sheet
+    // sync leaves it alone.
+    dossierId: text("dossierId").references(() => specDossiers.id, {
+      onDelete: "set null",
+    }),
     // Removed cars leave the lists but are never deleted, so the history
     // below always has the car it describes.
     isRemoved: boolean("isRemoved").default(false).notNull(),
@@ -504,6 +618,8 @@ export const stockCars = pgTable(
   (table) => [
     index("stockcar_owner_idx").on(table.ownerId),
     index("stockcar_live_idx").on(table.isRemoved),
+    index("stockcar_sheet_idx").on(table.sheetId),
+    index("stockcar_dossier_idx").on(table.dossierId),
   ],
 );
 

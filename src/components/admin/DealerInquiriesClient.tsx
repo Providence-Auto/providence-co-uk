@@ -50,6 +50,7 @@ import {
   type DealerInquiryStaff,
   type DealerInquiryView,
   summariseCars,
+  stockColorText,
 } from "@/lib/dealer-inquiry";
 import { paginate } from "@/lib/pagination";
 import { formatFob } from "@/lib/stock";
@@ -715,7 +716,7 @@ function InquiryDetail({
                 </p>
                 <dl className="mt-2 grid grid-cols-[7rem_1fr] gap-x-3 gap-y-1 text-zinc-600">
                   <dt className="text-zinc-400">Colour</dt>
-                  <dd>{car.exteriorColor}</dd>
+                  <dd>{stockColorText(car)}</dd>
                   <dt className="text-zinc-400">Engine</dt>
                   <dd>{car.stock.engine}</dd>
                   <dt className="text-zinc-400">LHD/RHD</dt>

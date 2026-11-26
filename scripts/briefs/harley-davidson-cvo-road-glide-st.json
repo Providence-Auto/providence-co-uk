@@ -1,0 +1,58 @@
+{
+  "_sources": "Specification: Harley-Davidson's own spec tables, https://www.harley-davidson.com/eu/en/motorcycles/2025/cvo-road-glide-st.html and https://www.harley-davidson.com/gb/en/motorcycles/cvo-road-glide-st.html (EC 134/2014 figures, checked 2026-11-21). The 2025 and 2026 tables carry the same engine, power, torque and weight. No year on the page: the photographed bike's year is not confirmed, and its red and black paint is not a 2026 colour. No colour palette for the same reason, so the form falls back to free-text colour. Photos: Providence Auto's own (Content/Bikes); no number plate is fitted.",
+  "make": "Harley-Davidson",
+  "model": "CVO Road Glide ST",
+  "slug": "harley-davidson-cvo-road-glide-st",
+  "vehicleType": "motorcycle",
+  "condition": "Used",
+  "countryOfOrigin": "United States",
+  "destinations": [],
+  "fuelSystem": "Petrol",
+  "engineConfig": "Milwaukee-Eight 121 High Output V-twin, Electronic Sequential Port Fuel Injection",
+  "displacement": "1,977 cc",
+  "maxPower": "94 kW (126 hp) @ 5,020 rpm",
+  "maxTorque": "193 Nm @ 3,750 rpm",
+  "transmission": "6-speed, chain primary drive",
+  "infotainment": "Skyline OS on a 312 mm full-colour TFT screen, Apple CarPlay, 125 W per channel fairing audio",
+  "features": [
+    "47 mm inverted fork with adjustable preload, compression and rebound damping",
+    "Rear suspension with adjustable preload, compression and rebound damping",
+    "Dual floating front rotors with radially mounted four-piston calipers",
+    "Cornering Enhanced ABS, Traction Control and Drag-Torque Slip Control",
+    "Vehicle Hold Control and tyre pressure monitoring",
+    "Eight ride modes, including Track and Track+",
+    "Full LED lighting",
+    "Black 7-spoke cast aluminium wheels, 19-inch front and 18-inch rear",
+    "2-1-2 dual exhaust with tapered mufflers"
+  ],
+  "valuePoints": [
+    {
+      "title": "Import the exact CVO you want",
+      "description": "Tell us the year and the paint you are after, and you see the landed figure for that bike before you commit."
+    },
+    {
+      "title": "One figure, in two parts",
+      "description": "The CNF price you pay us covers the bike, the freight and marine cover to your port. The duty and taxes you pay your own customs authority are worked out before you commit."
+    },
+    {
+      "title": "The paperwork, prepared",
+      "description": "Our own office exports the bike and prepares the export file. At your port you receive the document pack, with clearance support."
+    }
+  ],
+  "customData": [
+    { "label": "Bore x stroke", "value": "103.5 mm x 117.5 mm" },
+    { "label": "Compression ratio", "value": "11.4:1" },
+    { "label": "Weight in running order", "value": "380 kg" },
+    { "label": "Fuel tank", "value": "22.7 litres" },
+    { "label": "Seat height, unladen", "value": "720 mm" },
+    { "label": "Tyres", "value": "130/60B19 front, 180/55B18 rear" },
+    { "label": "Fuel consumption (EU 134/2014)", "value": "6 l/100 km" }
+  ],
+  "searchTags": ["harley-davidson", "cvo", "road-glide", "bagger", "touring"],
+  "tags": ["cruiser-motorcycles"],
+  "images": [
+    "/bikes/harley-davidson-cvo-road-glide-st/01-side.webp",
+    "/bikes/harley-davidson-cvo-road-glide-st/02-rear-three-quarter.webp"
+  ],
+  "notes": "The CVO Road Glide ST is Harley-Davidson's performance bagger: the Milwaukee-Eight 121 High Output engine, the frame-mounted Road Glide fairing and track-capable suspension and brakes, from the factory's Custom Vehicle Operations line. The figures on this page are Harley-Davidson's published specification for the current model. Tell us the year and the paint you want, and your consultant comes back with a landed figure for that bike before you commit."
+}

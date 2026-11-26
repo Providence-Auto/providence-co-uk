@@ -1,0 +1,120 @@
+{
+  "_note": "Auction listing brief. Create or update it with: node --env-file=.env.local scripts/create-auction-listing.mjs scripts/briefs/auction-2009-ferrari-430-scuderia.json <dev|staging|production> [--apply]",
+  "make": "Ferrari",
+  "model": "430 Scuderia",
+  "year": "2009",
+  "trim": "F1 SuperFast2",
+  "condition": "Used",
+  "mileage": "20,930 km",
+  "countryOfOrigin": "Italy",
+  "engineConfig": "V8",
+  "displacement": "4,300 cc",
+  "transmission": "F1 SuperFast2 automated manual",
+  "fuelSystem": "Petrol",
+  "steering": "LHD",
+  "steeringOptions": [
+    "LHD"
+  ],
+  "exteriorColors": [
+    {
+      "hex": "#c8102e",
+      "name": "Red"
+    }
+  ],
+  "features": [
+    "Genuine alloy wheels",
+    "Power steering",
+    "Power windows",
+    "Airbags",
+    "Automatic air conditioning"
+  ],
+  "heroImageUrl": "/auction-cars/2009-ferrari-430-scuderia/01-front-three-quarter.webp",
+  "images": [
+    "/auction-cars/2009-ferrari-430-scuderia/01-front-three-quarter.webp",
+    "/auction-cars/2009-ferrari-430-scuderia/02-front-three-quarter-left.webp",
+    "/auction-cars/2009-ferrari-430-scuderia/03-rear-three-quarter.webp",
+    "/auction-cars/2009-ferrari-430-scuderia/04-rear.webp",
+    "/auction-cars/2009-ferrari-430-scuderia/05-interior.webp",
+    "/auction-cars/2009-ferrari-430-scuderia/06-instruments.webp"
+  ],
+  "slug": "2009-ferrari-430-scuderia-auction",
+  "status": "Active",
+  "audience": "auction",
+  "vehicleType": "car",
+  "auction": {
+    "date": "2026-11-27",
+    "grade": "4.5",
+    "house": "USS",
+    "currency": "JPY",
+    "sheetUrl": "/auction-cars/2009-ferrari-430-scuderia/auction-sheet.webp",
+    "lotNumber": "",
+    "showSheet": true,
+    "startPrice": 43000000,
+    "view360Url": "https://uss.360.car/v1/share/0a03e715d527618949a7a75e0fdaae0a2c8fd392d2cbd019adac2099da6914ad",
+    "translation": {
+      "marks": [
+        {
+          "code": "A",
+          "meaning": "Scratch",
+          "location": "Front"
+        },
+        {
+          "code": "Chip A",
+          "meaning": "Stone chip",
+          "location": "Windscreen"
+        },
+        {
+          "code": "U1",
+          "meaning": "Small dent",
+          "location": "Left side, door"
+        },
+        {
+          "code": "AU1",
+          "meaning": "Scratch and small dent",
+          "location": "Right side, door"
+        },
+        {
+          "code": "A",
+          "meaning": "Scratch",
+          "location": "Left rear quarter"
+        },
+        {
+          "code": "A",
+          "meaning": "Scratch",
+          "location": "Right rear quarter"
+        },
+        {
+          "code": "P",
+          "meaning": "Small crack",
+          "location": "Rear"
+        }
+      ],
+      "checked": true,
+      "equipment": [],
+      "chassisCode": "ABA-F430SC",
+      "sellingPoints": [
+        "430 Scuderia equipment: racing stripes",
+        "Racing manettino",
+        "19-inch 10-spoke alloy wheels",
+        "Scuderia suspension",
+        "Carbon brakes",
+        "Scuderia front bumper and side skirts",
+        "Ducktail engine cover",
+        "Rear diffuser",
+        "Graphic instrument cluster and aluminium footrest",
+        "Service book with warranty card"
+      ],
+      "inspectorNotes": [
+        "Small scratches in the interior",
+        "Scratches on the wheels",
+        "Small scratches and small dents",
+        "Carbon exterior and interior parts: door mirrors, rear grille, engine bay, intake plenum, air filter housing, door sill guards, door panels, dashboard inserts, paddle shifters, LED steering wheel, centre tunnel",
+        "Carbon-shell racing seats and Alcantara trim",
+        "Aftermarket variable exhaust; the sheet marks the catalytic converter as possibly missing"
+      ],
+      "firstRegistration": "April 2009"
+    },
+    "exteriorGrade": "",
+    "interiorGrade": "A"
+  }
+}

@@ -3,6 +3,7 @@
 // errors and by src/actions/stock-actions.ts again before anything is stored.
 
 import { REP_LINK_ALIASES } from "@/lib/rep-link";
+import type { StockPage } from "@/lib/stock-page";
 
 /** The public, shareable list of every live car. */
 export const STOCK_PUBLIC_PATH = "/available-cars";
@@ -80,8 +81,26 @@ export function stockItemListJsonLd(
 export const STOCK_STEERING = ["RHD", "LHD"] as const;
 export type StockSteering = (typeof STOCK_STEERING)[number];
 
-/** Currencies an FOB price may be quoted in. USD is the default. */
-export const STOCK_CURRENCIES = ["USD", "JPY", "GBP", "EUR", "AED"] as const;
+/**
+ * Currencies an FOB price may be quoted in: every source market's own and the
+ * ones the trade prices in. USD is the default.
+ */
+export const STOCK_CURRENCIES = [
+  "USD",
+  "JPY",
+  "GBP",
+  "EUR",
+  "AED",
+  "AUD",
+  "NZD",
+  "SGD",
+  "HKD",
+  "CNY",
+  "INR",
+  "THB",
+  "ZAR",
+  "CAD",
+] as const;
 export type StockCurrency = (typeof STOCK_CURRENCIES)[number];
 
 /** The eight fields a salesperson fills in. */
@@ -117,6 +136,10 @@ export interface StockCarView extends StockCarFields {
   ownerId: string | null;
   ownerName: string | null;
   isRemoved: boolean;
+  /** The linked Google Sheet the car comes from; such a car changes only there. */
+  sheetId: string | null;
+  /** The car page it is linked to, live or not; its hero is the thumbnail. */
+  page: StockPage | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -136,6 +159,12 @@ export const STOCK_FIELD_LABELS: Record<StockField, string> = {
   shippingPort: "Shipping port",
 };
 
+/** Labels for everything a history row can record. */
+export const STOCK_CHANGE_LABELS: Record<StockChange["field"], string> = {
+  ...STOCK_FIELD_LABELS,
+  carPage: "Car page",
+};
+
 /** The order fields are compared and listed in. */
 export const STOCK_FIELDS: StockField[] = [
   "make",
@@ -149,10 +178,16 @@ export const STOCK_FIELDS: StockField[] = [
   "shippingPort",
 ];
 
-export type StockAction = "created" | "updated" | "removed" | "restored";
+export type StockAction =
+  | "created"
+  | "updated"
+  | "removed"
+  | "restored"
+  | "imported";
 
 export interface StockChange {
-  field: StockField;
+  /** "carPage" is the car page it is linked to — not one of the eight fields. */
+  field: StockField | "carPage";
   from: string | number | null;
   to: string | number | null;
 }
@@ -162,7 +197,8 @@ export interface StockHistoryEntry {
   carId: string;
   action: StockAction;
   changes: StockChange[];
-  snapshot: Partial<StockCarFields> & { memberCode?: string };
+  /** `source` is set on an import: "CSV", "Excel" or "Google Sheet". */
+  snapshot: Partial<StockCarFields> & { memberCode?: string; source?: string };
   actorName: string | null;
   memberCode: string | null;
   createdAt: string;
@@ -228,7 +264,7 @@ export function validateStockCar(
 
   const fobCurrency = clean(input.fobCurrency).toUpperCase() || "USD";
   if (!STOCK_CURRENCIES.includes(fobCurrency as StockCurrency))
-    errors.fobCurrency = "Choose a currency";
+    errors.fobCurrency = `${fobCurrency} is not a currency on the list`;
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 

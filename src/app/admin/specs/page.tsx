@@ -25,7 +25,9 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 // Actions & Components
+import type { AuctionSheetTranslation } from "@/actions/auction-sheet-actions";
 import { getSpecDossierById, saveSpecDossier } from "@/actions/spec-actions";
+import { AuctionListingEditor } from "@/components/admin/AuctionListingEditor";
 import { SpecSheetExportDialog } from "@/components/admin/SpecSheetExportDialog";
 import { DestinationEditor } from "@/components/DestinationEditor";
 import { GradeEditor, SteeringOptionsEditor } from "@/components/GradeEditor";
@@ -50,11 +52,18 @@ import {
   TAG_BASE_PATH,
   TAG_COLLECTIONS,
 } from "@/config/vehicle-tags";
-import { getPresignedUrls } from "@/lib/file-actions";
-import { autoSlug } from "@/lib/dossier-slug";
 import {
+  type AuctionListing,
+  auctionSlug,
+  parseAuctionListing,
+} from "@/lib/auction-listing";
+import { autoSlug } from "@/lib/dossier-slug";
+import { getPresignedUrls } from "@/lib/file-actions";
+import {
+  AUCTION_CARS_PATH,
   B2B_GALLERY_PATH,
   dealerCarPath,
+  isAuctionListing,
   onDealer,
   onRetail,
   parseListingAudience,
@@ -636,6 +645,12 @@ function SpecBuilderContent() {
     defaultDestinationSlugs(["RHD"]),
   );
 
+  // The auction half of an "Auction" listing, and its sheet until the save.
+  const [auction, setAuction] = useState<AuctionListing>(() =>
+    parseAuctionListing({}),
+  );
+  const [sheetFile, setSheetFile] = useState<File | null>(null);
+
   // Image Management State
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -681,6 +696,7 @@ function SpecBuilderContent() {
               vehicleType: res.data.vehicleType || "car",
               audience: parseListingAudience(res.data.audience),
             }));
+            setAuction(parseAuctionListing(res.data.auction));
             setPricing(res.data.pricing || []);
             setFeatures(res.data.features || []);
             setSearchTags(res.data.searchTags || []);
@@ -788,6 +804,55 @@ function SpecBuilderContent() {
     setIsExportOpen(true);
   };
 
+  // The slug follows the fields it is built from while it is still the one
+  // built from them — never on a live listing, whose URL is out there. An
+  // auction car's carries its year, so it never takes the model's own slug.
+  const builtSlug = (d: SpecDataType) =>
+    isAuctionListing(d.audience) ? auctionSlug(d) : autoSlug(d.make, d.model);
+  const followSlug = (prev: SpecDataType, next: SpecDataType) =>
+    !isLiveStatus(prev.status) && (!prev.slug || prev.slug === builtSlug(prev))
+      ? builtSlug(next)
+      : next.slug;
+
+  // What the translated sheet says about the car fills the builder's own
+  // fields, but never replaces something already typed.
+  const handleTranslated = (d: AuctionSheetTranslation) => {
+    setIsDirty(true);
+    setSpecData((prev) => {
+      const next = {
+        ...prev,
+        make: prev.make || d.make || "",
+        model: prev.model || d.model || "",
+        year: prev.year || (d.year ? String(d.year) : ""),
+        trim: prev.trim || d.trim || "",
+        condition: "Used",
+        mileage:
+          prev.mileage ||
+          (d.mileageKm ? `${d.mileageKm.toLocaleString("en-GB")} km` : ""),
+        displacement:
+          prev.displacement ||
+          (d.displacementCc ? `${d.displacementCc} cc` : ""),
+        transmission: prev.transmission || d.transmission || "",
+        fuelSystem:
+          d.fuel &&
+          ["Petrol", "Diesel", "Electric", "Hybrid", "Hydrogen"].includes(
+            d.fuel,
+          )
+            ? d.fuel
+            : prev.fuelSystem,
+      };
+      return { ...next, slug: followSlug(prev, next) };
+    });
+    if (d.steering === "RHD" || d.steering === "LHD") {
+      setSteeringOptions([d.steering]);
+    }
+    if (d.colour) {
+      setExteriorColors((prev) =>
+        prev.length > 0 ? prev : [{ ...emptyColor(), name: d.colour ?? "" }],
+      );
+    }
+  };
+
   const handleInputChange = (
     field: keyof typeof initialSpecData,
     value: string | boolean,
@@ -796,16 +861,14 @@ function SpecBuilderContent() {
 
     setSpecData((prev) => {
       const next = { ...prev, [field]: value };
-      // The slug follows the make and model while it is still the one built
-      // from them — never on a live listing, whose URL is out there.
+      // There is no auction page for a bike.
       if (
-        (field === "make" || field === "model") &&
-        !isLiveStatus(prev.status) &&
-        (!prev.slug || prev.slug === autoSlug(prev.make, prev.model))
+        next.vehicleType === "motorcycle" &&
+        isAuctionListing(next.audience)
       ) {
-        next.slug = autoSlug(next.make, next.model);
+        next.audience = "b2c";
       }
-      return next;
+      return { ...next, slug: followSlug(prev, next) };
     });
   };
 
@@ -966,6 +1029,26 @@ function SpecBuilderContent() {
         finalImageUrls = [...finalImageUrls, ...uploadedUrls];
       }
 
+      // The auction sheet goes up beside the photos, and only for an auction.
+      let finalAuction = auction;
+      if (sheetFile && isAuctionListing(specData.audience)) {
+        const { success, uploadData, message } = await getPresignedUrls(
+          [{ name: sheetFile.name, type: sheetFile.type, size: sheetFile.size }],
+          "auction-sheets",
+        );
+        if (!success || !uploadData)
+          throw new Error(message || "Failed to get upload URLs.");
+        const uploadRes = await fetch(uploadData[0].uploadUrl, {
+          method: "PUT",
+          body: sheetFile,
+          headers: { "Content-Type": sheetFile.type },
+        });
+        if (!uploadRes.ok) throw new Error("Failed to upload the auction sheet.");
+        finalAuction = { ...auction, sheetUrl: uploadData[0].fileUrl };
+        setAuction(finalAuction);
+        setSheetFile(null);
+      }
+
       // Hero must be one of the final images. If the selected hero was
       // removed (or none was chosen), fall back to the first image — this
       // prevents a stale hero from being "hard saved" after images change.
@@ -1005,6 +1088,7 @@ function SpecBuilderContent() {
         // The legacy single-value column stays the primary hand, so the PDF
         // and anything else reading `steering` keeps working unchanged.
         steering: steeringOptions[0] || "RHD",
+        auction: parseAuctionListing(finalAuction),
       };
       const result = await saveSpecDossier(payload);
 
@@ -1140,14 +1224,15 @@ function SpecBuilderContent() {
                 <Label className="text-[10px] font-black uppercase text-zinc-400">
                   Listing for
                 </Label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-2">
                   {[
                     { value: "b2c", label: "B2C" },
                     { value: "b2b", label: "B2B" },
                     { value: "both", label: "Both" },
+                    { value: "auction", label: "Auction" },
                   ]
                     .filter(
-                      // There is no dealer page for a bike.
+                      // There is no dealer or auction page for a bike.
                       (option) =>
                         specData.vehicleType !== "motorcycle" ||
                         option.value === "b2c",
@@ -1173,6 +1258,19 @@ function SpecBuilderContent() {
                 {specData.vehicleType === "motorcycle" ? (
                   <p className="text-xs text-zinc-500">
                     Bikes are listed for retail buyers only.
+                  </p>
+                ) : isAuctionListing(specData.audience) ? (
+                  <p className="text-xs text-zinc-500">
+                    One car coming up at a Japanese auction, listed on{" "}
+                    <a
+                      href={AUCTION_CARS_PATH}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline"
+                    >
+                      Japanese Auction Cars
+                    </a>{" "}
+                    only, until its auction day. Kept off both galleries.
                   </p>
                 ) : specData.audience !== "b2c" ? (
                   <p className="text-xs text-zinc-500">
@@ -1612,6 +1710,22 @@ function SpecBuilderContent() {
               </p>
             </div>
           </div>
+
+          {isAuctionListing(specData.audience) ? (
+            <AuctionListingEditor
+              value={auction}
+              onChange={(next) => {
+                setIsDirty(true);
+                setAuction(next);
+              }}
+              sheetFile={sheetFile}
+              onSheetFile={(file) => {
+                setIsDirty(true);
+                setSheetFile(file);
+              }}
+              onTranslated={handleTranslated}
+            />
+          ) : null}
 
           {/* Vehicle Overview Section */}
           <div className="bg-white border border-black/5 rounded-[3rem] p-10 shadow-sm relative overflow-hidden">

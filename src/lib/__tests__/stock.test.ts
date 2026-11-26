@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { stockCarLine, stockToDealerCar } from "../dealer-inquiry";
+import {
+  stockCarLine,
+  stockColorText,
+  stockToDealerCar,
+} from "../dealer-inquiry";
 import {
   compareStockCars,
   diffStockCar,
@@ -72,6 +76,19 @@ describe("stock cars on a dealer inquiry", () => {
     expect(stockCarLine(car.stock)).toBe(
       "2024 · 2.5L Hybrid · RHD · FOB JPY 6,200,000 · Nagoya",
     );
+  });
+
+  it("carries the colours the dealer picked, and what they picked from", () => {
+    const three = { ...row, color: "Red, Blue, White" };
+    const blue = stockToDealerCar(three, ["Blue"]);
+    expect(blue.exteriorColor).toBe("Blue");
+    expect(stockColorText(blue)).toBe("Blue (listed in Red, Blue, White)");
+    expect(stockColorText(stockToDealerCar(three))).toBe(
+      "No colour picked (listed in Red, Blue, White)",
+    );
+    // One colour, and an inquiry from before colours could be picked.
+    expect(stockColorText(stockToDealerCar(row))).toBe("Black");
+    expect(stockColorText({ exteriorColor: "Red, Blue" })).toBe("Red, Blue");
   });
 
   it("marks every car up as a Car with its FOB offer and steering", () => {

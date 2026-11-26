@@ -1,8 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import KycForm from "@/components/kyc/KycForm";
+import { getKycPrefill } from "@/lib/kyc-prefill";
 
-export default function KycPage() {
+// A personal link (/kyc?t=<token>, sent when a sale is confirmed) opens the
+// form pre-filled, so this page reads the database on every request.
+export const dynamic = "force-dynamic";
+
+export default async function KycPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ t?: string | string[] }>;
+}) {
+  const { t } = await searchParams;
+  const token = typeof t === "string" ? t : null;
+  const prefill = token ? await getKycPrefill(token).catch(() => null) : null;
+
   return (
     <div className="min-h-screen bg-zinc-50 text-black">
       <header className="mx-auto flex max-w-3xl items-center justify-between px-4 py-6 sm:px-6">
@@ -25,9 +38,11 @@ export default function KycPage() {
           Your proforma invoice is issued once these details are approved. They
           are seen only by the Providence Auto team.
         </p>
-
         <div className="mt-10">
-          <KycForm />
+          {/* The notice lives in the form: sending the form uses the link up
+              and re-renders this page, and it must not then appear under the
+              thank-you. */}
+          <KycForm prefill={prefill} expiredLink={Boolean(token && !prefill)} />
         </div>
       </main>
     </div>
