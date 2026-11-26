@@ -26,6 +26,7 @@ import {
 } from "@/config/vehicle-tags";
 import {
   AUCTION_CARS_PATH,
+  auctionCarPath,
   B2B_GALLERY_PATH,
   isAuctionListing,
   onDealer,
@@ -150,7 +151,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
-  // 1a-i. The Japanese auction cars list. Its own cars are noindex.
+  // 1a-i. The Japanese auction cars list, and each car on it: a car is
+  // indexed until its auction day, then noindex, so only the upcoming ones
+  // are listed (getUpcomingAuctionCars drops the rest).
   const auctionCars = await getUpcomingAuctionCars();
   const auctionRoutes = [
     {
@@ -159,6 +162,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
+    ...auctionCars.data.map((car) => ({
+      url: `${baseUrl}${auctionCarPath(car.slug || car.id)}`,
+      lastModified: latest([car.updatedAt]),
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+    })),
   ];
 
   // 1b. Blog posts (import-to-Ireland content cluster)
@@ -219,8 +228,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // listing them here put 99 near-duplicates in front of 20 car pages, and
   // Google left both "Discovered - currently not indexed".
   const carRoutes = dossierResult.data
-    // A car coming up at auction is one unit that sells in days, so its page is
-    // noindex and only the list it is on is in the sitemap.
+    // A car coming up at auction is listed with the auction cars above, and
+    // only while its auction is still to come.
     .filter(
       (car: any) =>
         LIVE_DOSSIER_STATUSES.has(car.status) &&

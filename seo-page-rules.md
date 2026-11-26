@@ -276,7 +276,7 @@ Japan → the US, Canada and Germany for luxury, sports and hyper cars.
 | F-Svc3 | Documentation | car export documents japan, export certificate, help with import paperwork kenya | A/R | **P-16 documentation** | P-41/P-42 documents guides |
 | F-Svc4 | Shipping | ship a car from japan to <D>, roro car shipping japan, car container shipping uk, car shipping cost japan to kenya | A | **P-16 shipping**, as a step in an import with us | P-47 (RoRo vs container), P-43 |
 | F-Svc0 | A service on its own | ship my car from japan, inspect a car i found in japan, export documents for my car | — | **Not ours** (`business-context.md` §6.2). No page targets these; a P-47 explainer may answer the question and point to importing with us. | — |
-| F-Svc6 | Japanese auction cars | japanese auction cars, japan auction cars, japanese car auction list, upcoming japanese auction cars | A | **`/import-cars-from/japan/auction-cars`** (live list plus the P-16 sections; its car pages are `noindex`) | P-47 auction and grade guides |
+| F-Svc6 | Japanese auction cars | japanese auction cars, japan auction cars, japanese car auction list, upcoming japanese auction cars | A | **`/import-cars-from/japan/auction-cars`** (live list plus the P-16 sections). Each car's page is indexed until its auction day, titled "<year> <make> <model>, Japanese Auction Car" so it never reads as the model's P-13 page, then `noindex` (decided 2026-11-26) | P-47 auction and grade guides |
 | F-Svc5 | Japan auction access | japanese car auction agent, bid on japanese car auctions, uss auction access | A | **P-16 auction access** (Japan only) | P-47 |
 | F-Svc6 | Payment protection | safe way to pay for a car from japan, escrow car import | R/V | P-20 section | P-47 |
 

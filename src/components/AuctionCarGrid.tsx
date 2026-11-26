@@ -5,12 +5,12 @@ import { ImageOff } from "lucide-react";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import {
+  auctionCarName,
   formatAuctionDate,
   formatStartPrice,
   type PublicAuction,
 } from "@/lib/auction-listing";
 import { auctionCarPath } from "@/lib/listing-audience";
-import { formatVehicleTitle } from "@/lib/vehicle";
 
 export type AuctionCar = {
   id: string;
@@ -25,12 +25,6 @@ export type AuctionCar = {
   images: string[];
   auction: PublicAuction;
 };
-
-export function auctionCarName(
-  car: Pick<AuctionCar, "year" | "make" | "model">,
-): string {
-  return `${car.year} ${formatVehicleTitle(car.make, car.model)}`.trim();
-}
 
 export default function AuctionCarGrid({ cars }: { cars: AuctionCar[] }) {
   return (

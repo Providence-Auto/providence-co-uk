@@ -11,6 +11,7 @@
 // - Only cars graded 4.0 and above go live (business-context.md §2).
 // - A translation is public only once someone has checked it against the sheet.
 
+import { clampDescription, pickTitle } from "@/lib/car-page";
 import { slugify } from "@/lib/dossier-slug";
 import { formatVehicleTitle } from "@/lib/vehicle";
 
@@ -234,4 +235,54 @@ export function publicAuction(
     sheetUrl: a.showSheet && a.sheetUrl ? a.sheetUrl : null,
     translation: checked ? content : null,
   };
+}
+
+/** "2016 Porsche Macan". */
+export function auctionCarName(car: {
+  year?: string | null;
+  make?: string | null;
+  model?: string | null;
+}): string {
+  return `${car.year ?? ""} ${formatVehicleTitle(car.make ?? "", car.model ?? "")}`.trim();
+}
+
+/**
+ * The search result for one auction car (business decision 2026-11-26).
+ * Indexed while its auction is still to come, so the title and description
+ * say "auction car" before anything else: a reader who sees it beside the
+ * model's own car page, or the list, can tell which one is the single car at
+ * auction. After the auction day the page is noindex and leaves the sitemap.
+ */
+export function auctionCarMeta(
+  car: { year?: string | null; make?: string | null; model?: string | null },
+  value: unknown,
+  now: Date = new Date(),
+): { title: string; description: string; indexable: boolean } {
+  const name = auctionCarName(car);
+  const bare = formatVehicleTitle(car.make ?? "", car.model ?? "");
+  const auction = publicAuction(value, now);
+  const day = formatAuctionDate(auction.date);
+  const price = formatStartPrice(auction);
+  const grade = auction.grade ? `Grade ${auction.grade}` : "";
+  const facts = [grade, price ? `starting price ${price}` : ""]
+    .filter(Boolean)
+    .join(", ");
+
+  const title = pickTitle([
+    `${name}, Japanese Auction Car`,
+    `${name}, Japan Auction Car`,
+    `${name} Auction Car`,
+    `${bare} Auction Car`,
+  ]);
+  const description = auction.upcoming
+    ? clampDescription([
+        `Japanese auction car: this ${name} goes to auction on ${day}. ${facts}, auction sheet in English. Get a landed quote.`,
+        `Japanese auction car: this ${name} goes to auction on ${day}. ${facts}, auction sheet in English.`,
+        `Japanese auction car: this ${name} goes to auction on ${day}.`,
+      ])
+    : clampDescription([
+        `Japanese auction car: this ${name} was at auction on ${day}. Ask us for a similar car, with its auction sheet in English.`,
+        `Japanese auction car: this ${name} was at auction in Japan.`,
+      ]);
+  return { title, description, indexable: auction.upcoming };
 }

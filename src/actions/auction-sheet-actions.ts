@@ -64,7 +64,7 @@ Rules:
 - "equipment" = 装備 / 純正品. Those boxes are PRE-PRINTED codes (SR sunroof, AW alloy wheels, PS power steering, PW power windows, カワ leather seats, TV, ナビ navigation, エアB airbags). A code counts ONLY when it is circled. Look at each one in turn: an uncircled code means the car does not have it, so leave it out. Never list a code you are not certain is circled.
 - "sellingPoints" = セールスポイント, short English phrases.
 - "inspectorNotes" = 検査員報告 and 注意事項, one complete English phrase per remark. Include every remark, damage and repair history above all. Do not translate promotional remarks here.
-- "marks" = every code on the car diagram (展開図), one entry each, including marks written inside the windscreen (トビA = stone chip) or on the roof: the code as printed, where it is on the car, and what it means (A = scratch, U = dent, B = dent with scratch, W = repaired wave, S = rust, C = corrosion, P = paint mark, X = panel needs replacing, XX = panel replaced, G = stone chip in glass, Y = crack, E = small dimple; the number is the size, 1 smallest).`;
+- "marks" = every code on the car diagram (展開図), one entry each, including marks written inside the windscreen (トビA = stone chip) or on the roof: the code as printed in Latin letters only (write トビA as "Chip A"), where it is on the car, and what it means (A = scratch, U = dent, B = dent with scratch, W = repaired wave, S = rust, C = corrosion, P = paint mark, X = panel needs replacing, XX = panel replaced, G = stone chip in glass, Y = crack, E = small dimple; the number is the size, 1 smallest).`;
 
 const nullableString = { type: "string", nullable: true } as const;
 const stringList = { type: "array", items: { type: "string" } } as const;

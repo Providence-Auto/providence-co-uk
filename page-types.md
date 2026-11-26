@@ -376,6 +376,8 @@ unclassified page is the state this document exists to prevent.
 | `/import/[tag]` | dynamic | Landing | One class page per landing-page tag (`src/config/vehicle-tags.ts`). Section set agreed 2026-11-03: the P-11 set in `seo-page-rules.md` — direct answer, facts table, models as text links, steps, FAQ. A class page with fewer than eight live models is `noindex, follow` and out of the sitemap until it has them |
 | `/import-cars-from/[country]` | 7 | Landing | Agreed section list in `CLAUDE.md`; enforced by `src/config/__tests__/countries.test.ts` |
 | `/import-cars-from` | 1 | Landing | Hub |
+| `/import-cars-from/japan/auction-cars` | 1 | Landing | Owns "Japanese auction cars". Added 2026-11-26: the cars set to Auction in `/admin/specs` until their auction day, then a facts table, five steps, the form, a plain-text FAQ and guide links. Copy in `src/config/auction-cars.ts`, enforced by `src/lib/__tests__/auction-listing.test.ts` |
+| `/import-cars-from/japan/auction-cars/[slug]` | dynamic | Landing | One car at a Japanese auction (a database row). Indexed until its auction day and `noindex` after it; its title and description say "Japanese auction car" first so it is never read as the model's car page (decided 2026-11-26) |
 | `/campaigns/[slug]` | 3 | Landing | `src/config/landing-pages.ts` |
 | `/b2b-inquiry` | 1 | Landing | Added 2026-09-29/30. Built around one action — a dealership sending a sourcing inquiry; sections as asked by the business (market check + dealer form, the value proposition without the dealer platform, each source market's ports and transit). Framed on the inquiry so it does not compete with `/b2b` for "dealer car sourcing" |
 | `/import-japanese-cars` | 1 | Landing | |

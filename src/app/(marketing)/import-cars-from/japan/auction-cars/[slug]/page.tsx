@@ -1,13 +1,13 @@
-// One car coming up at a Japanese auction. noindex: it is a single unit that
-// sells in days, so the list ranks and this page is for the link, the ad and
-// the buyer. After the auction day it stays up and takes inquiries for a
-// similar car.
+// One car coming up at a Japanese auction. Indexed until its auction day
+// (business decision 2026-11-26), with a title and description that say
+// "auction car" first, so it can't be mistaken for the model's car page or
+// the list (auctionCarMeta). After the auction day it is noindex, out of the
+// sitemap, and takes inquiries for a similar car.
 
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { Suspense } from "react";
-import { auctionCarName } from "@/components/AuctionCarGrid";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
@@ -17,16 +17,13 @@ import {
   AUCTION_CARS_KEYWORD,
 } from "@/config/auction-cars";
 import {
+  auctionCarMeta,
+  auctionCarName,
   formatAuctionDate,
   formatStartPrice,
   publicAuction,
 } from "@/lib/auction-listing";
-import {
-  carOgImagePath,
-  clampDescription,
-  NOT_FOUND_METADATA,
-  pickTitle,
-} from "@/lib/car-page";
+import { carOgImagePath, NOT_FOUND_METADATA } from "@/lib/car-page";
 import { canViewCar, loadCar } from "@/lib/car-page-data";
 import {
   AUCTION_CARS_PATH,
@@ -55,13 +52,8 @@ export async function generateMetadata({
     return NOT_FOUND_METADATA;
   }
   const name = auctionCarName(car);
-  const auction = publicAuction(car.auction);
   const path = auctionCarPath(car.slug || slug);
-  const title = pickTitle([`${name}: Japanese Auction Car`, name]);
-  const description = clampDescription([
-    `${name} at auction in Japan on ${formatAuctionDate(auction.date)}: grade ${auction.grade}, starting price ${formatStartPrice(auction)}, auction sheet in English.`,
-    `${name} at auction in Japan: grade, starting price and auction sheet in English.`,
-  ]);
+  const { title, description, indexable } = auctionCarMeta(car, car.auction);
   const image = carOgImagePath(car, slug);
   return {
     title,
@@ -82,7 +74,7 @@ export async function generateMetadata({
       description,
       images: [image],
     },
-    robots: { index: false, follow: true },
+    robots: { index: indexable, follow: true },
   };
 }
 
@@ -165,6 +157,7 @@ export default async function AuctionCarPage({
       {
         "@type": "Car",
         name,
+        description: auctionCarMeta(car, car.auction).description,
         url: `${SITE}${path}`,
         brand: { "@type": "Brand", name: car.make },
         model: car.model,
@@ -259,6 +252,14 @@ export default async function AuctionCarPage({
                       {auction.upcoming
                         ? "Get your landed quote"
                         : "Ask for a similar car"}
+                    </a>
+                    <a
+                      href={`${path}/spec-sheet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-black/15 bg-white px-8 py-3 text-sm font-bold text-black hover:border-black"
+                    >
+                      Download this car as a PDF
                     </a>
                   </div>
                 ) : null}

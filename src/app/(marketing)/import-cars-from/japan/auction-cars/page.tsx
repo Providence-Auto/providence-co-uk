@@ -7,10 +7,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getUpcomingAuctionCars } from "@/actions/spec-actions";
-import AuctionCarGrid, {
-  type AuctionCar,
-  auctionCarName,
-} from "@/components/AuctionCarGrid";
+import AuctionCarGrid, { type AuctionCar } from "@/components/AuctionCarGrid";
 import GradientMesh from "@/components/GradientMesh";
 import MinimalHeader from "@/components/MinimalHeader";
 import PreferredSourceCallout from "@/components/PreferredSourceCallout";
@@ -30,6 +27,7 @@ import {
 import { BLOG_BASE_PATH, getPost } from "@/config/blog";
 import { COUNTRY_BASE_PATH } from "@/config/countries";
 import { DEALER_SOURCING_PATH } from "@/config/dealer-sourcing";
+import { auctionCarName } from "@/lib/auction-listing";
 import { auctionCarPath } from "@/lib/listing-audience";
 
 // DB-backed, so rendered per request (the build container has no database).
