@@ -67,6 +67,11 @@ export default function AuctionCarGrid({ cars }: { cars: AuctionCar[] }) {
                     Grade {car.auction.grade}
                   </span>
                 ) : null}
+                {car.auction.view360Url ? (
+                  <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-black">
+                    360° interior
+                  </span>
+                ) : null}
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <h3 className="font-bold tracking-tight text-black group-hover:text-sky-600 transition-colors">

@@ -375,6 +375,13 @@ const s = StyleSheet.create({
   },
   tileValue: { fontFamily: "Helvetica-Bold", fontSize: 13, marginTop: 4 },
   tileValueLead: { color: "#ffffff", fontSize: 16 },
+  view360: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 9.5,
+    color: ACCENT,
+    marginTop: 10,
+    textDecoration: "none",
+  },
   tileNote: { fontSize: 7.5, color: SOFT, marginTop: 3, lineHeight: 1.35 },
 
   // Auction sheet
@@ -824,6 +831,11 @@ function SpecSheet(d: SpecSheetData) {
         </View>
 
         {auction ? <AuctionTiles auction={auction} /> : null}
+        {auction?.view360Url ? (
+          <Link src={auction.view360Url} style={s.view360}>
+            See the interior in 360° →
+          </Link>
+        ) : null}
 
         {car.notes ? <Text style={s.description}>{car.notes}</Text> : null}
 

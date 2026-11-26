@@ -190,3 +190,35 @@ describe("the Japanese auction cars page", () => {
       expect(getPost(slug), slug).toBeTruthy();
   });
 });
+
+describe("an auction car in search results", () => {
+  it("says auction car first, with the date, grade and price", async () => {
+    const { auctionCarMeta } = await import("@/lib/auction-listing");
+    const car = { year: "2016", make: "Porsche", model: "Macan" };
+    const meta = auctionCarMeta(car, ready, new Date("2026-12-01"));
+    expect(meta.title).toBe("2016 Porsche Macan, Japanese Auction Car");
+    expect(meta.description).toMatch(/^Japanese auction car: /);
+    expect(meta.description).toContain("3 Dec 2026");
+    expect(meta.description).toContain("¥1,200,000");
+    expect(meta.description.length).toBeLessThan(155);
+    expect(meta.indexable).toBe(true);
+    expect(auctionCarMeta(car, ready, new Date("2026-12-04")).indexable).toBe(
+      false,
+    );
+  });
+});
+
+describe("the 360° view", () => {
+  it("keeps a USS share link and drops anything else", async () => {
+    const { parseView360Url, publicAuction } = await import(
+      "@/lib/auction-listing"
+    );
+    const uss = "https://uss.360.car/v1/share/0a03e715d5276189";
+    expect(parseView360Url(` ${uss} `)).toBe(uss);
+    expect(parseView360Url("http://uss.360.car/v1/share/x")).toBe("");
+    expect(parseView360Url("https://evil.example/uss.360.car")).toBe("");
+    expect(parseView360Url("javascript:alert(1)")).toBe("");
+    expect(publicAuction({ ...ready, view360Url: uss }).view360Url).toBe(uss);
+    expect(publicAuction(ready).view360Url).toBeNull();
+  });
+});

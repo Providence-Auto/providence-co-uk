@@ -28,6 +28,7 @@ import {
   auctionLiveProblem,
   formatStartPrice,
   parseAuctionListing,
+  parseView360Url,
 } from "@/lib/auction-listing";
 
 /** Read a File as a bare base64 string (no data: prefix). */
@@ -209,6 +210,31 @@ export function AuctionListingEditor({
             onChange={(e) => set({ lotNumber: e.target.value })}
             className="rounded-xl h-12"
           />
+        </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor={`${id}-360`} className="font-bold text-zinc-700">
+            360° interior view link
+          </Label>
+          <Input
+            id={`${id}-360`}
+            type="url"
+            value={value.view360Url}
+            onChange={(e) => set({ view360Url: e.target.value })}
+            placeholder="https://uss.360.car/v1/share/…"
+            className="rounded-xl h-12"
+          />
+          <p
+            className={`text-xs ${
+              value.view360Url.trim() && !parseView360Url(value.view360Url)
+                ? "font-medium text-amber-700"
+                : "text-zinc-500"
+            }`}
+          >
+            {value.view360Url.trim() && !parseView360Url(value.view360Url)
+              ? "Only a USS 360° share link (https://uss.360.car/…) can be shown on the page. This one won't be saved."
+              : "Optional. The USS share link, when the auction sends one: the car's page shows the 360° view in place."}
+          </p>
         </div>
 
         <div className="grid grid-cols-3 gap-3 md:col-span-2">
