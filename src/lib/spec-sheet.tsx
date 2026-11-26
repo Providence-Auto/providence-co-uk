@@ -660,20 +660,6 @@ function Tile({
   );
 }
 
-function Bullets({ items }: { items: string[] }) {
-  return (
-    <>
-      {items.map((item, i) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two lines can read the same
-        <View key={i} style={s.note} wrap={false}>
-          <View style={s.bullet} />
-          <Text style={s.featureText}>{latinOnly(item)}</Text>
-        </View>
-      ))}
-    </>
-  );
-}
-
 /** The auction's four facts: the starting price leads, in the ink box. */
 function AuctionTiles({ auction }: { auction: PublicAuction }) {
   const price = formatStartPrice(auction);
@@ -740,7 +726,396 @@ type SpecSheetData = {
   generatedOn: string;
 };
 
+// ── The auction car's sheet ────────────────────────────────────────────────
+//
+// Laid out page by page rather than left to flow, because a flowing sheet
+// split the marks table across pages and left the call to action alone on a
+// near-empty last page (feedback 2026-11-26):
+//   1. Cover — the photographs, the car's name, the four auction tiles.
+//   2. The car — the specification beside the inspector's notes and the
+//      marks on the car diagram, then two more photographs.
+//   3. Any further photographs, the selling points beside the equipment,
+//      and the call to action.
+
+const a = StyleSheet.create({
+  pageHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: 10,
+    marginBottom: 18,
+    borderBottomWidth: 0.75,
+    borderBottomColor: RULE,
+  },
+  pageHeadName: { fontFamily: "Helvetica-Bold", fontSize: 11 },
+  pageHeadMeta: { fontSize: 8, color: MUTED },
+  cols: { flexDirection: "row" },
+  col: { width: (CONTENT_WIDTH - 24) / 2 },
+  colGap: { width: 24 },
+  block: { marginBottom: 18 },
+  heading: { fontFamily: "Helvetica-Bold", fontSize: 12, marginBottom: 8 },
+  rule: { width: 24, height: 2, backgroundColor: ACCENT, marginBottom: 7 },
+  row: {
+    flexDirection: "row",
+    paddingVertical: 4.5,
+    borderBottomWidth: 0.75,
+    borderBottomColor: RULE,
+  },
+  rowFirst: { borderTopWidth: 0.75, borderTopColor: RULE },
+  label: {
+    width: "42%",
+    paddingRight: 8,
+    fontFamily: "Helvetica-Bold",
+    fontSize: 7,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    color: MUTED,
+    paddingTop: 1.5,
+  },
+  value: { width: "58%", fontSize: 9, lineHeight: 1.35 },
+  item: { flexDirection: "row", marginBottom: 4 },
+  dot: {
+    width: 3.5,
+    height: 3.5,
+    borderRadius: 1.75,
+    backgroundColor: ACCENT,
+    marginTop: 4,
+    marginRight: 7,
+  },
+  itemText: { flex: 1, fontSize: 9, lineHeight: 1.4, color: "#27272a" },
+  markCode: { width: "18%", fontFamily: "Helvetica-Bold", fontSize: 8.5 },
+  markWhere: { width: "44%", fontSize: 8.5, paddingRight: 6 },
+  markMeaning: { width: "38%", fontSize: 8.5, color: "#3f3f46" },
+  markHead: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 6.5,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    color: MUTED,
+  },
+  grid: { flexDirection: "row", flexWrap: "wrap" },
+  photo: { borderRadius: 6, objectFit: "cover", marginBottom: THUMB_GAP },
+});
+
+function PageHead({ name, day }: { name: string; day: string }) {
+  return (
+    <View style={a.pageHead}>
+      <Text style={a.pageHeadName}>{name}</Text>
+      <Text style={a.pageHeadMeta}>Japanese auction car · {day}</Text>
+    </View>
+  );
+}
+
+function Block({
+  title,
+  children,
+  last,
+}: {
+  title: string;
+  children: React.ReactNode;
+  last?: boolean;
+}) {
+  return (
+    <View style={last ? {} : a.block} wrap={false}>
+      <View style={a.rule} />
+      <Text style={a.heading}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function Items({ items }: { items: string[] }) {
+  return (
+    <>
+      {items.map((item, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two lines can read the same
+        <View key={i} style={a.item}>
+          <View style={a.dot} />
+          <Text style={a.itemText}>{latinOnly(item)}</Text>
+        </View>
+      ))}
+    </>
+  );
+}
+
+function SheetFooter({ vehicle }: { vehicle: string }) {
+  return (
+    <View style={s.footer} fixed>
+      <Text style={s.footerText}>
+        Providence Auto · {vehicle} · Japanese auction car ·
+        providenceauto.co.uk
+      </Text>
+      <Text
+        style={s.footerText}
+        render={({ pageNumber, totalPages }) =>
+          `Page ${pageNumber} of ${totalPages}`
+        }
+      />
+    </View>
+  );
+}
+
+function AuctionCta({
+  d,
+  auction,
+}: {
+  d: SpecSheetData;
+  auction: PublicAuction;
+}) {
+  const model = d.car.model || "car";
+  const day = formatAuctionDate(auction.date);
+  return (
+    <View style={[s.cta, { marginTop: 8 }]} wrap={false}>
+      <Text style={s.ctaTitle}>
+        {auction.upcoming
+          ? `Set your maximum for this ${model} before ${day}.`
+          : `This ${model} was at auction on ${day}. Ask us for a similar one.`}
+      </Text>
+      <Text style={s.ctaBody}>
+        The bidding decides the final price, and we bid only up to the maximum
+        you approve. Your consultant sends the landed cost into your country,
+        itemised, before you commit.
+      </Text>
+      {d.pageUrl ? (
+        <Link src={d.pageUrl} style={s.ctaLink}>
+          {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
+        </Link>
+      ) : null}
+      {d.contact.name ? (
+        <Text style={s.consultant}>{d.contact.name}</Text>
+      ) : null}
+      <ContactList contact={d.contact} dark />
+    </View>
+  );
+}
+
+function AuctionSheetDocument({
+  d,
+  auction,
+}: {
+  d: SpecSheetData;
+  auction: PublicAuction;
+}) {
+  const { car } = d;
+  const vehicle = [car.make, car.model].filter(Boolean).join(" ");
+  const name = auctionCarName(car);
+  const day = formatAuctionDate(auction.date);
+  const steering = parseSteeringOptions(car.steeringOptions, car.steering);
+  const sheet = auction.translation;
+  const colour = d.exterior[0] ? colorLabel(d.exterior[0]) : "";
+  const specRows = colour
+    ? [...d.rows, { label: "Colour", value: colour }]
+    : d.rows;
+  const cover = d.thumbs.slice(0, 3);
+  const more = d.thumbs.slice(3);
+  const half = thumbSize(2);
+  const notes = sheet?.inspectorNotes ?? [];
+  const marks = sheet?.marks ?? [];
+  const points = sheet?.sellingPoints ?? [];
+
+  return (
+    <Document
+      title={`${name} — Japanese auction car`}
+      author="Providence Auto"
+      subject={`${name} at auction in Japan`}
+      creator="Providence Auto"
+      producer="Providence Auto"
+    >
+      {/* 1. Cover */}
+      <Page size="A4" style={s.page}>
+        <View style={s.masthead}>
+          <View style={s.brand}>
+            {d.mark ? <Image src={d.mark} style={s.brandMark} /> : null}
+            <Text style={s.brandName}>Providence Auto</Text>
+          </View>
+          <View style={s.mastRight}>
+            <Text style={s.docLabel}>Japanese auction car</Text>
+            <Text style={s.docDate}>{d.generatedOn}</Text>
+          </View>
+        </View>
+
+        {d.hero ? <Image src={d.hero} style={s.hero} /> : null}
+        {cover.length > 0 ? (
+          <View style={s.thumbs}>
+            {cover.map((thumb, i) => (
+              <Image
+                // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                key={i}
+                src={thumb}
+                style={[
+                  s.thumb,
+                  thumbSize(3),
+                  i > 0 ? { marginLeft: THUMB_GAP } : {},
+                ]}
+              />
+            ))}
+          </View>
+        ) : null}
+
+        <View style={s.identity}>
+          {car.make ? <Text style={s.make}>{car.make}</Text> : null}
+          <Text style={s.model}>
+            {[car.year, car.model].filter(Boolean).join(" ") || vehicle}
+          </Text>
+          {car.trim ? <Text style={s.trim}>{car.trim}</Text> : null}
+          <View style={s.badges}>
+            <Text style={[s.badge, s.badgeAccent]}>
+              {auction.upcoming ? `At auction · ${day}` : `Auctioned · ${day}`}
+            </Text>
+            {steering.map((hand) => (
+              <Text key={hand} style={s.badge}>
+                {hand}
+              </Text>
+            ))}
+            {car.mileage ? <Text style={s.badge}>{car.mileage}</Text> : null}
+          </View>
+        </View>
+
+        <AuctionTiles auction={auction} />
+        {auction.view360Url ? (
+          <Link src={auction.view360Url} style={s.view360}>
+            See the interior in 360°
+          </Link>
+        ) : null}
+
+        <SheetFooter vehicle={vehicle} />
+      </Page>
+
+      {/* 2. The car and its auction sheet */}
+      <Page size="A4" style={s.page}>
+        <PageHead name={name} day={day} />
+
+        <View style={a.cols}>
+          <View style={a.col}>
+            <Block title="Specification">
+              {specRows.map((row, i) => (
+                <View
+                  key={row.label}
+                  style={i === 0 ? [a.row, a.rowFirst] : a.row}
+                >
+                  <Text style={a.label}>{row.label}</Text>
+                  <Text style={a.value}>{row.value}</Text>
+                </View>
+              ))}
+            </Block>
+          </View>
+          <View style={a.colGap} />
+          <View style={a.col}>
+            {notes.length > 0 ? (
+              <Block title="Inspector's notes, in English">
+                <Items items={notes} />
+              </Block>
+            ) : null}
+            {marks.length > 0 ? (
+              <Block title="Marks on the car diagram" last>
+                <View style={[a.row, a.rowFirst]}>
+                  <Text style={[a.markCode, a.markHead]}>Code</Text>
+                  <Text style={[a.markWhere, a.markHead]}>Where</Text>
+                  <Text style={[a.markMeaning, a.markHead]}>Meaning</Text>
+                </View>
+                {marks.map((mark, i) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
+                  <View key={i} style={a.row}>
+                    <Text style={a.markCode}>{latinOnly(mark.code)}</Text>
+                    <Text style={a.markWhere}>{latinOnly(mark.location)}</Text>
+                    <Text style={a.markMeaning}>{latinOnly(mark.meaning)}</Text>
+                  </View>
+                ))}
+              </Block>
+            ) : null}
+          </View>
+        </View>
+
+        {more.length > 0 ? (
+          <View style={{ marginTop: 22 }} wrap={false}>
+            <View style={a.rule} />
+            <Text style={a.heading}>More photographs</Text>
+            <View style={a.grid}>
+              {more.slice(0, 2).map((thumb, i) => (
+                <Image
+                  // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                  key={i}
+                  src={thumb}
+                  style={[
+                    a.photo,
+                    half,
+                    { marginLeft: i % 2 === 0 ? 0 : THUMB_GAP },
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+        ) : null}
+        <SheetFooter vehicle={vehicle} />
+      </Page>
+
+      {/* 3. Any further photographs, the selling points, the call to action */}
+      <Page size="A4" style={s.page}>
+        <PageHead name={name} day={day} />
+        {more.length > 2 ? (
+          <View style={{ marginBottom: 22 }} wrap={false}>
+            <View style={a.rule} />
+            <Text style={a.heading}>More photographs</Text>
+            <View style={a.grid}>
+              {more.slice(2, 6).map((thumb, i) => (
+                <Image
+                  // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
+                  key={i}
+                  src={thumb}
+                  style={[
+                    a.photo,
+                    half,
+                    { marginLeft: i % 2 === 0 ? 0 : THUMB_GAP },
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+        ) : null}
+        {points.length > 0 || d.features.length > 0 ? (
+          <View style={a.cols}>
+            <View style={a.col}>
+              {points.length > 0 ? (
+                <Block title="Selling points" last>
+                  <Items items={points} />
+                </Block>
+              ) : null}
+            </View>
+            <View style={a.colGap} />
+            <View style={a.col}>
+              {d.features.length > 0 ? (
+                <Block title="Equipment" last>
+                  <Items items={d.features} />
+                </Block>
+              ) : null}
+            </View>
+          </View>
+        ) : null}
+
+        {/* Anchored to the foot of the last page. */}
+        <View style={{ marginTop: "auto", paddingTop: 22 }}>
+          <AuctionCta d={d} auction={auction} />
+        </View>
+        <SheetFooter vehicle={vehicle} />
+      </Page>
+
+      {d.auctionSheet ? (
+        <Page size="A4" style={s.page}>
+          <PageHead name={name} day={day} />
+          <View style={a.rule} />
+          <Text style={a.heading}>The original auction sheet</Text>
+          <Image src={d.auctionSheet} style={s.sheetImage} />
+          <SheetFooter vehicle={vehicle} />
+        </Page>
+      ) : null}
+    </Document>
+  );
+}
+
 function SpecSheet(d: SpecSheetData) {
+  // An auction car has its own page-by-page layout.
+  if (d.auction) return <AuctionSheetDocument d={d} auction={d.auction} />;
+
   const { car, grade } = d;
   const vehicle = [car.make, car.model].filter(Boolean).join(" ");
   const heading = [car.year, car.model].filter(Boolean).join(" ");
@@ -753,17 +1128,10 @@ function SpecSheet(d: SpecSheetData) {
     ? car.valuePoints.filter((p: { title?: string }) => p?.title)
     : [];
   const grades = parseGrades(car.grades);
-  const auction = d.auction;
-  const sheet = auction?.translation ?? null;
-  const day = auction ? formatAuctionDate(auction.date) : "";
 
   return (
     <Document
-      title={
-        auction
-          ? `${auctionCarName(car)} — Japanese auction car`
-          : `${vehicle}${variant ? ` ${variant}` : ""} — Specification`
-      }
+      title={`${vehicle}${variant ? ` ${variant}` : ""} — Specification`}
       author="Providence Auto"
       subject={`${vehicle} specification sheet`}
       creator="Providence Auto"
@@ -776,15 +1144,13 @@ function SpecSheet(d: SpecSheetData) {
             <Text style={s.brandName}>Providence Auto</Text>
           </View>
           <View style={s.mastRight}>
-            <Text style={s.docLabel}>
-              {auction ? "Japanese auction car" : "Specification sheet"}
-            </Text>
+            <Text style={s.docLabel}>Specification sheet</Text>
             <Text style={s.docDate}>{d.generatedOn}</Text>
           </View>
         </View>
 
         {d.hero ? <Image src={d.hero} style={s.hero} /> : null}
-        {thumbRows(auction ? d.thumbs.slice(0, 3) : d.thumbs).map((row, r) => (
+        {thumbRows(d.thumbs).map((row, r) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered rows
           <View key={r} style={s.thumbs} wrap={false}>
             {row.items.map((thumb, i) => (
@@ -807,13 +1173,7 @@ function SpecSheet(d: SpecSheetData) {
           <Text style={s.model}>{heading || vehicle}</Text>
           {variant ? <Text style={s.trim}>{variant}</Text> : null}
           <View style={s.badges}>
-            {auction ? (
-              <Text style={[s.badge, s.badgeAccent]}>
-                {auction.upcoming
-                  ? `At auction · ${day}`
-                  : `Auctioned · ${day}`}
-              </Text>
-            ) : car.isUpcoming ? (
+            {car.isUpcoming ? (
               <Text style={[s.badge, s.badgeAccent]}>
                 {car.expectedAvailability
                   ? `Coming soon · ${car.expectedAvailability}`
@@ -829,13 +1189,6 @@ function SpecSheet(d: SpecSheetData) {
             ))}
           </View>
         </View>
-
-        {auction ? <AuctionTiles auction={auction} /> : null}
-        {auction?.view360Url ? (
-          <Link src={auction.view360Url} style={s.view360}>
-            See the interior in 360°
-          </Link>
-        ) : null}
 
         {car.notes ? <Text style={s.description}>{car.notes}</Text> : null}
 
@@ -871,51 +1224,6 @@ function SpecSheet(d: SpecSheetData) {
                 <Text style={s.rowValue}>{row.value}</Text>
               </View>
             ))}
-          />
-        ) : null}
-
-        {sheet &&
-        (sheet.inspectorNotes.length > 0 || sheet.marks.length > 0) ? (
-          <Section
-            title="The auction sheet, translated into English"
-            items={[
-              sheet.inspectorNotes.length > 0 ? (
-                <View key="notes">
-                  <Text style={[s.subTitle, { marginTop: 0 }]}>
-                    Inspector's notes
-                  </Text>
-                  <Bullets items={sheet.inspectorNotes} />
-                </View>
-              ) : null,
-              sheet.marks.length > 0 ? (
-                <View key="marks">
-                  <Text style={s.subTitle}>Marks on the car diagram</Text>
-                  <View style={[s.markRow, s.rowFirst]} wrap={false}>
-                    <Text style={[s.markCode, s.markHead]}>Code</Text>
-                    <Text style={[s.markWhere, s.markHead]}>Where</Text>
-                    <Text style={[s.markMeaning, s.markHead]}>Meaning</Text>
-                  </View>
-                  {sheet.marks.map((mark, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: a fixed list, and two marks can read the same
-                    <View key={i} style={s.markRow} wrap={false}>
-                      <Text style={s.markCode}>{latinOnly(mark.code)}</Text>
-                      <Text style={s.markWhere}>
-                        {latinOnly(mark.location)}
-                      </Text>
-                      <Text style={s.markMeaning}>
-                        {latinOnly(mark.meaning)}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              ) : null,
-              sheet.sellingPoints.length > 0 ? (
-                <View key="points">
-                  <Text style={s.subTitle}>Selling points</Text>
-                  <Bullets items={sheet.sellingPoints} />
-                </View>
-              ) : null,
-            ].filter(Boolean)}
           />
         ) : null}
 
@@ -961,34 +1269,6 @@ function SpecSheet(d: SpecSheetData) {
           />
         ) : null}
 
-        {auction && d.thumbs.length > 3 ? (
-          <Section
-            title="More photographs"
-            items={[
-              <View
-                key="more"
-                style={{ flexDirection: "row", flexWrap: "wrap" }}
-              >
-                {d.thumbs.slice(3).map((thumb, i) => (
-                  <Image
-                    // biome-ignore lint/suspicious/noArrayIndexKey: fixed, ordered list
-                    key={i}
-                    src={thumb}
-                    style={[
-                      s.thumb,
-                      thumbSize(2),
-                      {
-                        marginLeft: i % 2 === 0 ? 0 : THUMB_GAP,
-                        marginBottom: THUMB_GAP,
-                      },
-                    ]}
-                  />
-                ))}
-              </View>,
-            ]}
-          />
-        ) : null}
-
         {d.features.length > 0 ? (
           <Section
             title="Equipment"
@@ -1007,7 +1287,7 @@ function SpecSheet(d: SpecSheetData) {
 
         {/* A dealer's sheet stops at the car: no markets list and no landed-quote
             box, just who to contact. */}
-        {d.audience === "b2c" && !auction && d.markets.length > 0 ? (
+        {d.audience === "b2c" && d.markets.length > 0 ? (
           <Section
             title="Markets you can import it to"
             items={[
@@ -1022,29 +1302,7 @@ function SpecSheet(d: SpecSheetData) {
           />
         ) : null}
 
-        {auction ? (
-          <View style={s.cta} wrap={false}>
-            <Text style={s.ctaTitle}>
-              {auction.upcoming
-                ? `Set your maximum for this ${car.model || "car"} before ${day}.`
-                : `This ${car.model || "car"} was at auction on ${day}. Ask us for a similar one.`}
-            </Text>
-            <Text style={s.ctaBody}>
-              The bidding decides the final price, and we bid only up to the
-              maximum you approve. Your consultant sends the landed cost into
-              your country, itemised, before you commit.
-            </Text>
-            {d.pageUrl ? (
-              <Link src={d.pageUrl} style={s.ctaLink}>
-                {d.pageUrl.replace(/^https:\/\/(www\.)?/, "")}
-              </Link>
-            ) : null}
-            {d.contact.name ? (
-              <Text style={s.consultant}>{d.contact.name}</Text>
-            ) : null}
-            <ContactList contact={d.contact} dark />
-          </View>
-        ) : d.audience === "b2c" ? (
+        {d.audience === "b2c" ? (
           <View style={s.cta} wrap={false}>
             <Text style={s.ctaTitle}>
               {car.isUpcoming
@@ -1077,19 +1335,9 @@ function SpecSheet(d: SpecSheetData) {
           </View>
         )}
 
-        {d.auctionSheet ? (
-          <View break>
-            <View style={s.sectionRule} />
-            <Text style={s.sectionTitle}>The original auction sheet</Text>
-            <Image src={d.auctionSheet} style={s.sheetImage} />
-          </View>
-        ) : null}
-
         <View style={s.footer} fixed>
           <Text style={s.footerText}>
-            Providence Auto ·{" "}
-            {auction ? `${vehicle} · Japanese auction car` : vehicle} ·
-            providenceauto.co.uk
+            Providence Auto · {vehicle} · providenceauto.co.uk
           </Text>
           <Text
             style={s.footerText}
