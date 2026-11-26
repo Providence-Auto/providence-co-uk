@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { Suspense } from "react";
+import AuctionPhotoGallery from "@/components/AuctionPhotoGallery";
 import MinimalHeader from "@/components/MinimalHeader";
 import { Reveal } from "@/components/Reveal";
 import RequestForm from "@/components/requestForm";
@@ -214,24 +215,7 @@ export default async function AuctionCarPage({
             <div
               className={`mt-8 grid gap-8 ${images.length > 0 ? "lg:grid-cols-[1.3fr_1fr]" : "max-w-2xl"}`}
             >
-              <div className="space-y-3 empty:hidden">
-                {images.map((src, index) => (
-                  // biome-ignore lint/performance/noImgElement: dossier photos are served as they are, per site convention
-                  <img
-                    key={src}
-                    src={src}
-                    alt={
-                      index === 0
-                        ? `${name}, Japanese auction car`
-                        : `${name}, photo ${index + 1}`
-                    }
-                    loading={index === 0 ? "eager" : "lazy"}
-                    className={`w-full rounded-[1.5rem] border border-black/[0.07] bg-zinc-100 object-cover ${
-                      index === 0 ? "aspect-[4/3]" : "aspect-[3/2]"
-                    }`}
-                  />
-                ))}
-              </div>
+              <AuctionPhotoGallery images={images} name={name} />
 
               <div className="lg:sticky lg:top-24 lg:self-start">
                 {price ? (
